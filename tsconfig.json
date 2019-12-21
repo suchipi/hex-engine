@@ -1,0 +1,26 @@
+{
+  "include": ["./packages"],
+  "exclude": ["./packages/**/*.test.ts"],
+
+  "compilerOptions": {
+    "lib": ["es2015"],
+    "target": "es5",
+    "module": "commonjs",
+    "outDir": "./dist",
+
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "moduleResolution": "node",
+    "esModuleInterop": true
+  }
+}

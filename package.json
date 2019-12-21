@@ -1,0 +1,28 @@
+{
+	"private": true,
+	"workspaces": [
+		"packages/engine",
+		"packages/game"
+	],
+	"devDependencies": {
+		"@babel/preset-typescript": "^7.7.7",
+		"@workspace-builder/babel": "^0.4.0",
+		"@workspace-builder/copy-ts": "^0.1.0",
+		"@workspace-builder/parcel": "^0.6.0",
+		"babel-eslint": "^10.0.3",
+		"eslint": "^6.8.0",
+		"eslint-config-unobtrusive": "^1.2.5",
+		"eslint-plugin-import": "^2.19.1",
+		"prettier": "^1.19.1",
+		"typescript": "^3.7.4",
+		"workspace-builder": "^0.4.1"
+	},
+	"scripts": {
+		"build": "workspace-builder",
+		"dev": "workspace-builder watch",
+		"clean": "workspace-builder clean"
+	},
+	"dependencies": {
+		"core-js": "2"
+	}
+}
