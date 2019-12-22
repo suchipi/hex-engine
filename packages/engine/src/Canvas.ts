@@ -7,6 +7,7 @@ import Scene from "./Scene";
 export default class Canvas
   implements HasChildren<Entity | Scene>, PresentsScenes {
   _element: HTMLCanvasElement;
+  _ctx: CanvasRenderingContext2D;
   _runLoop: RunLoop;
   scenes: Set<Scene>;
   rootScene: Scene;
@@ -24,6 +25,12 @@ export default class Canvas
       document.body.appendChild(this._element);
     }
 
+    const ctx = this._element.getContext("2d");
+    if (ctx == null) {
+      throw new Error("2d drawing context type not supported by browser");
+    }
+    this._ctx = ctx;
+
     this.scenes = new Set();
 
     this.rootScene = new Scene();
@@ -31,13 +38,15 @@ export default class Canvas
     this.activeScene = this.rootScene;
 
     this._runLoop = new RunLoop((delta: number) => {
-      const element = this._element;
+      const canvas = this._element;
+      const context = this._ctx;
       this.scenes.forEach((scene) => {
         const isActive = scene === this.activeScene;
         scene.tick({
           isActive,
           delta,
-          element,
+          canvas,
+          context,
         });
       });
     });
@@ -59,6 +68,7 @@ export default class Canvas
       return false;
     }
   }
+
   addChild(child: Entity | Scene): void {
     if (child instanceof Entity) {
       this.activeScene.addChild(child);
@@ -66,6 +76,7 @@ export default class Canvas
       this.scenes.add(child);
     }
   }
+
   removeChild(child: Entity | Scene): void {
     if (child instanceof Entity) {
       this.activeScene.removeChild(child);

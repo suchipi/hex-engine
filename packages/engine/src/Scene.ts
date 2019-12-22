@@ -7,6 +7,11 @@ export default class Scene
   entities: Set<Entity> = new Set();
   scenes: Set<Scene> = new Set();
   activeScene: Scene | null = null;
+  clearColor: string;
+
+  constructor({ clearColor = "white" }: { clearColor?: string } = {}) {
+    this.clearColor = clearColor;
+  }
 
   present(scene: Scene) {
     this.scenes.add(scene);
@@ -16,11 +21,13 @@ export default class Scene
   tick({
     isActive,
     delta,
-    element,
+    canvas,
+    context,
   }: {
     isActive: boolean;
     delta: number;
-    element: HTMLCanvasElement;
+    canvas: HTMLCanvasElement;
+    context: CanvasRenderingContext2D;
   }) {
     if (!isActive) {
       return;
@@ -30,8 +37,16 @@ export default class Scene
       entity.update(delta);
     });
 
+    if (this.clearColor) {
+      context.fillStyle = this.clearColor;
+      context.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
     this.entities.forEach((entity) => {
-      entity.draw(element);
+      entity.draw({
+        canvas,
+        context,
+      });
     });
 
     this.scenes.forEach((scene) => {
@@ -39,7 +54,8 @@ export default class Scene
       scene.tick({
         isActive: childIsActive,
         delta,
-        element,
+        canvas,
+        context,
       });
     });
   }

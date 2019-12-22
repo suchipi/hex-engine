@@ -1,10 +1,18 @@
 import { Entity, Canvas } from "engine";
 
-const parent = new Entity();
-const child = new Entity();
-
-parent.addChild(child);
+const ent = new Entity({
+  position: {
+    x: 0,
+    y: 0,
+    z: 0,
+  },
+  rectangle: {
+    color: "blue",
+    height: 100,
+    width: 100,
+  },
+});
 
 const canvas = new Canvas();
 
-canvas.addChild(parent);
+canvas.addChild(ent);
