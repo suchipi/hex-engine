@@ -1,3 +1,5 @@
-console.log("hi from engine");
+import Entity from "./Entity";
+import Scene from "./Scene";
+import Canvas from "./Canvas";
 
-export const foo = 4;
+export { Entity, Scene, Canvas };

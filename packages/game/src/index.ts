@@ -1,5 +1,10 @@
-import * as engine from "engine";
+import { Entity, Canvas } from "engine";
 
-engine;
+const parent = new Entity();
+const child = new Entity();
 
-console.log("hi from game");
+parent.addChild(child);
+
+const canvas = new Canvas();
+
+canvas.addChild(parent);

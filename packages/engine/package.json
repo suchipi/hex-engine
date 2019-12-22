@@ -2,9 +2,5 @@
   "name": "engine",
   "version": "0.0.0",
   "private": true,
-  "main": "dist/index.js",
-  "workspace-builder": [
-    "@workspace-builder/babel",
-    "@workspace-builder/copy-ts"
-  ]
+  "main": "dist/index.js"
 }

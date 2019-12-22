@@ -2,6 +2,5 @@
   "name": "game",
   "version": "0.0.0",
   "private": true,
-  "main": "dist/index.html",
-  "workspace-builder": "@workspace-builder/parcel"
+  "main": "dist/index.html"
 }
