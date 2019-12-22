@@ -1,17 +1,8 @@
 import Component from "./Component";
+import { Point, makePoint } from "../Models";
 
-type Data = {
-  x: number;
-  y: number;
-  z: number;
-};
-
-export default class Position extends Component<Data> {
+export default class Position extends Component<Point> {
   defaults() {
-    return {
-      x: 0,
-      y: 0,
-      z: 0,
-    };
+    return makePoint(0, 0);
   }
 }

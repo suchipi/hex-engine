@@ -1,7 +1,11 @@
+import Gamepad from "./Gamepad";
+import Keyboard from "./Keyboard";
 import Position from "./Position";
 import Rectangle from "./Rectangle";
 
 const Components = {
+  gamepad: Gamepad,
+  keyboard: Keyboard,
   position: Position,
   rectangle: Rectangle,
 };

@@ -3,3 +3,5 @@ import Scene from "./Scene";
 import Canvas from "./Canvas";
 
 export { Entity, Scene, Canvas };
+
+export * from "./Models";

@@ -56,6 +56,7 @@ export default class Canvas
 
   present(scene: Scene) {
     this.scenes.add(scene);
+
     this.activeScene = scene;
   }
 

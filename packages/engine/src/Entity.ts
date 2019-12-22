@@ -5,18 +5,42 @@ import Components, {
 } from "./Components";
 import HasChildren from "./HasChildren";
 
+type Init = Partial<
+  {
+    [ComponentName in keyof ComponentsDataMap]:
+      | Partial<ComponentsDataMap[ComponentName]>
+      | true;
+  }
+>;
+
 export default class Entity implements HasChildren<Entity> {
   _components: Partial<ComponentsInstanceMap>;
   _children: Set<Entity> = new Set();
 
-  constructor(init: Partial<ComponentsDataMap> = {}) {
+  defaults(): Init {
+    return {};
+  }
+
+  mergeData(existing: Init, incoming: Init): Init {
+    return {
+      ...existing,
+      ...incoming,
+    };
+  }
+
+  constructor(init: Init = {}) {
     this._components = {};
 
-    Object.keys(init).forEach((key) => {
+    const mergedInit = this.mergeData(this.defaults(), init);
+
+    Object.keys(mergedInit).forEach((key) => {
       // @ts-ignore
-      const value = init[key];
+      const value = mergedInit[key];
       // @ts-ignore
-      this._components[key] = new Components[key](this, value);
+      this._components[key] = new Components[key](
+        this,
+        value === true ? {} : value
+      );
     });
   }
 

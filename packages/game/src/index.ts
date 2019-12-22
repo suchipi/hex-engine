@@ -1,10 +1,25 @@
 import { Entity, Canvas } from "engine";
 
-const ent = new Entity({
+class KeyboardLogger extends Entity {
+  defaults() {
+    return {
+      keyboard: true,
+    };
+  }
+
+  update() {
+    const keyboard = this.getComponent("keyboard");
+    if (!keyboard) {
+      return;
+    }
+    console.log(keyboard.pressed);
+  }
+}
+
+const rect = new Entity({
   position: {
     x: 0,
     y: 0,
-    z: 0,
   },
   rectangle: {
     color: "blue",
@@ -13,6 +28,9 @@ const ent = new Entity({
   },
 });
 
+const logger = new KeyboardLogger();
+
 const canvas = new Canvas();
 
-canvas.addChild(ent);
+canvas.addChild(rect);
+canvas.addChild(logger);
