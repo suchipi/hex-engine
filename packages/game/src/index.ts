@@ -27,16 +27,15 @@ class PlayerBehaviour extends ecs.Component {
     context: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
   }) {
-    const sheet = this.getComponent(ecs.Components.SpriteSheet)!;
+    const animSheet = this.getComponent(ecs.Components.AnimationSheet)!;
     const position = this.getComponent(ecs.Components.Position)!;
 
     const target = position.drawPoint();
 
-    sheet.drawSpriteIntoContext({
+    animSheet.drawSpriteIntoContext({
       context,
       x: target.x,
       y: target.y,
-      tileIndex: 1,
     });
   }
 }
@@ -52,10 +51,16 @@ class Player extends ecs.Entity {
       new ecs.Components.Position(0, 0, {
         origin: new ecs.Point(29 / 2, 41 / 2),
       }),
-      new ecs.Components.SpriteSheet({
+      new ecs.Components.AnimationSheet({
         url: bouncy,
         tileWidth: 29,
         tileHeight: 41,
+        animations: {
+          default: new ecs.Components.Animation({
+            frames: [0, 1, 2, 3, 4, 5, 6, 7],
+            duration: 150,
+          }),
+        },
       }),
       new PlayerBehaviour(),
       jumpSound

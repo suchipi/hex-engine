@@ -10,7 +10,7 @@ type Data = {
 };
 
 export default class SpriteSheet extends BaseComponent {
-  image: Image | null = null;
+  image: Image;
   tileWidth: number;
   tileHeight: number;
 
@@ -22,6 +22,8 @@ export default class SpriteSheet extends BaseComponent {
   }
 
   onEntityReceived(ent: Entity | null) {
+    ent?.addComponent(this.image);
+
     if (ent && !ent?.hasComponent(Size)) {
       ent.addComponent(
         new Size({ width: this.tileWidth, height: this.tileHeight })
@@ -44,7 +46,7 @@ export default class SpriteSheet extends BaseComponent {
     width?: void | number;
     height?: void | number;
   }) {
-    const data = this.image?.data;
+    const data = this.image.data;
     if (data == null) return;
 
     const sourceWidth = this.tileWidth;
@@ -62,7 +64,7 @@ export default class SpriteSheet extends BaseComponent {
       }
     }
 
-    this.image?.drawIntoContext({
+    this.image.drawIntoContext({
       context,
       targetX: x,
       targetY: y,

@@ -1,3 +1,5 @@
+import Animation from "./Animation";
+import AnimationSheet from "./AnimationSheet";
 import Audio from "./Audio";
 import Gamepad from "./Gamepad";
 import Image from "./Image";
@@ -6,8 +8,11 @@ import Position from "./Position";
 import Rectangle from "./Rectangle";
 import Size from "./Size";
 import SpriteSheet from "./SpriteSheet";
+import Timer from "./Timer";
 
 export {
+  Animation,
+  AnimationSheet,
   Audio,
   Gamepad,
   Image,
@@ -16,4 +21,5 @@ export {
   Rectangle,
   Size,
   SpriteSheet,
+  Timer,
 };
