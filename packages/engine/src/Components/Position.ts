@@ -6,8 +6,8 @@ export default class Position extends Component {
   y: number;
 
   constructor(config: Point & ComponentConfig);
-  constructor(point: Point, config: ComponentConfig);
-  constructor(x: number, y: number, config: ComponentConfig);
+  constructor(point: Point, config?: ComponentConfig);
+  constructor(x: number, y: number, config?: ComponentConfig);
   constructor(...args: Array<any>) {
     let x, y, config;
 
