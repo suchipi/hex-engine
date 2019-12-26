@@ -33,7 +33,7 @@ class CameraControlBehaviour extends ecs.Component {
   update(delta: number) {
     if (this.killInputFor > 0) {
       this.killInputFor -= delta;
-      return;
+      if (this.killInputFor > 0) return;
     }
 
     const keyboard = this.getComponent(ecs.Components.Keyboard)!;

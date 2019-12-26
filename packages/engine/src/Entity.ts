@@ -18,7 +18,7 @@ export default class Entity {
   disable() {
     this.isEnabled = false;
 
-    for (const [, component] of this.components) {
+    for (const component of this.components.values()) {
       component.disable();
     }
 
@@ -30,7 +30,7 @@ export default class Entity {
   enable() {
     this.isEnabled = true;
 
-    for (const [, component] of this.components) {
+    for (const component of this.components.values()) {
       component.enable();
     }
 
@@ -42,7 +42,7 @@ export default class Entity {
   update(delta: number) {
     if (!this.isEnabled) return;
 
-    for (const [, component] of this.components) {
+    for (const component of this.components.values()) {
       component.update(delta);
     }
 
@@ -60,7 +60,7 @@ export default class Entity {
   }) {
     if (!this.isEnabled) return;
 
-    for (const [, component] of this.components) {
+    for (const component of this.components.values()) {
       component.draw({
         canvas,
         context,
@@ -91,7 +91,9 @@ export default class Entity {
     component._receiveEntity(this);
     // @ts-ignore
     this.components.set(component.constructor, component);
-    component.enable();
+    if (component.isEnabled) {
+      component.enable();
+    }
   }
   removeComponent(component: ComponentInterface) {
     component.disable();
