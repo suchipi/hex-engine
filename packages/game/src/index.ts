@@ -1,7 +1,10 @@
 import * as ecs from "engine";
 import bouncy from "./bouncy-29x41.png";
+import jump from "./jump.wav";
 
 class PlayerBehaviour extends ecs.Component {
+  entity!: Player | null;
+
   update(delta: number) {
     const keyboard = this.getComponent(ecs.Components.Keyboard)!;
     const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
@@ -9,6 +12,13 @@ class PlayerBehaviour extends ecs.Component {
 
     const position = this.getComponent(ecs.Components.Position)!;
     position.point = position.point.add(vector.toPoint()).round();
+
+    if (keyboard.pressed.has(" ")) {
+      const entity = this.entity;
+      if (entity) {
+        entity.jumpSound.play();
+      }
+    }
   }
 
   draw({
@@ -31,18 +41,31 @@ class PlayerBehaviour extends ecs.Component {
   }
 }
 
-const player = new ecs.Entity(
-  new ecs.Components.Keyboard(),
-  new ecs.Components.Position(0, 0, {
-    origin: new ecs.Point(29 / 2, 41 / 2),
-  }),
-  new ecs.Components.SpriteSheet({
-    url: bouncy,
-    tileWidth: 29,
-    tileHeight: 41,
-  }),
-  new PlayerBehaviour()
-);
+class Player extends ecs.Entity {
+  jumpSound: ecs.Components.Audio;
+
+  constructor() {
+    const jumpSound = new ecs.Components.Audio({ url: jump });
+
+    super(
+      new ecs.Components.Keyboard(),
+      new ecs.Components.Position(0, 0, {
+        origin: new ecs.Point(29 / 2, 41 / 2),
+      }),
+      new ecs.Components.SpriteSheet({
+        url: bouncy,
+        tileWidth: 29,
+        tileHeight: 41,
+      }),
+      new PlayerBehaviour(),
+      jumpSound
+    );
+
+    this.jumpSound = jumpSound;
+  }
+}
+
+const player = new Player();
 
 class StageRenderer extends ecs.Component {
   draw({
