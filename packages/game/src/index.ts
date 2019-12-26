@@ -2,12 +2,6 @@ import * as ecs from "engine";
 import bouncy from "./bouncy-29x41.png";
 
 class PlayerBehaviour extends ecs.Component {
-  onEnabled() {
-    const image = this.getComponent(ecs.Components.Image)!;
-
-    image.load().catch(console.error.bind(console));
-  }
-
   update(delta: number) {
     const keyboard = this.getComponent(ecs.Components.Keyboard)!;
     const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
@@ -23,19 +17,14 @@ class PlayerBehaviour extends ecs.Component {
     context: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
   }) {
-    const image = this.getComponent(ecs.Components.Image)!;
+    const sheet = this.getComponent(ecs.Components.SpriteSheet)!;
     const position = this.getComponent(ecs.Components.Position)!;
 
-    image.drawIntoContext({
+    sheet.drawSpriteIntoContext({
       context,
-      targetX: Math.round(position.point.x),
-      targetY: Math.round(position.point.y),
-      sourceX: 0,
-      sourceY: 0,
-      sourceWidth: 29,
-      sourceHeight: 41,
-      targetWidth: 29,
-      targetHeight: 41,
+      x: Math.round(position.point.x),
+      y: Math.round(position.point.y),
+      tileIndex: 1,
     });
   }
 }
@@ -46,7 +35,11 @@ class Player extends ecs.Entity {
       ...components,
       new ecs.Components.Keyboard(),
       new ecs.Components.Position(0, 0),
-      new ecs.Components.Image({ url: bouncy }),
+      new ecs.Components.SpriteSheet({
+        url: bouncy,
+        tileWidth: 29,
+        tileHeight: 41,
+      }),
       new PlayerBehaviour()
     );
   }
