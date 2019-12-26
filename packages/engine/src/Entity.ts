@@ -3,13 +3,13 @@ import { ComponentInterface } from "./Component";
 type Instantiable = { new (...args: Array<any>): any };
 
 export default class Entity {
-  components: Map<Instantiable, ComponentInterface>;
+  components: Set<ComponentInterface>;
   children: Set<Entity> = new Set();
   parent: Entity | null = null;
   isEnabled: boolean;
 
   constructor(...components: Array<ComponentInterface>) {
-    this.components = new Map();
+    this.components = new Set();
     this.isEnabled = false;
     for (const component of components) {
       this.addComponent(component);
@@ -17,10 +17,20 @@ export default class Entity {
     this.enable();
   }
 
+  _componentsByClass(): Map<Instantiable, ComponentInterface> {
+    // @ts-ignore
+    return new Map(
+      [...this.components].map((component) => [
+        component.constructor,
+        component,
+      ])
+    );
+  }
+
   disable() {
     this.isEnabled = false;
 
-    for (const component of this.components.values()) {
+    for (const component of this.components) {
       component.disable();
     }
 
@@ -32,7 +42,7 @@ export default class Entity {
   enable() {
     this.isEnabled = true;
 
-    for (const component of this.components.values()) {
+    for (const component of this.components) {
       component.enable();
     }
 
@@ -44,7 +54,7 @@ export default class Entity {
   update(delta: number) {
     if (!this.isEnabled) return;
 
-    for (const component of this.components.values()) {
+    for (const component of this.components) {
       component.update(delta);
     }
 
@@ -62,7 +72,7 @@ export default class Entity {
   }) {
     if (!this.isEnabled) return;
 
-    for (const component of this.components.values()) {
+    for (const component of this.components) {
       component.draw({
         canvas,
         context,
@@ -92,7 +102,7 @@ export default class Entity {
   addComponent(component: ComponentInterface) {
     component._receiveEntity(this);
     // @ts-ignore
-    this.components.set(component.constructor, component);
+    this.components.add(component);
     if (this.isEnabled && component.isEnabled) {
       component.enable();
     }
@@ -127,14 +137,14 @@ export default class Entity {
       // @ts-ignore
       this.components.has(componentOrComponentClass) ||
       // @ts-ignore
-      new Set(this.components.values()).has(componentOrComponentClass)
+      new Set(this._componentsByClass().keys()).has(componentOrComponentClass)
     );
   }
 
   getComponent<SomeClass extends Instantiable>(
     componentClass: SomeClass
   ): InstanceType<SomeClass> | null {
-    const maybeComponent = this.components.get(componentClass);
+    const maybeComponent = this._componentsByClass().get(componentClass);
     // @ts-ignore
     return maybeComponent ?? null;
   }
