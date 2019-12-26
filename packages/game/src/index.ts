@@ -26,7 +26,7 @@ class CameraControlBehaviour extends ecs.Component {
     const camera = this.getComponent(ecs.Canvas.Camera)!;
 
     const position = camera.position;
-    camera.position = position.point.add(vector.toPoint());
+    camera.position = position.add(vector.toPoint());
   }
 }
 
