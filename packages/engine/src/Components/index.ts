@@ -2,28 +2,14 @@ import Gamepad from "./Gamepad";
 import Keyboard from "./Keyboard";
 import Position from "./Position";
 import Rectangle from "./Rectangle";
+import Component, { ComponentConfig, ComponentInterface } from "./Component";
 
-const Components = {
-  gamepad: Gamepad,
-  keyboard: Keyboard,
-  position: Position,
-  rectangle: Rectangle,
+export {
+  Gamepad,
+  Keyboard,
+  Position,
+  Rectangle,
+  Component,
+  ComponentConfig,
+  ComponentInterface,
 };
-
-export default Components;
-
-export type ComponentsClassMap = typeof Components;
-
-export type ComponentsDataMap = {
-  [ComponentName in keyof ComponentsClassMap]: ReturnType<
-    InstanceType<ComponentsClassMap[ComponentName]>["defaults"]
-  >;
-};
-
-export type ComponentsInstanceMap = {
-  [ComponentName in keyof ComponentsClassMap]: InstanceType<
-    ComponentsClassMap[ComponentName]
-  >;
-};
-
-export type ComponentName = keyof ComponentsClassMap;

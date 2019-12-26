@@ -1,14 +1,19 @@
-import { Entity, Canvas } from "engine";
+import {
+  Entity,
+  Canvas,
+  Keyboard,
+  Component,
+  Position,
+  Rectangle,
+} from "engine";
 
 class KeyboardLogger extends Entity {
-  defaults() {
-    return {
-      keyboard: true,
-    };
+  constructor(...components: Array<Component>) {
+    super(...components, new Keyboard());
   }
 
   update() {
-    const keyboard = this.getComponent("keyboard");
+    const keyboard = this.getComponent(Keyboard);
     if (!keyboard) {
       return;
     }
@@ -16,17 +21,7 @@ class KeyboardLogger extends Entity {
   }
 }
 
-const rect = new Entity({
-  position: {
-    x: 0,
-    y: 0,
-  },
-  rectangle: {
-    color: "blue",
-    height: 100,
-    width: 100,
-  },
-});
+const rect = new Entity(new Position(0, 0), new Rectangle(100, 100, "red"));
 
 const logger = new KeyboardLogger();
 

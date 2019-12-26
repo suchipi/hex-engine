@@ -1,26 +1,23 @@
 import Component from "./Component";
 import { Vector, makeVector, makeAngle } from "../Models";
-import Entity from "../Entity";
 
-export default class Keyboard extends Component<{}> {
+export default class Keyboard extends Component {
   pressed: Set<string> = new Set();
 
-  constructor(entity: Entity, data?: {}) {
-    super(entity, data);
-
-    this.bindListeners();
+  onEnabled() {
+    this._bindListeners();
   }
 
-  defaults() {
-    return {};
+  onDisabled() {
+    this._unbindListeners();
   }
 
-  bindListeners() {
+  private _bindListeners() {
     document.addEventListener("keydown", this._processKeydown);
     document.addEventListener("keyup", this._processKeyup);
   }
 
-  unbindListeners() {
+  private _unbindListeners() {
     document.removeEventListener("keydown", this._processKeydown);
     document.removeEventListener("keyup", this._processKeyup);
   }

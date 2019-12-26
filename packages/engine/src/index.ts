@@ -4,4 +4,5 @@ import Canvas from "./Canvas";
 
 export { Entity, Scene, Canvas };
 
+export * from "./Components";
 export * from "./Models";

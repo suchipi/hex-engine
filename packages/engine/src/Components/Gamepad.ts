@@ -1,4 +1,4 @@
-import Component from "./Component";
+import Component, { ComponentConfig } from "./Component";
 import {
   Vector,
   makeVector,
@@ -12,53 +12,62 @@ type Data = {
   buttonNames: Array<string>;
 };
 
-export default class Gamepad extends Component<Data> {
+function getDefaults() {
+  return {
+    deadzone: 0.1,
+    buttonNames: [
+      "cross",
+      "circle",
+      "square",
+      "triangle",
+      "l1",
+      "r1",
+      "l2",
+      "r2",
+      "select",
+      "start",
+      "l3",
+      "r3",
+      "up",
+      "down",
+      "left",
+      "right",
+      "home",
+    ],
+  };
+}
+
+export default class Gamepad extends Component {
   leftStick: Vector = makeVector(makeAngle(0), 0);
   rightStick: Vector = makeVector(makeAngle(0), 0);
   pressed: Set<string> = new Set();
   present: boolean = false;
+  deadzone: number;
+  buttonNames: Array<string>;
 
-  defaults() {
-    return {
-      deadzone: 0.1,
-      buttonNames: [
-        "cross",
-        "circle",
-        "square",
-        "triangle",
-        "l1",
-        "r1",
-        "l2",
-        "r2",
-        "select",
-        "start",
-        "l3",
-        "r3",
-        "up",
-        "down",
-        "left",
-        "right",
-        "home",
-      ],
-    };
+  constructor(data: Partial<Data & ComponentConfig>) {
+    super(data);
+    const defaults = getDefaults();
+    this.deadzone = data.deadzone ?? defaults.deadzone;
+    this.buttonNames = data.buttonNames ?? defaults.buttonNames;
   }
 
-  _stickToVector(x: number, y: number) {
+  private _stickToVector(x: number, y: number) {
     const origin = makePoint(0, 0);
     // Invert y component because gamepad
     // sticks are normal polar coordinate system
     const target = makePoint(x, -y);
 
     const vector = pointsToVector(origin, target);
-    if (Math.abs(vector.magnitude) < this.data.deadzone) {
+    if (Math.abs(vector.magnitude) < this.deadzone) {
       vector.magnitude = 0;
     }
 
     return vector;
   }
 
-  _buttonName(index: number): string {
-    return this.data.buttonNames[index] || "unknown button";
+  private _buttonName(index: number): string {
+    return this.buttonNames[index] || "unknown button";
   }
 
   update() {
