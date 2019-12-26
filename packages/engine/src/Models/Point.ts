@@ -24,4 +24,8 @@ export default class Point {
       Math.pow(other.x - this.x, 2) + Math.pow(other.y - this.y, 2)
     );
   }
+
+  round(): Point {
+    return new Point(Math.round(this.x), Math.round(this.y));
+  }
 }

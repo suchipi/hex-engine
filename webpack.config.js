@@ -15,6 +15,14 @@ module.exports = {
           require("./babel.config")
         ),
       },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        use: [
+          {
+            loader: "file-loader",
+          },
+        ],
+      },
     ],
   },
   plugins: [new HtmlWebpackPlugin()],

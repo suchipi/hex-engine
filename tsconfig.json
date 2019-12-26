@@ -1,5 +1,5 @@
 {
-  "include": ["./packages"],
+  "include": ["./packages", "./ts-webpack.ts"],
   "exclude": ["./packages/**/*.test.ts"],
 
   "compilerOptions": {

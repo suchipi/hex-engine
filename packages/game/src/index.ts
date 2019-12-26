@@ -1,13 +1,42 @@
 import * as ecs from "engine";
+import bouncy from "./bouncy-29x41.png";
 
 class PlayerBehaviour extends ecs.Component {
+  onEnabled() {
+    const image = this.getComponent(ecs.Components.Image)!;
+
+    image.load().catch(console.error.bind(console));
+  }
+
   update(delta: number) {
     const keyboard = this.getComponent(ecs.Components.Keyboard)!;
     const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
     vector.magnitude *= delta * 0.1;
 
     const position = this.getComponent(ecs.Components.Position)!;
-    position.point = position.point.add(vector.toPoint());
+    position.point = position.point.add(vector.toPoint()).round();
+  }
+
+  draw({
+    context,
+  }: {
+    context: CanvasRenderingContext2D;
+    canvas: HTMLCanvasElement;
+  }) {
+    const image = this.getComponent(ecs.Components.Image)!;
+    const position = this.getComponent(ecs.Components.Position)!;
+
+    image.drawIntoContext({
+      context,
+      targetX: Math.round(position.point.x),
+      targetY: Math.round(position.point.y),
+      sourceX: 0,
+      sourceY: 0,
+      sourceWidth: 29,
+      sourceHeight: 41,
+      targetWidth: 29,
+      targetHeight: 41,
+    });
   }
 }
 
@@ -17,7 +46,7 @@ class Player extends ecs.Entity {
       ...components,
       new ecs.Components.Keyboard(),
       new ecs.Components.Position(0, 0),
-      new ecs.Components.Rectangle(100, 100, "red"),
+      new ecs.Components.Image({ url: bouncy }),
       new PlayerBehaviour()
     );
   }
@@ -45,7 +74,7 @@ class CameraControlBehaviour extends ecs.Component {
 
     const position = camera.position;
     const newPosition = position.add(vector.toPoint());
-    camera.position = newPosition;
+    camera.position = newPosition.round();
 
     if (keyboard.pressed.has("u")) {
       camera.rotation = camera.rotation.add(delta * 0.005);
