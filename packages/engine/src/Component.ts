@@ -1,4 +1,4 @@
-import Entity from "../Entity";
+import Entity from "./Entity";
 
 type Instantiable = { new (...args: Array<any>): any };
 
@@ -30,7 +30,7 @@ export type ComponentConfig = {
   isEnabled: boolean;
 };
 
-export default class Component implements ComponentInterface {
+export default class BaseComponent implements ComponentInterface {
   entity: Entity | null = null;
   isEnabled: boolean;
 

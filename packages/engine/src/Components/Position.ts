@@ -1,9 +1,8 @@
-import Component, { ComponentConfig } from "./Component";
+import BaseComponent, { ComponentConfig } from "../Component";
 import { Point } from "../Models";
 
-export default class Position extends Component {
-  x: number;
-  y: number;
+export default class Position extends BaseComponent {
+  point: Point;
 
   constructor(config: Point & ComponentConfig);
   constructor(point: Point, config?: ComponentConfig);
@@ -25,7 +24,6 @@ export default class Position extends Component {
     config = config ?? {};
 
     super(config);
-    this.x = x;
-    this.y = y;
+    this.point = new Point(x, y);
   }
 }

@@ -1,28 +1,26 @@
-import { Point, makePoint, distance } from "./Point";
-import { Angle, pointsToAngle } from "./Angle";
+import Point from "./Point";
+import Angle from "./Angle";
 
-export type Vector = {
+export default class Vector {
   angle: Angle;
   magnitude: number;
-};
 
-export function makeVector(angle: Angle, magnitude: number): Vector {
-  return {
-    angle,
-    magnitude,
-  };
-}
+  constructor(angle: Angle, magnitude: number) {
+    this.angle = angle;
+    this.magnitude = magnitude;
+  }
 
-// Place a vector at the origin, and return the location of its head.
-export function vectorToPoint(vector: Vector): Point {
-  const x = vector.magnitude * Math.cos(vector.angle.radians);
-  const y = vector.magnitude * Math.sin(vector.angle.radians);
-  return makePoint(x, y);
-}
+  // Create a vector with tail at `first` and head at `second`.
+  static fromPoints(first: Point, second: Point): Vector {
+    const angle = Angle.fromPoints(first, second);
+    const magnitude = first.distanceTo(second);
+    return new Vector(angle, magnitude);
+  }
 
-// Create a vector with tail at `first` and head at `second`.
-export function pointsToVector(first: Point, second: Point): Vector {
-  const angle = pointsToAngle(first, second);
-  const magnitude = distance(first, second);
-  return makeVector(angle, magnitude);
+  // Place a vector at the origin, and return the location of its head.
+  toPoint(): Point {
+    const x = this.magnitude * Math.cos(this.angle.radians);
+    const y = this.magnitude * Math.sin(this.angle.radians);
+    return new Point(x, y);
+  }
 }

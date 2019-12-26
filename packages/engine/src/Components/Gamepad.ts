@@ -1,11 +1,5 @@
-import Component, { ComponentConfig } from "./Component";
-import {
-  Vector,
-  makeVector,
-  makePoint,
-  pointsToVector,
-  makeAngle,
-} from "../Models";
+import BaseComponent, { ComponentConfig } from "../Component";
+import { Vector, Point, Angle } from "../Models";
 
 type Data = {
   deadzone: number;
@@ -37,9 +31,9 @@ function getDefaults() {
   };
 }
 
-export default class Gamepad extends Component {
-  leftStick: Vector = makeVector(makeAngle(0), 0);
-  rightStick: Vector = makeVector(makeAngle(0), 0);
+export default class Gamepad extends BaseComponent {
+  leftStick: Vector = new Vector(new Angle(0), 0);
+  rightStick: Vector = new Vector(new Angle(0), 0);
   pressed: Set<string> = new Set();
   present: boolean = false;
   deadzone: number;
@@ -53,12 +47,12 @@ export default class Gamepad extends Component {
   }
 
   private _stickToVector(x: number, y: number) {
-    const origin = makePoint(0, 0);
+    const origin = new Point(0, 0);
     // Invert y component because gamepad
     // sticks are normal polar coordinate system
-    const target = makePoint(x, -y);
+    const target = new Point(x, -y);
 
-    const vector = pointsToVector(origin, target);
+    const vector = Vector.fromPoints(origin, target);
     if (Math.abs(vector.magnitude) < this.deadzone) {
       vector.magnitude = 0;
     }

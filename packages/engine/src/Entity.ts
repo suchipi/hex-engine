@@ -1,4 +1,4 @@
-import { ComponentInterface } from "./Components";
+import { ComponentInterface } from "./Component";
 
 type Instantiable = { new (...args: Array<any>): any };
 
@@ -100,5 +100,13 @@ export default class Entity {
     const maybeComponent = this.components.get(componentClass);
     // @ts-ignore
     return maybeComponent ?? null;
+  }
+
+  findRootUpwards(): Entity {
+    let ent: Entity = this;
+    while (ent.parent) {
+      ent = ent.parent;
+    }
+    return ent;
   }
 }

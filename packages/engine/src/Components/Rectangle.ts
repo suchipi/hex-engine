@@ -1,7 +1,7 @@
-import Component, { ComponentConfig } from "./Component";
+import BaseComponent, { ComponentConfig } from "../Component";
 import Position from "./Position";
 
-export default class Rectangle extends Component {
+export default class Rectangle extends BaseComponent {
   width: number;
   height: number;
   color: string;
@@ -49,7 +49,7 @@ export default class Rectangle extends Component {
   }): void {
     const position = this.getComponent(Position);
     if (!position) return;
-    const { x, y } = position;
+    const { x, y } = position.point;
     const { width, height, color } = this;
 
     context.fillStyle = color;

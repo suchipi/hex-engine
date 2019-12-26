@@ -1,7 +1,7 @@
-import Component from "./Component";
-import { Vector, makeVector, makeAngle } from "../Models";
+import BaseComponent from "../Component";
+import { Vector, Angle } from "../Models";
 
-export default class Keyboard extends Component {
+export default class Keyboard extends BaseComponent {
   pressed: Set<string> = new Set();
 
   onEnabled() {
@@ -78,6 +78,6 @@ export default class Keyboard extends Component {
       magnitude = 0;
     }
 
-    return makeVector(makeAngle(angle), magnitude);
+    return new Vector(new Angle(angle), magnitude);
   }
 }

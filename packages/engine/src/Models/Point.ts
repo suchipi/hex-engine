@@ -1,33 +1,27 @@
-export type Point = {
+export default class Point {
   x: number;
   y: number;
-};
 
-export function makePoint(x: number, y: number): Point {
-  return { x, y };
-}
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
 
-export function addPoint(first: Point, second: Point): Point {
-  return {
-    x: first.x + second.x,
-    y: first.y + second.y,
-  };
-}
+  add(other: Point): Point {
+    return new Point(this.x + other.x, this.y + other.y);
+  }
 
-export function subtractPoint(first: Point, second: Point): Point {
-  return {
-    x: first.x - second.x,
-    y: first.y - second.y,
-  };
-}
+  subtract(other: Point): Point {
+    return new Point(this.x - other.x, this.y - other.y);
+  }
 
-export function equalsPoint(first: Point, second: Point): boolean {
-  return first.x === second.x && first.y === second.y;
-}
+  equals(other: Point): boolean {
+    return this.x === other.x && this.y === other.y;
+  }
 
-// Calculate the distance between two points.
-export function distance(first: Point, second: Point): number {
-  return Math.sqrt(
-    Math.pow(second.x - first.x, 2) + Math.pow(second.y - first.y, 2)
-  );
+  distanceTo(other: Point): number {
+    return Math.sqrt(
+      Math.pow(other.x - this.x, 2) + Math.pow(other.y - this.y, 2)
+    );
+  }
 }

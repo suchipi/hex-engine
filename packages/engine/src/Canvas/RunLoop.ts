@@ -1,14 +1,20 @@
-export default class RunLoop {
+import BaseComponent, { ComponentConfig } from "../Component";
+
+type Data = {
+  onFrame: (delta: number) => void;
+};
+
+export default class RunLoop extends BaseComponent {
   onFrame: (delta: number) => void;
   frameRequest: number | null = null;
-  running: boolean = false;
   lastTimestamp: number | null = null;
 
-  constructor(onFrame: (delta: number) => void) {
-    this.onFrame = onFrame;
+  constructor(data: Data & Partial<ComponentConfig>) {
+    super(data);
+    this.onFrame = data.onFrame;
   }
 
-  start() {
+  onEnabled() {
     const tick = (timestamp: number) => {
       if (this.lastTimestamp) {
         const delta = timestamp - this.lastTimestamp;
@@ -20,13 +26,11 @@ export default class RunLoop {
       this.frameRequest = requestAnimationFrame(tick);
     };
     this.frameRequest = requestAnimationFrame(tick);
-    this.running = true;
   }
 
-  stop() {
+  onDisabled() {
     if (this.frameRequest != null) {
       cancelAnimationFrame(this.frameRequest);
     }
-    this.running = false;
   }
 }
