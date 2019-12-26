@@ -6,13 +6,15 @@ export default class Entity {
   components: Map<Instantiable, ComponentInterface>;
   children: Set<Entity> = new Set();
   parent: Entity | null = null;
-  isEnabled: boolean = true;
+  isEnabled: boolean;
 
   constructor(...components: Array<ComponentInterface>) {
     this.components = new Map();
+    this.isEnabled = false;
     for (const component of components) {
       this.addComponent(component);
     }
+    this.enable();
   }
 
   disable() {
@@ -91,15 +93,42 @@ export default class Entity {
     component._receiveEntity(this);
     // @ts-ignore
     this.components.set(component.constructor, component);
-    if (component.isEnabled) {
+    if (this.isEnabled && component.isEnabled) {
       component.enable();
     }
   }
-  removeComponent(component: ComponentInterface) {
+
+  removeComponent(
+    componentOrComponentClass:
+      | ComponentInterface
+      | { new (...args: any[]): ComponentInterface }
+  ) {
+    let component: ComponentInterface;
+    if ({}.hasOwnProperty.call(componentOrComponentClass, "entity")) {
+      component = componentOrComponentClass as ComponentInterface;
+    } else {
+      // @ts-ignore
+      component = this.getComponent(componentOrComponentClass);
+    }
+    if (!component) return;
+
     component.disable();
     // @ts-ignore
     this.components.delete(component.constructor);
     component._receiveEntity(null);
+  }
+
+  hasComponent(
+    componentOrComponentClass:
+      | ComponentInterface
+      | { new (...args: any[]): ComponentInterface }
+  ) {
+    return (
+      // @ts-ignore
+      this.components.has(componentOrComponentClass) ||
+      // @ts-ignore
+      new Set(this.components.values()).has(componentOrComponentClass)
+    );
   }
 
   getComponent<SomeClass extends Instantiable>(

@@ -7,6 +7,7 @@ export interface ComponentInterface {
   isEnabled: boolean;
 
   _receiveEntity(entity: Entity | null): void;
+  onEntityReceived(entity: Entity | null): void;
 
   enable(): void;
   disable(): void;
@@ -38,8 +39,9 @@ export default class BaseComponent implements ComponentInterface {
     this.isEnabled = config.isEnabled ?? true;
   }
 
-  _receiveEntity(entity: Entity) {
+  _receiveEntity(entity: Entity | null) {
     this.entity = entity;
+    this.onEntityReceived(entity);
   }
 
   enable() {
@@ -51,6 +53,8 @@ export default class BaseComponent implements ComponentInterface {
     this.isEnabled = false;
     this.onDisabled();
   }
+
+  onEntityReceived(_entity: Entity | null): void {}
 
   onEnabled(): void {}
 

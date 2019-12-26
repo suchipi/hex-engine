@@ -1,5 +1,7 @@
 import BaseComponent, { ComponentConfig } from "../Component";
 import Image from "./Image";
+import Size from "./Size";
+import Entity from "../Entity";
 
 type Data = {
   url: string;
@@ -17,6 +19,14 @@ export default class SpriteSheet extends BaseComponent {
     this.image = new Image(config);
     this.tileWidth = config.tileWidth;
     this.tileHeight = config.tileHeight;
+  }
+
+  onEntityReceived(ent: Entity | null) {
+    if (ent && !ent?.hasComponent(Size)) {
+      ent.addComponent(
+        new Size({ width: this.tileWidth, height: this.tileHeight })
+      );
+    }
   }
 
   onEnabled() {

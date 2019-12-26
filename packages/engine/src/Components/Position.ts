@@ -1,11 +1,16 @@
 import BaseComponent, { ComponentConfig } from "../Component";
 import { Point } from "../Models";
 
+type PointLike = {
+  x: number;
+  y: number;
+};
+
 export default class Position extends BaseComponent {
   point: Point;
 
-  constructor(config: Point & ComponentConfig);
-  constructor(point: Point, config?: ComponentConfig);
+  constructor(config: PointLike & ComponentConfig);
+  constructor(point: PointLike, config?: ComponentConfig);
   constructor(x: number, y: number, config?: ComponentConfig);
   constructor(...args: Array<any>) {
     let x, y, config;

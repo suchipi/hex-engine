@@ -15,6 +15,14 @@ export default class Point {
     return new Point(this.x - other.x, this.y - other.y);
   }
 
+  times(other: Point): Point {
+    return new Point(this.x * other.x, this.y * other.y);
+  }
+
+  dividedBy(other: Point): Point {
+    return new Point(this.x / other.x, this.y / other.y);
+  }
+
   equals(other: Point): boolean {
     return this.x === other.x && this.y === other.y;
   }

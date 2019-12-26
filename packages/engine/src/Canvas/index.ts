@@ -79,7 +79,7 @@ export default class Canvas extends Entity {
       : "pixelated";
   }
 
-  fullscreen({ devicePixelRatio = 1 }: { devicePixelRatio: number }) {
+  fullscreen({ pixelRatio = 1 }: { pixelRatio: number }) {
     Object.assign(document.body.style, {
       margin: 0,
       padding: 0,
@@ -90,8 +90,8 @@ export default class Canvas extends Entity {
       this.resize({
         realWidth: window.innerWidth,
         realHeight: window.innerHeight,
-        pixelWidth: window.innerWidth / devicePixelRatio,
-        pixelHeight: window.innerHeight / devicePixelRatio,
+        pixelWidth: window.innerWidth / pixelRatio,
+        pixelHeight: window.innerHeight / pixelRatio,
       });
     };
     window.addEventListener("resize", fitToWindow);

@@ -29,25 +29,47 @@ class PlayerBehaviour extends ecs.Component {
   }
 }
 
-class Player extends ecs.Entity {
-  constructor(...components: Array<ecs.Component>) {
-    super(
-      ...components,
-      new ecs.Components.Keyboard(),
-      new ecs.Components.Position(0, 0),
-      new ecs.Components.SpriteSheet({
-        url: bouncy,
-        tileWidth: 29,
-        tileHeight: 41,
-      }),
-      new PlayerBehaviour()
+const player = new ecs.Entity(
+  new ecs.Components.Keyboard(),
+  new ecs.Components.Position(0, 0),
+  new ecs.Components.SpriteSheet({
+    url: bouncy,
+    tileWidth: 29,
+    tileHeight: 41,
+  }),
+  new PlayerBehaviour()
+);
+
+class StageRenderer extends ecs.Component {
+  draw({
+    context,
+  }: {
+    context: CanvasRenderingContext2D;
+    canvas: HTMLCanvasElement;
+  }) {
+    const position = this.getComponent(ecs.Components.Position)?.point;
+    if (!position) return;
+    let size = this.getComponent(ecs.Components.Size)?.point;
+    if (!size) size = new ecs.Point(10, 10);
+
+    context.strokeStyle = "black";
+    context.strokeRect(
+      position.x - size.x / 2,
+      position.y - size.y / 2,
+      size.x,
+      size.y
     );
   }
 }
 
-const player = new Player();
+const stage = new ecs.Entity(
+  new ecs.Components.Position(0, 0),
+  new ecs.Components.Size(50, 50),
+  new StageRenderer()
+);
+
 const canvas = new ecs.Canvas();
-canvas.fullscreen({ devicePixelRatio: 2 });
+canvas.fullscreen({ pixelRatio: 3 });
 
 class CameraControlBehaviour extends ecs.Component {
   killInputFor: number = 0;
@@ -58,17 +80,20 @@ class CameraControlBehaviour extends ecs.Component {
       if (this.killInputFor > 0) return;
     }
 
+    const camera = this.getComponent(ecs.Canvas.Camera);
+    if (!camera) return;
+
     const keyboard = this.getComponent(ecs.Components.Keyboard)!;
 
+    // position
     const vector = keyboard.vectorFromKeys("i", "k", "j", "l");
     vector.magnitude *= delta * 0.5;
-
-    const camera = this.getComponent(ecs.Canvas.Camera)!;
 
     const position = camera.position;
     const newPosition = position.add(vector.toPoint());
     camera.position = newPosition.round();
 
+    // rotation
     if (keyboard.pressed.has("u")) {
       camera.rotation = camera.rotation.add(delta * 0.005);
     }
@@ -82,6 +107,7 @@ class CameraControlBehaviour extends ecs.Component {
       this.killInputFor = 100;
     }
 
+    // zoom
     if (keyboard.pressed.has("n")) {
       camera.zoom = camera.zoom + delta * 0.001;
     }
@@ -100,6 +126,7 @@ class CameraControlBehaviour extends ecs.Component {
 canvas.addComponent(new CameraControlBehaviour());
 canvas.addComponent(new ecs.Components.Keyboard());
 
+canvas.addChild(stage);
 canvas.addChild(player);
 
 // @ts-ignore
