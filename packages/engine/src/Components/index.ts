@@ -1,8 +1,8 @@
+import Component, { ComponentConfig, ComponentInterface } from "./Component";
 import Gamepad from "./Gamepad";
 import Keyboard from "./Keyboard";
 import Position from "./Position";
 import Rectangle from "./Rectangle";
-import Component, { ComponentConfig, ComponentInterface } from "./Component";
 
 export {
   Gamepad,

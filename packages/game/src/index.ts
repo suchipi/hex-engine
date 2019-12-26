@@ -7,25 +7,26 @@ import {
   Rectangle,
 } from "engine";
 
-class KeyboardLogger extends Entity {
-  constructor(...components: Array<Component>) {
-    super(...components, new Keyboard());
-  }
-
+class PlayerBehaviour extends Component {
   update() {
-    const keyboard = this.getComponent(Keyboard);
-    if (!keyboard) {
-      return;
-    }
+    let keyboard = this.getComponent(Keyboard);
+    if (!keyboard) return;
+
     console.log(keyboard.pressed);
+  }
+}
+
+class Player extends Entity {
+  constructor(...components: Array<Component>) {
+    super(...components, new Keyboard(), new PlayerBehaviour());
   }
 }
 
 const rect = new Entity(new Position(0, 0), new Rectangle(100, 100, "red"));
 
-const logger = new KeyboardLogger();
+const player = new Player();
 
 const canvas = new Canvas();
 
 canvas.addChild(rect);
-canvas.addChild(logger);
+canvas.addChild(player);

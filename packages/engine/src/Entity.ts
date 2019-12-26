@@ -1,22 +1,54 @@
 import { ComponentInterface } from "./Components";
-import HasChildren from "./HasChildren";
 
 type Instantiable = { new (...args: Array<any>): any };
 
-export default class Entity implements HasChildren<Entity> {
-  _components: Map<Instantiable, ComponentInterface>;
-  _children: Set<Entity> = new Set();
+export default class Entity {
+  components: Map<Instantiable, ComponentInterface>;
+  children: Set<Entity> = new Set();
+  parent: Entity | null = null;
+  isEnabled: boolean = true;
 
   constructor(...components: Array<ComponentInterface>) {
-    this._components = new Map();
+    this.components = new Map();
     for (const component of components) {
       this.addComponent(component);
+      component.enable();
+    }
+  }
+
+  disable() {
+    this.isEnabled = false;
+
+    for (const [, component] of this.components) {
+      component.disable();
+    }
+
+    for (const entity of this.children) {
+      entity.disable();
+    }
+  }
+
+  enable() {
+    this.isEnabled = true;
+
+    for (const [, component] of this.components) {
+      component.enable();
+    }
+
+    for (const entity of this.children) {
+      entity.enable();
     }
   }
 
   update(delta: number) {
-    for (const [, component] of this._components) {
+    if (!this.isEnabled) return;
+
+    for (const [, component] of this.components) {
       component.update(delta);
+    }
+
+    for (const entity of this.children) {
+      entity.update(delta);
     }
   }
 
@@ -27,8 +59,17 @@ export default class Entity implements HasChildren<Entity> {
     canvas: HTMLCanvasElement;
     context: CanvasRenderingContext2D;
   }) {
-    for (const [, component] of this._components) {
+    if (!this.isEnabled) return;
+
+    for (const [, component] of this.components) {
       component.draw({
+        canvas,
+        context,
+      });
+    }
+
+    for (const entity of this.children) {
+      entity.draw({
         canvas,
         context,
       });
@@ -36,26 +77,27 @@ export default class Entity implements HasChildren<Entity> {
   }
 
   hasChild(child: Entity): boolean {
-    return this._children.has(child);
+    return this.children.has(child);
   }
   addChild(child: Entity): void {
-    this._children.add(child);
+    this.children.add(child);
+    child.parent = this;
   }
   removeChild(child: Entity): void {
-    this._children.delete(child);
+    this.children.delete(child);
+    child.parent = null;
   }
 
   addComponent(component: ComponentInterface) {
     // @ts-ignore
-    this._components.set(component.constructor, component);
+    this.components.set(component.constructor, component);
     component._receiveEntity(this);
-    component.enable();
   }
 
   getComponent<SomeClass extends Instantiable>(
     componentClass: SomeClass
   ): InstanceType<SomeClass> | null {
-    const maybeComponent = this._components.get(componentClass);
+    const maybeComponent = this.components.get(componentClass);
     // @ts-ignore
     return maybeComponent ?? null;
   }
