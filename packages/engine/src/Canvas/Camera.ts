@@ -25,7 +25,6 @@ export default class Camera extends BaseComponent {
     context: CanvasRenderingContext2D;
   }) {
     const renderer = this.getComponent(Renderer)!;
-
     renderer.translate(-this.position.x, -this.position.y);
     renderer.scale(this.zoom, this.zoom);
     renderer.rotate(-this.rotation.radians);

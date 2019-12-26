@@ -34,7 +34,7 @@ export default class Renderer extends BaseComponent {
       y = args[1];
     }
 
-    context.transform(x, 0, 0, y, 0, 0);
+    context.scale(x, y);
   }
 
   translate(point: Point): void;
@@ -52,7 +52,7 @@ export default class Renderer extends BaseComponent {
       y = args[1];
     }
 
-    context.transform(0, 0, 0, 0, x, y);
+    context.translate(x, y);
   }
 
   rotate(angle: number | Angle) {
@@ -77,9 +77,13 @@ export default class Renderer extends BaseComponent {
     context.fillStyle = backgroundColor;
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    const children = this.entity ? this.entity.children : [];
+    const entities = [];
+    if (this.entity) {
+      entities.push(this.entity);
+      entities.push(...this.entity.children);
+    }
 
-    for (const entity of children) {
+    for (const entity of entities) {
       entity.draw({ canvas, context });
     }
   }

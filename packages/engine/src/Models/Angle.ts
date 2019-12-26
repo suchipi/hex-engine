@@ -45,4 +45,12 @@ export default class Angle {
     const vector = new Vector(this, 1);
     return vector.toPoint();
   }
+
+  add(amount: number) {
+    return new Angle(this.radians + amount);
+  }
+
+  subtract(amount: number) {
+    return new Angle(this.radians - amount);
+  }
 }

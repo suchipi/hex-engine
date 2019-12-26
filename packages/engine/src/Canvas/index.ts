@@ -16,6 +16,8 @@ export default class Canvas extends Entity {
   static Time = Time;
   static RunLoop = RunLoop;
 
+  element: HTMLCanvasElement;
+
   constructor(config: Partial<Data> = {}) {
     const backgroundColor = config.backgroundColor ?? "white";
 
@@ -50,5 +52,49 @@ export default class Canvas extends Entity {
         },
       })
     );
+
+    this.element = canvas;
+  }
+
+  resize({
+    realWidth,
+    realHeight,
+    pixelWidth,
+    pixelHeight,
+  }: {
+    realWidth: number;
+    realHeight: number;
+    pixelWidth: number;
+    pixelHeight: number;
+  }): void {
+    const canvas = this.element;
+
+    canvas.width = pixelWidth;
+    canvas.height = pixelHeight;
+    canvas.style.width = realWidth + "px";
+    canvas.style.height = realHeight + "px";
+
+    canvas.style.imageRendering = navigator.userAgent.match(/firefox/i)
+      ? "-moz-crisp-edges"
+      : "pixelated";
+  }
+
+  fullscreen({ devicePixelRatio = 1 }: { devicePixelRatio: number }) {
+    Object.assign(document.body.style, {
+      margin: 0,
+      padding: 0,
+      overflow: "hidden",
+    });
+
+    const fitToWindow = () => {
+      this.resize({
+        realWidth: window.innerWidth,
+        realHeight: window.innerHeight,
+        pixelWidth: window.innerWidth / devicePixelRatio,
+        pixelHeight: window.innerHeight / devicePixelRatio,
+      });
+    };
+    window.addEventListener("resize", fitToWindow);
+    fitToWindow();
   }
 }

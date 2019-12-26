@@ -6,7 +6,7 @@ export interface ComponentInterface {
   entity: Entity | null;
   isEnabled: boolean;
 
-  _receiveEntity(entity: Entity): void;
+  _receiveEntity(entity: Entity | null): void;
 
   enable(): void;
   disable(): void;

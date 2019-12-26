@@ -12,7 +12,6 @@ export default class Entity {
     this.components = new Map();
     for (const component of components) {
       this.addComponent(component);
-      component.enable();
     }
   }
 
@@ -89,9 +88,16 @@ export default class Entity {
   }
 
   addComponent(component: ComponentInterface) {
+    component._receiveEntity(this);
     // @ts-ignore
     this.components.set(component.constructor, component);
-    component._receiveEntity(this);
+    component.enable();
+  }
+  removeComponent(component: ComponentInterface) {
+    component.disable();
+    // @ts-ignore
+    this.components.delete(component.constructor);
+    component._receiveEntity(null);
   }
 
   getComponent<SomeClass extends Instantiable>(
