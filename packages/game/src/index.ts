@@ -20,10 +20,12 @@ class PlayerBehaviour extends ecs.Component {
     const sheet = this.getComponent(ecs.Components.SpriteSheet)!;
     const position = this.getComponent(ecs.Components.Position)!;
 
+    const target = position.drawPoint();
+
     sheet.drawSpriteIntoContext({
       context,
-      x: Math.round(position.point.x),
-      y: Math.round(position.point.y),
+      x: target.x,
+      y: target.y,
       tileIndex: 1,
     });
   }
@@ -31,7 +33,9 @@ class PlayerBehaviour extends ecs.Component {
 
 const player = new ecs.Entity(
   new ecs.Components.Keyboard(),
-  new ecs.Components.Position(0, 0),
+  new ecs.Components.Position(0, 0, {
+    origin: new ecs.Point(29 / 2, 41 / 2),
+  }),
   new ecs.Components.SpriteSheet({
     url: bouncy,
     tileWidth: 29,
