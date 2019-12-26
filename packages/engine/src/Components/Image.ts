@@ -1,9 +1,11 @@
 import BaseComponent, { ComponentConfig } from "../Component";
+import Preloader from "../Preloader";
 
 const cache: { [url: string]: Image } = {};
 
 export default class Image extends BaseComponent {
   url: string;
+  _loadingPromise: Promise<void> | null = null;
   loaded: boolean = false;
   data: HTMLImageElement | null = null;
 
@@ -14,12 +16,15 @@ export default class Image extends BaseComponent {
     if (cache[config.url]) {
       return cache[config.url];
     }
+
+    Preloader.addTask(() => this.load());
   }
 
   load(): Promise<void> {
     if (this.loaded) return Promise.resolve();
+    if (this._loadingPromise) return this._loadingPromise;
 
-    return new Promise((resolve, reject) => {
+    this._loadingPromise = new Promise((resolve, reject) => {
       const image = document.createElement("img");
       image.onload = () => {
         this.loaded = true;
@@ -35,7 +40,11 @@ export default class Image extends BaseComponent {
       };
 
       image.src = this.url;
+    }).then(() => {
+      this._loadingPromise = null;
     });
+
+    return this._loadingPromise;
   }
 
   drawIntoContext({

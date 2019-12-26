@@ -133,3 +133,10 @@ canvas.addChild(player);
 window.ecs = ecs;
 // @ts-ignore
 window.canvas = canvas;
+
+console.log("loading...");
+canvas.element.style.display = "none";
+ecs.Preloader.load().then(() => {
+  canvas.element.style.display = "";
+  console.log("loaded");
+});

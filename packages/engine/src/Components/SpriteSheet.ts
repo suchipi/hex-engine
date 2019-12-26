@@ -16,7 +16,7 @@ export default class SpriteSheet extends BaseComponent {
 
   constructor(config: Partial<ComponentConfig> & Data) {
     super(config);
-    this.image = new Image(config);
+    this.image = new Image({ url: config.url });
     this.tileWidth = config.tileWidth;
     this.tileHeight = config.tileHeight;
   }
@@ -27,10 +27,6 @@ export default class SpriteSheet extends BaseComponent {
         new Size({ width: this.tileWidth, height: this.tileHeight })
       );
     }
-  }
-
-  onEnabled() {
-    this.image?.load();
   }
 
   drawSpriteIntoContext({
