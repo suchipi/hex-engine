@@ -28,15 +28,15 @@ const player = new ecs.Entity(
     },
   }),
   new ecs.Components.BasicRenderer(),
-  ecs.simpleComponent({
-    update({ delta, getComponent }) {
+  ecs.dslComponent(({ update, getComponent }) => {
+    update((delta) => {
       const keyboard = getComponent(ecs.Components.Keyboard)!;
       const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
       vector.magnitude *= delta * 0.1;
 
       const position = getComponent(ecs.Components.Position)!;
       position.point = position.point.add(vector.toPoint()).round();
-    },
+    });
   }),
   ecs.dslComponent(({ getEntity, onEntityReceived, onEnabled, onDisabled }) => {
     const jumpSound = new ecs.Components.Audio({ url: jump });
@@ -64,8 +64,8 @@ const player = new ecs.Entity(
 const stage = new ecs.Entity(
   new ecs.Components.Position(0, 0),
   new ecs.Components.Size(50, 50),
-  ecs.simpleComponent({
-    draw({ context, getComponent }) {
+  ecs.dslComponent(({ draw, getComponent }) => {
+    draw(({ context }) => {
       const position = getComponent(ecs.Components.Position)?.point;
       if (!position) return;
       let size = getComponent(ecs.Components.Size)?.point;
@@ -78,7 +78,7 @@ const stage = new ecs.Entity(
         size.x,
         size.y
       );
-    },
+    });
   })
 );
 
