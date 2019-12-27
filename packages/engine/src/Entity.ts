@@ -1,12 +1,14 @@
+import mitt from "mitt";
 import { ComponentInterface } from "./Component";
 
 type Instantiable = { new (...args: Array<any>): any };
 
-export default class Entity {
+export default class Entity implements mitt.Emitter {
   components: Set<ComponentInterface>;
   children: Set<Entity> = new Set();
   parent: Entity | null = null;
   isEnabled: boolean;
+  _emitter: mitt.Emitter = mitt();
 
   constructor(...components: Array<ComponentInterface>) {
     this.components = new Set();
@@ -15,6 +17,18 @@ export default class Entity {
       this.addComponent(component);
     }
     this.enable();
+  }
+
+  on(type: string, handler: (...args: any) => any): void {
+    this._emitter.on(type, handler);
+  }
+
+  off(type: string, handler: (...args: any) => any): void {
+    this._emitter.off(type, handler);
+  }
+
+  emit(type: string, event?: any): void {
+    this._emitter.emit(type, event);
   }
 
   _componentsByClass(): Map<Instantiable, ComponentInterface> {

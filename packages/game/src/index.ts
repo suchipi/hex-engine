@@ -2,9 +2,29 @@ import * as ecs from "engine";
 import bouncy from "./bouncy-29x41.png";
 import jump from "./jump.wav";
 
-class PlayerBehaviour extends ecs.Component {
-  entity!: Player | null;
+class AnimationEventSounds extends ecs.Component {
+  jumpSound: ecs.Components.Audio = new ecs.Components.Audio({ url: jump });
 
+  onEntityReceived(ent: ecs.Entity | null) {
+    ent?.addComponent(this.jumpSound);
+  }
+
+  onEnabled() {
+    this.entity?.on("animation-event", this.onAnimationEvent);
+  }
+
+  onDisabled() {
+    this.entity?.off("animation-event", this.onAnimationEvent);
+  }
+
+  onAnimationEvent = (event: string) => {
+    if (event === "jump") {
+      this.jumpSound.play();
+    }
+  };
+}
+
+class PlayerBehaviour extends ecs.Component {
   update(delta: number) {
     const keyboard = this.getComponent(ecs.Components.Keyboard)!;
     const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
@@ -12,13 +32,6 @@ class PlayerBehaviour extends ecs.Component {
 
     const position = this.getComponent(ecs.Components.Position)!;
     position.point = position.point.add(vector.toPoint()).round();
-
-    if (keyboard.pressed.has(" ")) {
-      const entity = this.entity;
-      if (entity) {
-        entity.jumpSound.play();
-      }
-    }
   }
 
   draw({
@@ -41,11 +54,7 @@ class PlayerBehaviour extends ecs.Component {
 }
 
 class Player extends ecs.Entity {
-  jumpSound: ecs.Components.Audio;
-
   constructor() {
-    const jumpSound = new ecs.Components.Audio({ url: jump });
-
     super(
       new ecs.Components.Keyboard(),
       new ecs.Components.Position(0, 0, {
@@ -57,16 +66,26 @@ class Player extends ecs.Entity {
         tileHeight: 41,
         animations: {
           default: new ecs.Components.Animation({
-            frames: [0, 1, 2, 3, 4, 5, 6, 7],
+            frames: [
+              0,
+              new ecs.Components.Animation.Frame({
+                data: 1,
+                animationEvents: ["jump"],
+              }),
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+            ],
             duration: 150,
           }),
         },
       }),
       new PlayerBehaviour(),
-      jumpSound
+      new AnimationEventSounds()
     );
-
-    this.jumpSound = jumpSound;
   }
 }
 

@@ -60,7 +60,7 @@ export default class AnimationSheet extends BaseComponent {
       y,
       width,
       height,
-      tileIndex: frame,
+      tileIndex: frame.data,
     });
   }
 }
