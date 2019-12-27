@@ -48,8 +48,8 @@ const player = new Entity(
   }),
 
   // Animation event sounds
-  makeComponent(({ getEntity, onEnabled, onDisabled }) => {
-    const jumpSound = new Audio({ url: jump });
+  makeComponent(({ getEntity, onEnabled, onDisabled, addChildComponent }) => {
+    const jumpSound = addChildComponent(new Audio({ url: jump }));
 
     const onAnimationEvent = (event: string) => {
       if (event === "jump") {
@@ -64,8 +64,6 @@ const player = new Entity(
     onDisabled(() => {
       getEntity()?.off("animation-event", onAnimationEvent);
     });
-
-    return jumpSound;
   })
 );
 

@@ -3,6 +3,7 @@ import Entity from "./Entity";
 
 export type DSL = {
   getConstructorArguments: () => Array<any>;
+  addChildComponent: <C extends ComponentInterface>(child: C) => C;
 
   getComponent: ComponentInterface["getComponent"];
   enable: ComponentInterface["enable"];
@@ -17,15 +18,16 @@ export type DSL = {
   onEnabled: (handler: ComponentInterface["onEnabled"]) => void;
 };
 
-type ComponentClass = { new (): ComponentInterface };
+type ComponentClass<AdditionalAPI> = {
+  new (): ComponentInterface & AdditionalAPI;
+};
 
-export default function makeComponentClass(
-  constructor: (
-    dsl: DSL
-  ) => void | ComponentInterface | Array<ComponentInterface>
-): ComponentClass {
+export default function makeComponentClass<ReturnType extends {}>(
+  constructor: (dsl: DSL) => void | ReturnType
+): ComponentClass<ReturnType> {
+  // @ts-ignore
   return class Component extends BaseComponent {
-    _childrenToAdd: Array<ComponentInterface>;
+    _childrenToAdd: Array<ComponentInterface> = [];
     _onEntityReceived: ComponentInterface["onEntityReceived"] = () => {};
 
     onEntityReceived(entity: Entity | null) {
@@ -43,8 +45,12 @@ export default function makeComponentClass(
 
       const component = this;
 
-      const ret = constructor({
+      const dsl: DSL = {
         getConstructorArguments: () => args,
+        addChildComponent: (child) => {
+          this._childrenToAdd.push(child);
+          return child;
+        },
 
         getComponent: component.getComponent.bind(component),
         enable: component.enable.bind(component),
@@ -69,18 +75,13 @@ export default function makeComponentClass(
         onDisabled: (handler) => {
           component.onDisabled = handler;
         },
-      });
+      };
 
-      let children: Array<ComponentInterface>;
-      if (Array.isArray(ret)) {
-        children = ret;
-      } else if (ret) {
-        children = [ret];
-      } else {
-        children = [];
+      const returnedValue = constructor(dsl);
+
+      if (returnedValue) {
+        Object.assign(component, returnedValue);
       }
-
-      this._childrenToAdd = children;
     }
   };
 }

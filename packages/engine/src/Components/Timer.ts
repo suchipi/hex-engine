@@ -1,17 +1,20 @@
-import BaseComponent from "../Component";
+import makeComponentClass from "../makeComponentClass";
 
-export default class Timer extends BaseComponent {
-  target: number = 0;
+const Timer = makeComponentClass(({ onUpdate }) => {
+  let target = 0;
 
-  set(msFromNow: number) {
-    this.target = -msFromNow;
-  }
+  onUpdate((delta) => {
+    target += delta;
+  });
 
-  delta() {
-    return this.target;
-  }
+  return {
+    set(msFromNow: number) {
+      target = -msFromNow;
+    },
+    delta() {
+      return target;
+    },
+  };
+});
 
-  update(delta: number) {
-    this.target += delta;
-  }
-}
+export default Timer;
