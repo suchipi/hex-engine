@@ -1,7 +1,7 @@
 import {
   Entity,
   Component,
-  makeComponent,
+  component,
   Canvas,
   Point,
   Angle,
@@ -35,21 +35,20 @@ const player = new Entity(
   }),
   new BasicRenderer(),
 
-  // Player controls
-  makeComponent(({ onUpdate, getComponent }) => {
-    onUpdate((delta) => {
-      const keyboard = getComponent(Keyboard)!;
+  function PlayerControls() {
+    component.onUpdate((delta) => {
+      const keyboard = component.getComponent(Keyboard)!;
       const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
       vector.magnitude *= delta * 0.1;
 
-      const position = getComponent(Position)!;
+      const position = component.getComponent(Position)!;
       position.point = position.point.add(vector.toPoint()).round();
     });
-  }),
+  },
 
   // Animation event sounds
-  makeComponent(({ getEntity, onEnabled, onDisabled, addChildComponent }) => {
-    const jumpSound = addChildComponent(new Audio({ url: jump }));
+  function AnimationEventSounds() {
+    const jumpSound = component.addChildComponent(new Audio({ url: jump }));
 
     const onAnimationEvent = (event: string) => {
       if (event === "jump") {
@@ -57,26 +56,25 @@ const player = new Entity(
       }
     };
 
-    onEnabled(() => {
-      getEntity()?.on("animation-event", onAnimationEvent);
+    component.onEnabled(() => {
+      component.getEntity()?.on("animation-event", onAnimationEvent);
     });
 
-    onDisabled(() => {
-      getEntity()?.off("animation-event", onAnimationEvent);
+    component.onDisabled(() => {
+      component.getEntity()?.off("animation-event", onAnimationEvent);
     });
-  })
+  }
 );
 
 const stage = new Entity(
   new Position(0, 0),
   new Size(50, 50),
 
-  // stage renderer
-  makeComponent(({ onDraw, getComponent }) => {
-    onDraw(({ context }) => {
-      const position = getComponent(Position)?.point;
+  function StageRenderer() {
+    component.onDraw(({ context }) => {
+      const position = component.getComponent(Position)?.point;
       if (!position) return;
-      let size = getComponent(Size)?.point;
+      let size = component.getComponent(Size)?.point;
       if (!size) size = new Point(10, 10);
 
       context.strokeStyle = "black";
@@ -87,7 +85,7 @@ const stage = new Entity(
         size.y
       );
     });
-  })
+  }
 );
 
 const canvas = new Canvas();

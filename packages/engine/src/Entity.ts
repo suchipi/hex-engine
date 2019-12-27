@@ -1,5 +1,6 @@
 import mitt from "mitt";
-import { ComponentInterface } from "./Component";
+import BaseComponent, { ComponentInterface } from "./Component";
+import HooksSystem from "./HooksSystem";
 
 type Instantiable = { new (...args: Array<any>): any };
 
@@ -10,11 +11,19 @@ export default class Entity implements mitt.Emitter {
   isEnabled: boolean;
   _emitter: mitt.Emitter = mitt();
 
-  constructor(...components: Array<ComponentInterface>) {
+  constructor(...components: Array<ComponentInterface | Function>) {
     this.components = new Set();
     this.isEnabled = false;
     for (const component of components) {
-      this.addComponent(component);
+      if (typeof component === "function") {
+        const instantiatedComponent = new BaseComponent();
+        HooksSystem.withInstance(instantiatedComponent, () => {
+          component();
+        });
+        this.addComponent(instantiatedComponent);
+      } else {
+        this.addComponent(component);
+      }
     }
     this.enable();
   }
@@ -57,7 +66,9 @@ export default class Entity implements mitt.Emitter {
     this.isEnabled = true;
 
     for (const component of this.components) {
-      component.enable();
+      HooksSystem.withInstance(component, () => {
+        component.enable();
+      });
     }
 
     for (const entity of this.children) {
@@ -70,7 +81,9 @@ export default class Entity implements mitt.Emitter {
 
     for (const component of this.components) {
       if (component.isEnabled) {
-        component.update(delta);
+        HooksSystem.withInstance(component, () => {
+          component.update(delta);
+        });
       }
     }
 
@@ -92,9 +105,11 @@ export default class Entity implements mitt.Emitter {
 
     for (const component of this.components) {
       if (component.isEnabled) {
-        component.draw({
-          canvas,
-          context,
+        HooksSystem.withInstance(component, () => {
+          component.draw({
+            canvas,
+            context,
+          });
         });
       }
     }

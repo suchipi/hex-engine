@@ -1,10 +1,12 @@
 import Entity from "./Entity";
+import HooksSystem from "./HooksSystem";
 
 type Instantiable = { new (...args: Array<any>): any };
 
 export interface ComponentInterface {
   entity: Entity | null;
   isEnabled: boolean;
+  _childrenToAdd: Array<ComponentInterface>;
 
   _receiveEntity(entity: Entity | null): void;
   onEntityReceived(entity: Entity | null): void;
@@ -34,6 +36,7 @@ export type ComponentConfig = {
 export default class BaseComponent implements ComponentInterface {
   entity: Entity | null = null;
   isEnabled: boolean;
+  _childrenToAdd: Array<ComponentInterface> = [];
 
   constructor(config: Partial<ComponentConfig> = {}) {
     this.isEnabled = config.isEnabled ?? true;
@@ -41,17 +44,27 @@ export default class BaseComponent implements ComponentInterface {
 
   _receiveEntity(entity: Entity | null) {
     this.entity = entity;
+    if (entity) {
+      for (const child of this._childrenToAdd) {
+        entity.addComponent(child);
+      }
+      this._childrenToAdd = [];
+    }
     this.onEntityReceived(entity);
   }
 
   enable() {
     this.isEnabled = true;
-    this.onEnabled();
+    HooksSystem.withInstance(this, () => {
+      this.onEnabled();
+    });
   }
 
   disable() {
     this.isEnabled = false;
-    this.onDisabled();
+    HooksSystem.withInstance(this, () => {
+      this.onDisabled();
+    });
   }
 
   onEntityReceived(_entity: Entity | null): void {}

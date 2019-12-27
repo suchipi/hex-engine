@@ -1697,6 +1697,11 @@ concat-stream@^1.5.0:
     readable-stream "^2.2.2"
     typedarray "^0.0.6"
 
+concubine@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/concubine/-/concubine-1.0.1.tgz#5bef6edd1ce6bf8ba41a5093ada2f7878c6b915d"
+  integrity sha512-FeL3gdSyp38IHBVK6z1R6StHbyJrAbK5ER8Vhjm8evWnW253zNTI9pe4ugbpfRVjKUDbhYCFnPd/V9GuGQrcdA==
+
 concurrently@^5.0.2:
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/concurrently/-/concurrently-5.0.2.tgz#4d2911018c0f15ddec34a8e668fc48dced7f3b1e"
