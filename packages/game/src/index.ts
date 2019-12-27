@@ -24,7 +24,7 @@ class AnimationEventSounds extends ecs.Component {
   };
 }
 
-class PlayerBehaviour extends ecs.Component {
+class PlayerMove extends ecs.Component {
   update(delta: number) {
     const keyboard = this.getComponent(ecs.Components.Keyboard)!;
     const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
@@ -32,24 +32,6 @@ class PlayerBehaviour extends ecs.Component {
 
     const position = this.getComponent(ecs.Components.Position)!;
     position.point = position.point.add(vector.toPoint()).round();
-  }
-
-  draw({
-    context,
-  }: {
-    context: CanvasRenderingContext2D;
-    canvas: HTMLCanvasElement;
-  }) {
-    const animSheet = this.getComponent(ecs.Components.AnimationSheet)!;
-    const position = this.getComponent(ecs.Components.Position)!;
-
-    const target = position.drawPoint();
-
-    animSheet.drawSpriteIntoContext({
-      context,
-      x: target.x,
-      y: target.y,
-    });
   }
 }
 
@@ -68,10 +50,7 @@ class Player extends ecs.Entity {
           default: new ecs.Components.Animation({
             frames: [
               0,
-              new ecs.Components.Animation.Frame({
-                data: 1,
-                animationEvents: ["jump"],
-              }),
+              new ecs.Components.Animation.Frame(1, ["jump"]),
               2,
               3,
               4,
@@ -83,7 +62,7 @@ class Player extends ecs.Entity {
           }),
         },
       }),
-      new PlayerBehaviour(),
+      new PlayerMove(),
       new AnimationEventSounds()
     );
   }

@@ -50,8 +50,4 @@ export default class Position extends BaseComponent {
     this.point = new Point(x, y);
     this.origin = origin;
   }
-
-  drawPoint(): Point {
-    return this.point.subtract(this.origin).round();
-  }
 }

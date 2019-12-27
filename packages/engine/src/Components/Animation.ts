@@ -6,13 +6,7 @@ class Frame<Data> {
   data: Data;
   animationEvents: Array<string>;
 
-  constructor({
-    data,
-    animationEvents,
-  }: {
-    data: Data;
-    animationEvents: Array<string>;
-  }) {
+  constructor(data: Data, animationEvents: Array<string>) {
     this.data = data;
     this.animationEvents = animationEvents;
   }
@@ -41,10 +35,7 @@ export default class Animation<FrameData> extends BaseComponent {
       if (frame instanceof Frame) {
         return frame;
       } else {
-        return new Frame({
-          data: frame,
-          animationEvents: [],
-        });
+        return new Frame(frame, []);
       }
     });
     this.duration = config.duration;

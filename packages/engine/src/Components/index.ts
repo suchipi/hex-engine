@@ -5,7 +5,6 @@ import Gamepad from "./Gamepad";
 import Image from "./Image";
 import Keyboard from "./Keyboard";
 import Position from "./Position";
-import Rectangle from "./Rectangle";
 import Size from "./Size";
 import SpriteSheet from "./SpriteSheet";
 import Timer from "./Timer";
@@ -18,7 +17,6 @@ export {
   Image,
   Keyboard,
   Position,
-  Rectangle,
   Size,
   SpriteSheet,
   Timer,
