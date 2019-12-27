@@ -17,7 +17,7 @@ export default class Animation<FrameData> extends BaseComponent {
 
   frames: Array<Frame<FrameData>>;
   duration: number;
-  timer: Timer;
+  timer: InstanceType<typeof Timer>;
   _currentFrameIndex: number;
 
   get currentFrame() {

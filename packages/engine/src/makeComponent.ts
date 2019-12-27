@@ -6,7 +6,7 @@ export default function makeComponent(
     dsl: DSL
   ) => void | ComponentInterface | Array<ComponentInterface>
 ): ComponentInterface {
-  const klass = makeComponentClass(constructor);
+  const klass = makeComponentClass(() => constructor);
 
   return new klass();
 }

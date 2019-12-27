@@ -2,7 +2,6 @@ import BaseComponent, { ComponentInterface } from "./Component";
 import Entity from "./Entity";
 
 export type DSL = {
-  getConstructorArguments: () => Array<any>;
   addChildComponent: <C extends ComponentInterface>(child: C) => C;
 
   getComponent: ComponentInterface["getComponent"];
@@ -18,13 +17,16 @@ export type DSL = {
   onEnabled: (handler: ComponentInterface["onEnabled"]) => void;
 };
 
-type ComponentClass<AdditionalAPI> = {
-  new (): ComponentInterface & AdditionalAPI;
+type ComponentClass<ConstructorArgs extends Array<any>, AdditionalAPI> = {
+  new (...args: ConstructorArgs): ComponentInterface & AdditionalAPI;
 };
 
-export default function makeComponentClass<ReturnType extends {}>(
-  constructor: (dsl: DSL) => void | ReturnType
-): ComponentClass<ReturnType> {
+export default function makeComponentClass<
+  ReturnType extends {},
+  ConstructorArgs extends Array<any>
+>(
+  constructor: (...args: ConstructorArgs) => (dsl: DSL) => void | ReturnType
+): ComponentClass<ConstructorArgs, ReturnType> {
   // @ts-ignore
   return class Component extends BaseComponent {
     _childrenToAdd: Array<ComponentInterface> = [];
@@ -46,7 +48,6 @@ export default function makeComponentClass<ReturnType extends {}>(
       const component = this;
 
       const dsl: DSL = {
-        getConstructorArguments: () => args,
         addChildComponent: (child) => {
           this._childrenToAdd.push(child);
           return child;
@@ -77,7 +78,8 @@ export default function makeComponentClass<ReturnType extends {}>(
         },
       };
 
-      const returnedValue = constructor(dsl);
+      // @ts-ignore
+      const returnedValue = constructor(...args)(dsl);
 
       if (returnedValue) {
         Object.assign(component, returnedValue);

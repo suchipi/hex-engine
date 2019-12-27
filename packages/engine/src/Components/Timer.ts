@@ -1,6 +1,6 @@
 import makeComponentClass from "../makeComponentClass";
 
-const Timer = makeComponentClass(({ onUpdate }) => {
+const Timer = makeComponentClass(() => ({ onUpdate }) => {
   let target = 0;
 
   onUpdate((delta) => {
