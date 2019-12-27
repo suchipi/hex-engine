@@ -69,11 +69,15 @@ export default class Entity implements mitt.Emitter {
     if (!this.isEnabled) return;
 
     for (const component of this.components) {
-      component.update(delta);
+      if (component.isEnabled) {
+        component.update(delta);
+      }
     }
 
     for (const entity of this.children) {
-      entity.update(delta);
+      if (entity.isEnabled) {
+        entity.update(delta);
+      }
     }
   }
 
@@ -87,17 +91,21 @@ export default class Entity implements mitt.Emitter {
     if (!this.isEnabled) return;
 
     for (const component of this.components) {
-      component.draw({
-        canvas,
-        context,
-      });
+      if (component.isEnabled) {
+        component.draw({
+          canvas,
+          context,
+        });
+      }
     }
 
     for (const entity of this.children) {
-      entity.draw({
-        canvas,
-        context,
-      });
+      if (entity.isEnabled) {
+        entity.draw({
+          canvas,
+          context,
+        });
+      }
     }
   }
 
