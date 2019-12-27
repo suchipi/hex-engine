@@ -1,35 +1,35 @@
 import { makeHooksSystem } from "concubine";
 import Component, { ComponentInterface } from "./Component";
+import Element from "./Element";
 
-export function instantiate<C extends {}>(
-  componentFunction: (...args: any[]) => C
-): ComponentInterface & C {
-  const instance = new Component();
-  instance.constructor = componentFunction; // For lookup
+export function instantiate<Props extends {}, API extends {}>(
+  element: Element<Props, API>
+): ComponentInterface & API {
+  if (element.type.prototype.isClassComponent) {
+    // @ts-ignore
+    return new element.type(element.props);
+  } else {
+    const instance = new Component();
+    instance.constructor = element.type; // For lookup
 
-  let ret;
-  HooksSystem.withInstance(instance, () => {
-    ret = componentFunction();
-  });
-  if (ret) {
-    Object.assign(instance, ret);
+    let ret;
+    HooksSystem.withInstance(instance, () => {
+      ret = element.type(element.props);
+    });
+    if (ret) {
+      Object.assign(instance, ret);
+    }
+
+    // @ts-ignore
+    return instance;
   }
-
-  // @ts-ignore
-  return instance;
 }
 
 const HooksSystem = makeHooksSystem<ComponentInterface>()({
-  create: (instance) => <C>(componentFunction: (...args: any[]) => C): C => {
-    const child = instantiate(componentFunction);
-    instance._childrenToAdd.push(child);
-    return child;
-  },
-
-  // TODO: can remove once create is ubiquitous
-  addChildComponent: (instance) => <C extends ComponentInterface>(
-    child: C
-  ): C => {
+  create: (instance) => <Props, API>(
+    element: Element<Props, API>
+  ): ComponentInterface & API => {
+    const child = instantiate(element);
     instance._childrenToAdd.push(child);
     return child;
   },

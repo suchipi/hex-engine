@@ -22,6 +22,9 @@
     "downlevelIteration": true,
 
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+
+    "jsx": "preserve",
+    "jsxFactory": "createElement"
   }
 }

@@ -38,6 +38,8 @@ export default class Component implements ComponentInterface {
   isEnabled: boolean;
   _childrenToAdd: Array<ComponentInterface> = [];
 
+  isClassComponent: boolean = true;
+
   constructor(config: Partial<ComponentConfig> = {}) {
     this.isEnabled = config.isEnabled ?? true;
   }

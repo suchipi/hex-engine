@@ -1,4 +1,5 @@
 import mitt from "mitt";
+import Element from "./Element";
 import { ComponentInterface } from "./Component";
 import HooksSystem, { instantiate } from "./HooksSystem";
 
@@ -11,17 +12,13 @@ export default class Entity implements mitt.Emitter {
   isEnabled: boolean;
   _emitter: mitt.Emitter = mitt();
 
-  constructor(...components: Array<ComponentInterface | Function>) {
+  constructor(elements: Array<Element<{}, {}>>) {
     this.components = new Set();
     this.isEnabled = false;
-    for (const component of components) {
-      if (typeof component === "function") {
-        // @ts-ignore
-        const instantiatedComponent = instantiate(component);
-        this.addComponent(instantiatedComponent);
-      } else {
-        this.addComponent(component);
-      }
+    for (const element of elements) {
+      console.log("Instantiating", element);
+      const component = instantiate(element);
+      this.addComponent(component);
     }
     this.enable();
   }
