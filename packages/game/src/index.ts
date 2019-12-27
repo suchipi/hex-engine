@@ -2,28 +2,6 @@ import * as ecs from "engine";
 import bouncy from "./bouncy-29x41.png";
 import jump from "./jump.wav";
 
-class AnimationEventSounds extends ecs.Component {
-  jumpSound: ecs.Components.Audio = new ecs.Components.Audio({ url: jump });
-
-  onEntityReceived(ent: ecs.Entity | null) {
-    ent?.addComponent(this.jumpSound);
-  }
-
-  onEnabled() {
-    this.entity?.on("animation-event", this.onAnimationEvent);
-  }
-
-  onDisabled() {
-    this.entity?.off("animation-event", this.onAnimationEvent);
-  }
-
-  onAnimationEvent = (event: string) => {
-    if (event === "jump") {
-      this.jumpSound.play({ volume: 0.1 });
-    }
-  };
-}
-
 const player = new ecs.Entity(
   new ecs.Components.Keyboard(),
   new ecs.Components.Position(0, 0, {
@@ -60,7 +38,27 @@ const player = new ecs.Entity(
       position.point = position.point.add(vector.toPoint()).round();
     },
   }),
-  new AnimationEventSounds()
+  ecs.dslComponent(({ getEntity, onEntityReceived, onEnabled, onDisabled }) => {
+    const jumpSound = new ecs.Components.Audio({ url: jump });
+
+    const onAnimationEvent = (event: string) => {
+      if (event === "jump") {
+        jumpSound.play({ volume: 0.1 });
+      }
+    };
+
+    onEntityReceived((ent) => {
+      ent?.addComponent(jumpSound);
+    });
+
+    onEnabled(() => {
+      getEntity()?.on("animation-event", onAnimationEvent);
+    });
+
+    onDisabled(() => {
+      getEntity()?.off("animation-event", onAnimationEvent);
+    });
+  })
 );
 
 const stage = new ecs.Entity(
