@@ -1,6 +1,10 @@
-import BaseComponent, { ComponentConfig } from "../Component";
+import BaseComponent, {
+  ComponentConfig,
+  ComponentInterface,
+} from "../Component";
 import Timer from "./Timer";
 import Entity from "../Entity";
+import { instantiate } from "../HooksSystem";
 
 class Frame<Data> {
   data: Data;
@@ -17,7 +21,7 @@ export default class Animation<FrameData> extends BaseComponent {
 
   frames: Array<Frame<FrameData>>;
   duration: number;
-  timer: InstanceType<typeof Timer>;
+  timer: ComponentInterface & ReturnType<typeof Timer>;
   _currentFrameIndex: number;
 
   get currentFrame() {
@@ -39,7 +43,7 @@ export default class Animation<FrameData> extends BaseComponent {
       }
     });
     this.duration = config.duration;
-    this.timer = new Timer();
+    this.timer = instantiate(Timer);
     this.timer.disable();
     this._currentFrameIndex = 0;
   }

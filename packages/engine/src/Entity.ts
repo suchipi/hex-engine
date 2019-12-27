@@ -1,6 +1,6 @@
 import mitt from "mitt";
-import BaseComponent, { ComponentInterface } from "./Component";
-import HooksSystem from "./HooksSystem";
+import { ComponentInterface } from "./Component";
+import HooksSystem, { instantiate } from "./HooksSystem";
 
 type Instantiable = { new (...args: Array<any>): any };
 
@@ -16,10 +16,8 @@ export default class Entity implements mitt.Emitter {
     this.isEnabled = false;
     for (const component of components) {
       if (typeof component === "function") {
-        const instantiatedComponent = new BaseComponent();
-        HooksSystem.withInstance(instantiatedComponent, () => {
-          component();
-        });
+        // @ts-ignore
+        const instantiatedComponent = instantiate(component);
         this.addComponent(instantiatedComponent);
       } else {
         this.addComponent(component);
@@ -40,8 +38,7 @@ export default class Entity implements mitt.Emitter {
     this._emitter.emit(type, event);
   }
 
-  _componentsByClass(): Map<Instantiable, ComponentInterface> {
-    // @ts-ignore
+  _componentsByClass(): Map<Function, ComponentInterface> {
     return new Map(
       [...this.components].map((component) => [
         component.constructor,
@@ -145,42 +142,42 @@ export default class Entity implements mitt.Emitter {
     }
   }
 
-  removeComponent(
-    componentOrComponentClass:
-      | ComponentInterface
-      | { new (...args: any[]): ComponentInterface }
-  ) {
+  removeComponent(componentOrComponentClass: ComponentInterface | Function) {
     let component: ComponentInterface;
-    if ({}.hasOwnProperty.call(componentOrComponentClass, "entity")) {
-      component = componentOrComponentClass as ComponentInterface;
-    } else {
-      // @ts-ignore
+
+    if (typeof componentOrComponentClass === "function") {
       component = this.getComponent(componentOrComponentClass);
+    } else {
+      component = componentOrComponentClass;
     }
+
     if (!component) return;
 
     component.disable();
-    // @ts-ignore
-    this.components.delete(component.constructor);
+    this.components.delete(component);
     component._receiveEntity(null);
   }
 
-  hasComponent(
-    componentOrComponentClass:
-      | ComponentInterface
-      | { new (...args: any[]): ComponentInterface }
-  ) {
-    return (
-      // @ts-ignore
-      this.components.has(componentOrComponentClass) ||
-      // @ts-ignore
-      new Set(this._componentsByClass().keys()).has(componentOrComponentClass)
-    );
+  hasComponent(componentOrComponentClass: ComponentInterface | Function) {
+    if (typeof componentOrComponentClass === "function") {
+      return new Set(this._componentsByClass().keys()).has(
+        componentOrComponentClass
+      );
+    } else {
+      return this.components.has(componentOrComponentClass);
+    }
   }
 
-  getComponent<SomeClass extends Instantiable>(
+  getComponent<SomeClass extends Function>(
     componentClass: SomeClass
-  ): InstanceType<SomeClass> | null {
+  ):
+    | (SomeClass extends Instantiable
+        ? InstanceType<SomeClass>
+        : ReturnType<
+            // @ts-ignore
+            SomeClass
+          >)
+    | null {
     const maybeComponent = this._componentsByClass().get(componentClass);
     // @ts-ignore
     return maybeComponent ?? null;

@@ -1,6 +1,8 @@
-import makeComponentClass from "../makeComponentClass";
+import HooksSystem from "../HooksSystem";
 
-const Timer = makeComponentClass(() => ({ onUpdate }) => {
+const { onUpdate } = HooksSystem.hooks;
+
+function Timer() {
   let target = 0;
 
   onUpdate((delta) => {
@@ -15,6 +17,6 @@ const Timer = makeComponentClass(() => ({ onUpdate }) => {
       return target;
     },
   };
-});
+}
 
 export default Timer;
