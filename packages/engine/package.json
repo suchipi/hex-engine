@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "main": "dist/index.js",
+  "types": "src/index.ts",
   "dependencies": {
     "mitt": "^1.2.0"
   }

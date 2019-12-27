@@ -5,6 +5,4 @@ export PATH="./node_modules/.bin:../node_modules/.bin:../../node_modules/.bin:$P
 
 cd packages/engine
 babel --extensions '.ts,.tsx,.js,.jsx' --config-file ../../babel.config.js src --out-dir dist
-cd src
-find . -name '*.ts' -exec cp '{}' '../dist/{}' \;
-cd ../../..
+cd ../..
