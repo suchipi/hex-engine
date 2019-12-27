@@ -19,7 +19,7 @@ class AnimationEventSounds extends ecs.Component {
 
   onAnimationEvent = (event: string) => {
     if (event === "jump") {
-      this.jumpSound.play();
+      this.jumpSound.play({ volume: 0.1 });
     }
   };
 }

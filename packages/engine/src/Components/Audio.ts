@@ -40,10 +40,13 @@ export default class Audio extends BaseComponent {
     return this._loadingPromise;
   }
 
-  play(): Promise<void> {
+  play({ volume }: { volume?: number } = {}): Promise<void> {
     const data = this.data;
     if (!data) return Promise.resolve();
 
+    if (volume != null) {
+      data.volume = volume;
+    }
     return data.play();
   }
 }
