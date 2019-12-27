@@ -1,6 +1,6 @@
-import BaseComponent from "../Component";
+import Component from "../Component";
 
-export default class Time extends BaseComponent {
+export default class Time extends Component {
   tick(delta: number) {
     const entities = [];
     if (this.entity) {

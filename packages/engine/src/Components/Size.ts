@@ -1,4 +1,4 @@
-import BaseComponent, { ComponentConfig } from "../Component";
+import Component, { ComponentConfig } from "../Component";
 import { Point } from "../Models";
 
 type PointOrSizeLike = Partial<{
@@ -8,7 +8,7 @@ type PointOrSizeLike = Partial<{
   height: number;
 }>;
 
-export default class Size extends BaseComponent {
+export default class Size extends Component {
   point: Point;
 
   constructor(config: PointOrSizeLike & ComponentConfig);

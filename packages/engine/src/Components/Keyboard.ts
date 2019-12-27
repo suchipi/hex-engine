@@ -1,7 +1,7 @@
-import BaseComponent from "../Component";
+import Component from "../Component";
 import { Vector, Angle } from "../Models";
 
-export default class Keyboard extends BaseComponent {
+export default class Keyboard extends Component {
   pressed: Set<string> = new Set();
 
   onEnabled() {

@@ -1,7 +1,7 @@
-import BaseComponent, { ComponentConfig } from "../Component";
+import Component, { ComponentConfig } from "../Component";
 import Preloader from "../Preloader";
 
-export default class Audio extends BaseComponent {
+export default class Audio extends Component {
   url: string;
   _loadingPromise: Promise<void> | null = null;
   loaded: boolean = false;

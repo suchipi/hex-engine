@@ -1,4 +1,4 @@
-import BaseComponent, { ComponentConfig } from "../Component";
+import Component, { ComponentConfig } from "../Component";
 import { Vector, Point, Angle } from "../Models";
 
 type Data = {
@@ -31,7 +31,7 @@ function getDefaults() {
   };
 }
 
-export default class Gamepad extends BaseComponent {
+export default class Gamepad extends Component {
   leftStick: Vector = new Vector(new Angle(0), 0);
   rightStick: Vector = new Vector(new Angle(0), 0);
   pressed: Set<string> = new Set();

@@ -1,9 +1,9 @@
-import BaseComponent, { ComponentConfig } from "../Component";
+import Component, { ComponentConfig } from "../Component";
 import Preloader from "../Preloader";
 
 const cache: { [url: string]: Image } = {};
 
-export default class Image extends BaseComponent {
+export default class Image extends Component {
   url: string;
   _loadingPromise: Promise<void> | null = null;
   loaded: boolean = false;

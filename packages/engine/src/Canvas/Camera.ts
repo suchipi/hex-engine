@@ -1,4 +1,4 @@
-import BaseComponent, { ComponentConfig } from "../Component";
+import Component, { ComponentConfig } from "../Component";
 import Renderer from "./Renderer";
 import { Point, Angle } from "../Models";
 
@@ -8,7 +8,7 @@ type Data = {
   rotation: Angle;
 };
 
-export default class Camera extends BaseComponent {
+export default class Camera extends Component {
   position: Point;
   zoom: number;
   rotation: Angle;

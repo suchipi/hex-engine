@@ -1,7 +1,4 @@
-import BaseComponent, {
-  ComponentConfig,
-  ComponentInterface,
-} from "../Component";
+import Component, { ComponentConfig, ComponentInterface } from "../Component";
 import Timer from "./Timer";
 import Entity from "../Entity";
 import { instantiate } from "../HooksSystem";
@@ -16,7 +13,7 @@ class Frame<Data> {
   }
 }
 
-export default class Animation<FrameData> extends BaseComponent {
+export default class Animation<FrameData> extends Component {
   static Frame = Frame;
 
   frames: Array<Frame<FrameData>>;

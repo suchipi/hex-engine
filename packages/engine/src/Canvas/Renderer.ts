@@ -1,4 +1,4 @@
-import BaseComponent, { ComponentConfig } from "../Component";
+import Component, { ComponentConfig } from "../Component";
 import { Angle, Point } from "../Models";
 
 type Data = {
@@ -7,7 +7,7 @@ type Data = {
   backgroundColor: string;
 };
 
-export default class Renderer extends BaseComponent {
+export default class Renderer extends Component {
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
   backgroundColor: string;

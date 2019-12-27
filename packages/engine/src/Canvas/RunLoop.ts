@@ -1,10 +1,10 @@
-import BaseComponent, { ComponentConfig } from "../Component";
+import Component, { ComponentConfig } from "../Component";
 
 type Data = {
   onFrame: (delta: number) => void;
 };
 
-export default class RunLoop extends BaseComponent {
+export default class RunLoop extends Component {
   onFrame: (delta: number) => void;
   frameRequest: number | null = null;
   lastTimestamp: number | null = null;

@@ -1,4 +1,4 @@
-import BaseComponent, { ComponentConfig } from "../Component";
+import Component, { ComponentConfig } from "../Component";
 import Image from "./Image";
 import Size from "./Size";
 import Entity from "../Entity";
@@ -9,7 +9,7 @@ type Data = {
   tileHeight: number;
 };
 
-export default class SpriteSheet extends BaseComponent {
+export default class SpriteSheet extends Component {
   image: Image;
   tileWidth: number;
   tileHeight: number;

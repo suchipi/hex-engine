@@ -1,7 +1,7 @@
-import BaseComponent, { ComponentConfig } from "../Component";
+import Component, { ComponentConfig } from "../Component";
 import { Angle } from "../Models";
 
-export default class Rotation extends BaseComponent {
+export default class Rotation extends Component {
   angle: Angle;
 
   constructor(angle: Angle | number, config: Partial<ComponentConfig> = {}) {

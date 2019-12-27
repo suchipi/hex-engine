@@ -1,10 +1,10 @@
 import { makeHooksSystem } from "concubine";
-import BaseComponent, { ComponentInterface } from "./Component";
+import Component, { ComponentInterface } from "./Component";
 
 export function instantiate<C extends {}>(
   componentFunction: (...args: any[]) => C
 ): ComponentInterface & C {
-  const instance = new BaseComponent();
+  const instance = new Component();
   instance.constructor = componentFunction; // For lookup
 
   let ret;

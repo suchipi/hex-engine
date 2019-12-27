@@ -1,4 +1,4 @@
-import BaseComponent, { ComponentConfig } from "../Component";
+import Component, { ComponentConfig } from "../Component";
 import { Point } from "../Models";
 
 type PointLike = {
@@ -10,7 +10,7 @@ type Config = {
   origin: Point;
 };
 
-export default class Position extends BaseComponent {
+export default class Position extends Component {
   point: Point;
   origin: Point;
 

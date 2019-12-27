@@ -33,7 +33,7 @@ export type ComponentConfig = {
   isEnabled: boolean;
 };
 
-export default class BaseComponent implements ComponentInterface {
+export default class Component implements ComponentInterface {
   entity: Entity | null = null;
   isEnabled: boolean;
   _childrenToAdd: Array<ComponentInterface> = [];

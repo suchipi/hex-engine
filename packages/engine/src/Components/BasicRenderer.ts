@@ -1,8 +1,8 @@
-import BaseComponent from "../Component";
+import Component from "../Component";
 import AnimationSheet from "./AnimationSheet";
 import Position from "./Position";
 
-export default class BasicRenderer extends BaseComponent {
+export default class BasicRenderer extends Component {
   draw({
     context,
   }: {
