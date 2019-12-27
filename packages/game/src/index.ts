@@ -62,6 +62,7 @@ class Player extends ecs.Entity {
           }),
         },
       }),
+      new ecs.Components.BasicRenderer(),
       new PlayerMove(),
       new AnimationEventSounds()
     );
