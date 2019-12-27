@@ -5,7 +5,6 @@ import jump from "./jump.wav";
 const {
   Entity,
   Component,
-  component,
   Canvas,
   Point,
   Angle,
@@ -18,21 +17,28 @@ const {
   Audio,
   Size,
   createElement,
+  onUpdate,
+  getComponent,
+  create,
+  getEntity,
+  onDraw,
+  onDisabled,
+  onEnabled,
 } = ecs;
 
 function PlayerControls() {
-  component.onUpdate((delta) => {
-    const keyboard = component.getComponent(Keyboard)!;
+  onUpdate((delta) => {
+    const keyboard = getComponent(Keyboard)!;
     const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
     vector.magnitude *= delta * 0.1;
 
-    const position = component.getComponent(Position)!;
+    const position = getComponent(Position)!;
     position.point = position.point.add(vector.toPoint()).round();
   });
 }
 
 function AnimationEventSounds() {
-  const jumpSound = component.create(<Audio url={jump} />);
+  const jumpSound = create(<Audio url={jump} />);
 
   const onAnimationEvent = (event: string) => {
     if (event === "jump") {
@@ -40,12 +46,12 @@ function AnimationEventSounds() {
     }
   };
 
-  component.onEnabled(() => {
-    component.getEntity()?.on("animation-event", onAnimationEvent);
+  onEnabled(() => {
+    getEntity()?.on("animation-event", onAnimationEvent);
   });
 
-  component.onDisabled(() => {
-    component.getEntity()?.off("animation-event", onAnimationEvent);
+  onDisabled(() => {
+    getEntity()?.off("animation-event", onAnimationEvent);
   });
 }
 
@@ -73,10 +79,10 @@ const player = new Entity(
 );
 
 function StageRenderer() {
-  component.onDraw(({ context }) => {
-    const position = component.getComponent(Position)?.point;
+  onDraw(({ context }) => {
+    const position = getComponent(Position)?.point;
     if (!position) return;
-    let size = component.getComponent(Size)?.point;
+    let size = getComponent(Size)?.point;
     if (!size) size = new Point(10, 10);
 
     context.strokeStyle = "black";

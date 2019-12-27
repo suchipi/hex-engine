@@ -18,15 +18,17 @@ interface CreateElement {
     props?: Props,
     ...children: Array<never>
   ): Element<Props, API>;
-  (type: typeof Array, props?: {}, ...children: Array<Element<{}, {}>>): Array<
-    Element<{}, {}>
-  >;
+  (
+    type: typeof Array,
+    props?: {},
+    ...children: Array<Element<any, any>>
+  ): Array<Element<{}, {}>>;
 }
 
 export const createElement: CreateElement = <Props extends {}, API extends {}>(
   type: ComponentFunction<Props, API> | typeof Array,
   props: Props,
-  ...children: Array<Element<{}, {}> | never>
+  ...children: Array<Element<any, any> | never>
 ) => {
   if (type === Array) {
     return [children];

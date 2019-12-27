@@ -1,22 +1,21 @@
 import mitt from "mitt";
-import Element from "./Element";
+import Element, { ComponentFunction } from "./Element";
 import { ComponentInterface } from "./Component";
 import HooksSystem, { instantiate } from "./HooksSystem";
-
-type Instantiable = { new (...args: Array<any>): any };
 
 export default class Entity implements mitt.Emitter {
   components: Set<ComponentInterface>;
   children: Set<Entity> = new Set();
   parent: Entity | null = null;
   isEnabled: boolean;
+
+  // TODO: should really get rid of this emitter situation, maybe move it to a component
   _emitter: mitt.Emitter = mitt();
 
-  constructor(elements: Array<Element<{}, {}>>) {
+  constructor(elements: Array<Element<any, any>>) {
     this.components = new Set();
     this.isEnabled = false;
     for (const element of elements) {
-      console.log("Instantiating", element);
       const component = instantiate(element);
       this.addComponent(component);
     }
@@ -35,7 +34,7 @@ export default class Entity implements mitt.Emitter {
     this._emitter.emit(type, event);
   }
 
-  _componentsByClass(): Map<Function, ComponentInterface> {
+  _componentsByType(): Map<Function, ComponentInterface> {
     return new Map(
       [...this.components].map((component) => [
         component.constructor,
@@ -139,13 +138,15 @@ export default class Entity implements mitt.Emitter {
     }
   }
 
-  removeComponent(componentOrComponentClass: ComponentInterface | Function) {
-    let component: ComponentInterface;
+  removeComponent(
+    componentOrComponentType: ComponentInterface | ComponentFunction<any, any>
+  ) {
+    let component: ComponentInterface | null;
 
-    if (typeof componentOrComponentClass === "function") {
-      component = this.getComponent(componentOrComponentClass);
+    if (typeof componentOrComponentType === "function") {
+      component = this.getComponent(componentOrComponentType);
     } else {
-      component = componentOrComponentClass;
+      component = componentOrComponentType;
     }
 
     if (!component) return;
@@ -155,27 +156,22 @@ export default class Entity implements mitt.Emitter {
     component._receiveEntity(null);
   }
 
-  hasComponent(componentOrComponentClass: ComponentInterface | Function) {
-    if (typeof componentOrComponentClass === "function") {
-      return new Set(this._componentsByClass().keys()).has(
-        componentOrComponentClass
+  hasComponent(
+    componentOrComponentType: ComponentInterface | ComponentFunction<any, any>
+  ) {
+    if (typeof componentOrComponentType === "function") {
+      return new Set(this._componentsByType().keys()).has(
+        componentOrComponentType
       );
     } else {
-      return this.components.has(componentOrComponentClass);
+      return this.components.has(componentOrComponentType);
     }
   }
 
-  getComponent<SomeClass extends Function>(
-    componentClass: SomeClass
-  ):
-    | (SomeClass extends Instantiable
-        ? InstanceType<SomeClass>
-        : ReturnType<
-            // @ts-ignore
-            SomeClass
-          >)
-    | null {
-    const maybeComponent = this._componentsByClass().get(componentClass);
+  getComponent<Props extends {}, API extends {}>(
+    componentClass: ComponentFunction<Props, API>
+  ): (ComponentInterface & API) | null {
+    const maybeComponent = this._componentsByType().get(componentClass);
     // @ts-ignore
     return maybeComponent ?? null;
   }

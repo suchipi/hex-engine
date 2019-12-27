@@ -1,8 +1,10 @@
+import * as core from "core";
+const { Entity, createElement } = core;
+
 import RunLoop from "./RunLoop";
 import Time from "./Time";
 import Renderer from "./Renderer";
 import Camera from "./Camera";
-import Entity from "../Entity";
 import { Angle, Point } from "../Models";
 
 type Data = {
@@ -35,22 +37,24 @@ export default class Canvas extends Entity {
     }
 
     super(
-      new Time(),
-      new Renderer({ canvas, context, backgroundColor }),
-      new Camera({
-        position: new Point(0, 0),
-        zoom: 1,
-        rotation: new Angle(0),
-      }),
-      new RunLoop({
-        onFrame: (delta) => {
-          const time = this.getComponent(Time)!;
-          const renderer = this.getComponent(Renderer)!;
+      <>
+        <Time />
+        <Renderer
+          canvas={canvas}
+          context={context}
+          backgroundColor={backgroundColor}
+        />
+        <Camera position={new Point(0, 0)} zoom={1} rotation={new Angle(0)} />
+        <RunLoop
+          onFrame={(delta: number) => {
+            const time = this.getComponent(Time)!;
+            const renderer = this.getComponent(Renderer)!;
 
-          time.tick(delta);
-          renderer.render();
-        },
-      })
+            time.tick(delta);
+            renderer.render();
+          }}
+        />
+      </>
     );
 
     this.element = canvas;

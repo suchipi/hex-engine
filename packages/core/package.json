@@ -1,0 +1,11 @@
+{
+  "name": "core",
+  "version": "0.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "dependencies": {
+    "concubine": "^1.0.1",
+    "mitt": "^1.2.0"
+  }
+}

@@ -1,7 +1,6 @@
 import Entity from "./Entity";
 import HooksSystem from "./HooksSystem";
-
-type Instantiable = { new (...args: Array<any>): any };
+import { ComponentFunction } from "./Element";
 
 export interface ComponentInterface {
   entity: Entity | null;
@@ -24,9 +23,9 @@ export interface ComponentInterface {
     context: CanvasRenderingContext2D;
   }): void;
 
-  getComponent<SomeClass extends Instantiable>(
-    componentClass: SomeClass
-  ): InstanceType<SomeClass> | null;
+  getComponent<API extends {}>(
+    componentClass: ComponentFunction<{}, API>
+  ): (ComponentInterface & API) | null;
 }
 
 export type ComponentConfig = {
@@ -82,9 +81,9 @@ export default class Component implements ComponentInterface {
 
   onDisabled(): void {}
 
-  getComponent<SomeClass extends Instantiable>(
-    componentClass: SomeClass
-  ): InstanceType<SomeClass> | null {
+  getComponent<Props extends {}, API extends {}>(
+    componentClass: ComponentFunction<Props, API>
+  ): (ComponentInterface & API) | null {
     if (this.entity == null) return null;
     return this.entity.getComponent(componentClass);
   }

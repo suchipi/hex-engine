@@ -5,24 +5,19 @@ import Element from "./Element";
 export function instantiate<Props extends {}, API extends {}>(
   element: Element<Props, API>
 ): ComponentInterface & API {
-  if (element.type.prototype.isClassComponent) {
-    // @ts-ignore
-    return new element.type(element.props);
-  } else {
-    const instance = new Component();
-    instance.constructor = element.type; // For lookup
+  const instance = new Component();
+  instance.constructor = element.type; // For lookup
 
-    let ret;
-    HooksSystem.withInstance(instance, () => {
-      ret = element.type(element.props);
-    });
-    if (ret) {
-      Object.assign(instance, ret);
-    }
-
-    // @ts-ignore
-    return instance;
+  let ret;
+  HooksSystem.withInstance(instance, () => {
+    ret = element.type(element.props);
+  });
+  if (ret) {
+    Object.assign(instance, ret);
   }
+
+  // @ts-ignore
+  return instance;
 }
 
 const HooksSystem = makeHooksSystem<ComponentInterface>()({
