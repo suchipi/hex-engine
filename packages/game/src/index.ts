@@ -24,79 +24,64 @@ class AnimationEventSounds extends ecs.Component {
   };
 }
 
-class PlayerMove extends ecs.Component {
-  update(delta: number) {
-    const keyboard = this.getComponent(ecs.Components.Keyboard)!;
-    const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
-    vector.magnitude *= delta * 0.1;
-
-    const position = this.getComponent(ecs.Components.Position)!;
-    position.point = position.point.add(vector.toPoint()).round();
-  }
-}
-
-class Player extends ecs.Entity {
-  constructor() {
-    super(
-      new ecs.Components.Keyboard(),
-      new ecs.Components.Position(0, 0, {
-        origin: new ecs.Point(29 / 2, 41 / 2),
+const player = new ecs.Entity(
+  new ecs.Components.Keyboard(),
+  new ecs.Components.Position(0, 0, {
+    origin: new ecs.Point(29 / 2, 41 / 2),
+  }),
+  new ecs.Components.AnimationSheet({
+    url: bouncy,
+    tileWidth: 29,
+    tileHeight: 41,
+    animations: {
+      default: new ecs.Components.Animation({
+        frames: [
+          0,
+          new ecs.Components.Animation.Frame(1, ["jump"]),
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+        ],
+        duration: 150,
       }),
-      new ecs.Components.AnimationSheet({
-        url: bouncy,
-        tileWidth: 29,
-        tileHeight: 41,
-        animations: {
-          default: new ecs.Components.Animation({
-            frames: [
-              0,
-              new ecs.Components.Animation.Frame(1, ["jump"]),
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-            ],
-            duration: 150,
-          }),
-        },
-      }),
-      new ecs.Components.BasicRenderer(),
-      new PlayerMove(),
-      new AnimationEventSounds()
-    );
-  }
-}
+    },
+  }),
+  new ecs.Components.BasicRenderer(),
+  ecs.simpleComponent({
+    update({ delta, getComponent }) {
+      const keyboard = getComponent(ecs.Components.Keyboard)!;
+      const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
+      vector.magnitude *= delta * 0.1;
 
-const player = new Player();
-
-class StageRenderer extends ecs.Component {
-  draw({
-    context,
-  }: {
-    context: CanvasRenderingContext2D;
-    canvas: HTMLCanvasElement;
-  }) {
-    const position = this.getComponent(ecs.Components.Position)?.point;
-    if (!position) return;
-    let size = this.getComponent(ecs.Components.Size)?.point;
-    if (!size) size = new ecs.Point(10, 10);
-
-    context.strokeStyle = "black";
-    context.strokeRect(
-      position.x - size.x / 2,
-      position.y - size.y / 2,
-      size.x,
-      size.y
-    );
-  }
-}
+      const position = getComponent(ecs.Components.Position)!;
+      position.point = position.point.add(vector.toPoint()).round();
+    },
+  }),
+  new AnimationEventSounds()
+);
 
 const stage = new ecs.Entity(
   new ecs.Components.Position(0, 0),
   new ecs.Components.Size(50, 50),
-  new StageRenderer()
+  ecs.simpleComponent({
+    draw({ context, getComponent }) {
+      const position = getComponent(ecs.Components.Position)?.point;
+      if (!position) return;
+      let size = getComponent(ecs.Components.Size)?.point;
+      if (!size) size = new ecs.Point(10, 10);
+
+      context.strokeStyle = "black";
+      context.strokeRect(
+        position.x - size.x / 2,
+        position.y - size.y / 2,
+        size.x,
+        size.y
+      );
+    },
+  })
 );
 
 const canvas = new ecs.Canvas();

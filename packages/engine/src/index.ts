@@ -3,6 +3,7 @@ import Canvas from "./Canvas";
 import * as Components from "./Components";
 import Component from "./Component";
 import Preloader from "./Preloader";
+import simpleComponent from "./SimpleComponent";
 
 export * from "./Models";
-export { Component, Entity, Canvas, Components, Preloader };
+export { Component, Entity, Canvas, Components, Preloader, simpleComponent };
