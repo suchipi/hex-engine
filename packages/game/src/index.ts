@@ -28,8 +28,10 @@ const player = new ecs.Entity(
     },
   }),
   new ecs.Components.BasicRenderer(),
-  ecs.dslComponent(({ update, getComponent }) => {
-    update((delta) => {
+
+  // Player controls
+  ...ecs.dslComponent(({ onUpdate, getComponent }) => {
+    onUpdate((delta) => {
       const keyboard = getComponent(ecs.Components.Keyboard)!;
       const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
       vector.magnitude *= delta * 0.1;
@@ -38,7 +40,9 @@ const player = new ecs.Entity(
       position.point = position.point.add(vector.toPoint()).round();
     });
   }),
-  ecs.dslComponent(({ getEntity, onEntityReceived, onEnabled, onDisabled }) => {
+
+  // Animation event sounds
+  ...ecs.dslComponent(({ getEntity, onEnabled, onDisabled }) => {
     const jumpSound = new ecs.Components.Audio({ url: jump });
 
     const onAnimationEvent = (event: string) => {
@@ -47,10 +51,6 @@ const player = new ecs.Entity(
       }
     };
 
-    onEntityReceived((ent) => {
-      ent?.addComponent(jumpSound);
-    });
-
     onEnabled(() => {
       getEntity()?.on("animation-event", onAnimationEvent);
     });
@@ -58,14 +58,18 @@ const player = new ecs.Entity(
     onDisabled(() => {
       getEntity()?.off("animation-event", onAnimationEvent);
     });
+
+    return jumpSound;
   })
 );
 
 const stage = new ecs.Entity(
   new ecs.Components.Position(0, 0),
   new ecs.Components.Size(50, 50),
-  ecs.dslComponent(({ draw, getComponent }) => {
-    draw(({ context }) => {
+
+  // stage renderer
+  ...ecs.dslComponent(({ onDraw, getComponent }) => {
+    onDraw(({ context }) => {
       const position = getComponent(ecs.Components.Position)?.point;
       if (!position) return;
       let size = getComponent(ecs.Components.Size)?.point;

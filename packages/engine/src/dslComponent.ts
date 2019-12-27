@@ -7,31 +7,29 @@ type DSL = {
   disable: ComponentInterface["disable"];
   getEntity: () => Entity | null;
 
-  update: (handler: ComponentInterface["update"]) => void;
-  draw: (handler: ComponentInterface["draw"]) => void;
+  onUpdate: (handler: ComponentInterface["update"]) => void;
+  onDraw: (handler: ComponentInterface["draw"]) => void;
 
   onEntityReceived: (handler: ComponentInterface["onEntityReceived"]) => void;
   onDisabled: (handler: ComponentInterface["onDisabled"]) => void;
   onEnabled: (handler: ComponentInterface["onEnabled"]) => void;
 };
 
-class DSLComponent extends BaseComponent {}
-
 export default function dslComponent(
-  body: (dsl: DSL) => void
-): ComponentInterface {
-  const component = new DSLComponent();
+  body: (dsl: DSL) => void | ComponentInterface | Array<ComponentInterface>
+): Array<ComponentInterface> {
+  const component: ComponentInterface = new BaseComponent();
 
-  body({
+  const ret = body({
     getComponent: component.getComponent.bind(component),
     enable: component.enable.bind(component),
     disable: component.disable.bind(component),
     getEntity: () => component.entity,
 
-    update: (handler) => {
+    onUpdate: (handler) => {
       component.update = handler;
     },
-    draw: (handler) => {
+    onDraw: (handler) => {
       component.draw = handler;
     },
 
@@ -48,5 +46,11 @@ export default function dslComponent(
     },
   });
 
-  return component;
+  if (Array.isArray(ret)) {
+    return [component, ...ret];
+  } else if (ret) {
+    return [component, ret];
+  } else {
+    return [component];
+  }
 }
