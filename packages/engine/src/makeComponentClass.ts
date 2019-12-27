@@ -42,7 +42,7 @@ export default function makeComponentClass<
       this._onEntityReceived(entity);
     }
 
-    constructor(...args: Array<any>) {
+    constructor(...args: ConstructorArgs) {
       super();
 
       const component = this;
