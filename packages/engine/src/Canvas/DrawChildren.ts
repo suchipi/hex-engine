@@ -3,6 +3,7 @@ import {
   useDescendantEntities,
   useFrame,
   useStateAccumlator,
+  useEnableDisable,
 } from "@hex-engine/core";
 
 const DRAW_CALLBACKS = Symbol("DRAW_CALLBACKS");
@@ -13,11 +14,13 @@ type DrawCallback = (
 ) => void;
 
 export function useDraw(callback: DrawCallback) {
-  // TODO: useEnableDisable in here
+  const { onDisabled, onEnabled, ...enableDisableApi } = useEnableDisable();
 
   useStateAccumlator<DrawCallback>(DRAW_CALLBACKS).add(
     useCallbackAsCurrent(callback)
   );
+
+  return enableDisableApi;
 }
 
 type Props = {
@@ -38,11 +41,14 @@ export function DrawChildren({ canvas, context, backgroundColor }: Props) {
     const ents = useDescendantEntities();
     for (const ent of ents) {
       for (const component of ent.components) {
-        const callbacks = component.accumulatedState<DrawCallback>(
-          DRAW_CALLBACKS
-        );
-        for (const callback of callbacks) {
-          callback(context, canvas);
+        const comp = component as any;
+        if (typeof comp.getIsEnabled === "function" && comp.getIsEnabled()) {
+          const drawCallbacks = component.accumulatedState<DrawCallback>(
+            DRAW_CALLBACKS
+          );
+          for (const drawCallback of drawCallbacks) {
+            drawCallback(context, canvas);
+          }
         }
       }
     }

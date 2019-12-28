@@ -4,7 +4,7 @@ import AnimationSheet from "./AnimationSheet";
 import Position from "./Position";
 
 export default function BasicRenderer() {
-  useDraw((context) => {
+  return useDraw((context) => {
     const position = useExistingComponent(Position);
     if (!position) return;
 

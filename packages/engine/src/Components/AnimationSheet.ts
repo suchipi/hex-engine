@@ -6,7 +6,7 @@ type Props = {
   url: string;
   tileWidth: number;
   tileHeight: number;
-  // You should create these animations before passing them in
+  // You should call useNewComponent on these animations before passing them in
   animations: { [name: string]: AnimationAPI<number> };
 };
 

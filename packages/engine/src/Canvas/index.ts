@@ -1,8 +1,6 @@
 import { useNewComponent, Components } from "@hex-engine/core";
 import { UpdateChildren, useUpdate } from "./UpdateChildren";
 import { DrawChildren, useDraw } from "./DrawChildren";
-import Camera from "./Camera";
-import { Angle, Point } from "../Models";
 
 type Props = {
   element?: HTMLCanvasElement;
@@ -32,11 +30,6 @@ export default function Canvas(props: Props) {
     backgroundColor,
   });
   useNewComponent(UpdateChildren);
-  useNewComponent(Camera, {
-    position: new Point(0, 0),
-    zoom: 1,
-    rotation: new Angle(0),
-  });
 
   return {
     element: canvas,

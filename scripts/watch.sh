@@ -3,6 +3,7 @@ set -e
 
 export PATH="./node_modules/.bin:$PATH"
 
+./scripts/build-core.sh
 ./scripts/build-engine.sh
 concurrently \
   'chokidar "packages/core/src/**/*" -c "./scripts/build-core.sh"'\

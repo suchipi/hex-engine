@@ -11,9 +11,15 @@ export default function useEnableDisable() {
 
     onEnabled: (handler: () => void) => {
       enabledHandler = useCallbackAsCurrent(handler);
+      if (isEnabled) {
+        enabledHandler();
+      }
     },
     onDisabled: (handler: () => void) => {
       disabledHandler = useCallbackAsCurrent(handler);
+      if (!isEnabled) {
+        disabledHandler();
+      }
     },
 
     enable: () => {

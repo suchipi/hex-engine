@@ -19,6 +19,11 @@ export type AnimationAPI<T> = {
   pause(): void;
   play(): void;
   restart(): void;
+
+  // updateApi
+  getIsEnabled: () => boolean;
+  enable: () => void;
+  disable: () => void;
 };
 
 export default function Animation<T>(props: Props<T>): AnimationAPI<T> {
