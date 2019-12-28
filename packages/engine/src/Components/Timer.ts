@@ -1,9 +1,9 @@
-import { onUpdate } from "@hex-engine/core";
+import { useUpdate } from "../Canvas";
 
 function Timer() {
   let target = 0;
 
-  onUpdate((delta) => {
+  const updateApi = useUpdate((delta) => {
     target += delta;
   });
 
@@ -14,6 +14,7 @@ function Timer() {
     delta() {
       return target;
     },
+    ...updateApi,
   };
 }
 

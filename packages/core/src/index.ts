@@ -1,31 +1,29 @@
-import Entity from "./Entity";
-import Component from "./Component";
+import { Entity, EntityImplementation } from "./Entity";
+import { Component } from "./Component";
 import HooksSystem from "./HooksSystem";
-import RunLoop from "./Components/RunLoop";
+import * as Components from "./Components";
+
+const createEntity: typeof EntityImplementation._create = (...args) => {
+  return EntityImplementation._create(...args);
+};
 
 const {
-  create,
-  getComponent,
-  enable,
-  disable,
-  getEntity,
-  onUpdate,
-  onDraw,
-  onDisabled,
-  onEnabled,
+  useNewComponent,
+  useExistingComponent,
+  useEntity,
+  useCallbackAsCurrent,
+  useStateAccumlator,
 } = HooksSystem.hooks;
 
 export {
-  Component,
+  Components,
   Entity,
-  RunLoop,
-  create,
-  getComponent,
-  enable,
-  disable,
-  getEntity,
-  onUpdate,
-  onDraw,
-  onDisabled,
-  onEnabled,
+  Component,
+  createEntity,
+  useNewComponent,
+  useExistingComponent,
+  useEntity,
+  useCallbackAsCurrent,
+  useStateAccumlator,
 };
+export * from "./Hooks";

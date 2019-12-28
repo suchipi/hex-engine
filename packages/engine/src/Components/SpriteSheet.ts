@@ -1,4 +1,4 @@
-import { create, getComponent } from "@hex-engine/core";
+import { useNewComponent, useExistingComponent } from "@hex-engine/core";
 import Image from "./Image";
 import Size from "./Size";
 import { Point } from "../Models";
@@ -10,10 +10,10 @@ type Props = {
 };
 
 export default function SpriteSheet({ url, tileWidth, tileHeight }: Props) {
-  const image = create(Image, { url });
+  const image = useNewComponent(Image, { url });
 
-  if (!getComponent(Size)) {
-    create(Size, new Point(tileWidth, tileHeight));
+  if (!useExistingComponent(Size)) {
+    useNewComponent(Size, new Point(tileWidth, tileHeight));
   }
 
   return {

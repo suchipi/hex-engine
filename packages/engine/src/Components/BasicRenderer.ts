@@ -1,13 +1,14 @@
-import { onDraw, getComponent } from "@hex-engine/core";
+import { useExistingComponent } from "@hex-engine/core";
+import { useDraw } from "../Canvas";
 import AnimationSheet from "./AnimationSheet";
 import Position from "./Position";
 
 export default function BasicRenderer() {
-  onDraw(({ context }) => {
-    const position = getComponent(Position);
+  useDraw((context) => {
+    const position = useExistingComponent(Position);
     if (!position) return;
 
-    const animSheet = getComponent(AnimationSheet);
+    const animSheet = useExistingComponent(AnimationSheet);
     if (!animSheet) return;
 
     // TODO: Rotation

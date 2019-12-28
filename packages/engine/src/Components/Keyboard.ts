@@ -1,4 +1,4 @@
-import { onEnabled, onDisabled } from "@hex-engine/core";
+import { useEnableDisable } from "@hex-engine/core";
 import { Vector, Angle } from "../Models";
 
 export default function Keyboard() {
@@ -18,6 +18,8 @@ export default function Keyboard() {
     pressed.delete(event.key);
   };
 
+  const { onEnabled, onDisabled, ...enableDisableApi } = useEnableDisable();
+
   onEnabled(() => {
     document.addEventListener("keydown", processKeydown);
     document.addEventListener("keyup", processKeyup);
@@ -29,6 +31,7 @@ export default function Keyboard() {
   });
 
   return {
+    ...enableDisableApi,
     pressed,
     vectorFromKeys(
       upKey: string,

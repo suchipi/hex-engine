@@ -1,7 +1,6 @@
-import * as core from "@hex-engine/core";
-const { create } = core;
-import Time from "./Time";
-import Renderer from "./Renderer";
+import { useNewComponent, Components } from "@hex-engine/core";
+import { UpdateChildren, useUpdate } from "./UpdateChildren";
+import { DrawChildren, useDraw } from "./DrawChildren";
 import Camera from "./Camera";
 import { Angle, Point } from "../Models";
 
@@ -10,7 +9,7 @@ type Props = {
   backgroundColor: string;
 };
 
-function Canvas(props: Props) {
+export default function Canvas(props: Props) {
   const backgroundColor = props.backgroundColor;
 
   let canvas: HTMLCanvasElement;
@@ -26,22 +25,17 @@ function Canvas(props: Props) {
     throw new Error("2d drawing context type not supported by browser");
   }
 
-  const renderer = create(Renderer, {
+  useNewComponent(Components.RunLoop);
+  useNewComponent(DrawChildren, {
     canvas,
     context,
     backgroundColor,
   });
-  const time = create(Time);
-  create(Camera, {
+  useNewComponent(UpdateChildren);
+  useNewComponent(Camera, {
     position: new Point(0, 0),
     zoom: 1,
     rotation: new Angle(0),
-  });
-  create(core.RunLoop, {
-    onFrame: (delta: number) => {
-      time.tick(delta);
-      renderer.render();
-    },
   });
 
   return {
@@ -88,8 +82,4 @@ function Canvas(props: Props) {
   };
 }
 
-export default Object.assign(Canvas, {
-  Time,
-  Renderer,
-  Camera,
-});
+export { useUpdate, useDraw };

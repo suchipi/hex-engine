@@ -1,4 +1,4 @@
-import { create } from "@hex-engine/core";
+import { useNewComponent } from "@hex-engine/core";
 import SpriteSheet from "./SpriteSheet";
 import { AnimationAPI } from "./Animation";
 
@@ -16,7 +16,7 @@ export default function AnimationSheet({
   tileHeight,
   animations,
 }: Props) {
-  const spriteSheet = create(SpriteSheet, {
+  const spriteSheet = useNewComponent(SpriteSheet, {
     url,
     tileWidth,
     tileHeight,

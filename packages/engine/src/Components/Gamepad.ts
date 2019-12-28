@@ -1,4 +1,4 @@
-import { onUpdate } from "@hex-engine/core";
+import { useUpdate } from "../Canvas";
 import { Vector, Point, Angle } from "../Models";
 
 type Props = {
@@ -52,7 +52,7 @@ export default function Gamepad(props: Partial<Props>) {
     return state.buttonNames[index] || "unknown button";
   }
 
-  onUpdate(() => {
+  useUpdate(() => {
     const gamepad = navigator.getGamepads()[0];
     if (gamepad == null) {
       state.present = false;
@@ -73,6 +73,5 @@ export default function Gamepad(props: Partial<Props>) {
     });
   });
 
-  // TODO: this can't mutate, so this component is useless. Need a new hook here
   return state;
 }

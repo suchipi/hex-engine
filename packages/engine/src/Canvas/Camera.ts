@@ -1,5 +1,5 @@
 import { onUpdate, getComponent } from "@hex-engine/core";
-import Renderer from "./Renderer";
+import Renderer from "./DrawChildren";
 import { Point, Angle } from "../Models";
 
 type Data = {

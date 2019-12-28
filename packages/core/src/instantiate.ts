@@ -1,6 +1,10 @@
-import Component, { ComponentInterface, ComponentFunction } from "./Component";
+import {
+  Component,
+  ComponentImplementation,
+  ComponentFunction,
+} from "./Component";
 import HooksSystem from "./HooksSystem";
-import Entity from "./Entity";
+import { Entity } from "./Entity";
 
 function gatherPropertyNames(obj: Object, soFar: Set<string> = new Set()) {
   const proto = Object.getPrototypeOf(obj);
@@ -33,12 +37,8 @@ export default function instantiate<
   Props,
   API,
   ComponentFunc extends ComponentFunction<Props, API>
->(
-  componentFunc: ComponentFunc,
-  props: Props,
-  entity: Entity
-): ComponentInterface & API {
-  const instance = new Component(componentFunc, entity);
+>(componentFunc: ComponentFunc, props: Props, entity: Entity): Component & API {
+  const instance = new ComponentImplementation(componentFunc, entity);
 
   const ret: unknown = HooksSystem.withInstance(instance, () => {
     return componentFunc(props);

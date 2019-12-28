@@ -1,4 +1,5 @@
-import { create, onUpdate } from "@hex-engine/core";
+import { useNewComponent } from "@hex-engine/core";
+import { useUpdate } from "../Canvas";
 import Timer from "./Timer";
 
 export class AnimationFrame<T> {
@@ -22,7 +23,7 @@ export type AnimationAPI<T> = {
 
 export default function Animation<T>(props: Props<T>): AnimationAPI<T> {
   const frames = props;
-  const timer = create(Timer);
+  const timer = useNewComponent(Timer);
   timer.disable();
   let currentFrameIndex = 0;
 
@@ -30,7 +31,7 @@ export default function Animation<T>(props: Props<T>): AnimationAPI<T> {
     return frames[currentFrameIndex];
   }
 
-  onUpdate(() => {
+  const updateApi = useUpdate(() => {
     if (timer.delta() > 0) {
       if (currentFrameIndex === frames.length - 1) {
         currentFrameIndex = 0;
@@ -60,5 +61,7 @@ export default function Animation<T>(props: Props<T>): AnimationAPI<T> {
     restart() {
       currentFrameIndex = 0;
     },
+
+    ...updateApi,
   };
 }

@@ -1,44 +1,53 @@
 import { makeHooksSystem } from "concubine";
-import { ComponentInterface } from "./Component";
+import { Component, ComponentImplementation } from "./Component";
 import instantiate from "./instantiate";
 
-const HooksSystem = makeHooksSystem<ComponentInterface>()({
-  create: (instance) => <Func extends (...args: any[]) => any>(
+const HooksSystem = makeHooksSystem<Component>()({
+  useNewComponent: (instance) => <Func extends (...args: any[]) => any>(
     ...args: Parameters<Func>[0] extends void
       ? [Func]
       : [Func, Parameters<Func>[0]]
-  ): ReturnType<Func> extends {}
-    ? ComponentInterface & ReturnType<Func>
-    : ComponentInterface => {
+  ): ReturnType<Func> extends {} ? Component & ReturnType<Func> : Component => {
     const [componentFunc, props] = args;
 
     const child = instantiate(componentFunc, props, instance.entity);
-    instance.entity.addComponent(child);
+    instance.entity.components.add(child);
 
     // @ts-ignore
     return child;
   },
 
-  getComponent: (instance) => instance.getComponent.bind(instance),
-  enable: (instance) => instance.enable.bind(instance),
-  disable: (instance) => instance.disable.bind(instance),
+  useExistingComponent: (instance) =>
+    instance.entity.getComponent.bind(instance.entity),
 
-  getEntity: (instance) => () => instance.entity,
+  useEntity: (instance) => () => instance.entity,
 
-  onUpdate: (instance) => (handler: ComponentInterface["update"]) => {
-    instance.update = handler;
-  },
-  onDraw: (instance) => (handler: ComponentInterface["draw"]) => {
-    instance.draw = handler;
-  },
-  onDisabled: (instance) => (handler: ComponentInterface["onDisabled"]) => {
-    instance.onDisabled = handler;
-  },
-  onEnabled: (instance) => (handler: ComponentInterface["onEnabled"]) => {
-    instance.onEnabled = handler;
+  useCallbackAsCurrent: (instance) => <Func extends (...args: any[]) => any>(
+    callback: Func
+  ): ((...args: Parameters<Func>) => ReturnType<Func>) => {
+    return (...args: Parameters<Func>): ReturnType<Func> => {
+      return HooksSystem.withInstance(instance, () => {
+        return callback(...args);
+      });
+    };
   },
 
-  _getInstance: (instance) => () => instance,
+  useStateAccumlator: (instance) => <T>(
+    key: symbol
+  ): { add(newValue: T): void } => {
+    const implInstance = instance as ComponentImplementation;
+
+    const state = implInstance._accumulatedState as any;
+    if (!state[key]) {
+      state[key] = [];
+    }
+
+    return {
+      add(newValue) {
+        state[key].push(newValue);
+      },
+    };
+  },
 });
 
 export default HooksSystem;
