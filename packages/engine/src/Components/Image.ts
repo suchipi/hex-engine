@@ -1,16 +1,14 @@
-import Component, { ComponentConfig } from "../Component";
 import Preloader from "../Preloader";
 
 const cache: { [url: string]: Image } = {};
 
-export default class Image extends Component {
+class Image {
   url: string;
   _loadingPromise: Promise<void> | null = null;
   loaded: boolean = false;
   data: HTMLImageElement | null = null;
 
-  constructor(config: Partial<ComponentConfig> & { url: string }) {
-    super(config);
+  constructor(config: { url: string }) {
     this.url = config.url;
 
     if (cache[config.url]) {
@@ -83,4 +81,8 @@ export default class Image extends Component {
       targetHeight
     );
   }
+}
+
+export default function ImageComponent(props: { url: string }) {
+  return new Image(props);
 }

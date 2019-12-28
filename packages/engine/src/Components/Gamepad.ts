@@ -1,15 +1,19 @@
-import Component, { ComponentConfig } from "../Component";
+import { onUpdate } from "@hex-engine/core";
 import { Vector, Point, Angle } from "../Models";
 
-type Data = {
+type Props = {
   deadzone: number;
   buttonNames: Array<string>;
 };
 
-function getDefaults() {
-  return {
-    deadzone: 0.1,
-    buttonNames: [
+export default function Gamepad(props: Partial<Props>) {
+  const state = {
+    leftStick: new Vector(new Angle(0), 0),
+    rightStick: new Vector(new Angle(0), 0),
+    pressed: new Set<string>(),
+    present: false,
+    deadzone: props.deadzone ?? 0.1,
+    buttonNames: props.buttonNames ?? [
       "cross",
       "circle",
       "square",
@@ -29,59 +33,46 @@ function getDefaults() {
       "home",
     ],
   };
-}
 
-export default class Gamepad extends Component {
-  leftStick: Vector = new Vector(new Angle(0), 0);
-  rightStick: Vector = new Vector(new Angle(0), 0);
-  pressed: Set<string> = new Set();
-  present: boolean = false;
-  deadzone: number;
-  buttonNames: Array<string>;
-
-  constructor(data: Partial<Data & ComponentConfig>) {
-    super(data);
-    const defaults = getDefaults();
-    this.deadzone = data.deadzone ?? defaults.deadzone;
-    this.buttonNames = data.buttonNames ?? defaults.buttonNames;
-  }
-
-  private _stickToVector(x: number, y: number) {
+  function stickToVector(x: number, y: number) {
     const origin = new Point(0, 0);
     // Invert y component because gamepad
     // sticks are normal polar coordinate system
     const target = new Point(x, -y);
 
     const vector = Vector.fromPoints(origin, target);
-    if (Math.abs(vector.magnitude) < this.deadzone) {
+    if (Math.abs(vector.magnitude) < state.deadzone) {
       vector.magnitude = 0;
     }
 
     return vector;
   }
 
-  private _buttonName(index: number): string {
-    return this.buttonNames[index] || "unknown button";
+  function buttonName(index: number): string {
+    return state.buttonNames[index] || "unknown button";
   }
 
-  update() {
+  onUpdate(() => {
     const gamepad = navigator.getGamepads()[0];
     if (gamepad == null) {
-      this.present = false;
+      state.present = false;
       return;
     }
-    this.present = true;
+    state.present = true;
 
-    this.leftStick = this._stickToVector(gamepad.axes[0], gamepad.axes[1]);
-    this.rightStick = this._stickToVector(gamepad.axes[2], gamepad.axes[3]);
+    state.leftStick = stickToVector(gamepad.axes[0], gamepad.axes[1]);
+    state.rightStick = stickToVector(gamepad.axes[2], gamepad.axes[3]);
 
     gamepad.buttons.forEach((button, index) => {
-      const name = this._buttonName(index);
+      const name = buttonName(index);
       if (button.pressed) {
-        this.pressed.add(name);
+        state.pressed.add(name);
       } else {
-        this.pressed.delete(name);
+        state.pressed.delete(name);
       }
     });
-  }
+  });
+
+  // TODO: this can't mutate, so this component is useless. Need a new hook here
+  return state;
 }

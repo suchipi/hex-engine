@@ -1,10 +1,5 @@
-import * as ecs from "engine";
-import bouncy from "./bouncy-29x41.png";
-import jump from "./jump.wav";
-
-const {
+import {
   Entity,
-  Component,
   Canvas,
   Point,
   Angle,
@@ -13,18 +8,16 @@ const {
   Position,
   AnimationSheet,
   Animation,
+  AnimationFrame,
   BasicRenderer,
-  Audio,
   Size,
-  createElement,
   onUpdate,
   getComponent,
   create,
-  getEntity,
   onDraw,
-  onDisabled,
-  onEnabled,
-} = ecs;
+} from "@hex-engine/2d";
+import bouncy from "./bouncy-29x41.png";
+// import jump from "./jump.wav";
 
 function PlayerControls() {
   onUpdate((delta) => {
@@ -37,48 +30,37 @@ function PlayerControls() {
   });
 }
 
-function AnimationEventSounds() {
-  const jumpSound = create(<Audio url={jump} />);
-
-  const onAnimationEvent = (event: string) => {
-    if (event === "jump") {
-      jumpSound.play({ volume: 0.1 });
-    }
-  };
-
-  onEnabled(() => {
-    getEntity()?.on("animation-event", onAnimationEvent);
+function Player() {
+  create(Keyboard);
+  create(Position, {
+    point: new Point(0, 0),
+    origin: new Point(29 / 2, 41 / 2),
   });
-
-  onDisabled(() => {
-    getEntity()?.off("animation-event", onAnimationEvent);
+  create(AnimationSheet, {
+    url: bouncy,
+    tileWidth: 29,
+    tileHeight: 41,
+    animations: {
+      // @ts-ignore TODO: embedded generic support :\
+      default: create(
+        Animation,
+        [0, 1, 2, 3, 4, 5, 6, 7].map(
+          (num) => new AnimationFrame(num, { duration: 150 })
+        )
+      ),
+    },
   });
+  create(BasicRenderer);
+  create(PlayerControls);
+  // create(AnimationEventSounds);
 }
 
-const player = new Entity(
-  (
-    <>
-      <Keyboard />
-      <Position x={0} y={0} origin={new Point(29 / 2, 41 / 2)} />
-      <AnimationSheet
-        url={bouncy}
-        tileWidth={29}
-        tileHeight={41}
-        animations={{
-          default: new Animation({
-            frames: [0, new Animation.Frame(1, ["jump"]), 2, 3, 4, 5, 6, 7],
-            duration: 150,
-          }),
-        }}
-      />
-      <BasicRenderer />
-      <PlayerControls />
-      <AnimationEventSounds />
-    </>
-  )
-);
+const player = Entity.create(Player);
 
-function StageRenderer() {
+function Stage() {
+  create(Position, { point: new Point(0, 0) });
+  create(Size, new Point(50, 50));
+
   onDraw(({ context }) => {
     const position = getComponent(Position)?.point;
     if (!position) return;
@@ -94,33 +76,30 @@ function StageRenderer() {
     );
   });
 }
+const stage = Entity.create(Stage);
 
-const stage = new Entity(
-  (
-    <>
-      <Position x={0} y={0} />
-      <Size width={50} height={50} />
-      <StageRenderer />
-    </>
-  )
-);
+function MyCanvas() {
+  const canvas = create(Canvas, { backgroundColor: "white" });
+  canvas.fullscreen({ pixelRatio: 3 });
 
-const canvas = new Canvas();
-canvas.fullscreen({ pixelRatio: 3 });
+  create(CameraControlBehaviour);
+}
 
-class CameraControlBehaviour extends Component {
-  killInputFor: number = 0;
+function CameraControlBehaviour() {
+  let killInputFor = 0;
+  const keyboard = create(Keyboard);
 
-  update(delta: number) {
-    if (this.killInputFor > 0) {
-      this.killInputFor -= delta;
-      if (this.killInputFor > 0) return;
+  onUpdate((delta: number) => {
+    if (killInputFor > 0) {
+      killInputFor -= delta;
+      if (killInputFor > 0) return;
     }
 
-    const camera = this.getComponent(Canvas.Camera);
-    if (!camera) return;
-
-    const keyboard = this.getComponent(Keyboard)!;
+    const camera = getComponent(Canvas.Camera);
+    if (!camera) {
+      console.log("no camera");
+      return;
+    }
 
     // position
     const vector = keyboard.vectorFromKeys("i", "k", "j", "l");
@@ -141,7 +120,7 @@ class CameraControlBehaviour extends Component {
 
     if (keyboard.pressed.has("u") && keyboard.pressed.has("o")) {
       camera.rotation = new Angle(0);
-      this.killInputFor = 100;
+      killInputFor = 100;
     }
 
     // zoom
@@ -155,23 +134,18 @@ class CameraControlBehaviour extends Component {
 
     if (keyboard.pressed.has("n") && keyboard.pressed.has("m")) {
       camera.zoom = 1;
-      this.killInputFor = 100;
+      killInputFor = 100;
     }
-  }
+  });
 }
 
-canvas.addComponent(new CameraControlBehaviour());
-canvas.addComponent(new Keyboard());
+const canvas = Entity.create(MyCanvas);
 
 canvas.addChild(stage);
 canvas.addChild(player);
 
+import * as hex from "@hex-engine/2d";
 // @ts-ignore
-window.ecs = ecs;
+window.hex = hex;
 // @ts-ignore
 window.canvas = canvas;
-
-canvas.element.style.display = "none";
-Preloader.load().then(() => {
-  canvas.element.style.display = "";
-});

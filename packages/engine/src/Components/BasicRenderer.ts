@@ -1,18 +1,13 @@
-import Component from "../Component";
+import { onDraw, getComponent } from "@hex-engine/core";
 import AnimationSheet from "./AnimationSheet";
 import Position from "./Position";
 
-export default class BasicRenderer extends Component {
-  draw({
-    context,
-  }: {
-    context: CanvasRenderingContext2D;
-    canvas: HTMLCanvasElement;
-  }): void {
-    const position = this.getComponent(Position);
+export default function BasicRenderer() {
+  onDraw(({ context }) => {
+    const position = getComponent(Position);
     if (!position) return;
 
-    const animSheet = this.getComponent(AnimationSheet);
+    const animSheet = getComponent(AnimationSheet);
     if (!animSheet) return;
 
     // TODO: Rotation
@@ -24,5 +19,5 @@ export default class BasicRenderer extends Component {
       x: target.x,
       y: target.y,
     });
-  }
+  });
 }

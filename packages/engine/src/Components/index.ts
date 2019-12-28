@@ -1,4 +1,4 @@
-import Animation from "./Animation";
+import Animation, { AnimationFrame } from "./Animation";
 import AnimationSheet from "./AnimationSheet";
 import Audio from "./Audio";
 import BasicRenderer from "./BasicRenderer";
@@ -13,6 +13,7 @@ import Timer from "./Timer";
 
 export {
   Animation,
+  AnimationFrame,
   AnimationSheet,
   Audio,
   BasicRenderer,

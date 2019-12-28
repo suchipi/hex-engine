@@ -1,31 +1,21 @@
 import { makeHooksSystem } from "concubine";
-import Component, { ComponentInterface } from "./Component";
-import Element from "./Element";
-
-export function instantiate<Props extends {}, API extends {}>(
-  element: Element<Props, API>
-): ComponentInterface & API {
-  const instance = new Component();
-  instance.constructor = element.type; // For lookup
-
-  let ret;
-  HooksSystem.withInstance(instance, () => {
-    ret = element.type(element.props);
-  });
-  if (ret) {
-    Object.assign(instance, ret);
-  }
-
-  // @ts-ignore
-  return instance;
-}
+import { ComponentInterface } from "./Component";
+import instantiate from "./instantiate";
 
 const HooksSystem = makeHooksSystem<ComponentInterface>()({
-  create: (instance) => <Props, API>(
-    element: Element<Props, API>
-  ): ComponentInterface & API => {
-    const child = instantiate(element);
-    instance._childrenToAdd.push(child);
+  create: (instance) => <Func extends (...args: any[]) => any>(
+    ...args: Parameters<Func>[0] extends void
+      ? [Func]
+      : [Func, Parameters<Func>[0]]
+  ): ReturnType<Func> extends {}
+    ? ComponentInterface & ReturnType<Func>
+    : ComponentInterface => {
+    const [componentFunc, props] = args;
+
+    const child = instantiate(componentFunc, props, instance.entity);
+    instance.entity.addComponent(child);
+
+    // @ts-ignore
     return child;
   },
 
@@ -41,17 +31,14 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
   onDraw: (instance) => (handler: ComponentInterface["draw"]) => {
     instance.draw = handler;
   },
-  onEntityReceived: (instance) => (
-    handler: ComponentInterface["onEntityReceived"]
-  ) => {
-    instance.onEntityReceived = handler;
-  },
   onDisabled: (instance) => (handler: ComponentInterface["onDisabled"]) => {
     instance.onDisabled = handler;
   },
   onEnabled: (instance) => (handler: ComponentInterface["onEnabled"]) => {
     instance.onEnabled = handler;
   },
+
+  _getInstance: (instance) => () => instance,
 });
 
 export default HooksSystem;

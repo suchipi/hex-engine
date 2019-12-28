@@ -1,83 +1,78 @@
-import Component from "../Component";
+import { onEnabled, onDisabled } from "@hex-engine/core";
 import { Vector, Angle } from "../Models";
 
-export default class Keyboard extends Component {
-  pressed: Set<string> = new Set();
+export default function Keyboard() {
+  const pressed: Set<string> = new Set();
 
-  onEnabled() {
-    this._bindListeners();
-  }
-
-  onDisabled() {
-    this._unbindListeners();
-  }
-
-  private _bindListeners() {
-    document.addEventListener("keydown", this._processKeydown);
-    document.addEventListener("keyup", this._processKeyup);
-  }
-
-  private _unbindListeners() {
-    document.removeEventListener("keydown", this._processKeydown);
-    document.removeEventListener("keyup", this._processKeyup);
-  }
-
-  private _processKeydown = (event: KeyboardEvent) => {
+  const processKeydown = (event: KeyboardEvent) => {
     if (event.repeat) {
       return;
     }
-    this.pressed.add(event.key);
+    pressed.add(event.key);
   };
 
-  private _processKeyup = (event: KeyboardEvent) => {
+  const processKeyup = (event: KeyboardEvent) => {
     if (event.repeat) {
       return;
     }
-    this.pressed.delete(event.key);
+    pressed.delete(event.key);
   };
 
-  vectorFromKeys(
-    upKey: string,
-    downKey: string,
-    leftKey: string,
-    rightKey: string
-  ): Vector {
-    const pressedKeys = this.pressed;
-    let angle = 0;
-    let magnitude = 1;
+  onEnabled(() => {
+    document.addEventListener("keydown", processKeydown);
+    document.addEventListener("keyup", processKeyup);
+  });
 
-    const half = Math.PI;
-    const quarter = Math.PI / 2;
-    const eighth = Math.PI / 4;
+  onDisabled(() => {
+    document.removeEventListener("keydown", processKeydown);
+    document.removeEventListener("keyup", processKeyup);
+  });
 
-    if (pressedKeys.has(upKey) && pressedKeys.has(rightKey)) {
-      // up right
-      angle = -eighth;
-    } else if (pressedKeys.has(upKey) && pressedKeys.has(leftKey)) {
-      // up left
-      angle = half + eighth;
-    } else if (pressedKeys.has(downKey) && pressedKeys.has(rightKey)) {
-      // down right
-      angle = eighth;
-    } else if (pressedKeys.has(downKey) && pressedKeys.has(leftKey)) {
-      // down left
-      angle = quarter + eighth;
-    } else if (pressedKeys.has(upKey) && !pressedKeys.has(downKey)) {
-      // up
-      angle = -quarter;
-    } else if (pressedKeys.has(downKey) && !pressedKeys.has(upKey)) {
-      // down
-      angle = quarter;
-    } else if (pressedKeys.has(leftKey) && !pressedKeys.has(rightKey)) {
-      // left
-      angle = half;
-    } else if (pressedKeys.has(rightKey) && !pressedKeys.has(leftKey)) {
-      // right
-      angle = 0;
-    } else {
-      magnitude = 0;
-    }
+  return {
+    pressed,
+    vectorFromKeys(
+      upKey: string,
+      downKey: string,
+      leftKey: string,
+      rightKey: string
+    ): Vector {
+      const pressedKeys = pressed;
+      let angle = 0;
+      let magnitude = 1;
 
-    return new Vector(new Angle(angle), magnitude);
-  }
+      const half = Math.PI;
+      const quarter = Math.PI / 2;
+      const eighth = Math.PI / 4;
+
+      if (pressedKeys.has(upKey) && pressedKeys.has(rightKey)) {
+        // up right
+        angle = -eighth;
+      } else if (pressedKeys.has(upKey) && pressedKeys.has(leftKey)) {
+        // up left
+        angle = half + eighth;
+      } else if (pressedKeys.has(downKey) && pressedKeys.has(rightKey)) {
+        // down right
+        angle = eighth;
+      } else if (pressedKeys.has(downKey) && pressedKeys.has(leftKey)) {
+        // down left
+        angle = quarter + eighth;
+      } else if (pressedKeys.has(upKey) && !pressedKeys.has(downKey)) {
+        // up
+        angle = -quarter;
+      } else if (pressedKeys.has(downKey) && !pressedKeys.has(upKey)) {
+        // down
+        angle = quarter;
+      } else if (pressedKeys.has(leftKey) && !pressedKeys.has(rightKey)) {
+        // left
+        angle = half;
+      } else if (pressedKeys.has(rightKey) && !pressedKeys.has(leftKey)) {
+        // right
+        angle = 0;
+      } else {
+        magnitude = 0;
+      }
+
+      return new Vector(new Angle(angle), magnitude);
+    },
+  };
 }

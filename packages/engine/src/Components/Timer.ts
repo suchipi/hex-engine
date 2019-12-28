@@ -1,6 +1,4 @@
-import HooksSystem from "../HooksSystem";
-
-const { onUpdate } = HooksSystem.hooks;
+import { onUpdate } from "@hex-engine/core";
 
 function Timer() {
   let target = 0;

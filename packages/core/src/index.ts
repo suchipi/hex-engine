@@ -1,7 +1,7 @@
 import Entity from "./Entity";
 import Component from "./Component";
-import { createElement } from "./Element";
 import HooksSystem from "./HooksSystem";
+import RunLoop from "./Components/RunLoop";
 
 const {
   create,
@@ -11,7 +11,6 @@ const {
   getEntity,
   onUpdate,
   onDraw,
-  onEntityReceived,
   onDisabled,
   onEnabled,
 } = HooksSystem.hooks;
@@ -19,7 +18,7 @@ const {
 export {
   Component,
   Entity,
-  createElement,
+  RunLoop,
   create,
   getComponent,
   enable,
@@ -27,7 +26,6 @@ export {
   getEntity,
   onUpdate,
   onDraw,
-  onEntityReceived,
   onDisabled,
   onEnabled,
 };

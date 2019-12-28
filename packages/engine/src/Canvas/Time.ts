@@ -1,4 +1,4 @@
-import { getEntity } from "core";
+import { getEntity } from "@hex-engine/core";
 
 export default function Time() {
   return {

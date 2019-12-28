@@ -1,14 +1,16 @@
-import Component, { ComponentConfig } from "../Component";
 import Preloader from "../Preloader";
 
-export default class Audio extends Component {
+type Props = {
+  url: string;
+};
+
+class Audio {
   url: string;
   _loadingPromise: Promise<void> | null = null;
   loaded: boolean = false;
   data: HTMLAudioElement | null = null;
 
-  constructor(config: Partial<ComponentConfig> & { url: string }) {
-    super(config);
+  constructor(config: Props) {
     this.url = config.url;
 
     Preloader.addTask(() => this.load());
@@ -49,4 +51,8 @@ export default class Audio extends Component {
     }
     return data.play();
   }
+}
+
+export default function AudioComponent({ url }: Props) {
+  return new Audio({ url });
 }

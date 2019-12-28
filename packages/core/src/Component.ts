@@ -1,18 +1,15 @@
 import Entity from "./Entity";
 import HooksSystem from "./HooksSystem";
-import { ComponentFunction } from "./Element";
+
+export type ComponentFunction<Props, API> = (props: Props) => API;
 
 export interface ComponentInterface {
-  entity: Entity | null;
+  type: ComponentFunction<any, any>;
+  entity: Entity;
+
   isEnabled: boolean;
-  _childrenToAdd: Array<ComponentInterface>;
-
-  _receiveEntity(entity: Entity | null): void;
-  onEntityReceived(entity: Entity | null): void;
-
   enable(): void;
   disable(): void;
-
   onEnabled(): void;
   onDisabled(): void;
 
@@ -23,9 +20,9 @@ export interface ComponentInterface {
     context: CanvasRenderingContext2D;
   }): void;
 
-  getComponent<API extends {}>(
-    componentClass: ComponentFunction<{}, API>
-  ): (ComponentInterface & API) | null;
+  getComponent<API>(
+    componentFunction: ComponentFunction<any, API>
+  ): null | (API extends {} ? ComponentInterface & API : ComponentInterface);
 }
 
 export type ComponentConfig = {
@@ -33,25 +30,15 @@ export type ComponentConfig = {
 };
 
 export default class Component implements ComponentInterface {
-  entity: Entity | null = null;
-  isEnabled: boolean;
-  _childrenToAdd: Array<ComponentInterface> = [];
+  type: ComponentFunction<any, any>;
+  entity: Entity;
+  isEnabled: boolean = true;
 
   isClassComponent: boolean = true;
 
-  constructor(config: Partial<ComponentConfig> = {}) {
-    this.isEnabled = config.isEnabled ?? true;
-  }
-
-  _receiveEntity(entity: Entity | null) {
+  constructor(type: ComponentFunction<any, any>, entity: Entity) {
+    this.type = type;
     this.entity = entity;
-    if (entity) {
-      for (const child of this._childrenToAdd) {
-        entity.addComponent(child);
-      }
-      this._childrenToAdd = [];
-    }
-    this.onEntityReceived(entity);
   }
 
   enable() {
@@ -67,9 +54,6 @@ export default class Component implements ComponentInterface {
       this.onDisabled();
     });
   }
-
-  onEntityReceived(_entity: Entity | null): void {}
-
   onEnabled(): void {}
 
   update(_delta: number): void {}
@@ -81,10 +65,10 @@ export default class Component implements ComponentInterface {
 
   onDisabled(): void {}
 
-  getComponent<Props extends {}, API extends {}>(
-    componentClass: ComponentFunction<Props, API>
-  ): (ComponentInterface & API) | null {
+  getComponent<API>(
+    componentFunction: ComponentFunction<any, API>
+  ): null | (API extends {} ? ComponentInterface & API : ComponentInterface) {
     if (this.entity == null) return null;
-    return this.entity.getComponent(componentClass);
+    return this.entity.getComponent(componentFunction);
   }
 }

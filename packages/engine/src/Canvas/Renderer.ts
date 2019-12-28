@@ -1,39 +1,29 @@
-import { getEntity } from "core";
+import { getEntity } from "@hex-engine/core";
 import { Angle, Point } from "../Models";
 
-type Data = {
+type Props = {
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
   backgroundColor: string;
 };
 
-export default function Renderer({ canvas, context, backgroundColor }: Data) {
-  return {
-    scale(point: Point): void {
-      context.scale(point.x, point.y);
-    },
-
-    translate(point: Point): void {
-      context.translate(point.x, point.y);
-    },
-
-    rotate(angle: number | Angle) {
-      let angleRad = 0;
-      if (typeof angle === "number") {
-        angleRad = angle;
-      } else {
-        angleRad = angle.radians;
-      }
-
-      context.rotate(angleRad);
-    },
+export default function Renderer({ canvas, context, backgroundColor }: Props) {
+  const api = {
+    scale: new Point(1, 1),
+    translation: new Point(0, 0),
+    rotation: new Angle(0),
 
     render() {
       // Reset transform
       context.setTransform(1, 0, 0, 1, 0, 0);
 
+      // Clear canvas
       context.fillStyle = backgroundColor;
       context.fillRect(0, 0, canvas.width, canvas.height);
+
+      context.scale(api.scale.x, api.scale.y);
+      context.translate(api.translation.x, api.translation.y);
+      context.rotate(api.rotation.radians);
 
       const entities = [];
       const entity = getEntity();
@@ -47,4 +37,6 @@ export default function Renderer({ canvas, context, backgroundColor }: Data) {
       }
     },
   };
+
+  return api;
 }

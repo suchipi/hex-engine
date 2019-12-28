@@ -1,10 +1,13 @@
-import { onEnabled, onDisabled } from "core";
+import HooksSystem from "../HooksSystem";
+const { _getInstance, onEnabled, onDisabled } = HooksSystem.hooks;
 
-type Data = {
+type Props = {
   onFrame: (delta: number) => void;
 };
 
-export default function RunLoop({ onFrame }: Data) {
+export default function RunLoop({ onFrame }: Props) {
+  const instance = _getInstance();
+
   let frameRequest: number | null = null;
   let lastTimestamp: number | null = null;
 
@@ -13,7 +16,9 @@ export default function RunLoop({ onFrame }: Data) {
       if (lastTimestamp) {
         const delta = timestamp - lastTimestamp;
         lastTimestamp = timestamp;
-        onFrame(delta);
+        HooksSystem.withInstance(instance, () => {
+          onFrame(delta);
+        });
       } else {
         lastTimestamp = timestamp;
       }
