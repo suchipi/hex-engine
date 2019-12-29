@@ -54,7 +54,7 @@ export default function Canvas(props: Props) {
         : "pixelated";
     },
 
-    fullscreen({ pixelRatio = 1 }: { pixelRatio: number }) {
+    fullscreen({ pixelZoom = 1 }: { pixelZoom: number }) {
       Object.assign(document.body.style, {
         margin: 0,
         padding: 0,
@@ -65,8 +65,8 @@ export default function Canvas(props: Props) {
         this.resize({
           realWidth: window.innerWidth,
           realHeight: window.innerHeight,
-          pixelWidth: window.innerWidth / pixelRatio,
-          pixelHeight: window.innerHeight / pixelRatio,
+          pixelWidth: window.innerWidth / pixelZoom,
+          pixelHeight: window.innerHeight / pixelZoom,
         });
       };
       window.addEventListener("resize", fitToWindow);

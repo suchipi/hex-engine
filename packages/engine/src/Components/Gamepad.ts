@@ -1,5 +1,5 @@
 import { useUpdate } from "../Canvas";
-import { Vector, Point, Angle } from "../Models";
+import { Vector, Vec2, Angle } from "../Models";
 
 type Props = {
   deadzone: number;
@@ -35,10 +35,10 @@ export default function Gamepad(props: Partial<Props>) {
   };
 
   function stickToVector(x: number, y: number) {
-    const origin = new Point(0, 0);
+    const origin = new Vec2(0, 0);
     // Invert y component because gamepad
     // sticks are normal polar coordinate system
-    const target = new Point(x, -y);
+    const target = new Vec2(x, -y);
 
     const vector = Vector.fromPoints(origin, target);
     if (Math.abs(vector.magnitude) < state.deadzone) {

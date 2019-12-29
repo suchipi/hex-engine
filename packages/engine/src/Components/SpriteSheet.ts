@@ -1,7 +1,7 @@
 import { useNewComponent, useExistingComponent } from "@hex-engine/core";
 import Image from "./Image";
 import Size from "./Size";
-import { Point } from "../Models";
+import { Vec2 } from "../Models";
 
 type Props = {
   url: string;
@@ -13,7 +13,7 @@ export default function SpriteSheet({ url, tileWidth, tileHeight }: Props) {
   const image = useNewComponent(Image, { url });
 
   if (!useExistingComponent(Size)) {
-    useNewComponent(Size, new Point(tileWidth, tileHeight));
+    useNewComponent(Size, new Vec2(tileWidth, tileHeight));
   }
 
   return {

@@ -4,9 +4,10 @@ window.hex = hex;
 
 import {
   Canvas,
-  Point,
+  Vec2,
   Keyboard,
   Position,
+  Origin,
   AnimationSheet,
   Animation,
   AnimationFrame,
@@ -28,16 +29,15 @@ function PlayerControls() {
     vector.magnitude *= delta * 0.1;
 
     const position = useExistingComponent(Position)!;
-    position.point = position.point.add(vector.toPoint()).round();
+    position.replace(position.add(vector.toVec2()).round());
   });
 }
 
 const player = createEntity(function Player() {
   useNewComponent(Keyboard);
-  useNewComponent(Position, {
-    point: new Point(0, 0),
-    origin: new Point(29 / 2, 41 / 2),
-  });
+  useNewComponent(Position, new Vec2(0, 0));
+  const size = useNewComponent(Size, new Vec2(29, 41));
+  useNewComponent(Origin, size.dividedBy(2));
   useNewComponent(AnimationSheet, {
     url: bouncy,
     tileWidth: 29,
@@ -57,14 +57,14 @@ const player = createEntity(function Player() {
 });
 
 const stage = createEntity(function Stage() {
-  useNewComponent(Position, { point: new Point(0, 0) });
-  useNewComponent(Size, new Point(50, 50));
+  useNewComponent(Position, new Vec2(0, 0));
+  useNewComponent(Size, new Vec2(50, 50));
 
   return useDraw((context) => {
-    const position = useExistingComponent(Position)?.point;
+    const position = useExistingComponent(Position);
     if (!position) return;
-    let size = useExistingComponent(Size)?.point;
-    if (!size) size = new Point(10, 10);
+    let size: Vec2 | null = useExistingComponent(Size);
+    if (!size) size = new Vec2(10, 10);
 
     context.strokeStyle = "black";
     context.strokeRect(
@@ -78,7 +78,7 @@ const stage = createEntity(function Stage() {
 
 const canvas = createEntity(function MyCanvas() {
   const canvas = useNewComponent(Canvas, { backgroundColor: "white" });
-  canvas.fullscreen({ pixelRatio: 3 });
+  canvas.fullscreen({ pixelZoom: 3 });
 });
 
 canvas.addChild(stage);

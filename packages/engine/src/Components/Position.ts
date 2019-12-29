@@ -1,13 +1,5 @@
-import { Point } from "../Models";
+import { Vec2 } from "../Models";
 
-type Props = {
-  point: Point;
-  origin?: Point;
-};
-
-export default function Position({ point, origin = new Point(0, 0) }: Props) {
-  return {
-    point,
-    origin,
-  };
+export default function Position(position = new Vec2(0, 0)) {
+  return position;
 }

@@ -5,6 +5,7 @@ import BasicRenderer from "./BasicRenderer";
 import Gamepad from "./Gamepad";
 import Image from "./Image";
 import Keyboard from "./Keyboard";
+import Origin from "./Origin";
 import Position from "./Position";
 import Rotation from "./Rotation";
 import Size from "./Size";
@@ -20,6 +21,7 @@ export {
   Gamepad,
   Image,
   Keyboard,
+  Origin,
   Position,
   Rotation,
   Size,
