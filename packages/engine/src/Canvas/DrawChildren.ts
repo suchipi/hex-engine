@@ -42,7 +42,10 @@ export function DrawChildren({ canvas, context, backgroundColor }: Props) {
     for (const ent of ents) {
       for (const component of ent.components) {
         const comp = component as any;
-        if (typeof comp.getIsEnabled === "function" && comp.getIsEnabled()) {
+        if (
+          typeof comp.getIsEnabled !== "function" ||
+          (typeof comp.getIsEnabled === "function" && comp.getIsEnabled())
+        ) {
           const drawCallbacks = component.accumulatedState<DrawCallback>(
             DRAW_CALLBACKS
           );

@@ -26,7 +26,10 @@ export function UpdateChildren() {
     for (const ent of ents) {
       for (const component of ent.components) {
         const comp = component as any;
-        if (typeof comp.getIsEnabled === "function" && comp.getIsEnabled()) {
+        if (
+          typeof comp.getIsEnabled !== "function" ||
+          (typeof comp.getIsEnabled === "function" && comp.getIsEnabled())
+        ) {
           const updateCallbacks = component.accumulatedState<UpdateCallback>(
             UPDATE_CALLBACKS
           );
