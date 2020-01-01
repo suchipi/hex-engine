@@ -164,6 +164,9 @@ export default function Tree({ name, data }: { name?: string; data: any }) {
       className = data.type.name
         ? `Component (${data.type.name})`
         : "Component";
+      if (typeof data.getIsEnabled === "function" && !data.getIsEnabled()) {
+        className += " - disabled";
+      }
       content = entriesForProperties(gatherPropertyNames(data));
     } else {
       className = data.constructor?.name || "";

@@ -6,10 +6,6 @@ import {
 import HooksSystem from "./HooksSystem";
 import * as Components from "./Components";
 
-const createEntity: typeof Entity._create = (...args) => {
-  return Entity._create(...args);
-};
-
 const {
   useNewComponent,
   useExistingComponent,
@@ -17,6 +13,15 @@ const {
   useCallbackAsCurrent,
   useStateAccumlator,
 } = HooksSystem.hooks;
+
+// @ts-ignore
+const createEntity: typeof Entity._create = (func, arg) => {
+  return Entity._create(function BaseEntityLogic() {
+    useNewComponent(Components.EnableDisableEntity);
+    // @ts-ignore
+    return useNewComponent(func, arg);
+  });
+};
 
 export {
   Components,
