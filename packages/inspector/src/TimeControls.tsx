@@ -6,7 +6,7 @@ import { ResumeIcon, StepIcon, PauseIcon } from "./Icons";
 type RunLoopAPI = ReturnType<typeof Components.RunLoop>;
 
 export default function TimeControls({ runLoop }: { runLoop: RunLoopAPI }) {
-  const error = runLoop.getError();
+  const error = runLoop.error;
   return (
     <div
       style={{
@@ -54,8 +54,8 @@ export default function TimeControls({ runLoop }: { runLoop: RunLoopAPI }) {
       <div style={{ flexBasis: "100%", textAlign: "right", padding: 4 }}>
         {runLoop.isPaused()
           ? error
-            ? "Paused due to Error (check console)"
-            : `Paused (frame ${runLoop.getFrameNumber()})`
+            ? `Paused due to ${error.name}: ${error.message} (check console for more info)`
+            : `Paused (frame ${runLoop.frameNumber})`
           : "Running"}
       </div>
     </div>

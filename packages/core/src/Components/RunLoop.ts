@@ -97,7 +97,11 @@ export default function RunLoop() {
     step,
     resume,
     isPaused: () => isPaused,
-    getError: () => error,
-    getFrameNumber: () => frameNumber,
+    get error() {
+      return error;
+    },
+    get frameNumber() {
+      return frameNumber;
+    },
   };
 }

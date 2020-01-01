@@ -130,6 +130,18 @@ export default function Tree({
   } else if (typeof data === "number") {
     preview = (
       <EditableString
+        expanded={false}
+        color="rgb(28, 0, 207)"
+        value={String(data)}
+        onChange={(newValue) => {
+          setValue(Number(newValue) || 0);
+        }}
+      />
+    );
+    hasContent = true;
+    content = (
+      <EditableString
+        expanded={true}
         color="rgb(28, 0, 207)"
         value={String(data)}
         onChange={(newValue) => {
@@ -142,6 +154,7 @@ export default function Tree({
       <span>
         "
         <EditableString
+          expanded={false}
           color="rgb(196, 26, 22)"
           value={data}
           onChange={(newValue) => {
@@ -150,6 +163,17 @@ export default function Tree({
         />
         "
       </span>
+    );
+    hasContent = true;
+    content = (
+      <EditableString
+        expanded={true}
+        color="rgb(196, 26, 22)"
+        value={data}
+        onChange={(newValue) => {
+          setValue(newValue);
+        }}
+      />
     );
   } else if (typeof data === "symbol") {
     preview = <span>"{color("rgb(196, 26, 22)", data.toString())}"</span>;
