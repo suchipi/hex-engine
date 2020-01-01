@@ -2,20 +2,25 @@ import { useNewComponent } from "@hex-engine/core";
 import { useUpdate } from "../Canvas";
 import Timer from "./Timer";
 
-export class AnimationFrame<T> {
-  data: T;
+export class AnimationFrame {
+  data: number;
   duration: number; // in ms
+  onFrame: (() => void) | null;
 
-  constructor(data: T, { duration }: { duration: number }) {
+  constructor(
+    data: number,
+    { duration, onFrame }: { duration: number; onFrame?: null | (() => void) }
+  ) {
     this.data = data;
     this.duration = duration;
+    this.onFrame = onFrame || null;
   }
 }
 
-type Props<T> = Array<AnimationFrame<T>>;
+type Props = Array<AnimationFrame>;
 
-export type AnimationAPI<T> = {
-  currentFrame: AnimationFrame<T>;
+export type AnimationAPI = {
+  currentFrame: AnimationFrame;
   pause(): void;
   play(): void;
   restart(): void;
@@ -26,7 +31,7 @@ export type AnimationAPI<T> = {
   disable: () => void;
 };
 
-export default function Animation<T>(props: Props<T>): AnimationAPI<T> {
+export default function Animation(props: Props): AnimationAPI {
   const frames = props;
   const timer = useNewComponent(Timer);
   timer.disable();
@@ -46,6 +51,10 @@ export default function Animation<T>(props: Props<T>): AnimationAPI<T> {
 
       const currentFrame = getCurrentFrame();
       timer.set(currentFrame.duration);
+
+      if (currentFrame.onFrame) {
+        currentFrame.onFrame();
+      }
     }
   });
 
