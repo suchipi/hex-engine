@@ -12,6 +12,7 @@ export default function Button(props: React.ComponentProps<"button">) {
         padding: "0",
         margin: "0",
         textAlign: "left",
+        cursor: "pointer",
         ...props.style,
       }}
     />
