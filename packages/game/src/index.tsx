@@ -20,7 +20,6 @@ import {
   createEntity,
   useName,
 } from "@hex-engine/2d";
-import inspect from "@hex-engine/inspector";
 import bouncy from "./bouncy-29x41.png";
 // import jump from "./jump.wav";
 
@@ -88,8 +87,6 @@ const canvas = createEntity(() => {
 
 canvas.addChild(stage);
 canvas.addChild(player);
-
-inspect(canvas);
 
 // @ts-ignore
 window.canvas = canvas;

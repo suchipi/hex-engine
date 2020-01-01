@@ -1,4 +1,5 @@
 import { useNewComponent, Components } from "@hex-engine/core";
+import Inspector from "@hex-engine/inspector";
 import { UpdateChildren, useUpdate } from "./UpdateChildren";
 import { DrawChildren, useDraw } from "./DrawChildren";
 
@@ -30,6 +31,9 @@ export default function Canvas(props: Props) {
     backgroundColor,
   });
   useNewComponent(UpdateChildren);
+  if (process.env.NODE_ENV !== "production") {
+    useNewComponent(Inspector, {});
+  }
 
   return {
     element: canvas,

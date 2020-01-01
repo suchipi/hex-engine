@@ -5,6 +5,7 @@ export default function RunLoop() {
   let lastTimestamp: number | null = null;
   let onFrameCallbacks: Set<(delta: number) => void> = new Set();
   let isPaused = false;
+  let error: Error | null = null;
 
   const { onEnabled, onDisabled, ...enableDisableApi } = useEnableDisable();
 
@@ -13,7 +14,12 @@ export default function RunLoop() {
       try {
         onFrameCallback(delta);
       } catch (err) {
+        error = err;
         console.error(err);
+        if (process.env.NODE_ENV !== "production") {
+          pause();
+          break;
+        }
       }
     }
   }
@@ -27,7 +33,9 @@ export default function RunLoop() {
     } else {
       lastTimestamp = timestamp;
     }
-    frameRequest = requestAnimationFrame(tick);
+    if (!isPaused) {
+      frameRequest = requestAnimationFrame(tick);
+    }
   }
 
   function pause() {
@@ -38,6 +46,12 @@ export default function RunLoop() {
   }
 
   function step() {
+    error = null;
+
+    if (frameRequest != null) {
+      cancelAnimationFrame(frameRequest);
+    }
+
     frameRequest = requestAnimationFrame((timestamp: number) => {
       lastTimestamp = timestamp;
       runFrameCallbacks(16.667);
@@ -45,6 +59,7 @@ export default function RunLoop() {
   }
 
   function resume() {
+    error = null;
     if (frameRequest != null) {
       cancelAnimationFrame(frameRequest);
     }
@@ -56,6 +71,9 @@ export default function RunLoop() {
   }
 
   onEnabled(function RunLoopEnabled() {
+    if (frameRequest != null) {
+      cancelAnimationFrame(frameRequest);
+    }
     frameRequest = requestAnimationFrame(tick);
   });
 
@@ -76,6 +94,7 @@ export default function RunLoop() {
     pause,
     step,
     resume,
-    getIsPaused: () => isPaused,
+    isPaused: () => isPaused,
+    getError: () => error,
   };
 }

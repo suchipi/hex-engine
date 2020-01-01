@@ -6,14 +6,16 @@ import { ResumeIcon, StepIcon, PauseIcon } from "./Icons";
 type RunLoopAPI = ReturnType<typeof Components.RunLoop>;
 
 export default function TimeControls({ runLoop }: { runLoop: RunLoopAPI }) {
+  const error = runLoop.getError();
   return (
     <div
       style={{
-        backgroundColor: "#eee",
+        display: "flex",
+        backgroundColor: error ? "#ff9a9a" : "#eee",
         padding: 2,
       }}
     >
-      {runLoop.getIsPaused() ? (
+      {runLoop.isPaused() ? (
         <>
           <Button
             onClick={() => {
@@ -48,6 +50,14 @@ export default function TimeControls({ runLoop }: { runLoop: RunLoopAPI }) {
           </span>
         </Button>
       )}
+
+      <div style={{ flexBasis: "100%", textAlign: "right", padding: 4 }}>
+        {runLoop.isPaused()
+          ? error
+            ? "Paused due to Error (check console)"
+            : "Paused"
+          : "Running"}
+      </div>
     </div>
   );
 }

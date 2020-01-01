@@ -2,8 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import {
   Entity,
-  useName,
-  createEntity,
   useRootEntity,
   useCallbackAsCurrent,
   Components,
@@ -55,36 +53,27 @@ function defaultElement(): HTMLElement {
   return el;
 }
 
-export default function inspect(
-  entity: Entity,
-  {
-    el = defaultElement(),
-    pauseOnStart = false,
-  }: Partial<{
-    el: HTMLElement;
-    pauseOnStart: boolean;
-  }> = {}
-) {
-  function Inspector() {
-    useName("inspector");
+export default function Inspector({
+  el = defaultElement(),
+  pauseOnStart = false,
+}: Partial<{
+  el: HTMLElement;
+  pauseOnStart: boolean;
+}> = {}) {
+  let hasPausedOnStart = false;
 
-    let hasPausedOnStart = false;
+  const tick = useCallbackAsCurrent(() => {
+    const entity = useRootEntity();
+    const runLoop = entity.getComponent(Components.RunLoop);
+    if (runLoop && pauseOnStart && !hasPausedOnStart) {
+      runLoop.pause();
+      hasPausedOnStart = true;
+    }
 
-    const tick = useCallbackAsCurrent(() => {
-      const runLoop = useRootEntity().getComponent(Components.RunLoop);
-      if (runLoop && pauseOnStart && !hasPausedOnStart) {
-        runLoop.pause();
-        hasPausedOnStart = true;
-      }
+    ReactDOM.render(<App entity={entity} runLoop={runLoop} />, el);
 
-      ReactDOM.render(<App entity={entity} runLoop={runLoop} />, el);
+    requestAnimationFrame(tick);
+  });
 
-      requestAnimationFrame(tick);
-    });
-
-    tick();
-  }
-
-  const inspector = createEntity(Inspector);
-  entity.addChild(inspector);
+  tick();
 }
