@@ -27,6 +27,7 @@ function defaultElement(): HTMLElement {
     width: "33vw",
     opacity: "0.66",
     overflow: "auto",
+    backgroundColor: "white",
   });
   document.body.appendChild(el);
   return el;

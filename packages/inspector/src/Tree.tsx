@@ -122,6 +122,20 @@ export default function Tree({ name, data }: { name?: string; data: any }) {
       <span>
         {color("rgb(13, 34, 170)", "ƒ ")}
         {data.name || "<anonymous function>"}
+        <span
+          onClick={() => {
+            data();
+          }}
+          title="Run function"
+          style={{
+            fontFamily: "initial",
+            cursor: "pointer",
+            paddingLeft: 4,
+            filter: "hue-rotate(-75deg)",
+          }}
+        >
+          {"▶️"}
+        </span>
       </span>
     );
     hasContent = true;
