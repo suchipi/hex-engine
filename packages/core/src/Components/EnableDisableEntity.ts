@@ -1,4 +1,4 @@
-import { Entity } from "../Entity";
+import { Entity } from "../Interface";
 import HooksSystem from "../HooksSystem";
 const { useEntity } = HooksSystem.hooks;
 

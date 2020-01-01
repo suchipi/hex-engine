@@ -1,13 +1,16 @@
 import { makeHooksSystem } from "concubine";
-import { Component, ComponentImplementation } from "./Component";
+import { Component as ComponentInterface } from "./Interface";
+import Component from "./Component";
 import instantiate from "./instantiate";
 
-const HooksSystem = makeHooksSystem<Component>()({
+const HooksSystem = makeHooksSystem<ComponentInterface>()({
   useNewComponent: (instance) => <Func extends (...args: any[]) => any>(
     ...args: Parameters<Func>[0] extends void
       ? [Func]
       : [Func, Parameters<Func>[0]]
-  ): ReturnType<Func> extends {} ? Component & ReturnType<Func> : Component => {
+  ): ReturnType<Func> extends {}
+    ? ComponentInterface & ReturnType<Func>
+    : ComponentInterface => {
     const [componentFunc, props] = args;
 
     const child = instantiate(componentFunc, props, instance.entity);
@@ -35,7 +38,7 @@ const HooksSystem = makeHooksSystem<Component>()({
   useStateAccumlator: (instance) => <T>(
     key: symbol
   ): { add(newValue: T): void } => {
-    const implInstance = instance as ComponentImplementation;
+    const implInstance = instance as Component;
 
     const state = implInstance._accumulatedState as any;
     if (!state[key]) {

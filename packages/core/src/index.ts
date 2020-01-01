@@ -1,10 +1,13 @@
-import { Entity, EntityImplementation } from "./Entity";
-import { Component } from "./Component";
+import Entity from "./Entity";
+import {
+  Entity as EntityInterface,
+  Component as ComponentInterface,
+} from "./Interface";
 import HooksSystem from "./HooksSystem";
 import * as Components from "./Components";
 
-const createEntity: typeof EntityImplementation._create = (...args) => {
-  return EntityImplementation._create(...args);
+const createEntity: typeof Entity._create = (...args) => {
+  return Entity._create(...args);
 };
 
 const {
@@ -17,8 +20,8 @@ const {
 
 export {
   Components,
-  Entity,
-  Component,
+  EntityInterface as Entity,
+  ComponentInterface as Component,
   createEntity,
   useNewComponent,
   useExistingComponent,

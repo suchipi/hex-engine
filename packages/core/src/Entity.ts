@@ -1,32 +1,26 @@
-import { Component, ComponentFunction } from "./Component";
+import {
+  Entity as EntityInterface,
+  Component as ComponentInterface,
+  ComponentFunction,
+} from "./Interface";
 import instantiate from "./instantiate";
 
-export interface Entity {
-  children: Set<Entity>;
-  parent: Entity | null;
-  hasChild(child: Entity): boolean;
-  addChild(child: Entity): void;
-  removeChild(child: Entity): void;
+export default class Entity implements EntityInterface {
+  _kind: "entity" = "entity";
 
-  components: Set<Component>;
-  getComponent<API>(
-    componentClass: ComponentFunction<any, API>
-  ): null | (API extends {} ? Component & API : Component);
-}
-
-export class EntityImplementation implements Entity {
-  components: Set<Component> = new Set();
-  children: Set<EntityImplementation> = new Set();
-  parent: EntityImplementation | null = null;
+  components: Set<ComponentInterface> = new Set();
+  children: Set<Entity> = new Set();
+  parent: Entity | null = null;
+  name = null;
 
   static _create<Func extends (...args: any[]) => any>(
     ...args: Parameters<Func>[0] extends void
       ? [Func]
       : [Func, Parameters<Func>[0]]
-  ): Entity {
+  ): EntityInterface {
     const [componentFunc, props] = args;
 
-    const ent = new EntityImplementation();
+    const ent = new Entity();
 
     const component = instantiate(componentFunc, props, ent);
     ent.components.add(component);
@@ -34,27 +28,27 @@ export class EntityImplementation implements Entity {
     return ent;
   }
 
-  _componentsByType(): Map<Function, Component> {
+  _componentsByType(): Map<Function, ComponentInterface> {
     return new Map(
       [...this.components].map((component) => [component.type, component])
     );
   }
 
-  hasChild(child: EntityImplementation): boolean {
+  hasChild(child: Entity): boolean {
     return this.children.has(child);
   }
-  addChild(child: EntityImplementation): void {
+  addChild(child: Entity): void {
     this.children.add(child);
     child.parent = this;
   }
-  removeChild(child: EntityImplementation): void {
+  removeChild(child: Entity): void {
     this.children.delete(child);
     child.parent = null;
   }
 
   getComponent<API>(
     componentClass: ComponentFunction<any, API>
-  ): null | (API extends {} ? Component & API : Component) {
+  ): null | (API extends {} ? ComponentInterface & API : ComponentInterface) {
     const maybeComponent = this._componentsByType().get(componentClass);
     // @ts-ignore
     return maybeComponent ?? null;

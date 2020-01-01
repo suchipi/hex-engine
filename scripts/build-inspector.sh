@@ -3,10 +3,6 @@ set -e
 
 export PATH="./node_modules/.bin:../node_modules/.bin:../../node_modules/.bin:$PATH"
 
-./scripts/build-core.sh
-./scripts/build-engine.sh
-./scripts/build-inspector.sh
-
-cd packages/game
-webpack --mode production
+cd packages/inspector
+babel --extensions '.ts,.tsx,.js,.jsx' --config-file ../../babel.config.js src --out-dir dist
 cd ../..

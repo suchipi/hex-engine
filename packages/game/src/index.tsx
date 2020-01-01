@@ -18,7 +18,9 @@ import {
   useNewComponent,
   useDraw,
   createEntity,
+  useName,
 } from "@hex-engine/2d";
+import inspect from "@hex-engine/inspector";
 import bouncy from "./bouncy-29x41.png";
 // import jump from "./jump.wav";
 
@@ -33,7 +35,8 @@ function PlayerControls() {
   });
 }
 
-const player = createEntity(function Player() {
+const player = createEntity(() => {
+  useName("player");
   useNewComponent(Keyboard);
   useNewComponent(Position, new Vec2(0, 0));
   const size = useNewComponent(Size, new Vec2(29, 41));
@@ -56,7 +59,8 @@ const player = createEntity(function Player() {
   useNewComponent(PlayerControls);
 });
 
-const stage = createEntity(function Stage() {
+const stage = createEntity(() => {
+  useName("stage");
   useNewComponent(Position, new Vec2(0, 0));
   useNewComponent(Size, new Vec2(50, 50));
 
@@ -76,7 +80,8 @@ const stage = createEntity(function Stage() {
   });
 });
 
-const canvas = createEntity(function MyCanvas() {
+const canvas = createEntity(() => {
+  useName("canvas");
   const canvas = useNewComponent(Canvas, { backgroundColor: "white" });
   canvas.fullscreen({ pixelZoom: 3 });
 });
@@ -84,5 +89,4 @@ const canvas = createEntity(function MyCanvas() {
 canvas.addChild(stage);
 canvas.addChild(player);
 
-// @ts-ignore
-window.canvas = canvas;
+inspect(canvas);

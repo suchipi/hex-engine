@@ -3,7 +3,8 @@
   "workspaces": [
     "packages/core",
     "packages/engine",
-    "packages/game"
+    "packages/game",
+    "packages/inspector"
   ],
   "devDependencies": {
     "@babel/cli": "^7.7.7",
@@ -12,6 +13,7 @@
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.7.4",
     "@babel/plugin-proposal-optional-chaining": "^7.7.5",
     "@babel/preset-env": "^7.7.7",
+    "@babel/preset-react": "^7.7.4",
     "@babel/preset-typescript": "^7.7.7",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
@@ -34,5 +36,9 @@
     "build": "yarn clean && ./scripts/build.sh",
     "watch": "./scripts/watch.sh",
     "start": "yarn watch"
+  },
+  "dependencies": {
+    "core-js": "^3.6.1",
+    "regenerator-runtime": "^0.13.3"
   }
 }

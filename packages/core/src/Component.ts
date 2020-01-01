@@ -1,22 +1,20 @@
-import { Entity } from "./Entity";
+import {
+  ComponentFunction,
+  Component as ComponentInterface,
+  Entity as EntityInterface,
+} from "./Interface";
 
-export type ComponentFunction<Props, API> = (props: Props) => API;
+export default class Component implements ComponentInterface {
+  _kind: "component" = "component";
 
-export interface Component {
   type: ComponentFunction<any, any>;
-  entity: Entity;
-  accumulatedState<T>(key: symbol): Array<T>;
-}
-
-export class ComponentImplementation implements Component {
-  type: ComponentFunction<any, any>;
-  entity: Entity;
+  entity: EntityInterface;
 
   // This really should be { [key: symbol]: any },
   // but TypeScript doesn't allow using symbols as indexers.
   _accumulatedState: any = {};
 
-  constructor(type: ComponentFunction<any, any>, entity: Entity) {
+  constructor(type: ComponentFunction<any, any>, entity: EntityInterface) {
     this.type = type;
     this.entity = entity;
   }

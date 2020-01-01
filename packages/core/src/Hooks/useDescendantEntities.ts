@@ -1,5 +1,5 @@
 import HooksSystem from "../HooksSystem";
-import { Entity } from "../Entity";
+import { Entity } from "../Interface";
 const { useEntity } = HooksSystem.hooks;
 
 function gatherDescendants(ent: Entity, descendants: Array<Entity> = []) {
