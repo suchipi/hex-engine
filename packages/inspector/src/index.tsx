@@ -18,6 +18,8 @@ function App({
   entity: Entity;
   runLoop: RunLoopAPI | null;
 }) {
+  let ent = entity;
+
   return (
     <div
       style={{
@@ -31,7 +33,12 @@ function App({
     >
       {runLoop ? <TimeControls runLoop={runLoop} /> : null}
       <div style={{ flexBasis: "100%" }}>
-        <Tree data={entity} />
+        <Tree
+          data={ent}
+          setValue={(newEnt) => {
+            ent = newEnt;
+          }}
+        />
       </div>
     </div>
   );

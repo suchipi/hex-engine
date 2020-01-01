@@ -1,6 +1,8 @@
 import React from "react";
 import Expandable from "./Expandable";
 import Button from "./Button";
+import EditableString from "./EditableString";
+import EditableBoolean from "./EditableBoolean";
 
 const PROPERTY_NAMES = Symbol("PROPERTY_NAMES");
 
@@ -29,7 +31,15 @@ function gatherPropertyNames(
   return results;
 }
 
-export default function Tree({ name, data }: { name?: string; data: any }) {
+export default function Tree({
+  name,
+  data,
+  setValue,
+}: {
+  name?: string;
+  data: any;
+  setValue: (newValue: any) => void;
+}) {
   let className = "";
   let hasContent = false;
   let preview: React.ReactNode = "";
@@ -43,7 +53,13 @@ export default function Tree({ name, data }: { name?: string; data: any }) {
     return (
       <>
         {array.map((val, index) => (
-          <Tree key={index} data={val} />
+          <Tree
+            key={index}
+            data={val}
+            setValue={(newValue) => {
+              array[index] = newValue;
+            }}
+          />
         ))}
       </>
     );
@@ -91,6 +107,7 @@ export default function Tree({ name, data }: { name?: string; data: any }) {
                 key={typeof prop === "string" ? prop : index}
                 name={prop.toString()}
                 data={val}
+                setValue={(newValue: any) => (data[prop] = newValue)}
               />
             );
           })}
@@ -99,13 +116,41 @@ export default function Tree({ name, data }: { name?: string; data: any }) {
   }
 
   if (typeof data === "boolean") {
-    preview = color("rgb(28, 0, 207)", String(data));
+    preview = (
+      <EditableBoolean
+        color="rgb(28, 0, 207)"
+        value={data}
+        onChange={(newValue) => {
+          setValue(newValue);
+        }}
+      />
+    );
   } else if (typeof data === "bigint") {
     preview = color("rgb(28, 0, 207)", String(data) + "n");
   } else if (typeof data === "number") {
-    preview = color("rgb(28, 0, 207)", String(data));
+    preview = (
+      <EditableString
+        color="rgb(28, 0, 207)"
+        value={String(data)}
+        onChange={(newValue) => {
+          setValue(Number(newValue) || 0);
+        }}
+      />
+    );
   } else if (typeof data === "string") {
-    preview = <span>"{color("rgb(196, 26, 22)", data)}"</span>;
+    preview = (
+      <span>
+        "
+        <EditableString
+          color="rgb(196, 26, 22)"
+          value={data}
+          onChange={(newValue) => {
+            setValue(newValue);
+          }}
+        />
+        "
+      </span>
+    );
   } else if (typeof data === "symbol") {
     preview = <span>"{color("rgb(196, 26, 22)", data.toString())}"</span>;
   } else if (

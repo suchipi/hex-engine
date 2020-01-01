@@ -2,6 +2,7 @@ import Animation, { AnimationFrame } from "./Animation";
 import AnimationSheet from "./AnimationSheet";
 import Audio from "./Audio";
 import BasicRenderer from "./BasicRenderer";
+import Camera from "./Camera";
 import Gamepad from "./Gamepad";
 import Image from "./Image";
 import Keyboard from "./Keyboard";
@@ -18,6 +19,7 @@ export {
   AnimationSheet,
   Audio,
   BasicRenderer,
+  Camera,
   Gamepad,
   Image,
   Keyboard,

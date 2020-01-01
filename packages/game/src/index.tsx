@@ -5,6 +5,7 @@ window.hex = hex;
 import {
   Canvas,
   Vec2,
+  Angle,
   Keyboard,
   Position,
   Origin,
@@ -19,20 +20,18 @@ import {
   useDraw,
   createEntity,
   useName,
+  Camera,
+  Rotation,
 } from "@hex-engine/2d";
 import bouncy from "./bouncy-29x41.png";
 // import jump from "./jump.wav";
 
-function PlayerControls() {
-  return useUpdate((delta) => {
-    const keyboard = useExistingComponent(Keyboard)!;
-    const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
-    vector.magnitude *= delta * 0.1;
-
-    const position = useExistingComponent(Position)!;
-    position.replace(position.add(vector.toVec2()).round());
-  });
-}
+const camera = createEntity(() => {
+  useName("camera");
+  useNewComponent(Position, new Vec2(-100, -100));
+  useNewComponent(Rotation, new Angle(0));
+  useNewComponent(Camera);
+});
 
 const player = createEntity(() => {
   useName("player");
@@ -55,7 +54,16 @@ const player = createEntity(() => {
     },
   });
   useNewComponent(BasicRenderer);
-  useNewComponent(PlayerControls);
+  useNewComponent(function PlayerControls() {
+    return useUpdate((delta) => {
+      const keyboard = useExistingComponent(Keyboard)!;
+      const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
+      vector.magnitude *= delta * 0.1;
+
+      const position = useExistingComponent(Position)!;
+      position.replace(position.add(vector.toVec2()).round());
+    });
+  });
 });
 
 const stage = createEntity(() => {
@@ -87,6 +95,7 @@ const canvas = createEntity(() => {
 
 canvas.addChild(stage);
 canvas.addChild(player);
+canvas.addChild(camera);
 
 // @ts-ignore
 window.canvas = canvas;
