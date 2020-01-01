@@ -1,8 +1,8 @@
 {
   "private": true,
   "workspaces": [
+    "packages/2d",
     "packages/core",
-    "packages/engine",
     "packages/game",
     "packages/inspector"
   ],
