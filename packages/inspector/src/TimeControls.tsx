@@ -55,7 +55,7 @@ export default function TimeControls({ runLoop }: { runLoop: RunLoopAPI }) {
         {runLoop.isPaused()
           ? error
             ? "Paused due to Error (check console)"
-            : "Paused"
+            : `Paused (frame ${runLoop.getFrameNumber()})`
           : "Running"}
       </div>
     </div>

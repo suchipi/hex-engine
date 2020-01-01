@@ -1,6 +1,7 @@
 import useEnableDisable from "../Hooks/useEnableDisable";
 
 export default function RunLoop() {
+  let frameNumber: number = 0;
   let frameRequest: number | null = null;
   let lastTimestamp: number | null = null;
   let onFrameCallbacks: Set<(delta: number) => void> = new Set();
@@ -10,6 +11,7 @@ export default function RunLoop() {
   const { onEnabled, onDisabled, ...enableDisableApi } = useEnableDisable();
 
   function runFrameCallbacks(delta: number) {
+    frameNumber++;
     for (const onFrameCallback of onFrameCallbacks) {
       try {
         onFrameCallback(delta);
@@ -96,5 +98,6 @@ export default function RunLoop() {
     resume,
     isPaused: () => isPaused,
     getError: () => error,
+    getFrameNumber: () => frameNumber,
   };
 }
