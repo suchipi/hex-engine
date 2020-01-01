@@ -1,5 +1,6 @@
 import React from "react";
 import Expandable from "./Expandable";
+import Button from "./Button";
 
 const PROPERTY_NAMES = Symbol("PROPERTY_NAMES");
 
@@ -122,7 +123,7 @@ export default function Tree({ name, data }: { name?: string; data: any }) {
       <span>
         {color("rgb(13, 34, 170)", "ƒ ")}
         {data.name || "<anonymous function>"}
-        <span
+        <Button
           onClick={() => {
             data();
           }}
@@ -135,7 +136,7 @@ export default function Tree({ name, data }: { name?: string; data: any }) {
           }}
         >
           {"▶️"}
-        </span>
+        </Button>
       </span>
     );
     hasContent = true;

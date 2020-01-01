@@ -90,3 +90,6 @@ canvas.addChild(stage);
 canvas.addChild(player);
 
 inspect(canvas);
+
+// @ts-ignore
+window.canvas = canvas;

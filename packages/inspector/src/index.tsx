@@ -1,18 +1,40 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Entity, useFrame, useName, createEntity } from "@hex-engine/core";
+import {
+  Entity,
+  useName,
+  createEntity,
+  useRootEntity,
+  useCallbackAsCurrent,
+  Components,
+} from "@hex-engine/core";
 import Tree from "./Tree";
+import TimeControls from "./TimeControls";
 
-function App({ entity }: { entity: Entity }) {
+type RunLoopAPI = ReturnType<typeof Components.RunLoop>;
+
+function App({
+  entity,
+  runLoop,
+}: {
+  entity: Entity;
+  runLoop: RunLoopAPI | null;
+}) {
   return (
     <div
       style={{
         fontFamily: "Menlo, monospace",
         fontSize: 11,
-        padding: 4,
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        boxSizing: "border-box",
       }}
     >
-      <Tree data={entity} />
+      {runLoop ? <TimeControls runLoop={runLoop} /> : null}
+      <div style={{ flexBasis: "100%" }}>
+        <Tree data={entity} />
+      </div>
     </div>
   );
 }
@@ -25,7 +47,7 @@ function defaultElement(): HTMLElement {
     right: 0,
     bottom: 0,
     width: "33vw",
-    opacity: "0.66",
+    opacity: "0.8",
     overflow: "auto",
     backgroundColor: "white",
   });
@@ -35,13 +57,32 @@ function defaultElement(): HTMLElement {
 
 export default function inspect(
   entity: Entity,
-  el: HTMLElement = defaultElement()
+  {
+    el = defaultElement(),
+    pauseOnStart = false,
+  }: Partial<{
+    el: HTMLElement;
+    pauseOnStart: boolean;
+  }> = {}
 ) {
   function Inspector() {
     useName("inspector");
-    useFrame(() => {
-      ReactDOM.render(<App entity={entity} />, el);
+
+    let hasPausedOnStart = false;
+
+    const tick = useCallbackAsCurrent(() => {
+      const runLoop = useRootEntity().getComponent(Components.RunLoop);
+      if (runLoop && pauseOnStart && !hasPausedOnStart) {
+        runLoop.pause();
+        hasPausedOnStart = true;
+      }
+
+      ReactDOM.render(<App entity={entity} runLoop={runLoop} />, el);
+
+      requestAnimationFrame(tick);
     });
+
+    tick();
   }
 
   const inspector = createEntity(Inspector);

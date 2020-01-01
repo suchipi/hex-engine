@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Button from "./Button";
 
 export default function Expandable({
   label,
@@ -21,7 +22,7 @@ export default function Expandable({
 
   return (
     <div style={{ paddingLeft: 8, paddingTop: 2 }}>
-      <span
+      <Button
         style={{
           color: "rgb(110, 110, 110)",
           display: "inline-block",
@@ -33,18 +34,27 @@ export default function Expandable({
         onClick={toggle}
       >
         ▶
-      </span>
+      </Button>
 
-      <span
-        style={{ color: "rgb(136, 19, 145)", userSelect: "none" }}
-        onClick={toggle}
-      >
-        {label ? label + ":" : null}
-      </span>
-      <span style={{ userSelect: "none" }} onClick={toggle}>
-        {label && className ? " " : ""}
-        {className}
-      </span>
+      {label ? (
+        <Button
+          style={{
+            color: "rgb(136, 19, 145)",
+            userSelect: "none",
+            marginRight: "0.7em",
+          }}
+          onClick={toggle}
+        >
+          {label}:
+        </Button>
+      ) : null}
+
+      {className ? (
+        <Button style={{ marginRight: "0.7em" }} onClick={toggle}>
+          {className}
+        </Button>
+      ) : null}
+
       {expanded ? (
         <div>
           {(hasContent ? children : null) || (
@@ -52,7 +62,7 @@ export default function Expandable({
           )}
         </div>
       ) : (
-        <span> {preview}</span>
+        <span>{preview}</span>
       )}
     </div>
   );
