@@ -1,3 +1,4 @@
+import { useType } from "@hex-engine/core";
 import Preloader from "../Preloader";
 
 type Props = {
@@ -54,5 +55,7 @@ class Audio {
 }
 
 export default function AudioComponent({ url }: Props) {
+  useType(AudioComponent);
+
   return new Audio({ url });
 }

@@ -5,6 +5,7 @@ import {
   useStateAccumlator,
   useEnableDisable,
   Component,
+  useType,
 } from "@hex-engine/core";
 
 const DRAW_CALLBACKS = Symbol("DRAW_CALLBACKS");
@@ -31,6 +32,8 @@ type Props = {
 };
 
 export function DrawChildren({ canvas, context, backgroundColor }: Props) {
+  useType(DrawChildren);
+
   function drawComponent(component: Component) {
     const comp = component as any;
     if (

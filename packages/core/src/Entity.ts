@@ -12,19 +12,16 @@ export default class Entity implements EntityInterface {
   parent: Entity | null = null;
   name = null;
 
-  static _create(
-    componentFunc: (...args: any[]) => any,
-    componentFactory: () => any
-  ): EntityInterface {
-    const ent = new Entity();
+  static _create(componentFactory: () => any): Entity {
+    const ent: Entity = new Entity();
 
-    const component = instantiate(componentFunc, componentFactory, ent);
+    const component = instantiate(componentFactory, ent);
     ent.components.add(component);
 
     return ent;
   }
 
-  _componentsByType(): Map<Function, ComponentInterface> {
+  _componentsByType(): Map<Function | null, ComponentInterface> {
     return new Map(
       [...this.components].map((component) => [component.type, component])
     );
@@ -42,9 +39,9 @@ export default class Entity implements EntityInterface {
     child.parent = null;
   }
 
-  getComponent<API>(
-    componentClass: (...args: any[]) => API
-  ): null | (API extends {} ? ComponentInterface & API : ComponentInterface) {
+  getComponent(
+    componentClass: (...args: any[]) => any
+  ): null | ComponentInterface {
     const maybeComponent = this._componentsByType().get(componentClass);
     // @ts-ignore
     return maybeComponent ?? null;

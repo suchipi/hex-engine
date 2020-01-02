@@ -1,6 +1,7 @@
 import { Entity } from "../Interface";
 import HooksSystem from "../HooksSystem";
-const { useEntity } = HooksSystem.hooks;
+
+const { useEntity, useType } = HooksSystem.hooks;
 
 function enable(entity: Entity) {
   for (const component of entity.components) {
@@ -35,6 +36,8 @@ function disable(entity: Entity) {
 }
 
 export default function EnableDisableEntity() {
+  useType(EnableDisableEntity);
+
   const ent = useEntity();
 
   return {

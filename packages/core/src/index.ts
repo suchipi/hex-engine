@@ -8,21 +8,20 @@ import * as Components from "./Components";
 
 const {
   useNewComponent,
-  useExistingComponent,
+  useExistingComponentByType,
   useEntity,
   useCallbackAsCurrent,
   useStateAccumlator,
+  useType,
 } = HooksSystem.hooks;
 
 const createEntity = (func: (...args: any[]) => any): EntityInterface => {
   function BaseEntityLogic() {
-    useNewComponent(Components.EnableDisableEntity, () =>
-      Components.EnableDisableEntity()
-    );
-    return useNewComponent(func, func);
+    useNewComponent(Components.EnableDisableEntity);
+    return useNewComponent(func);
   }
 
-  return Entity._create(BaseEntityLogic, () => BaseEntityLogic());
+  return Entity._create(BaseEntityLogic);
 };
 
 export {
@@ -31,9 +30,10 @@ export {
   ComponentInterface as Component,
   createEntity,
   useNewComponent,
-  useExistingComponent,
+  useExistingComponentByType,
   useEntity,
   useCallbackAsCurrent,
   useStateAccumlator,
+  useType,
 };
 export * from "./Hooks";

@@ -1,4 +1,4 @@
-import { useExistingComponent } from "@hex-engine/core";
+import { useExistingComponentByType, useType } from "@hex-engine/core";
 import { useDraw } from "../Canvas";
 import AnimationSheet from "./AnimationSheet";
 import Position from "./Position";
@@ -6,14 +6,16 @@ import Origin from "./Origin";
 import { Vec2 } from "../Models";
 
 export default function BasicRenderer() {
+  useType(BasicRenderer);
+
   return useDraw((context) => {
-    const position = useExistingComponent(Position);
+    const position = useExistingComponentByType(Position);
     if (!position) return;
 
-    const animSheet = useExistingComponent(AnimationSheet);
+    const animSheet = useExistingComponentByType(AnimationSheet);
     if (!animSheet) return;
 
-    let origin: Vec2 | null = useExistingComponent(Origin);
+    let origin: Vec2 | null = useExistingComponentByType(Origin);
     if (!origin) origin = new Vec2(0, 0);
 
     const target = position.subtract(origin).round();

@@ -256,8 +256,8 @@ export default function Tree({
       className = data.name ? `Entity (${data.name})` : "Entity";
       content = entriesForProperties(["name", "components", "children"]);
     } else if (data._kind === "component") {
-      className = data.type.name
-        ? `Component (${data.type.name})`
+      className = data.type?.name
+        ? `Component (${data.type?.name})`
         : "Component";
       if (typeof data.getIsEnabled === "function" && !data.getIsEnabled()) {
         className += " - disabled";

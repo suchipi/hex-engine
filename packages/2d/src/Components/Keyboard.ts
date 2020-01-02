@@ -1,7 +1,9 @@
-import { useEnableDisable } from "@hex-engine/core";
+import { useEnableDisable, useType } from "@hex-engine/core";
 import { Vector, Angle } from "../Models";
 
 export default function Keyboard() {
+  useType(Keyboard);
+
   const pressed: Set<string> = new Set();
 
   const processKeydown = (event: KeyboardEvent) => {

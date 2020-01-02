@@ -4,6 +4,7 @@ import {
   useFrame,
   useEnableDisable,
   useStateAccumlator,
+  useType,
 } from "@hex-engine/core";
 
 const UPDATE_CALLBACKS = Symbol("UPDATE_CALLBACKS");
@@ -21,6 +22,8 @@ export function useUpdate(callback: UpdateCallback) {
 }
 
 export function UpdateChildren() {
+  useType(UpdateChildren);
+
   return useFrame((delta) => {
     const ents = useDescendantEntities();
     for (const ent of ents) {

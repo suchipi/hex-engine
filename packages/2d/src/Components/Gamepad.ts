@@ -1,3 +1,4 @@
+import { useType } from "@hex-engine/core";
 import { useUpdate } from "../Canvas";
 import { Vector, Vec2, Angle } from "../Models";
 
@@ -7,6 +8,8 @@ type Props = {
 };
 
 export default function Gamepad(props: Partial<Props>) {
+  useType(Gamepad);
+
   const state = {
     leftStick: new Vector(new Angle(0), 0),
     rightStick: new Vector(new Angle(0), 0),

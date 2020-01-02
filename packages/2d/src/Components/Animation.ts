@@ -1,4 +1,4 @@
-import { useNewComponent } from "@hex-engine/core";
+import { useNewComponent, useType } from "@hex-engine/core";
 import { useUpdate } from "../Canvas";
 import Timer from "./Timer";
 
@@ -32,8 +32,10 @@ export type AnimationAPI<T> = {
 };
 
 export default function Animation<T>(props: Props<T>): AnimationAPI<T> {
+  useType(Animation);
+
   const frames = props;
-  const timer = useNewComponent(Timer, () => Timer());
+  const timer = useNewComponent(Timer);
   timer.disable();
   let currentFrameIndex = 0;
 

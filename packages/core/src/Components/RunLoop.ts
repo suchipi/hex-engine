@@ -1,6 +1,11 @@
+import HooksSystem from "../HooksSystem";
 import useEnableDisable from "../Hooks/useEnableDisable";
 
+const { useType } = HooksSystem.hooks;
+
 export default function RunLoop() {
+  useType(RunLoop);
+
   let frameNumber: number = 0;
   let frameRequest: number | null = null;
   let lastTimestamp: number | null = null;

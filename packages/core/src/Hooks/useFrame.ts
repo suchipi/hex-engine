@@ -13,7 +13,9 @@ export default function useFrame(callback: (delta: number) => void) {
   setTimeout(
     useCallbackAsCurrent(() => {
       const root = useRootEntity();
-      const runLoopApi = root.getComponent(RunLoop);
+      const runLoopApi = root.getComponent(RunLoop) as null | ReturnType<
+        typeof RunLoop
+      >;
       if (!runLoopApi) {
         throw new Error(
           "Attempted to call useFrame, but the root entity for the component did not have a RunLoop component on it. Please add a RunLoop to your root entity- or, maybe you forgot to add a child entity to the tree?"

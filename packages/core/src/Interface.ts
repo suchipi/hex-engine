@@ -7,13 +7,11 @@ export interface Entity {
   name?: string | null;
 
   components: Set<Component>;
-  getComponent<API>(
-    componentClass: (...args: any[]) => API
-  ): null | (API extends {} ? Component & API : Component);
+  getComponent(componentClass: (...args: any[]) => any): null | Component;
 }
 
 export interface Component {
-  type: (...args: any[]) => any;
+  type: null | ((...args: any[]) => any);
   entity: Entity;
   accumulatedState<T>(key: symbol): Array<T>;
 }

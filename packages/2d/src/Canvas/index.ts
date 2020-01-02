@@ -24,17 +24,17 @@ export default function Canvas(props: Props) {
     throw new Error("2d drawing context type not supported by browser");
   }
 
-  useNewComponent(Components.RunLoop, () => Components.RunLoop());
-  useNewComponent(DrawChildren, () =>
+  useNewComponent(Components.RunLoop);
+  useNewComponent(() =>
     DrawChildren({
       canvas,
       context,
       backgroundColor,
     })
   );
-  useNewComponent(UpdateChildren, () => UpdateChildren());
+  useNewComponent(UpdateChildren);
   if (process.env.NODE_ENV !== "production") {
-    useNewComponent(Inspector, () => Inspector());
+    useNewComponent(Inspector);
   }
 
   return {

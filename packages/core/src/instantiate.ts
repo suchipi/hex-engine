@@ -33,21 +33,20 @@ function proxyProperties(original: Object, proxy: Object) {
 }
 
 export default function instantiate<T>(
-  componentFunc: (...args: any[]) => T,
   componentFactory: () => T,
   entity: EntityInterface
 ): ComponentInterface & T {
-  const instance = new Component(componentFunc, entity);
+  const instance = new Component(entity);
 
   const ret: unknown = HooksSystem.withInstance(instance, () => {
     return componentFactory();
   });
 
   const api = {};
+  proxyProperties(instance, api);
   if (typeof ret === "object" && ret != null) {
     proxyProperties(ret, api);
   }
-  proxyProperties(instance, api);
 
   // @ts-ignore
   return api;

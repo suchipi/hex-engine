@@ -1,3 +1,4 @@
+import { useType } from "@hex-engine/core";
 import Preloader from "../Preloader";
 
 const cache: { [url: string]: Image } = {};
@@ -84,5 +85,6 @@ class Image {
 }
 
 export default function ImageComponent(props: { url: string }) {
+  useType(ImageComponent);
   return new Image(props);
 }
