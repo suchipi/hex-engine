@@ -4,6 +4,7 @@ import {
   Entity,
   useRootEntity,
   useCallbackAsCurrent,
+  useType,
   Components,
 } from "@hex-engine/core";
 import { StateTreeProvider } from "react-state-tree";
@@ -45,6 +46,8 @@ export default function Inspector({
   el: HTMLElement;
   pauseOnStart: boolean;
 }> = {}) {
+  useType(Inspector);
+
   let hasPausedOnStart = false;
 
   const el = document.createElement("div");
@@ -52,7 +55,9 @@ export default function Inspector({
 
   const tick = useCallbackAsCurrent(() => {
     const entity = useRootEntity();
-    const runLoop = entity.getComponent(Components.RunLoop);
+    const runLoop = entity.getComponent(
+      Components.RunLoop
+    ) as null | ReturnType<typeof Components.RunLoop>;
     if (runLoop && pauseOnStart && !hasPausedOnStart) {
       runLoop.pause();
       hasPausedOnStart = true;

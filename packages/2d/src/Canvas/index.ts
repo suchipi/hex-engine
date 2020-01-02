@@ -1,4 +1,4 @@
-import { useNewComponent, Components } from "@hex-engine/core";
+import { useNewComponent, useType, Components } from "@hex-engine/core";
 import Inspector from "@hex-engine/inspector";
 import { UpdateChildren, useUpdate } from "./UpdateChildren";
 import { DrawChildren, useDraw } from "./DrawChildren";
@@ -9,6 +9,8 @@ type Props = {
 };
 
 export default function Canvas(props: Props) {
+  useType(Canvas);
+
   const backgroundColor = props.backgroundColor;
 
   let canvas: HTMLCanvasElement;

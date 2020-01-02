@@ -15,13 +15,13 @@ const {
   useType,
 } = HooksSystem.hooks;
 
-const createEntity = (func: (...args: any[]) => any): EntityInterface => {
-  function BaseEntityLogic() {
+const createEntity = (func: () => any): EntityInterface => {
+  function fromCreateEntity() {
+    useType(fromCreateEntity);
     useNewComponent(Components.EnableDisableEntity);
-    return useNewComponent(func);
+    return func();
   }
-
-  return Entity._create(BaseEntityLogic);
+  return Entity._create(fromCreateEntity);
 };
 
 export {

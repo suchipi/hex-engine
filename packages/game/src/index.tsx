@@ -23,7 +23,7 @@ import {
   useName,
   Camera,
   Rotation,
-  Grid,
+  useType,
 } from "@hex-engine/2d";
 import bouncy from "./bouncy-29x41.png";
 import jump from "./jump.wav";
@@ -70,6 +70,8 @@ const player = createEntity(() => {
   );
   useNewComponent(BasicRenderer);
   useNewComponent(function PlayerControls() {
+    useType(PlayerControls);
+
     return useUpdate((delta) => {
       const keyboard = useExistingComponentByType(Keyboard)!;
       const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
@@ -106,10 +108,6 @@ const canvas = createEntity(() => {
   useName("canvas");
   const canvas = useNewComponent(() => Canvas({ backgroundColor: "white" }));
   canvas.fullscreen({ pixelZoom: 3 });
-
-  return {
-    grid: new Grid(5, 5, 0),
-  };
 });
 
 canvas.addChild(stage);
