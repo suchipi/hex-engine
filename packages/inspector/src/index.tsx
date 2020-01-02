@@ -6,10 +6,22 @@ import {
   useCallbackAsCurrent,
   Components,
 } from "@hex-engine/core";
+import { StateTreeProvider, StateKey } from "react-state-tree";
+import debounce from "lodash.debounce";
 import Tree from "./Tree";
 import TimeControls from "./TimeControls";
 
 type RunLoopAPI = ReturnType<typeof Components.RunLoop>;
+
+const initialState = localStorage.inspectorState
+  ? JSON.parse(localStorage.inspectorState)
+  : {};
+
+function saveState(state: Object) {
+  localStorage.inspectorState = JSON.stringify(state);
+}
+
+const debouncedSaveState = debounce(saveState, 100);
 
 function App({
   entity,
@@ -21,26 +33,35 @@ function App({
   let ent = entity;
 
   return (
-    <div
-      style={{
-        fontFamily: "Menlo, monospace",
-        fontSize: 11,
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        boxSizing: "border-box",
-      }}
+    <StateTreeProvider
+      initialValue={initialState}
+      onUpdate={debouncedSaveState}
     >
-      {runLoop ? <TimeControls runLoop={runLoop} /> : null}
-      <div style={{ flexBasis: "100%" }}>
-        <Tree
-          data={ent}
-          setValue={(newEnt) => {
-            ent = newEnt;
-          }}
-        />
+      <div
+        style={{
+          fontFamily: "Menlo, monospace",
+          fontSize: 11,
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          boxSizing: "border-box",
+        }}
+      >
+        <StateKey value="timeControls">
+          {runLoop ? <TimeControls runLoop={runLoop} /> : null}
+        </StateKey>
+        <StateKey value="tree">
+          <div style={{ flexBasis: "100%" }}>
+            <Tree
+              data={ent}
+              setValue={(newEnt) => {
+                ent = newEnt;
+              }}
+            />
+          </div>
+        </StateKey>
       </div>
-    </div>
+    </StateTreeProvider>
   );
 }
 

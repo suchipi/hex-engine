@@ -1,4 +1,5 @@
 import React from "react";
+import { StateKey, StateListKey } from "react-state-tree";
 import Expandable from "./Expandable";
 import Button from "./Button";
 import EditableString from "./EditableString";
@@ -51,7 +52,7 @@ export default function Tree({
 
   function entriesForArray(array: Array<any>) {
     return (
-      <>
+      <StateListKey value="children">
         {array.map((val, index) => (
           <Tree
             key={index}
@@ -61,57 +62,73 @@ export default function Tree({
             }}
           />
         ))}
-      </>
+      </StateListKey>
     );
   }
 
   function entriesForProperties(properties: Array<symbol | string>) {
     hasContent = properties.length > 0;
+
+    const sortedProperties = [...properties].sort((a, b) => {
+      const propA = a.toString();
+      const propB = b.toString();
+
+      const valA = data[propA];
+      const valB = data[propB];
+
+      if (typeof valA === "function" && typeof valB !== "function") {
+        return 1;
+      }
+      if (typeof valA !== "function" && typeof valB === "function") {
+        return -1;
+      }
+
+      if (propA[0] === "_" && propB[0] !== "_") {
+        return 1;
+      }
+      if (propA[0] !== "_" && propB[0] === "_") {
+        return -1;
+      }
+
+      if (propA.toUpperCase() < propB.toUpperCase()) {
+        return -1;
+      }
+      if (propA.toUpperCase() > propB.toUpperCase()) {
+        return 1;
+      }
+
+      return 0;
+    });
+
+    let propsToRender = sortedProperties;
+    if (sortedProperties.length > 50) {
+      propsToRender = sortedProperties.slice(0, 50);
+    }
+
     return (
-      <>
-        {[...properties]
-          .sort((a, b) => {
-            const propA = a.toString();
-            const propB = b.toString();
-
-            const valA = data[propA];
-            const valB = data[propB];
-
-            if (typeof valA === "function" && typeof valB !== "function") {
-              return 1;
-            }
-            if (typeof valA !== "function" && typeof valB === "function") {
-              return -1;
-            }
-
-            if (propA[0] === "_" && propB[0] !== "_") {
-              return 1;
-            }
-            if (propA[0] !== "_" && propB[0] === "_") {
-              return -1;
-            }
-
-            if (propA.toUpperCase() < propB.toUpperCase()) {
-              return -1;
-            }
-            if (propA.toUpperCase() > propB.toUpperCase()) {
-              return 1;
-            }
-
-            return 0;
-          })
-          .map((prop, index) => {
-            const val = data[prop];
-            return (
+      <StateKey value="p">
+        {propsToRender.map((prop, index) => {
+          const val = data[prop];
+          return (
+            <StateKey
+              key={typeof prop === "string" ? prop : index}
+              value={prop.toString()}
+            >
               <Tree
-                key={typeof prop === "string" ? prop : index}
                 name={prop.toString()}
                 data={val}
                 setValue={(newValue: any) => (data[prop] = newValue)}
               />
-            );
-          })}
-      </>
+            </StateKey>
+          );
+        })}
+        {propsToRender !== sortedProperties ? (
+          <div style={{ paddingLeft: 8, paddingTop: 2 }}>
+            ...and {sortedProperties.length - propsToRender.length} more
+            properties not shown.
+          </div>
+        ) : null}
+      </StateKey>
     );
   }
 

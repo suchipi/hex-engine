@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { useStateTree } from "react-state-tree";
 import Button from "./Button";
 
 export default function Expandable({
@@ -14,7 +15,7 @@ export default function Expandable({
   children: React.ReactNode;
   hasContent: boolean;
 }) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useStateTree(false, "e");
 
   const toggle = () => {
     setExpanded(!expanded);

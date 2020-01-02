@@ -5,10 +5,13 @@
   "main": "dist/index.js",
   "types": "src/index.tsx",
   "dependencies": {
+    "lodash.debounce": "^4.0.8",
     "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react-dom": "^16.12.0",
+    "react-state-tree": "^0.1.0"
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.6",
     "@types/react": "^16.9.17",
     "@types/react-dom": "^16.9.4"
   }
