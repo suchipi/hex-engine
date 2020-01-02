@@ -3,6 +3,7 @@ import {
   Component as ComponentInterface,
 } from "./Interface";
 import instantiate from "./instantiate";
+import EnableDisableEntity from "./Components/EnableDisableEntity";
 
 export default class Entity implements EntityInterface {
   _kind: "entity" = "entity";
@@ -39,11 +40,23 @@ export default class Entity implements EntityInterface {
     child.parent = null;
   }
 
-  getComponent(
-    componentClass: (...args: any[]) => any
-  ): null | ComponentInterface {
+  getComponent<Func extends (...args: any[]) => any>(
+    componentClass: Func
+  ):
+    | null
+    | (ReturnType<Func> extends {}
+        ? ReturnType<Func> & ComponentInterface
+        : ComponentInterface) {
     const maybeComponent = this._componentsByType().get(componentClass);
     // @ts-ignore
     return maybeComponent ?? null;
+  }
+
+  enable() {
+    this.getComponent(EnableDisableEntity)?.enable();
+  }
+
+  disable() {
+    this.getComponent(EnableDisableEntity)?.disable();
   }
 }

@@ -74,12 +74,7 @@ export default function App({
         </StateKey>
         <StateKey value="tree">
           <div style={{ flexBasis: "100%" }}>
-            <Tree
-              data={ent}
-              setValue={(newEnt) => {
-                ent = newEnt;
-              }}
-            />
+            <Tree name="root" data={ent} parent={null} />
           </div>
         </StateKey>
       </div>

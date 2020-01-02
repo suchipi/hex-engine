@@ -7,7 +7,14 @@ export interface Entity {
   name?: string | null;
 
   components: Set<Component>;
-  getComponent(componentClass: (...args: any[]) => any): null | Component;
+  getComponent<Func extends (...args: any[]) => any>(
+    componentClass: Func
+  ):
+    | null
+    | (ReturnType<Func> extends {} ? ReturnType<Func> & Component : Component);
+
+  enable(): void;
+  disable(): void;
 }
 
 export interface Component {

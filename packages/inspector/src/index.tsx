@@ -55,9 +55,7 @@ export default function Inspector({
 
   const tick = useCallbackAsCurrent(() => {
     const entity = useRootEntity();
-    const runLoop = entity.getComponent(
-      Components.RunLoop
-    ) as null | ReturnType<typeof Components.RunLoop>;
+    const runLoop = entity.getComponent(Components.RunLoop);
     if (runLoop && pauseOnStart && !hasPausedOnStart) {
       runLoop.pause();
       hasPausedOnStart = true;

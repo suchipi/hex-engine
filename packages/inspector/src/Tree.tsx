@@ -35,16 +35,20 @@ function gatherPropertyNames(
 export default function Tree({
   name,
   data,
-  setValue,
+  parent,
 }: {
-  name?: string;
+  name: string;
   data: any;
-  setValue: (newValue: any) => void;
+  parent: any;
 }) {
   let className = "";
   let hasContent = false;
   let preview: React.ReactNode = "";
   let content: React.ReactNode = "";
+
+  const setValue = (newValue: any) => {
+    parent[name] = newValue;
+  };
 
   const color = (clr: string, str: React.ReactNode) => (
     <span style={{ color: clr }}>{str}</span>
@@ -54,13 +58,7 @@ export default function Tree({
     return (
       <StateListKey value="children">
         {array.map((val, index) => (
-          <Tree
-            key={index}
-            data={val}
-            setValue={(newValue) => {
-              array[index] = newValue;
-            }}
-          />
+          <Tree key={index} data={val} name={String(index)} parent={array} />
         ))}
       </StateListKey>
     );
@@ -114,11 +112,7 @@ export default function Tree({
               key={typeof prop === "string" ? prop : index}
               value={prop.toString()}
             >
-              <Tree
-                name={prop.toString()}
-                data={val}
-                setValue={(newValue: any) => (data[prop] = newValue)}
-              />
+              <Tree name={prop.toString()} data={val} parent={data} />
             </StateKey>
           );
         })}
@@ -211,7 +205,7 @@ export default function Tree({
         {data.name || "<anonymous function>"}
         <Button
           onClick={() => {
-            data();
+            data.call(parent);
           }}
           title="Run function"
           style={{
@@ -254,7 +248,13 @@ export default function Tree({
   } else if (typeof data === "object" && data != null) {
     if (data._kind === "entity") {
       className = data.name ? `Entity (${data.name})` : "Entity";
-      content = entriesForProperties(["name", "components", "children"]);
+      content = entriesForProperties([
+        "children",
+        "components",
+        "name",
+        "enable",
+        "disable",
+      ]);
     } else if (data._kind === "component") {
       className = data.type?.name
         ? `Component (${data.type?.name})`
