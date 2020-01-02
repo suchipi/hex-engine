@@ -51,7 +51,9 @@ export default function TimeControls({ runLoop }: { runLoop: RunLoopAPI }) {
         </Button>
       )}
 
-      <div style={{ flexBasis: "100%", textAlign: "right", padding: 4 }}>
+      <div style={{ flexGrow: 1 }} />
+
+      <div style={{ padding: 4 }}>
         {runLoop.isPaused()
           ? error
             ? `Paused due to ${error.name}: ${error.message} (check console for more info)`
