@@ -2,7 +2,6 @@ import Component from "./Component";
 import HooksSystem from "./HooksSystem";
 import {
   Component as ComponentInterface,
-  ComponentFunction,
   Entity as EntityInterface,
 } from "./Interface";
 
@@ -33,29 +32,22 @@ function proxyProperties(original: Object, proxy: Object) {
   }
 }
 
-export default function instantiate<
-  Props,
-  API,
-  ComponentFunc extends ComponentFunction<Props, API>
->(
-  componentFunc: ComponentFunc,
-  props: Props,
+export default function instantiate<T>(
+  componentFunc: (...args: any[]) => T,
+  componentFactory: () => T,
   entity: EntityInterface
-): ComponentInterface & API {
+): ComponentInterface & T {
   const instance = new Component(componentFunc, entity);
 
   const ret: unknown = HooksSystem.withInstance(instance, () => {
-    return componentFunc(props);
+    return componentFactory();
   });
 
-  let api;
+  const api = {};
   if (typeof ret === "object" && ret != null) {
-    api = {};
     proxyProperties(ret, api);
-    proxyProperties(instance, api);
-  } else {
-    api = instance;
   }
+  proxyProperties(instance, api);
 
   // @ts-ignore
   return api;

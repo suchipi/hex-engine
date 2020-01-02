@@ -30,43 +30,47 @@ import jump from "./jump.wav";
 
 const camera = createEntity(() => {
   useName("camera");
-  useNewComponent(Position, new Vec2(-100, -100));
-  useNewComponent(Rotation, new Angle(0));
-  useNewComponent(Camera);
+  useNewComponent(Position, () => Position(new Vec2(-100, -100)));
+  useNewComponent(Rotation, () => Rotation(new Angle(0)));
+  useNewComponent(Camera, () => Camera());
 });
 
 const player = createEntity(() => {
   useName("player");
-  useNewComponent(Keyboard);
-  useNewComponent(Position, new Vec2(0, 0));
-  const size = useNewComponent(Size, new Vec2(29, 41));
-  useNewComponent(Origin, size.dividedBy(2));
+  useNewComponent(Keyboard, () => Keyboard());
+  useNewComponent(Position, () => Position(new Vec2(0, 0)));
+  const size = useNewComponent(Size, () => Size(new Vec2(29, 41)));
+  useNewComponent(Origin, () => Origin(size.dividedBy(2)));
 
-  const jumpSound = useNewComponent(Audio, { url: jump });
-  useNewComponent(AnimationSheet, {
-    url: bouncy,
-    tileWidth: 29,
-    tileHeight: 41,
-    animations: {
-      default: useNewComponent(
-        Animation,
-        [0, 1, 2, 3, 4, 5, 6, 7].map(
-          (num) =>
-            new AnimationFrame(num, {
-              duration: 150,
-              onFrame:
-                num === 2
-                  ? () => {
-                      jumpSound.play({ volume: 0.0 });
-                    }
-                  : null,
-            })
-        )
-      ),
-    },
-  });
-  useNewComponent(BasicRenderer);
-  useNewComponent(function PlayerControls() {
+  const jumpSound = useNewComponent(Audio, () => Audio({ url: jump }));
+  useNewComponent(AnimationSheet, () =>
+    AnimationSheet({
+      url: bouncy,
+      tileWidth: 29,
+      tileHeight: 41,
+      animations: {
+        default: useNewComponent(Animation, () =>
+          Animation(
+            [0, 1, 2, 3, 4, 5, 6, 7].map(
+              (num) =>
+                new AnimationFrame(num, {
+                  duration: 150,
+                  onFrame:
+                    num === 2
+                      ? () => {
+                          jumpSound.play({ volume: 0.0 });
+                        }
+                      : null,
+                })
+            )
+          )
+        ),
+      },
+    })
+  );
+  useNewComponent(BasicRenderer, () => BasicRenderer());
+
+  function PlayerControls() {
     return useUpdate((delta) => {
       const keyboard = useExistingComponent(Keyboard)!;
       const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
@@ -75,13 +79,15 @@ const player = createEntity(() => {
       const position = useExistingComponent(Position)!;
       position.replace(position.add(vector.toVec2()).round());
     });
-  });
+  }
+
+  useNewComponent(PlayerControls, () => PlayerControls());
 });
 
 const stage = createEntity(() => {
   useName("stage");
-  useNewComponent(Position, new Vec2(0, 0));
-  useNewComponent(Size, new Vec2(50, 50));
+  useNewComponent(Position, () => Position(new Vec2(0, 0)));
+  useNewComponent(Size, () => Size(new Vec2(50, 50)));
 
   return useDraw((context) => {
     const position = useExistingComponent(Position);
@@ -101,7 +107,9 @@ const stage = createEntity(() => {
 
 const canvas = createEntity(() => {
   useName("canvas");
-  const canvas = useNewComponent(Canvas, { backgroundColor: "white" });
+  const canvas = useNewComponent(Canvas, () =>
+    Canvas({ backgroundColor: "white" })
+  );
   canvas.fullscreen({ pixelZoom: 3 });
 
   return {

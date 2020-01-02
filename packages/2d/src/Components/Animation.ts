@@ -2,13 +2,13 @@ import { useNewComponent } from "@hex-engine/core";
 import { useUpdate } from "../Canvas";
 import Timer from "./Timer";
 
-export class AnimationFrame {
-  data: number;
+export class AnimationFrame<T> {
+  data: T;
   duration: number; // in ms
   onFrame: (() => void) | null;
 
   constructor(
-    data: number,
+    data: T,
     { duration, onFrame }: { duration: number; onFrame?: null | (() => void) }
   ) {
     this.data = data;
@@ -17,10 +17,10 @@ export class AnimationFrame {
   }
 }
 
-type Props = Array<AnimationFrame>;
+type Props<T> = Array<AnimationFrame<T>>;
 
-export type AnimationAPI = {
-  currentFrame: AnimationFrame;
+export type AnimationAPI<T> = {
+  currentFrame: AnimationFrame<T>;
   pause(): void;
   play(): void;
   restart(): void;
@@ -31,9 +31,9 @@ export type AnimationAPI = {
   disable: () => void;
 };
 
-export default function Animation(props: Props): AnimationAPI {
+export default function Animation<T>(props: Props<T>): AnimationAPI<T> {
   const frames = props;
-  const timer = useNewComponent(Timer);
+  const timer = useNewComponent(Timer, () => Timer());
   timer.disable();
   let currentFrameIndex = 0;
 

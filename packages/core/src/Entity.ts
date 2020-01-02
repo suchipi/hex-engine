@@ -1,7 +1,6 @@
 import {
   Entity as EntityInterface,
   Component as ComponentInterface,
-  ComponentFunction,
 } from "./Interface";
 import instantiate from "./instantiate";
 
@@ -13,16 +12,13 @@ export default class Entity implements EntityInterface {
   parent: Entity | null = null;
   name = null;
 
-  static _create<Func extends (...args: any[]) => any>(
-    ...args: Parameters<Func>[0] extends void
-      ? [Func]
-      : [Func, Parameters<Func>[0]]
+  static _create(
+    componentFunc: (...args: any[]) => any,
+    componentFactory: () => any
   ): EntityInterface {
-    const [componentFunc, props] = args;
-
     const ent = new Entity();
 
-    const component = instantiate(componentFunc, props, ent);
+    const component = instantiate(componentFunc, componentFactory, ent);
     ent.components.add(component);
 
     return ent;
@@ -47,7 +43,7 @@ export default class Entity implements EntityInterface {
   }
 
   getComponent<API>(
-    componentClass: ComponentFunction<any, API>
+    componentClass: (...args: any[]) => API
   ): null | (API extends {} ? ComponentInterface & API : ComponentInterface) {
     const maybeComponent = this._componentsByType().get(componentClass);
     // @ts-ignore

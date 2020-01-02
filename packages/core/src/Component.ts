@@ -1,5 +1,4 @@
 import {
-  ComponentFunction,
   Component as ComponentInterface,
   Entity as EntityInterface,
 } from "./Interface";
@@ -7,14 +6,14 @@ import {
 export default class Component implements ComponentInterface {
   _kind: "component" = "component";
 
-  type: ComponentFunction<any, any>;
+  type: (...args: any[]) => any;
   entity: EntityInterface;
 
   // This really should be { [key: symbol]: any },
-  // but TypeScript doesn't allow using symbols as indexers.
+  // but TypeScript doesn't allow using unique symbols as indexers.
   _accumulatedState: any = {};
 
-  constructor(type: ComponentFunction<any, any>, entity: EntityInterface) {
+  constructor(type: (...args: any[]) => any, entity: EntityInterface) {
     this.type = type;
     this.entity = entity;
   }

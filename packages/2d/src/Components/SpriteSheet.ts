@@ -10,10 +10,10 @@ type Props = {
 };
 
 export default function SpriteSheet({ url, tileWidth, tileHeight }: Props) {
-  const image = useNewComponent(Image, { url });
+  const image = useNewComponent(Image, () => Image({ url }));
 
   if (!useExistingComponent(Size)) {
-    useNewComponent(Size, new Vec2(tileWidth, tileHeight));
+    useNewComponent(Size, () => Size(new Vec2(tileWidth, tileHeight)));
   }
 
   return {

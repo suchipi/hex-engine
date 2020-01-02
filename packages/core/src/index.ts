@@ -14,13 +14,15 @@ const {
   useStateAccumlator,
 } = HooksSystem.hooks;
 
-// @ts-ignore
-const createEntity: typeof Entity._create = (func, arg) => {
-  return Entity._create(function BaseEntityLogic() {
-    useNewComponent(Components.EnableDisableEntity);
-    // @ts-ignore
-    return useNewComponent(func, arg);
-  });
+const createEntity = (func: (...args: any[]) => any): EntityInterface => {
+  function BaseEntityLogic() {
+    useNewComponent(Components.EnableDisableEntity, () =>
+      Components.EnableDisableEntity()
+    );
+    return useNewComponent(func, func);
+  }
+
+  return Entity._create(BaseEntityLogic, () => BaseEntityLogic());
 };
 
 export {

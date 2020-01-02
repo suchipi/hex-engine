@@ -16,11 +16,13 @@ export default function AnimationSheet({
   tileHeight,
   animations,
 }: Props) {
-  const spriteSheet = useNewComponent(SpriteSheet, {
-    url,
-    tileWidth,
-    tileHeight,
-  });
+  const spriteSheet = useNewComponent(SpriteSheet, () =>
+    SpriteSheet({
+      url,
+      tileWidth,
+      tileHeight,
+    })
+  );
 
   let currentAnim = animations.default;
   currentAnim.play();

@@ -4,16 +4,11 @@ import Component from "./Component";
 import instantiate from "./instantiate";
 
 const HooksSystem = makeHooksSystem<ComponentInterface>()({
-  useNewComponent: (instance) => <Func extends (...args: any[]) => any>(
-    ...args: Parameters<Func>[0] extends void
-      ? [Func]
-      : [Func, Parameters<Func>[0]]
-  ): ReturnType<Func> extends {}
-    ? ComponentInterface & ReturnType<Func>
-    : ComponentInterface => {
-    const [componentFunc, props] = args;
-
-    const child = instantiate(componentFunc, props, instance.entity);
+  useNewComponent: (instance) => <T>(
+    componentFunc: (...args: any[]) => any,
+    componentFactory: () => T
+  ): T & ComponentInterface => {
+    const child = instantiate(componentFunc, componentFactory, instance.entity);
     instance.entity.components.add(child);
 
     // @ts-ignore

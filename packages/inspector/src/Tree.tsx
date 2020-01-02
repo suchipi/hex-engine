@@ -271,6 +271,7 @@ export default function Tree({
             <div key={xIndex}>
               {row.map((gridValue, yIndex) => (
                 <EditableString
+                  key={yIndex}
                   expanded={false}
                   color="rgb(28, 0, 207)"
                   value={String(gridValue)}

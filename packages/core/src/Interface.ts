@@ -1,5 +1,3 @@
-export type ComponentFunction<Props, API> = (props: Props) => API;
-
 export interface Entity {
   children: Set<Entity>;
   parent: Entity | null;
@@ -10,12 +8,12 @@ export interface Entity {
 
   components: Set<Component>;
   getComponent<API>(
-    componentClass: ComponentFunction<any, API>
+    componentClass: (...args: any[]) => API
   ): null | (API extends {} ? Component & API : Component);
 }
 
 export interface Component {
-  type: ComponentFunction<any, any>;
+  type: (...args: any[]) => any;
   entity: Entity;
   accumulatedState<T>(key: symbol): Array<T>;
 }
