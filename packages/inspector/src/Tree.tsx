@@ -263,6 +263,28 @@ export default function Tree({
         className += " - disabled";
       }
       content = entriesForProperties(gatherPropertyNames(data));
+    } else if (data._kind === "grid" && typeof data.defaultValue === "number") {
+      className = `Grid (${data.size.x}, ${data.size.y})`;
+      content = (
+        <>
+          {data.data.map((row: Array<number>, xIndex: number) => (
+            <div key={xIndex}>
+              {row.map((gridValue, yIndex) => (
+                <EditableString
+                  expanded={false}
+                  color="rgb(28, 0, 207)"
+                  value={String(gridValue)}
+                  onChange={(newValue) => {
+                    data.data[xIndex][yIndex] =
+                      Number(newValue) || data.defaultValue;
+                  }}
+                />
+              ))}
+            </div>
+          ))}
+          {entriesForProperties(gatherPropertyNames(data))}
+        </>
+      );
     } else {
       className = data.constructor?.name || "";
       content = entriesForProperties(gatherPropertyNames(data));

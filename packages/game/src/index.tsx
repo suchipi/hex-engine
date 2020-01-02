@@ -23,6 +23,7 @@ import {
   useName,
   Camera,
   Rotation,
+  Grid,
 } from "@hex-engine/2d";
 import bouncy from "./bouncy-29x41.png";
 import jump from "./jump.wav";
@@ -102,6 +103,10 @@ const canvas = createEntity(() => {
   useName("canvas");
   const canvas = useNewComponent(Canvas, { backgroundColor: "white" });
   canvas.fullscreen({ pixelZoom: 3 });
+
+  return {
+    grid: new Grid(5, 5, 0),
+  };
 });
 
 canvas.addChild(stage);

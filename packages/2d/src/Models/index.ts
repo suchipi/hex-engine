@@ -1,5 +1,6 @@
 import Angle from "./Angle";
+import Grid from "./Grid";
 import Vec2 from "./Vec2";
 import Vector from "./Vector";
 
-export { Angle, Vec2, Vector };
+export { Angle, Grid, Vec2, Vector };
