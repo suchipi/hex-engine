@@ -1,16 +1,24 @@
 import React from "react";
 import { Components } from "@hex-engine/core";
 import Button from "./Button";
-import { ResumeIcon, StepIcon, PauseIcon, PaneRightIcon } from "./Icons";
+import {
+  ResumeIcon,
+  StepIcon,
+  PauseIcon,
+  PaneRightIcon,
+  PaneLeftIcon,
+} from "./Icons";
 
 type RunLoopAPI = ReturnType<typeof Components.RunLoop>;
 
 export default function Controls({
   runLoop,
-  close,
+  isOpen,
+  toggleOpen,
 }: {
   runLoop: RunLoopAPI;
-  close: () => void;
+  isOpen: boolean;
+  toggleOpen: () => void;
 }) {
   const error = runLoop.error;
   return (
@@ -67,11 +75,19 @@ export default function Controls({
           : "Running"}
       </div>
 
-      <Button onClick={close} title="Hide inspector pane">
-        <span style={{ padding: 6, color: "#222" }}>
-          <PaneRightIcon />
-        </span>
-      </Button>
+      {isOpen ? (
+        <Button onClick={toggleOpen} title="Hide inspector pane">
+          <span style={{ padding: 6, color: "#222" }}>
+            <PaneRightIcon />
+          </span>
+        </Button>
+      ) : (
+        <Button onClick={toggleOpen} title="Show inspector pane">
+          <span style={{ padding: 6, color: "#222" }}>
+            <PaneLeftIcon />
+          </span>
+        </Button>
+      )}
     </div>
   );
 }
