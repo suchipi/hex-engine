@@ -6,10 +6,9 @@ import {
   useCallbackAsCurrent,
   Components,
 } from "@hex-engine/core";
-import { StateTreeProvider, StateKey } from "react-state-tree";
+import { StateTreeProvider } from "react-state-tree";
 import debounce from "lodash.debounce";
-import Tree from "./Tree";
-import TimeControls from "./TimeControls";
+import App from "./App";
 
 type RunLoopAPI = ReturnType<typeof Components.RunLoop>;
 
@@ -17,78 +16,39 @@ const initialState = localStorage.inspectorState
   ? JSON.parse(localStorage.inspectorState)
   : {};
 
-function saveState(state: Object) {
+function saveState(state: any) {
   localStorage.inspectorState = JSON.stringify(state);
 }
 
 const debouncedSaveState = debounce(saveState, 100);
 
-function App({
+function Root({
   entity,
   runLoop,
 }: {
   entity: Entity;
   runLoop: RunLoopAPI | null;
 }) {
-  let ent = entity;
-
   return (
     <StateTreeProvider
       initialValue={initialState}
       onUpdate={debouncedSaveState}
     >
-      <div
-        style={{
-          fontFamily: "Menlo, monospace",
-          fontSize: 11,
-          display: "flex",
-          flexDirection: "column",
-          height: "100%",
-          boxSizing: "border-box",
-        }}
-      >
-        <StateKey value="timeControls">
-          {runLoop ? <TimeControls runLoop={runLoop} /> : null}
-        </StateKey>
-        <StateKey value="tree">
-          <div style={{ flexBasis: "100%" }}>
-            <Tree
-              data={ent}
-              setValue={(newEnt) => {
-                ent = newEnt;
-              }}
-            />
-          </div>
-        </StateKey>
-      </div>
+      <App entity={entity} runLoop={runLoop} />
     </StateTreeProvider>
   );
 }
 
-function defaultElement(): HTMLElement {
-  const el = document.createElement("div");
-  Object.assign(el.style, {
-    position: "fixed",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    width: "33vw",
-    opacity: "0.8",
-    overflow: "auto",
-    backgroundColor: "white",
-  });
-  document.body.appendChild(el);
-  return el;
-}
-
 export default function Inspector({
-  el = defaultElement(),
   pauseOnStart = false,
 }: Partial<{
   el: HTMLElement;
   pauseOnStart: boolean;
 }> = {}) {
   let hasPausedOnStart = false;
+
+  const el = document.createElement("div");
+  document.body.appendChild(el);
 
   const tick = useCallbackAsCurrent(() => {
     const entity = useRootEntity();
@@ -98,7 +58,7 @@ export default function Inspector({
       hasPausedOnStart = true;
     }
 
-    ReactDOM.render(<App entity={entity} runLoop={runLoop} />, el);
+    ReactDOM.render(<Root entity={entity} runLoop={runLoop} />, el);
 
     requestAnimationFrame(tick);
   });

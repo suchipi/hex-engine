@@ -1,5 +1,43 @@
 import React from "react";
 
+export function PaneRightIcon() {
+  /* This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+  return (
+    <svg viewBox="0 0 16 16" width="16" height="16">
+      <path
+        fill="currentColor"
+        d="M4 3H2v10h2V3zM8 6v4l3-2-3-2z"
+        fillOpacity=".3"
+      />
+      <path
+        fill="currentColor"
+        d="M7.53 10.88A1 1 0 0 1 7 10V6a1 1 0 0 1 1.55-.83l3 2a1 1 0 0 1 0 1.66l-3 2a1 1 0 0 1-1.02.05zM11 8L8 6v4l3-2zM2 2h12c.6 0 1 .4 1 1v10c0 .6-.4 1-1 1H2c-.6 0-1-.4-1-1V3c0-.6.4-1 1-1zm12 11V3H5v10h9zM2 13h2V3H2v10z"
+      />
+    </svg>
+  );
+}
+
+export function PaneLeftIcon() {
+  /* This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+  return (
+    <svg viewBox="0 0 16 16" width="16" height="16">
+      <path
+        fill="currentColor"
+        d="M4 3H2v10h2V3zm7 7V6L8 8l3 2z"
+        fillOpacity=".3"
+      />
+      <path
+        fill="currentColor"
+        d="M11.47 10.88A1 1 0 0 0 12 10V6a1 1 0 0 0-1.55-.83l-3 2a1 1 0 0 0 0 1.66l3 2c.3.2.7.23 1.02.05zM8 8l3-2v4L8 8zM2 2h12c.6 0 1 .4 1 1v10c0 .6-.4 1-1 1H2c-.6 0-1-.4-1-1V3c0-.6.4-1 1-1zm12 11V3H5v10h9zM2 13h2V3H2v10z"
+      />
+    </svg>
+  );
+}
+
 export function PauseIcon() {
   /* This Source Code Form is subject to the terms of the Mozilla Public
  - License, v. 2.0. If a copy of the MPL was not distributed with this

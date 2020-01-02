@@ -1,11 +1,17 @@
 import React from "react";
 import { Components } from "@hex-engine/core";
 import Button from "./Button";
-import { ResumeIcon, StepIcon, PauseIcon } from "./Icons";
+import { ResumeIcon, StepIcon, PauseIcon, PaneRightIcon } from "./Icons";
 
 type RunLoopAPI = ReturnType<typeof Components.RunLoop>;
 
-export default function TimeControls({ runLoop }: { runLoop: RunLoopAPI }) {
+export default function Controls({
+  runLoop,
+  close,
+}: {
+  runLoop: RunLoopAPI;
+  close: () => void;
+}) {
   const error = runLoop.error;
   return (
     <div
@@ -60,6 +66,12 @@ export default function TimeControls({ runLoop }: { runLoop: RunLoopAPI }) {
             : `Paused (frame ${runLoop.frameNumber})`
           : "Running"}
       </div>
+
+      <Button onClick={close} title="Hide inspector pane">
+        <span style={{ padding: 6, color: "#222" }}>
+          <PaneRightIcon />
+        </span>
+      </Button>
     </div>
   );
 }
