@@ -1,13 +1,13 @@
 import useDescendantEntities from "./useDescendantEntities";
 import useEnableDisable from "./useEnableDisable";
 import useFrame from "./useFrame";
-import useName from "./useName";
+import useEntityName from "./useEntityName";
 import useRootEntity from "./useRootEntity";
 
 export {
   useDescendantEntities,
   useEnableDisable,
   useFrame,
-  useName,
+  useEntityName,
   useRootEntity,
 };

@@ -3,7 +3,7 @@ import { useDraw } from "../Canvas";
 import Position from "./Position";
 import Rotation from "./Rotation";
 
-export default function Camera(options: void | { zoom: number }) {
+export default function Camera(options?: { zoom: number }) {
   useType(Camera);
 
   const state = {

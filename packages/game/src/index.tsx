@@ -20,7 +20,7 @@ import {
   useNewComponent,
   useDraw,
   createEntity,
-  useName,
+  useEntityName,
   Camera,
   Rotation,
   useType,
@@ -29,14 +29,14 @@ import bouncy from "./bouncy-29x41.png";
 import jump from "./jump.wav";
 
 const camera = createEntity(() => {
-  useName("camera");
+  useEntityName("camera");
   useNewComponent(() => Position(new Vec2(-100, -100)));
   useNewComponent(() => Rotation(new Angle(0)));
-  useNewComponent(() => Camera());
+  useNewComponent(Camera);
 });
 
 const player = createEntity(() => {
-  useName("player");
+  useEntityName("player");
   useNewComponent(() => Keyboard());
   useNewComponent(() => Position(new Vec2(0, 0)));
   const size = useNewComponent(() => Size(new Vec2(29, 41)));
@@ -84,7 +84,7 @@ const player = createEntity(() => {
 });
 
 const stage = createEntity(() => {
-  useName("stage");
+  useEntityName("stage");
   useNewComponent(() => Position(new Vec2(0, 0)));
   useNewComponent(() => Size(new Vec2(50, 50)));
 
@@ -105,7 +105,7 @@ const stage = createEntity(() => {
 });
 
 const canvas = createEntity(() => {
-  useName("canvas");
+  useEntityName("canvas");
   const canvas = useNewComponent(() => Canvas({ backgroundColor: "white" }));
   canvas.fullscreen({ pixelZoom: 3 });
 });
