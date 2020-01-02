@@ -225,6 +225,15 @@ export default function Tree({
     hasContent = data.size > 0;
     preview = hasContent ? "{...}" : "{}";
     content = entriesForArray([...data.entries()]);
+  } else if (data instanceof HTMLImageElement) {
+    className = "HTMLImageElement";
+    hasContent = true;
+    content = (
+      <div>
+        <img style={{ maxWidth: "100%" }} src={data.src} />
+        {entriesForProperties(gatherPropertyNames(data))}
+      </div>
+    );
   } else if (typeof data === "object" && data != null) {
     if (data._kind === "entity") {
       className = data.name ? `Entity (${data.name})` : "Entity";
