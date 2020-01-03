@@ -46,6 +46,21 @@ export default Object.assign(
 
     return {
       element: canvas,
+      context,
+
+      setPixelated(on: boolean) {
+        if (on) {
+          canvas.style.imageRendering = navigator.userAgent.match(/firefox/i)
+            ? "-moz-crisp-edges"
+            : "pixelated";
+
+          context.imageSmoothingEnabled = false;
+        } else {
+          canvas.style.imageRendering = "";
+          context.imageSmoothingEnabled = true;
+        }
+      },
+
       resize({
         realWidth,
         realHeight,
@@ -61,13 +76,9 @@ export default Object.assign(
         canvas.height = pixelHeight;
         canvas.style.width = realWidth + "px";
         canvas.style.height = realHeight + "px";
-
-        canvas.style.imageRendering = navigator.userAgent.match(/firefox/i)
-          ? "-moz-crisp-edges"
-          : "pixelated";
       },
 
-      fullscreen({ pixelZoom = 1 }: { pixelZoom: number }) {
+      fullscreen({ pixelZoom = 1 }: { pixelZoom?: number } = {}) {
         Object.assign(document.body.style, {
           margin: 0,
           padding: 0,

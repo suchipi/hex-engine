@@ -141,6 +141,7 @@ const bg = createEntity(() => {
 const canvas = createEntity(() => {
   useEntityName("canvas");
   const canvas = useNewComponent(() => Canvas({ backgroundColor: "white" }));
+  canvas.setPixelated(true);
   canvas.fullscreen({ pixelZoom: 3 });
 
   useNewComponent(() =>
