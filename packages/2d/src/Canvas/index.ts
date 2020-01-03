@@ -50,10 +50,29 @@ export default Object.assign(
           ? "-moz-crisp-edges"
           : "pixelated";
 
-        context!.imageSmoothingEnabled = false;
+        [
+          "imageSmoothingEnabled",
+          "mozImageSmoothingEnabled",
+          "oImageSmoothingEnabled",
+          "webkitImageSmoothingEnabled",
+          "msImageSmoothingEnabled",
+        ].forEach((property) => {
+          // @ts-ignore
+          context[property] = false;
+        });
       } else {
         canvas.style.imageRendering = "";
-        context!.imageSmoothingEnabled = true;
+
+        [
+          "imageSmoothingEnabled",
+          "mozImageSmoothingEnabled",
+          "oImageSmoothingEnabled",
+          "webkitImageSmoothingEnabled",
+          "msImageSmoothingEnabled",
+        ].forEach((property) => {
+          // @ts-ignore
+          context[property] = true;
+        });
       }
     }
 
