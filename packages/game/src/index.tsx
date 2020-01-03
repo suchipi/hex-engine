@@ -175,8 +175,6 @@ const canvas = createEntity(() => {
   );
 });
 
-bg.disable();
-
 canvas.addChild(bg);
 canvas.addChild(stage);
 canvas.addChild(camera);
