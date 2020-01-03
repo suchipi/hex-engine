@@ -44,22 +44,26 @@ export default Object.assign(
       );
     }
 
+    function setPixelated(on: boolean) {
+      if (on) {
+        canvas.style.imageRendering = navigator.userAgent.match(/firefox/i)
+          ? "-moz-crisp-edges"
+          : "pixelated";
+
+        context!.imageSmoothingEnabled = false;
+      } else {
+        canvas.style.imageRendering = "";
+        context!.imageSmoothingEnabled = true;
+      }
+    }
+
+    setPixelated(true);
+
     return {
       element: canvas,
       context,
 
-      setPixelated(on: boolean) {
-        if (on) {
-          canvas.style.imageRendering = navigator.userAgent.match(/firefox/i)
-            ? "-moz-crisp-edges"
-            : "pixelated";
-
-          context.imageSmoothingEnabled = false;
-        } else {
-          canvas.style.imageRendering = "";
-          context.imageSmoothingEnabled = true;
-        }
-      },
+      setPixelated,
 
       resize({
         realWidth,
