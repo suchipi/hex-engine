@@ -11,12 +11,12 @@ export default function TileMap(
   return {
     drawMapIntoContext({
       context,
-      x,
-      y,
+      x = 0,
+      y = 0,
     }: {
       context: CanvasRenderingContext2D;
-      x: number;
-      y: number;
+      x?: number | void;
+      y?: number | void;
     }) {
       for (const [gridX, gridY, tileIndex] of grid.contents()) {
         sheet.drawSpriteIntoContext({

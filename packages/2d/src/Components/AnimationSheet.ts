@@ -44,8 +44,8 @@ export default function AnimationSheet({
       height,
     }: {
       context: CanvasRenderingContext2D;
-      x: number;
-      y: number;
+      x?: number | void;
+      y?: number | void;
       width?: number | void;
       height?: number | void;
     }) {

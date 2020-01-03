@@ -45,6 +45,7 @@ const player = createEntity(() => {
   useNewComponent(() => Position(new Vec2(0, 0)));
   const size = useNewComponent(() => Size(new Vec2(29, 41)));
   useNewComponent(() => Origin(size.dividedBy(2)));
+  useNewComponent(() => Rotation(0));
 
   const jumpSound = useNewComponent(() => Audio({ url: jump }));
   useNewComponent(() =>
@@ -111,11 +112,12 @@ const stage = createEntity(() => {
 const bg = createEntity(() => {
   useEntityName("bg");
 
+  useNewComponent(Position);
+  useNewComponent(() => Rotation(0));
+
   const sheet = useNewComponent(() =>
     SpriteSheet({ tileWidth: 29, tileHeight: 41, url: bouncy })
   );
-
-  const position = useNewComponent(Position);
 
   const grid = new Grid(3, 3, 0);
   // prettier-ignore
@@ -125,16 +127,14 @@ const bg = createEntity(() => {
     6, 7, 0
   ]);
 
-  const tilemap = useNewComponent(() => TileMap(sheet, grid));
+  const size = useNewComponent(() => Size(sheet.tileSize.times(3)));
+  useNewComponent(() => Origin(size.dividedBy(2)));
 
-  const drawApi = useDraw((context) => {
-    tilemap.drawMapIntoContext({ context, x: position.x, y: position.y });
-  });
+  useNewComponent(() => TileMap(sheet, grid));
 
   return {
-    ...drawApi,
+    ...useNewComponent(BasicRenderer),
     grid,
-    position,
   };
 });
 
@@ -174,6 +174,8 @@ const canvas = createEntity(() => {
     })
   );
 });
+
+bg.disable();
 
 canvas.addChild(bg);
 canvas.addChild(stage);

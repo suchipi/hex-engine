@@ -17,15 +17,15 @@ export default function SpriteSheet({ url, tileWidth, tileHeight }: Props) {
     tileSize: new Vec2(tileWidth, tileHeight),
     drawSpriteIntoContext({
       context,
-      x,
-      y,
+      x = 0,
+      y = 0,
       tileIndex,
       width = tileWidth,
       height = tileHeight,
     }: {
       context: CanvasRenderingContext2D;
-      x: number;
-      y: number;
+      x?: number | void;
+      y?: number | void;
       tileIndex: number;
       width?: void | number;
       height?: void | number;

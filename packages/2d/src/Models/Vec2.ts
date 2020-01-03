@@ -15,8 +15,15 @@ export default class Vec2 {
     return new Vec2(this.x - other.x, this.y - other.y);
   }
 
-  times(other: Vec2): Vec2 {
-    return new Vec2(this.x * other.x, this.y * other.y);
+  times(other: Vec2 | number): Vec2 {
+    let otherVec2: Vec2;
+    if (typeof other === "number") {
+      otherVec2 = new Vec2(other, other);
+    } else {
+      otherVec2 = other;
+    }
+
+    return new Vec2(this.x * otherVec2.x, this.y * otherVec2.y);
   }
 
   dividedBy(other: Vec2 | number): Vec2 {

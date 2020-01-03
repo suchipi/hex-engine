@@ -7,6 +7,7 @@ import DrawOrder from "./DrawOrder";
 type Props = {
   element?: HTMLCanvasElement;
   backgroundColor: string;
+  pauseOnStart?: boolean;
 };
 
 export default Object.assign(
@@ -38,7 +39,9 @@ export default Object.assign(
     );
     useNewComponent(UpdateChildren);
     if (process.env.NODE_ENV !== "production") {
-      useNewComponent(Inspector);
+      useNewComponent(() =>
+        Inspector({ pauseOnStart: Boolean(props.pauseOnStart) })
+      );
     }
 
     return {
