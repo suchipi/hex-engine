@@ -90,15 +90,10 @@ const player = createEntity(() => {
 
 const stage = createEntity(() => {
   useEntityName("stage");
-  useNewComponent(() => Position(new Vec2(0, 0)));
-  useNewComponent(() => Size(new Vec2(50, 50)));
+  const position = useNewComponent(() => Position(new Vec2(0, 0)));
+  const size = useNewComponent(() => Size(new Vec2(50, 50)));
 
   return useDraw((context) => {
-    const position = useExistingComponentByType(Position);
-    if (!position) return;
-    let size: Vec2 | null = useExistingComponentByType(Size);
-    if (!size) size = new Vec2(10, 10);
-
     context.strokeStyle = "black";
     context.strokeRect(
       position.x - size.x / 2,
