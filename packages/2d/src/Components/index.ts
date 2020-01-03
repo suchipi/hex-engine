@@ -11,6 +11,7 @@ import Position from "./Position";
 import Rotation from "./Rotation";
 import Size from "./Size";
 import SpriteSheet from "./SpriteSheet";
+import TileMap from "./TileMap";
 import Timer from "./Timer";
 
 export {
@@ -28,5 +29,6 @@ export {
   Rotation,
   Size,
   SpriteSheet,
+  TileMap,
   Timer,
 };

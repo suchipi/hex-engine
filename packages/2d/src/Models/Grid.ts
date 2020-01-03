@@ -15,6 +15,19 @@ export default class Grid<T> {
     this.size = new Vec2(rows, columns);
   }
 
+  setData(data: Array<T>) {
+    let currentX = 0;
+    let currentY = 0;
+    for (const item of data) {
+      if (currentX + 1 > this.size.x) {
+        currentY++;
+        currentX = 0;
+      }
+      this.set(currentX, currentY, item);
+      currentX++;
+    }
+  }
+
   get(row: number, column: number): T {
     if (
       row > this.size.x - 1 ||
@@ -40,6 +53,14 @@ export default class Grid<T> {
       );
     } else {
       this.data[column][row] = value;
+    }
+  }
+
+  *contents(): Generator<[number, number, T]> {
+    for (let i = 0; i < this.size.x; i++) {
+      for (let j = 0; j < this.size.y; j++) {
+        yield [i, j, this.get(i, j)];
+      }
     }
   }
 }
