@@ -7,9 +7,12 @@ export default function Camera(options?: { zoom: number }) {
   useType(Camera);
 
   const state = {
-    // indicates to the Canvas's UpdateChildren component that we should be drawn before other entities
+    // this property indicates to the Canvas.DrawOrder's default
+    // sort algorithm that we should be drawn before other entities
     isCamera: true,
+
     zoom: (options && options.zoom) || 1,
+
     ...useDraw((context) => {
       const position = useExistingComponentByType(Position);
       if (position) {

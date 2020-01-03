@@ -1,12 +1,14 @@
 import {
   useCallbackAsCurrent,
   useDescendantEntities,
+  useExistingComponentByType,
   useFrame,
   useStateAccumlator,
   useEnableDisable,
   Component,
   useType,
 } from "@hex-engine/core";
+import DrawOrder from "./DrawOrder";
 
 const DRAW_CALLBACKS = Symbol("DRAW_CALLBACKS");
 
@@ -57,24 +59,14 @@ export function DrawChildren({ canvas, context, backgroundColor }: Props) {
     context.fillStyle = backgroundColor;
     context.fillRect(0, 0, canvas.width, canvas.height);
 
+    const drawOrder = useExistingComponentByType(DrawOrder);
+    const sort = drawOrder ? drawOrder.sort : DrawOrder.defaultSort;
+
     const ents = useDescendantEntities();
+    const components = sort(ents);
 
-    // Draw cameras first
-    for (const ent of ents) {
-      for (const component of [...ent.components].filter(
-        (comp: any) => comp.isCamera
-      )) {
-        drawComponent(component);
-      }
-    }
-
-    // Then draw non-cameras
-    for (const ent of ents) {
-      for (const component of [...ent.components].filter(
-        (comp: any) => !comp.isCamera
-      )) {
-        drawComponent(component);
-      }
+    for (const component of components) {
+      drawComponent(component);
     }
   });
 }

@@ -18,7 +18,10 @@ export default function BasicRenderer() {
     let origin: Vec2 | null = useExistingComponentByType(Origin);
     if (!origin) origin = new Vec2(0, 0);
 
-    const target = position.subtract(origin).round();
+    const target = position
+      .asWorldPosition()
+      .subtract(origin)
+      .round();
 
     // TODO: Rotation
 
