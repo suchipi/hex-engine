@@ -91,7 +91,21 @@ const player = createEntity(() => {
 });
 
 const slime = createEntity(() => {
-  useNewComponent(() => Aseprite(slimeBlue));
+  const position = useNewComponent(() =>
+    Position(new Vec2(100, 50))
+  ).asWorldPosition();
+
+  const aseprite = useNewComponent(() => Aseprite(slimeBlue));
+
+  aseprite.animation.play();
+
+  useDraw((context) => {
+    aseprite.drawCurrentFrameIntoContext({
+      context,
+      x: position.x,
+      y: position.y,
+    });
+  });
 });
 
 const stage = createEntity(() => {
