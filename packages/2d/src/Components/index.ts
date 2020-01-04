@@ -1,5 +1,6 @@
 import Animation, { AnimationFrame } from "./Animation";
 import AnimationSheet from "./AnimationSheet";
+import Aseprite from "./Aseprite";
 import Audio from "./Audio";
 import BasicRenderer from "./BasicRenderer";
 import Camera from "./Camera";
@@ -18,6 +19,7 @@ export {
   Animation,
   AnimationFrame,
   AnimationSheet,
+  Aseprite,
   Audio,
   BasicRenderer,
   Camera,

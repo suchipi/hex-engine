@@ -25,11 +25,11 @@ module.exports = {
       },
       {
         test: /\.(png|jpe?g|gif|wav|mp3|ogg)$/i,
-        use: [
-          {
-            loader: "file-loader",
-          },
-        ],
+        use: ["file-loader"],
+      },
+      {
+        test: /\.(ase|aseprite)$/i,
+        use: ["aseprite-loader"],
       },
     ],
   },

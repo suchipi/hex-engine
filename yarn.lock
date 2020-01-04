@@ -1184,6 +1184,18 @@ array.prototype.flat@^1.2.1:
     define-properties "^1.1.3"
     es-abstract "^1.17.0-next.1"
 
+ase-parser@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/ase-parser/-/ase-parser-0.0.10.tgz#e0a7cd4565e2d4ee807bee3dee2b5958b42e7ecf"
+  integrity sha512-QbYdSA//wufaT4LMSjLKimxs6EoYO8m2xFR1VjMLQQwx8cknl2NAmC0XA7DbURQ+mpMb9fjL3xKYzbOEvB7TSg==
+
+aseprite-loader@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/aseprite-loader/-/aseprite-loader-0.1.0.tgz#df9f26182038e0d53c164341a7f424ef9d3813b2"
+  integrity sha512-v8JHMKRuHjODhpFTlwnvnAmrB5D3Z4+0y+3avXTBxT4Cz/61BCyOF9q68otmJmfdTesXt0TI9v5LXgf4HRR3XA==
+  dependencies:
+    ase-parser "^0.0.10"
+
 asn1.js@^4.0.0:
   version "4.10.1"
   resolved "https://registry.yarnpkg.com/asn1.js/-/asn1.js-4.10.1.tgz#b9c2bf5805f1e64aadeed6df3a2bfafb5a73f5a0"

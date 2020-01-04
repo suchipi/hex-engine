@@ -4,6 +4,7 @@ window.hex = hex;
 
 import {
   Audio,
+  Aseprite,
   Canvas,
   Vec2,
   Angle,
@@ -31,6 +32,7 @@ import {
 } from "@hex-engine/2d";
 import bouncy from "./bouncy-29x41.png";
 import jump from "./jump.wav";
+import slimeBlue from "./slime-blue.aseprite";
 
 const camera = createEntity(() => {
   useEntityName("camera");
@@ -86,6 +88,10 @@ const player = createEntity(() => {
       position.replace(position.add(vector.toVec2()).round());
     });
   });
+});
+
+const slime = createEntity(() => {
+  useNewComponent(() => Aseprite(slimeBlue));
 });
 
 const stage = createEntity(() => {
@@ -175,6 +181,7 @@ canvas.addChild(bg);
 canvas.addChild(stage);
 canvas.addChild(camera);
 stage.addChild(player);
+stage.addChild(slime);
 
 // @ts-ignore
-window.canvas = canvas;
+(window.canvas = canvas), (window.slimeBlue = slimeBlue);

@@ -32,3 +32,13 @@ declare module "*.mp3" {
   const url: string;
   export default url;
 }
+
+declare module "*.aseprite" {
+  const data: AsepriteLoader.Data;
+  export default data;
+}
+
+declare module "*.ase" {
+  const data: AsepriteLoader.Data;
+  export default data;
+}
