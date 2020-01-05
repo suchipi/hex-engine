@@ -34,6 +34,9 @@ import bouncy from "./bouncy-29x41.png";
 import jump from "./jump.wav";
 import slimeBlue from "./slime-blue.aseprite";
 
+// @ts-ignore
+window.slimeBlue = slimeBlue;
+
 const camera = createEntity(() => {
   useEntityName("camera");
   useNewComponent(() => Position(new Vec2(-100, -100)));
@@ -198,4 +201,4 @@ stage.addChild(player);
 stage.addChild(slime);
 
 // @ts-ignore
-(window.canvas = canvas), (window.slimeBlue = slimeBlue);
+window.canvas = canvas;

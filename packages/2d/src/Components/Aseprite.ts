@@ -4,11 +4,6 @@ import Animation, { AnimationFrame } from "./Animation";
 export default function Aseprite(data: AsepriteLoader.Data) {
   useType(Aseprite);
 
-  if (data.colorDepth !== 32) {
-    // TODO: grayscale, indexed
-    throw new Error(`Unsupported color depth: ${data.colorDepth}`);
-  }
-
   // TODO: forward / reverse / ping-pong
   const animation = useNewComponent(() =>
     Animation(
@@ -27,6 +22,30 @@ export default function Aseprite(data: AsepriteLoader.Data) {
   onDisabled(() => {
     animation.disable();
   });
+
+  function colorAtPixel(cel: AsepriteLoader.Cel, x: number, y: number): string {
+    if (data.colorDepth === 32) {
+      // 32-bit color, one byte for each r, g, b, a
+      const offset = 4 * (x + cel.w * y);
+      const r = cel.rawCelData[offset + 0];
+      const g = cel.rawCelData[offset + 1];
+      const b = cel.rawCelData[offset + 2];
+      const a = cel.rawCelData[offset + 3];
+
+      return `rgba(${r}, ${g}, ${b}, ${a})`;
+    } else if (data.colorDepth === 8) {
+      // indexed color. one byte for each pixel, referencing colors from palette
+      const offset = x + cel.w * y;
+      const index = cel.rawCelData[offset];
+      const color = data.palette.colors[index];
+
+      return `rgba(${color.red}, ${color.green}, ${color.blue}, ${color.alpha})`;
+    } else {
+      // TODO: grayscale
+
+      throw new Error(`Unsupported color depth: ${data.colorDepth}`);
+    }
+  }
 
   function drawCurrentFrameIntoContext({
     context,
@@ -50,13 +69,7 @@ export default function Aseprite(data: AsepriteLoader.Data) {
 
       for (let i = 0; i < cel.w; i++) {
         for (let j = 0; j < cel.h; j++) {
-          const offset = 4 * (i + cel.w * j);
-          const r = cel.rawCelData[offset + 0];
-          const g = cel.rawCelData[offset + 1];
-          const b = cel.rawCelData[offset + 2];
-          const a = cel.rawCelData[offset + 3];
-
-          context.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
+          context.fillStyle = colorAtPixel(cel, i, j);
           context.fillRect(i, j, 1, 1);
         }
       }
