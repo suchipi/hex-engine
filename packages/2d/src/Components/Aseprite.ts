@@ -1,11 +1,14 @@
 import { useType, useNewComponent, useEnableDisable } from "@hex-engine/core";
-import Animation, { AnimationFrame } from "./Animation";
+import Animation, { AnimationFrame, AnimationAPI } from "./Animation";
 
 export default function Aseprite(data: AsepriteLoader.Data) {
   useType(Aseprite);
 
-  // TODO: forward / reverse / ping-pong
-  const animation = useNewComponent(() =>
+  const animations: {
+    [name: string]: AnimationAPI<AsepriteLoader.Frame>;
+  } = {};
+
+  animations.default = useNewComponent(() =>
     Animation(
       data.frames.map(
         (frame) => new AnimationFrame(frame, { duration: frame.frameDuration })
@@ -13,14 +16,39 @@ export default function Aseprite(data: AsepriteLoader.Data) {
     )
   );
 
+  for (const tag of data.tags) {
+    let frames = data.frames.slice(tag.from, tag.to + 1);
+    if (tag.animDirection === "Reverse") {
+      frames.reverse();
+    } else if (tag.animDirection === "Ping-pong") {
+      frames = frames.concat(
+        frames
+          .slice(1)
+          .reverse()
+          .slice(1)
+      );
+    }
+
+    animations[tag.name] = useNewComponent(() =>
+      Animation(
+        frames.map(
+          (frame) =>
+            new AnimationFrame(frame, { duration: frame.frameDuration })
+        )
+      )
+    );
+  }
+
+  let currentAnim = animations.default;
+
   const { onEnabled, onDisabled, ...enableDisableApi } = useEnableDisable();
 
   onEnabled(() => {
-    animation.enable();
+    Object.values(animations).forEach((animation) => animation.enable());
   });
 
   onDisabled(() => {
-    animation.disable();
+    Object.values(animations).forEach((animation) => animation.disable());
   });
 
   function colorAtPixel(cel: AsepriteLoader.Cel, x: number, y: number): string {
@@ -67,7 +95,7 @@ export default function Aseprite(data: AsepriteLoader.Data) {
     x?: number | void;
     y?: number | void;
   }) {
-    const frame = animation.currentFrame.data;
+    const frame = currentAnim.currentFrame.data;
 
     for (const cel of frame.cels) {
       if (cel.celType !== 0 && cel.celType !== 2) {
@@ -90,8 +118,14 @@ export default function Aseprite(data: AsepriteLoader.Data) {
   }
 
   return {
+    get currentAnim() {
+      return currentAnim;
+    },
+    set currentAnim(nextValue) {
+      currentAnim = nextValue;
+    },
     data,
-    animation,
+    animations,
 
     drawCurrentFrameIntoContext,
 

@@ -27,7 +27,6 @@ export default function AnimationSheet({
   );
 
   let currentAnim = animations.default;
-  currentAnim.play();
 
   return {
     get currentAnim() {

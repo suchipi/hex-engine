@@ -99,8 +99,7 @@ const slime = createEntity(() => {
   ).asWorldPosition();
 
   const aseprite = useNewComponent(() => Aseprite(slimeBlue));
-
-  aseprite.animation.play();
+  aseprite.currentAnim.play();
 
   useDraw((context) => {
     aseprite.drawCurrentFrameIntoContext({
