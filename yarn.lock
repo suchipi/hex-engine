@@ -1189,10 +1189,10 @@ ase-parser@^0.0.10:
   resolved "https://registry.yarnpkg.com/ase-parser/-/ase-parser-0.0.10.tgz#e0a7cd4565e2d4ee807bee3dee2b5958b42e7ecf"
   integrity sha512-QbYdSA//wufaT4LMSjLKimxs6EoYO8m2xFR1VjMLQQwx8cknl2NAmC0XA7DbURQ+mpMb9fjL3xKYzbOEvB7TSg==
 
-aseprite-loader@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/aseprite-loader/-/aseprite-loader-0.1.0.tgz#df9f26182038e0d53c164341a7f424ef9d3813b2"
-  integrity sha512-v8JHMKRuHjODhpFTlwnvnAmrB5D3Z4+0y+3avXTBxT4Cz/61BCyOF9q68otmJmfdTesXt0TI9v5LXgf4HRR3XA==
+aseprite-loader@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/aseprite-loader/-/aseprite-loader-0.1.1.tgz#6091033be62f5f429bf7b7f418c28806de9cd8a9"
+  integrity sha512-trrS5DD3KNU62ACBxfnI9C0yzbLDyAZakpBXkYy/6FIYxwkGsCwyBbzH1A7tOodvbfmmG5I4PGhbGkLh+NgjDA==
   dependencies:
     ase-parser "^0.0.10"
 
