@@ -4,6 +4,7 @@ import Aseprite from "./Aseprite";
 import Audio from "./Audio";
 import BasicRenderer from "./BasicRenderer";
 import Camera from "./Camera";
+import Font from "./Font";
 import Gamepad from "./Gamepad";
 import Image from "./Image";
 import Keyboard from "./Keyboard";
@@ -12,6 +13,7 @@ import Position from "./Position";
 import Rotation from "./Rotation";
 import Size from "./Size";
 import SpriteSheet from "./SpriteSheet";
+import SystemFont from "./SystemFont";
 import TileMap from "./TileMap";
 import Timer from "./Timer";
 
@@ -23,6 +25,7 @@ export {
   Audio,
   BasicRenderer,
   Camera,
+  Font,
   Gamepad,
   Image,
   Keyboard,
@@ -31,6 +34,7 @@ export {
   Rotation,
   Size,
   SpriteSheet,
+  SystemFont,
   TileMap,
   Timer,
 };
