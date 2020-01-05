@@ -18,7 +18,7 @@ const {
 const createEntity = (func: () => any): EntityInterface => {
   function fromCreateEntity() {
     Object.defineProperty(fromCreateEntity, "name", {
-      value: "from createEntity",
+      value: func.name || "from createEntity",
     });
     useType(fromCreateEntity);
 
