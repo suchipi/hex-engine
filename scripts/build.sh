@@ -8,5 +8,5 @@ export PATH="./node_modules/.bin:../node_modules/.bin:../../node_modules/.bin:$P
 ./scripts/build-2d.sh
 
 cd packages/game
-webpack --mode production
+env NODE_ENV=production webpack --mode production
 cd ../..
