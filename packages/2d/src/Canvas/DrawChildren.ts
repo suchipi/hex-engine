@@ -14,7 +14,7 @@ const DRAW_CALLBACKS = Symbol("DRAW_CALLBACKS");
 
 type DrawCallback = (
   context: CanvasRenderingContext2D,
-  canvas: HTMLCanvasElement
+  backstage: CanvasRenderingContext2D
 ) => void;
 
 export function useDraw(callback: DrawCallback) {
@@ -28,12 +28,12 @@ export function useDraw(callback: DrawCallback) {
 }
 
 type Props = {
-  canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
+  backstage: CanvasRenderingContext2D;
   backgroundColor: string;
 };
 
-export function DrawChildren({ canvas, context, backgroundColor }: Props) {
+export function DrawChildren({ context, backstage, backgroundColor }: Props) {
   useType(DrawChildren);
 
   function drawComponent(component: Component) {
@@ -46,7 +46,7 @@ export function DrawChildren({ canvas, context, backgroundColor }: Props) {
         DRAW_CALLBACKS
       );
       for (const drawCallback of drawCallbacks) {
-        drawCallback(context, canvas);
+        drawCallback(context, backstage);
       }
     }
   }
@@ -57,7 +57,7 @@ export function DrawChildren({ canvas, context, backgroundColor }: Props) {
 
     // Clear canvas
     context.fillStyle = backgroundColor;
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
 
     const drawOrder = useExistingComponentByType(DrawOrder);
     const sort = drawOrder ? drawOrder.sort : DrawOrder.defaultSort;
@@ -66,6 +66,12 @@ export function DrawChildren({ canvas, context, backgroundColor }: Props) {
     const components = sort(ents);
 
     for (const component of components) {
+      backstage.clearRect(
+        0,
+        0,
+        backstage.canvas.width,
+        backstage.canvas.height
+      );
       drawComponent(component);
     }
   });

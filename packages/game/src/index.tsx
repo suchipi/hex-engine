@@ -7,11 +7,11 @@ import {
   useEntityName,
   useNewComponent,
   Canvas,
-  Component,
   Position,
   Vec2,
   SystemFont,
   useDraw,
+  ImageFilter,
 } from "@hex-engine/2d";
 
 const canvas = createEntity(() => {
@@ -19,46 +19,52 @@ const canvas = createEntity(() => {
   const canvas = useNewComponent(() => Canvas({ backgroundColor: "white" }));
   canvas.setPixelated(true);
   canvas.fullscreen({ pixelZoom: 3 });
-
-  useNewComponent(() =>
-    Canvas.DrawOrder((entities) => {
-      let components: Array<Component> = [];
-
-      // Draw cameras first
-      for (const ent of entities) {
-        components = components.concat(
-          [...ent.components].filter((comp: any) => comp.isCamera)
-        );
-      }
-
-      // Then draw non-cameras, sorted by entity world position y
-      const sortedEnts = [...entities].sort((entA, entB) => {
-        const posA =
-          entA.getComponent(Position)?.asWorldPosition() || new Vec2(0, 0);
-        const posB =
-          entB.getComponent(Position)?.asWorldPosition() || new Vec2(0, 0);
-
-        return posA.y - posB.y;
-      });
-
-      return sortedEnts.flatMap((ent) =>
-        [...ent.components].filter((comp: any) => !comp.isCamera)
-      );
-    })
-  );
 });
 
-const label = createEntity(() => {
-  const font = useNewComponent(() => SystemFont({ name: "Arial", size: 24 }));
+const label = createEntity(function Label() {
+  const font = useNewComponent(() => SystemFont({ name: "Silver", size: 18 }));
+  const position = useNewComponent(() => Position(new Vec2(100, 100)));
 
-  useDraw((context) => {
+  const state = {
+    text: "Hello world",
+  };
+
+  const imageFilter = useNewComponent(() =>
+    ImageFilter(({ data }) => {
+      for (let i = 0; i < data.length; i += 4) {
+        let a = data[i + 3];
+
+        if (a < 255) {
+          a = 0;
+        }
+
+        data[i + 3] = a;
+      }
+    })
+  );
+
+  const enableDisableApi = useDraw((context, backstage) => {
+    const worldPos = position.asWorldPosition();
+
     font.drawText({
-      context,
-      text: "Hello world",
-      x: 100,
-      y: 100,
+      context: backstage,
+      text: state.text,
+      x: worldPos.x,
+      y: worldPos.y,
     });
+
+    imageFilter.apply(backstage, context);
   });
+
+  return {
+    ...enableDisableApi,
+    get text() {
+      return state.text;
+    },
+    set text(nextValue) {
+      state.text = nextValue;
+    },
+  };
 });
 
 canvas.addChild(label);

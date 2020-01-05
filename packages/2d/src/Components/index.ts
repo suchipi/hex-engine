@@ -7,6 +7,7 @@ import Camera from "./Camera";
 import Font from "./Font";
 import Gamepad from "./Gamepad";
 import Image from "./Image";
+import ImageFilter from "./ImageFilter";
 import Keyboard from "./Keyboard";
 import Origin from "./Origin";
 import Position from "./Position";
@@ -28,6 +29,7 @@ export {
   Font,
   Gamepad,
   Image,
+  ImageFilter,
   Keyboard,
   Origin,
   Position,

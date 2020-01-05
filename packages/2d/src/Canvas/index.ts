@@ -29,11 +29,20 @@ export default Object.assign(
       throw new Error("2d drawing context type not supported by browser");
     }
 
+    const backstageCanvas = document.createElement("canvas");
+    backstageCanvas.width = canvas.width;
+    backstageCanvas.height = canvas.height;
+
+    const backstageContext = backstageCanvas.getContext("2d");
+    if (backstageContext == null) {
+      throw new Error("2d drawing context type not supported by browser");
+    }
+
     useNewComponent(Components.RunLoop);
     useNewComponent(() =>
       DrawChildren({
-        canvas,
         context,
+        backstage: backstageContext,
         backgroundColor,
       })
     );
@@ -81,6 +90,7 @@ export default Object.assign(
     return {
       element: canvas,
       context,
+      backstage: backstageContext,
 
       setPixelated,
 
@@ -99,6 +109,9 @@ export default Object.assign(
         canvas.height = pixelHeight;
         canvas.style.width = realWidth + "px";
         canvas.style.height = realHeight + "px";
+
+        backstageCanvas.width = pixelWidth;
+        backstageCanvas.height = pixelHeight;
       },
 
       fullscreen({ pixelZoom = 1 }: { pixelZoom?: number } = {}) {
