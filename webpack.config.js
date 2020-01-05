@@ -34,5 +34,8 @@ module.exports = {
       },
     ],
   },
-  plugins: [new HtmlWebpackPlugin(), new webpack.EnvironmentPlugin("NODE_ENV")],
+  plugins: [
+    new HtmlWebpackPlugin(),
+    new webpack.EnvironmentPlugin({ NODE_ENV: "development" }),
+  ],
 };
