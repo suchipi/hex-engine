@@ -53,7 +53,7 @@ const player = createEntity(() => {
   useNewComponent(() => Rotation(0));
 
   const jumpSound = useNewComponent(() => Audio({ url: jump }));
-  useNewComponent(() =>
+  const animSheet = useNewComponent(() =>
     AnimationSheet({
       url: bouncy,
       tileWidth: 29,
@@ -78,6 +78,8 @@ const player = createEntity(() => {
       },
     })
   );
+  animSheet.currentAnim.play();
+
   useNewComponent(BasicRenderer);
   useNewComponent(function PlayerControls() {
     useType(PlayerControls);
