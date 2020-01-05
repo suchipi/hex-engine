@@ -15,7 +15,7 @@
     "@babel/preset-env": "^7.7.7",
     "@babel/preset-react": "^7.7.4",
     "@babel/preset-typescript": "^7.7.7",
-    "aseprite-loader": "0.1.1",
+    "aseprite-loader": "0.1.2",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "chokidar-cli": "^2.1.0",

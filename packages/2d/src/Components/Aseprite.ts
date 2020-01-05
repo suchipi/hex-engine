@@ -37,13 +37,24 @@ export default function Aseprite(data: AsepriteLoader.Data) {
       // indexed color. one byte for each pixel, referencing colors from palette
       const offset = x + cel.w * y;
       const index = cel.rawCelData[offset];
+
+      if (!data.palette) {
+        throw new Error(
+          "Invalid Aseprite file: Uses indexed color but there is no color palette"
+        );
+      }
       const color = data.palette.colors[index];
 
       return `rgba(${color.red}, ${color.green}, ${color.blue}, ${color.alpha})`;
-    } else {
-      // TODO: grayscale
+    } else if (data.colorDepth === 16) {
+      // grayscale
+      const offset = 2 * (x + cel.w * y);
+      const value = cel.rawCelData[offset + 0];
+      const alpha = cel.rawCelData[offset + 1];
 
-      throw new Error(`Unsupported color depth: ${data.colorDepth}`);
+      return `rgba(${value}, ${value}, ${value}, ${alpha})`;
+    } else {
+      throw new Error(`Unsupported Aseprite color depth: ${data.colorDepth}`);
     }
   }
 
