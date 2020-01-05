@@ -34,6 +34,8 @@ export default function EditableString({
     input.style.width = rect.width + "px";
   }, [editedValue, value]);
 
+  const currentValue = isEditing ? editedValue : value;
+
   return (
     <>
       <span
@@ -41,13 +43,13 @@ export default function EditableString({
         ref={measureWidthRef}
         className="measure-width"
       >
-        {isEditing ? editedValue : value}
+        {currentValue}
       </span>
       <TagName
         // @ts-ignore
         ref={inputRef}
         style={{ color, font: "inherit", maxWidth: "200px" }}
-        value={isEditing ? editedValue : value}
+        value={currentValue}
         onFocus={() => {
           setEditedValue(value);
           setIsEditing(true);
@@ -65,6 +67,26 @@ export default function EditableString({
         }}
         onBlur={() => {
           setIsEditing(false);
+        }}
+        onKeyDown={(
+          event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+        ) => {
+          if (String(Number(currentValue)) !== currentValue) return;
+
+          let delta = 0;
+          if (event.key === "ArrowDown") {
+            delta = -1;
+          } else if (event.key === "ArrowUp") {
+            delta = 1;
+          }
+
+          if (event.shiftKey) {
+            delta *= 10;
+          }
+
+          const newValue = String(Number(currentValue) + delta);
+          setEditedValue(newValue);
+          onChange(newValue);
         }}
       />
     </>
