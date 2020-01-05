@@ -4,6 +4,7 @@
   "private": true,
   "main": "dist/index.js",
   "types": "src/index.ts",
+  "sideEffects": false,
   "dependencies": {
     "concubine": "^1.0.2"
   }

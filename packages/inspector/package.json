@@ -4,6 +4,7 @@
   "private": true,
   "main": "dist/index.js",
   "types": "src/index.tsx",
+  "sideEffects": false,
   "dependencies": {
     "lodash.debounce": "^4.0.8",
     "react": "^16.12.0",

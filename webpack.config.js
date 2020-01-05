@@ -38,4 +38,7 @@ module.exports = {
     new HtmlWebpackPlugin(),
     new webpack.EnvironmentPlugin({ NODE_ENV: "development" }),
   ],
+  optimization: {
+    usedExports: true,
+  },
 };
