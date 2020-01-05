@@ -9,7 +9,7 @@
   "compilerOptions": {
     "lib": ["es2019", "dom"],
     "target": "es5",
-    "module": "commonjs",
+    "module": "ES2015",
     "outDir": "./dist",
 
     "strict": true,
