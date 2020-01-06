@@ -13,8 +13,6 @@ const MOUSE_MOVE = Symbol("MOUSE_MOVE");
 const MOUSE_DOWN = Symbol("MOUSE_DOWN");
 const MOUSE_UP = Symbol("MOUSE_UP");
 
-type MouseCallback = (pos: Vec2) => void;
-
 export default function Mouse() {
   useType(Mouse);
 
@@ -32,13 +30,18 @@ export default function Mouse() {
     return new Vec2(x, y);
   }
 
-  const moveState = useStateAccumlator<MouseCallback>(MOUSE_MOVE);
-  const downState = useStateAccumlator<MouseCallback>(MOUSE_DOWN);
-  const upState = useStateAccumlator<MouseCallback>(MOUSE_UP);
+  const moveState = useStateAccumlator<(pos: Vec2, delta: Vec2) => void>(
+    MOUSE_MOVE
+  );
+  const downState = useStateAccumlator<(pos: Vec2) => void>(MOUSE_DOWN);
+  const upState = useStateAccumlator<(pos: Vec2) => void>(MOUSE_UP);
 
+  let lastPos = new Vec2(0, 0);
   const handleMouseMove = (event: MouseEvent) => {
     const pos = translatePos(event);
-    moveState.all().forEach((callback) => callback(pos));
+    const delta = pos.subtract(lastPos);
+    moveState.all().forEach((callback) => callback(pos, delta));
+    lastPos = pos;
   };
   const handleMouseDown = (event: MouseEvent) => {
     const pos = translatePos(event);
@@ -98,13 +101,13 @@ export default function Mouse() {
   });
 
   return {
-    onMouseMove: (callback: MouseCallback) => {
+    onMouseMove: (callback: (pos: Vec2, delta: Vec2) => void) => {
       moveState.add(useCallbackAsCurrent(callback));
     },
-    onMouseDown: (callback: MouseCallback) => {
+    onMouseDown: (callback: (pos: Vec2) => void) => {
       downState.add(useCallbackAsCurrent(callback));
     },
-    onMouseUp: (callback: MouseCallback) => {
+    onMouseUp: (callback: (pos: Vec2) => void) => {
       upState.add(useCallbackAsCurrent(callback));
     },
   };

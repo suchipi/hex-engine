@@ -15,6 +15,8 @@ import {
   Label,
   FilterRenderer,
   ImageFilter,
+  Mouse,
+  useExistingComponentByType,
 } from "@hex-engine/2d";
 
 const canvas = createEntity(() => {
@@ -28,7 +30,7 @@ const label = createEntity(() => {
   useEntityName("label");
 
   const font = useNewComponent(() => SystemFont({ name: "Silver", size: 18 }));
-  useNewComponent(() => Position(new Vec2(100, 100)));
+  const position = useNewComponent(() => Position(new Vec2(100, 100)));
   useNewComponent(() => Label({ text: "Hello there", font }));
 
   const filter = useNewComponent(() =>
@@ -51,9 +53,19 @@ const label = createEntity(() => {
     } else {
       font.color = "black";
     }
-    if (clickable.isHovering && clickable.isPressing) {
+    if (clickable.isPressing) {
       font.color = "blue";
     }
+  });
+
+  const mouse = useExistingComponentByType(Mouse) || useNewComponent(Mouse);
+  mouse.onMouseMove((_pos, delta) => {
+    if (clickable.isPressing) {
+      position.replace(position.add(delta));
+    }
+  });
+  mouse.onMouseUp(() => {
+    position.replace(position.round());
   });
 });
 
