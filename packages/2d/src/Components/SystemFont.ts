@@ -8,11 +8,14 @@ export default function SystemFont({
   align = "left",
 }: {
   name: string;
-  size: string | number;
+  size: number;
   color?: void | string;
   align?: void | "start" | "end" | "left" | "right" | "center";
 }) {
   useType(SystemFont);
+
+  const canvas = document.createElement("canvas");
+  const internalContext = canvas.getContext("2d")!;
 
   const state = {
     name,
@@ -22,11 +25,7 @@ export default function SystemFont({
   };
 
   function prepareContext(context: CanvasRenderingContext2D) {
-    context.font =
-      (typeof state.size === "number" ? `${state.size}px` : state.size) +
-      " " +
-      state.name;
-
+    context.font = `${state.size}px ${state.name}`;
     context.fillStyle = state.color;
     context.textAlign = state.align;
   }
@@ -36,10 +35,14 @@ export default function SystemFont({
       prepareContext(context);
       context.fillText(text, x, y);
     },
-    measureTextWidth({ context, text }) {
-      prepareContext(context);
-      const metrics = context.measureText(text);
+    measureTextWidth(text) {
+      prepareContext(internalContext);
+      const metrics = internalContext.measureText(text);
       return metrics.width;
+    },
+    estimateFontHeight() {
+      // No great way to get this :\
+      return state.size * 0.75;
     },
   };
 

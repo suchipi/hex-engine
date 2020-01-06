@@ -11,6 +11,7 @@ import Gamepad from "./Gamepad";
 import Image from "./Image";
 import ImageFilter from "./ImageFilter";
 import Keyboard from "./Keyboard";
+import Label from "./Label";
 import Mouse from "./Mouse";
 import Origin from "./Origin";
 import Position from "./Position";
@@ -35,6 +36,7 @@ export {
   Image,
   ImageFilter,
   Keyboard,
+  Label,
   Mouse,
   Origin,
   Position,

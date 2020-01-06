@@ -5,6 +5,7 @@ import TileMap from "./TileMap";
 import Position from "./Position";
 import Origin from "./Origin";
 import Rotation from "./Rotation";
+import Label from "./Label";
 import { Vec2 } from "../Models";
 
 export default function BasicRenderer() {
@@ -37,6 +38,11 @@ export default function BasicRenderer() {
     const tileMap = useExistingComponentByType(TileMap);
     if (tileMap) {
       tileMap.drawMapIntoContext({ context });
+    }
+
+    const label = useExistingComponentByType(Label);
+    if (label) {
+      label.drawLabel({ context });
     }
 
     context.restore();

@@ -7,10 +7,8 @@ export type FontImplementation = {
     x?: number | void;
     y?: number | void;
   }): void;
-  measureTextWidth(options: {
-    context: CanvasRenderingContext2D;
-    text: string;
-  }): number;
+  measureTextWidth(text: string): number;
+  estimateFontHeight(): number;
 };
 
 export default function Font(impl: FontImplementation) {

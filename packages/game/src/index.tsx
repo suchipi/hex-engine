@@ -8,13 +8,13 @@ import {
   useNewComponent,
   Canvas,
   Position,
-  Origin,
   Vec2,
   SystemFont,
-  useDraw,
-  ImageFilter,
+  useUpdate,
   Clickable,
-  BoundingBox,
+  Label,
+  BasicRenderer,
+  useEnableDisable,
 } from "@hex-engine/2d";
 
 const canvas = createEntity(() => {
@@ -24,91 +24,27 @@ const canvas = createEntity(() => {
   canvas.fullscreen({ pixelZoom: 3 });
 });
 
-const label = createEntity(function Label() {
+const label = createEntity(() => {
+  useEntityName("label");
+
   const font = useNewComponent(() => SystemFont({ name: "Silver", size: 18 }));
-  const position = useNewComponent(() => Position(new Vec2(100, 100)));
-  const origin = useNewComponent(() => Origin(new Vec2(0, 18)));
-  const bounds = useNewComponent(() => BoundingBox(new Vec2(0, 18)));
+  useNewComponent(() => Position(new Vec2(100, 100)));
+  useNewComponent(() => Label({ text: "Hello there", font }));
   const clickable = useNewComponent(Clickable);
+  useNewComponent(BasicRenderer);
 
-  const state = {
-    text: "Hello world",
-  };
-
-  const imageFilter = useNewComponent(() =>
-    ImageFilter(({ data }) => {
-      for (let i = 0; i < data.length; i += 4) {
-        let a = data[i + 3];
-
-        if (a < 255) {
-          a = 0;
-        }
-
-        data[i + 3] = a;
-      }
-    })
-  );
-
-  const drawApi = useDraw((context, backstage) => {
-    bounds.x = font.measureTextWidth({
-      context,
-      text: state.text,
-    });
-    bounds.y = typeof font.size === "number" ? font.size : parseInt(font.size);
-    origin.y = typeof font.size === "number" ? font.size : parseInt(font.size);
-    origin.y = (3 / 4) * origin.y;
-    origin.replace(origin.round());
-
-    const worldPos = position.asWorldPosition();
-    const bgPos = worldPos.subtract(origin);
-
+  const updateApi = useUpdate(() => {
     if (clickable.isHovering) {
-      context.fillStyle = "red";
-      context.fillRect(bgPos.x, bgPos.y, bounds.x, bounds.y);
+      font.color = "red";
+    } else {
+      font.color = "black";
     }
-
     if (clickable.isHovering && clickable.isPressing) {
-      context.fillStyle = "blue";
-      context.fillRect(bgPos.x, bgPos.y, bounds.x, bounds.y);
+      font.color = "blue";
     }
-
-    font.drawText({
-      context: backstage,
-      text: state.text,
-      x: worldPos.x,
-      y: worldPos.y,
-    });
-
-    imageFilter.apply(backstage, context);
   });
 
-  clickable.onClick(() => console.log("click"));
-  clickable.onDown(() => console.log("down"));
-  clickable.onUp(() => console.log("up"));
-  clickable.onEnter(() => console.log("enter"));
-  clickable.onLeave(() => console.log("leave"));
-
-  let isEnabled = true;
-
-  return {
-    getIsEnabled: () => isEnabled,
-    enable: () => {
-      isEnabled = true;
-      drawApi.enable();
-      clickable.enable();
-    },
-    disable: () => {
-      isEnabled = false;
-      drawApi.disable();
-      clickable.disable();
-    },
-    get text() {
-      return state.text;
-    },
-    set text(nextValue) {
-      state.text = nextValue;
-    },
-  };
+  return useEnableDisable.combineApis(updateApi, clickable);
 });
 
 canvas.addChild(label);

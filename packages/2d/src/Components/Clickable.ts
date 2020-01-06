@@ -28,17 +28,12 @@ export default function Clickable() {
     );
   }
 
-  const position = useExistingComponentByType(Position)!;
-  if (!position) {
-    throw new Error(
-      "The Clickable component requires a Position component on the same entity."
-    );
-  }
-
+  const position =
+    useExistingComponentByType(Position)?.asWorldPosition() || new Vec2(0, 0);
   const origin = useExistingComponentByType(Origin) || new Vec2(0, 0);
 
   function pointIsWithinBounds(point: Vec2) {
-    const topLeft = position.asWorldPosition().subtract(origin);
+    const topLeft = position.subtract(origin);
     const bottomRight = topLeft.add(boundingBox);
 
     return (
