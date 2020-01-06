@@ -38,6 +38,7 @@ export default function Label({
     bounds.y = height;
   }
 
+  updateBounds();
   useUpdate(updateBounds);
 
   return {
