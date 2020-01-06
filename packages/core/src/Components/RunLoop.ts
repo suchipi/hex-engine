@@ -13,7 +13,7 @@ export default function RunLoop() {
   let isPaused = false;
   let error: Error | null = null;
 
-  const { onEnabled, onDisabled, ...enableDisableApi } = useEnableDisable();
+  const { onEnabled, onDisabled } = useEnableDisable();
 
   function runFrameCallbacks(delta: number) {
     frameNumber++;
@@ -91,7 +91,6 @@ export default function RunLoop() {
   });
 
   return {
-    ...enableDisableApi,
     addFrameCallback(callback: (delta: number) => void) {
       onFrameCallbacks.add(callback);
     },

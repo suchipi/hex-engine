@@ -11,7 +11,7 @@ import { Vec2 } from "../Models";
 export default function BasicRenderer() {
   useType(BasicRenderer);
 
-  return useDraw((context) => {
+  useDraw((context) => {
     const position = useExistingComponentByType(Position);
     const worldPos = position?.asWorldPosition() || new Vec2(0, 0);
 

@@ -5,13 +5,13 @@ import {
   useRootEntity,
   useCallbackAsCurrent,
   useType,
-  Components,
+  RunLoop,
 } from "@hex-engine/core";
 import { StateTreeProvider } from "react-state-tree";
 import debounce from "lodash.debounce";
 import App from "./App";
 
-type RunLoopAPI = ReturnType<typeof Components.RunLoop>;
+type RunLoopAPI = ReturnType<typeof RunLoop>;
 
 const initialState = localStorage.inspectorState
   ? JSON.parse(localStorage.inspectorState)
@@ -55,7 +55,7 @@ export default function Inspector({
 
   const tick = useCallbackAsCurrent(() => {
     const entity = useRootEntity();
-    const runLoop = entity.getComponent(Components.RunLoop);
+    const runLoop = entity.getComponent(RunLoop);
     if (runLoop && pauseOnStart && !hasPausedOnStart) {
       runLoop.pause();
       hasPausedOnStart = true;

@@ -55,7 +55,7 @@ export default function Gamepad(props: Partial<Props>) {
     return state.buttonNames[index] || "unknown button";
   }
 
-  const updateApi = useUpdate(() => {
+  useUpdate(() => {
     const gamepad = navigator.getGamepads()[0];
     if (gamepad == null) {
       state.present = false;
@@ -76,8 +76,5 @@ export default function Gamepad(props: Partial<Props>) {
     });
   });
 
-  return {
-    ...state,
-    ...updateApi,
-  };
+  return state;
 }

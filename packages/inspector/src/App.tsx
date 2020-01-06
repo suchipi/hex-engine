@@ -1,10 +1,10 @@
 import React from "react";
-import { Entity, Components } from "@hex-engine/core";
+import { Entity, RunLoop } from "@hex-engine/core";
 import { StateKey, useStateTree } from "react-state-tree";
 import Tree from "./Tree";
 import Controls from "./Controls";
 
-type RunLoopAPI = ReturnType<typeof Components.RunLoop>;
+type RunLoopAPI = ReturnType<typeof RunLoop>;
 
 export default function App({
   entity,

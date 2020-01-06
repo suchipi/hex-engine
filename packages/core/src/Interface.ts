@@ -20,5 +20,10 @@ export interface Entity {
 export interface Component {
   type: null | ((...args: any[]) => any);
   entity: Entity;
-  accumulatedState<T>(key: symbol): Array<T>;
+
+  isEnabled: boolean;
+  enable(): void;
+  disable(): void;
+
+  stateAccumulator<T>(key: symbol): { add(newValue: T): void; all(): Array<T> };
 }

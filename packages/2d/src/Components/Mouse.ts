@@ -87,7 +87,7 @@ export default function Mouse() {
     },
   });
 
-  const { onEnabled, onDisabled, ...enableDisableApi } = useEnableDisable();
+  const { onEnabled, onDisabled } = useEnableDisable();
 
   onEnabled(() => {
     if (canvas) bindListeners(canvas);
@@ -98,7 +98,6 @@ export default function Mouse() {
   });
 
   return {
-    ...enableDisableApi,
     onMouseMove: (callback: MouseCallback) => {
       moveState.add(useCallbackAsCurrent(callback));
     },

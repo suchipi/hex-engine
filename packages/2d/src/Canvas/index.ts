@@ -1,4 +1,4 @@
-import { useNewComponent, useType, Components } from "@hex-engine/core";
+import { useNewComponent, useType, RunLoop } from "@hex-engine/core";
 import Inspector from "@hex-engine/inspector";
 import { UpdateChildren, useUpdate } from "./UpdateChildren";
 import { DrawChildren, useDraw } from "./DrawChildren";
@@ -38,7 +38,7 @@ export default Object.assign(
       throw new Error("2d drawing context type not supported by browser");
     }
 
-    useNewComponent(Components.RunLoop);
+    useNewComponent(RunLoop);
     useNewComponent(() =>
       DrawChildren({
         context,

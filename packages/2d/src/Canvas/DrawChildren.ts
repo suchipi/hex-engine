@@ -4,7 +4,6 @@ import {
   useExistingComponentByType,
   useFrame,
   useStateAccumlator,
-  useEnableDisable,
   Component,
   useType,
 } from "@hex-engine/core";
@@ -18,13 +17,9 @@ type DrawCallback = (
 ) => void;
 
 export function useDraw(callback: DrawCallback) {
-  const { onDisabled, onEnabled, ...enableDisableApi } = useEnableDisable();
-
   useStateAccumlator<DrawCallback>(DRAW_CALLBACKS).add(
     useCallbackAsCurrent(callback)
   );
-
-  return enableDisableApi;
 }
 
 type Props = {
@@ -37,21 +32,17 @@ export function DrawChildren({ context, backstage, backgroundColor }: Props) {
   useType(DrawChildren);
 
   function drawComponent(component: Component) {
-    const comp = component as any;
-    if (
-      typeof comp.getIsEnabled !== "function" ||
-      (typeof comp.getIsEnabled === "function" && comp.getIsEnabled())
-    ) {
-      const drawCallbacks = component.accumulatedState<DrawCallback>(
-        DRAW_CALLBACKS
-      );
+    if (component.isEnabled) {
+      const drawCallbacks = component
+        .stateAccumulator<DrawCallback>(DRAW_CALLBACKS)
+        .all();
       for (const drawCallback of drawCallbacks) {
         drawCallback(context, backstage);
       }
     }
   }
 
-  return useFrame(() => {
+  useFrame(() => {
     // Reset transform
     context.setTransform(1, 0, 0, 1, 0, 0);
 

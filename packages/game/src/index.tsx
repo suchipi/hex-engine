@@ -33,7 +33,7 @@ const label = createEntity(() => {
   const clickable = useNewComponent(Clickable);
   useNewComponent(BasicRenderer);
 
-  const updateApi = useUpdate(() => {
+  useUpdate(() => {
     if (clickable.isHovering) {
       font.color = "red";
     } else {
@@ -43,8 +43,6 @@ const label = createEntity(() => {
       font.color = "blue";
     }
   });
-
-  return useEnableDisable.combineApis(updateApi, clickable);
 });
 
 canvas.addChild(label);

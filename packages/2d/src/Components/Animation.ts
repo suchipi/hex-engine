@@ -24,11 +24,6 @@ export type AnimationAPI<T> = {
   pause(): void;
   play(): void;
   restart(): void;
-
-  // updateApi
-  getIsEnabled: () => boolean;
-  enable: () => void;
-  disable: () => void;
 };
 
 export default function Animation<T>(props: Props<T>): AnimationAPI<T> {
@@ -43,7 +38,7 @@ export default function Animation<T>(props: Props<T>): AnimationAPI<T> {
     return frames[currentFrameIndex];
   }
 
-  const updateApi = useUpdate(() => {
+  useUpdate(() => {
     if (timer.delta() > 0) {
       if (currentFrameIndex === frames.length - 1) {
         currentFrameIndex = 0;
@@ -77,7 +72,5 @@ export default function Animation<T>(props: Props<T>): AnimationAPI<T> {
     restart() {
       currentFrameIndex = 0;
     },
-
-    ...updateApi,
   };
 }

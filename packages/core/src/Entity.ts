@@ -3,8 +3,29 @@ import {
   Component as ComponentInterface,
 } from "./Interface";
 import instantiate from "./instantiate";
-import EnableDisableEntity from "./Components/EnableDisableEntity";
 import EntityLifecycle from "./Components/EntityLifecycle";
+
+function enable(entity: Entity) {
+  for (const component of entity.components) {
+    if (!component.isEnabled) {
+      component.enable();
+    }
+  }
+  for (const child of entity.children) {
+    enable(child);
+  }
+}
+
+function disable(entity: Entity) {
+  for (const component of entity.components) {
+    if (component.isEnabled) {
+      component.disable();
+    }
+  }
+  for (const child of entity.children) {
+    disable(child);
+  }
+}
 
 export default class Entity implements EntityInterface {
   _kind: "entity" = "entity";
@@ -64,10 +85,10 @@ export default class Entity implements EntityInterface {
   }
 
   enable() {
-    this.getComponent(EnableDisableEntity)?.enable();
+    enable(this);
   }
 
   disable() {
-    this.getComponent(EnableDisableEntity)?.disable();
+    disable(this);
   }
 }

@@ -6,7 +6,7 @@ function Timer() {
 
   let target = 0;
 
-  const updateApi = useUpdate((delta) => {
+  useUpdate((delta) => {
     target += delta;
   });
 
@@ -17,7 +17,6 @@ function Timer() {
     delta() {
       return target;
     },
-    ...updateApi,
   };
 }
 

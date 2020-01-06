@@ -20,7 +20,7 @@ export default function Keyboard() {
     pressed.delete(event.key);
   };
 
-  const { onEnabled, onDisabled, ...enableDisableApi } = useEnableDisable();
+  const { onEnabled, onDisabled } = useEnableDisable();
 
   onEnabled(() => {
     document.addEventListener("keydown", processKeydown);
@@ -33,7 +33,6 @@ export default function Keyboard() {
   });
 
   return {
-    ...enableDisableApi,
     pressed,
     vectorFromKeys(
       upKey: string,

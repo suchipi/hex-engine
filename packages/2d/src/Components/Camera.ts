@@ -12,23 +12,23 @@ export default function Camera(options?: { zoom: number }) {
     isCamera: true,
 
     zoom: (options && options.zoom) || 1,
-
-    ...useDraw((context) => {
-      const position = useExistingComponentByType(Position);
-      if (position) {
-        context.translate(-position.x, -position.y);
-      }
-
-      const rotation = useExistingComponentByType(Rotation);
-      if (rotation) {
-        context.rotate(-rotation.radians);
-      }
-
-      if (state.zoom) {
-        context.scale(state.zoom, state.zoom);
-      }
-    }),
   };
+
+  useDraw((context) => {
+    const position = useExistingComponentByType(Position);
+    if (position) {
+      context.translate(-position.x, -position.y);
+    }
+
+    const rotation = useExistingComponentByType(Rotation);
+    if (rotation) {
+      context.rotate(-rotation.radians);
+    }
+
+    if (state.zoom) {
+      context.scale(state.zoom, state.zoom);
+    }
+  });
 
   return state;
 }

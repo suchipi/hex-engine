@@ -44,20 +44,10 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
   ): { add(newValue: T): void; all(): Array<T> } => {
     const implInstance = instance as Component;
 
-    const state = implInstance._accumulatedState as any;
-    if (!state[key]) {
-      state[key] = [];
-    }
-
-    return {
-      add(newValue) {
-        state[key].push(newValue);
-      },
-      all() {
-        return state[key];
-      },
-    };
+    return implInstance.stateAccumulator<T>(key);
   },
+
+  useIsEnabled: (instance) => () => instance.isEnabled,
 });
 
 export default HooksSystem;

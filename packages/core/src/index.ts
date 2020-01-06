@@ -4,7 +4,6 @@ import {
   Component as ComponentInterface,
 } from "./Interface";
 import HooksSystem from "./HooksSystem";
-import EnableDisableEntity from "./Components/EnableDisableEntity";
 import RunLoop from "./Components/RunLoop";
 import { useEntityLifecycle } from "./Components/EntityLifecycle";
 
@@ -15,6 +14,7 @@ const {
   useCallbackAsCurrent,
   useStateAccumlator,
   useType,
+  useIsEnabled,
 } = HooksSystem.hooks;
 
 const createEntity = (func: () => any): EntityInterface => {
@@ -24,19 +24,13 @@ const createEntity = (func: () => any): EntityInterface => {
     });
     useType(fromCreateEntity);
 
-    useNewComponent(EnableDisableEntity);
     return func();
   }
   return Entity._create(fromCreateEntity);
 };
 
-const Components = {
-  EnableDisableEntity,
-  RunLoop,
-};
-
 export {
-  Components,
+  RunLoop,
   EntityInterface as Entity,
   ComponentInterface as Component,
   createEntity,
@@ -47,5 +41,6 @@ export {
   useStateAccumlator,
   useType,
   useEntityLifecycle,
+  useIsEnabled,
 };
 export * from "./Hooks";

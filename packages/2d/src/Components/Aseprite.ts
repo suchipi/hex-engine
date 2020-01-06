@@ -1,11 +1,16 @@
-import { useType, useNewComponent, useEnableDisable } from "@hex-engine/core";
+import {
+  useType,
+  useNewComponent,
+  useEnableDisable,
+  Component,
+} from "@hex-engine/core";
 import Animation, { AnimationFrame, AnimationAPI } from "./Animation";
 
 export default function Aseprite(data: AsepriteLoader.Data) {
   useType(Aseprite);
 
   const animations: {
-    [name: string]: AnimationAPI<AsepriteLoader.Frame>;
+    [name: string]: AnimationAPI<AsepriteLoader.Frame> & Component;
   } = {};
 
   animations.default = useNewComponent(() =>
@@ -41,7 +46,7 @@ export default function Aseprite(data: AsepriteLoader.Data) {
 
   let currentAnim = animations.default;
 
-  const { onEnabled, onDisabled, ...enableDisableApi } = useEnableDisable();
+  const { onEnabled, onDisabled } = useEnableDisable();
 
   onEnabled(() => {
     Object.values(animations).forEach((animation) => animation.enable());
@@ -128,7 +133,5 @@ export default function Aseprite(data: AsepriteLoader.Data) {
     animations,
 
     drawCurrentFrameIntoContext,
-
-    ...enableDisableApi,
   };
 }

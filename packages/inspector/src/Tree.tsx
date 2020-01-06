@@ -25,7 +25,11 @@ function gatherPropertyNames(
   Object.getOwnPropertyNames(obj).forEach((name) => soFar.add(name));
 
   const results = [...soFar].filter((prop) => {
-    return prop !== "constructor" && prop !== PROPERTY_NAMES;
+    return (
+      prop !== "constructor" &&
+      prop !== PROPERTY_NAMES &&
+      !(typeof prop === "string" && prop.match(/^_/))
+    );
   });
   // @ts-ignore
   obj[PROPERTY_NAMES] = results;
@@ -259,7 +263,7 @@ export default function Tree({
       className = data.type?.name
         ? `Component (${data.type?.name})`
         : "Component";
-      if (typeof data.getIsEnabled === "function" && !data.getIsEnabled()) {
+      if (!data.isEnabled) {
         className += " - disabled";
       }
       content = entriesForProperties(gatherPropertyNames(data));

@@ -50,12 +50,7 @@ export default function Clickable() {
   const onUpState = useStateAccumlator<Callback>(ON_UP);
   const onClickState = useStateAccumlator<Callback>(ON_CLICK);
 
-  const {
-    onMouseMove,
-    onMouseDown,
-    onMouseUp,
-    ...enableDisableApi
-  } = useNewComponent(Mouse);
+  const { onMouseMove, onMouseDown, onMouseUp } = useNewComponent(Mouse);
 
   let isHovering = false;
   let isPressing = false;
@@ -90,8 +85,6 @@ export default function Clickable() {
   });
 
   return {
-    ...enableDisableApi,
-
     get isHovering() {
       return isHovering;
     },

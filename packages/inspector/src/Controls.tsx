@@ -1,5 +1,5 @@
 import React from "react";
-import { Components } from "@hex-engine/core";
+import { RunLoop } from "@hex-engine/core";
 import Button from "./Button";
 import {
   ResumeIcon,
@@ -9,7 +9,7 @@ import {
   PaneLeftIcon,
 } from "./Icons";
 
-type RunLoopAPI = ReturnType<typeof Components.RunLoop>;
+type RunLoopAPI = ReturnType<typeof RunLoop>;
 
 export default function Controls({
   runLoop,

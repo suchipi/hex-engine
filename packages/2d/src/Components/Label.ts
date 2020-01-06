@@ -38,12 +38,9 @@ export default function Label({
     bounds.y = height;
   }
 
-  const enableDisableApi = useUpdate(() => {
-    updateBounds();
-  });
+  useUpdate(updateBounds);
 
   return {
-    ...enableDisableApi,
     drawLabel({
       context,
       x = 0,
