@@ -8,10 +8,13 @@ import {
   useNewComponent,
   Canvas,
   Position,
+  Origin,
   Vec2,
   SystemFont,
   useDraw,
   ImageFilter,
+  Clickable,
+  BoundingBox,
 } from "@hex-engine/2d";
 
 const canvas = createEntity(() => {
@@ -24,6 +27,9 @@ const canvas = createEntity(() => {
 const label = createEntity(function Label() {
   const font = useNewComponent(() => SystemFont({ name: "Silver", size: 18 }));
   const position = useNewComponent(() => Position(new Vec2(100, 100)));
+  const origin = useNewComponent(() => Origin(new Vec2(0, 18)));
+  const bounds = useNewComponent(() => BoundingBox(new Vec2(0, 18)));
+  const clickable = useNewComponent(Clickable);
 
   const state = {
     text: "Hello world",
@@ -43,8 +49,28 @@ const label = createEntity(function Label() {
     })
   );
 
-  const enableDisableApi = useDraw((context, backstage) => {
+  const drawApi = useDraw((context, backstage) => {
+    bounds.x = font.measureTextWidth({
+      context,
+      text: state.text,
+    });
+    bounds.y = typeof font.size === "number" ? font.size : parseInt(font.size);
+    origin.y = typeof font.size === "number" ? font.size : parseInt(font.size);
+    origin.y = (3 / 4) * origin.y;
+    origin.replace(origin.round());
+
     const worldPos = position.asWorldPosition();
+    const bgPos = worldPos.subtract(origin);
+
+    if (clickable.isHovering) {
+      context.fillStyle = "red";
+      context.fillRect(bgPos.x, bgPos.y, bounds.x, bounds.y);
+    }
+
+    if (clickable.isHovering && clickable.isPressing) {
+      context.fillStyle = "blue";
+      context.fillRect(bgPos.x, bgPos.y, bounds.x, bounds.y);
+    }
 
     font.drawText({
       context: backstage,
@@ -56,8 +82,26 @@ const label = createEntity(function Label() {
     imageFilter.apply(backstage, context);
   });
 
+  clickable.onClick(() => console.log("click"));
+  clickable.onDown(() => console.log("down"));
+  clickable.onUp(() => console.log("up"));
+  clickable.onEnter(() => console.log("enter"));
+  clickable.onLeave(() => console.log("leave"));
+
+  let isEnabled = true;
+
   return {
-    ...enableDisableApi,
+    getIsEnabled: () => isEnabled,
+    enable: () => {
+      isEnabled = true;
+      drawApi.enable();
+      clickable.enable();
+    },
+    disable: () => {
+      isEnabled = false;
+      drawApi.disable();
+      clickable.disable();
+    },
     get text() {
       return state.text;
     },

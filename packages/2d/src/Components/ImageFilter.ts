@@ -12,7 +12,8 @@ export default function ImageFilter(transform: (data: ImageData) => void) {
         input.canvas.height
       );
       transform(imageData);
-      output.putImageData(imageData, 0, 0);
+      input.putImageData(imageData, 0, 0);
+      output.drawImage(input.canvas, 0, 0);
     },
   };
 }

@@ -41,7 +41,7 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
 
   useStateAccumlator: (instance) => <T>(
     key: symbol
-  ): { add(newValue: T): void } => {
+  ): { add(newValue: T): void; all(): Array<T> } => {
     const implInstance = instance as Component;
 
     const state = implInstance._accumulatedState as any;
@@ -52,6 +52,9 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
     return {
       add(newValue) {
         state[key].push(newValue);
+      },
+      all() {
+        return state[key];
       },
     };
   },

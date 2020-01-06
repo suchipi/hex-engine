@@ -4,6 +4,7 @@ import {
 } from "./Interface";
 import instantiate from "./instantiate";
 import EnableDisableEntity from "./Components/EnableDisableEntity";
+import EntityLifecycle from "./Components/EntityLifecycle";
 
 export default class Entity implements EntityInterface {
   _kind: "entity" = "entity";
@@ -34,10 +35,20 @@ export default class Entity implements EntityInterface {
   addChild(child: Entity): void {
     this.children.add(child);
     child.parent = this;
+
+    const entityLifeCycle = child.getComponent(EntityLifecycle);
+    if (entityLifeCycle) {
+      entityLifeCycle.entityApi.performAddedToParent();
+    }
   }
   removeChild(child: Entity): void {
     this.children.delete(child);
     child.parent = null;
+
+    const entityLifeCycle = child.getComponent(EntityLifecycle);
+    if (entityLifeCycle) {
+      entityLifeCycle.entityApi.performRemovedFromParent();
+    }
   }
 
   getComponent<Func extends (...args: any[]) => any>(
