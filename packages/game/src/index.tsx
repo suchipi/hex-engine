@@ -13,8 +13,8 @@ import {
   useUpdate,
   Clickable,
   Label,
-  BasicRenderer,
-  useEnableDisable,
+  FilterRenderer,
+  ImageFilter,
 } from "@hex-engine/2d";
 
 const canvas = createEntity(() => {
@@ -30,9 +30,21 @@ const label = createEntity(() => {
   const font = useNewComponent(() => SystemFont({ name: "Silver", size: 18 }));
   useNewComponent(() => Position(new Vec2(100, 100)));
   useNewComponent(() => Label({ text: "Hello there", font }));
-  const clickable = useNewComponent(Clickable);
-  useNewComponent(BasicRenderer);
 
+  const filter = useNewComponent(() =>
+    ImageFilter((imageData) => {
+      const pixels = imageData.data;
+      for (let i = 0; i < pixels.length; i += 4) {
+        const a = pixels[i + 3];
+        if (a < 255) {
+          pixels[i + 3] = 0;
+        }
+      }
+    })
+  );
+  useNewComponent(() => FilterRenderer(filter));
+
+  const clickable = useNewComponent(Clickable);
   useUpdate(() => {
     if (clickable.isHovering) {
       font.color = "red";

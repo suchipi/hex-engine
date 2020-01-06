@@ -6,6 +6,7 @@ import BasicRenderer from "./BasicRenderer";
 import BoundingBox from "./BoundingBox";
 import Camera from "./Camera";
 import Clickable from "./Clickable";
+import FilterRenderer from "./FilterRenderer";
 import Font from "./Font";
 import Gamepad from "./Gamepad";
 import Image from "./Image";
@@ -31,6 +32,7 @@ export {
   BoundingBox,
   Camera,
   Clickable,
+  FilterRenderer,
   Font,
   Gamepad,
   Image,
