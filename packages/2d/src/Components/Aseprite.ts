@@ -6,6 +6,53 @@ import {
 } from "@hex-engine/core";
 import Animation, { AnimationFrame, AnimationAPI } from "./Animation";
 
+const LAYER_BLEND_MODES: { [mode: number]: string } = {
+  0: "Normal",
+  1: "Multiply",
+  2: "Screen",
+  3: "Overlay",
+  4: "Darken",
+  5: "Lighten",
+  6: "Color Dodge",
+  7: "Color Burn",
+  8: "Hard Light",
+  9: "Soft Light",
+  10: "Difference",
+  11: "Exclusion",
+  12: "Hue",
+  13: "Saturation",
+  14: "Color",
+  15: "Luminosity",
+  16: "Addition",
+  17: "Subtract",
+  18: "Divide",
+};
+
+const CANVAS_COMPOSITE_OPERATIONS_BY_BLEND_MODE: { [mode: number]: string } = {
+  0: "source-over",
+  1: "multiply",
+  2: "screen",
+  3: "overlay",
+  4: "darken",
+  5: "lighten",
+  6: "color-dodge",
+  7: "color-burn",
+  8: "hard-light",
+  9: "soft-light",
+  10: "difference",
+  11: "exclusion",
+  12: "hue",
+  13: "saturation",
+  14: "color",
+  15: "luminosity",
+
+  // There's no cooresponding globalCompositeOperation for these. We'd have to
+  // implement them using getImageData/putImageData.
+  // 16: "Addition",
+  // 17: "Subtract",
+  // 18: "Divide",
+};
+
 export default function Aseprite(data: AsepriteLoader.Data) {
   useType(Aseprite);
 
@@ -102,12 +149,33 @@ export default function Aseprite(data: AsepriteLoader.Data) {
   }) {
     const frame = currentAnim.currentFrame.data;
 
-    for (const cel of frame.cels) {
+    const celsSortedByLayerIndex = frame.cels.sort(
+      (celA, celB) => celA.layerIndex - celB.layerIndex
+    );
+
+    for (const cel of celsSortedByLayerIndex) {
       if (cel.celType !== 0 && cel.celType !== 2) {
         throw new Error(`Unsupported cel type: ${cel.celType}`);
       }
 
       context.save();
+
+      const layer = data.layers[cel.layerIndex];
+      if (layer) {
+        const blendMode = layer.blendMode;
+        const compositeOperation =
+          CANVAS_COMPOSITE_OPERATIONS_BY_BLEND_MODE[blendMode];
+        if (compositeOperation) {
+          context.globalCompositeOperation = compositeOperation;
+        } else {
+          const blendModeNiceName = LAYER_BLEND_MODES[blendMode];
+          throw new Error(
+            `Unsupported Aseprite layer blending mode: ${blendModeNiceName ||
+              blendMode}`
+          );
+        }
+      }
+
       context.translate(x + cel.xpos, y + cel.ypos);
       context.globalAlpha = cel.opacity / 255;
 
