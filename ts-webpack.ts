@@ -42,3 +42,8 @@ declare module "*.ase" {
   const data: AsepriteLoader.Data;
   export default data;
 }
+
+declare module "*.xml" {
+  const data: XMLSourceLoader.Element;
+  export default data;
+}

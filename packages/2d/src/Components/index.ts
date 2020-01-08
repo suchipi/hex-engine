@@ -19,6 +19,7 @@ import Position from "./Position";
 import Rotation from "./Rotation";
 import SpriteSheet from "./SpriteSheet";
 import SystemFont from "./SystemFont";
+import Tiled from "./Tiled";
 import TileMap from "./TileMap";
 import Timer from "./Timer";
 
@@ -45,6 +46,7 @@ export {
   Rotation,
   SpriteSheet,
   SystemFont,
+  Tiled,
   TileMap,
   Timer,
 };

@@ -32,6 +32,10 @@ module.exports = {
         test: /\.(ase|aseprite)$/i,
         use: ["aseprite-loader"],
       },
+      {
+        test: /\.(xml)$/i,
+        use: ["xml-source-loader"],
+      },
     ],
   },
   plugins: [

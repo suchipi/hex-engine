@@ -26,16 +26,15 @@ import {
   Rotation,
   useType,
   Component,
-  TileMap,
-  SpriteSheet,
-  Grid,
+  Tiled,
 } from "@hex-engine/2d";
 import bouncy from "./bouncy-29x41.png";
 import jump from "./jump.wav";
 import slimeBlue from "./slime-blue.aseprite";
+import tiledMap from "./tiled-map 1.xml";
 
 // @ts-ignore
-window.slimeBlue = slimeBlue;
+window.tiledMap = tiledMap;
 
 const camera = createEntity(() => {
   useEntityName("camera");
@@ -112,50 +111,21 @@ const slime = createEntity(() => {
   });
 });
 
-const stage = createEntity(() => {
-  useEntityName("stage");
-  const position = useNewComponent(() => Position(new Vec2(0, 0)));
-  const size = useNewComponent(() => BoundingBox(new Vec2(50, 50)));
-
-  return useDraw((context) => {
-    context.strokeStyle = "black";
-    context.strokeRect(
-      position.x - size.x / 2,
-      position.y - size.y / 2,
-      size.x,
-      size.y
-    );
-  });
-});
-
 const bg = createEntity(() => {
   useEntityName("bg");
 
-  useNewComponent(Position);
-  useNewComponent(() => Rotation(0));
+  const position = useNewComponent(Position);
+  const map = useNewComponent(() => Tiled.Map(tiledMap));
 
-  const sheet = useNewComponent(() =>
-    SpriteSheet({ tileWidth: 29, tileHeight: 41, url: bouncy })
-  );
-
-  const grid = new Grid(3, 3, 0);
-  // prettier-ignore
-  grid.setData([
-    0, 1, 2,
-    3, 4, 5,
-    6, 7, 0
-  ]);
-
-  const size = useNewComponent(() => BoundingBox(sheet.tileSize.times(3)));
-  useNewComponent(() => Origin(size.dividedBy(2)));
-
-  useNewComponent(() => TileMap(sheet, grid));
-
-  useNewComponent(BasicRenderer);
-
-  return {
-    grid,
-  };
+  useDraw((context) => {
+    map.tileMaps.forEach((tileMap) =>
+      tileMap.drawMapIntoContext({
+        context,
+        x: position.asWorldPosition().x,
+        y: position.asWorldPosition().y,
+      })
+    );
+  });
 });
 
 const canvas = createEntity(() => {
@@ -177,9 +147,9 @@ const canvas = createEntity(() => {
 
       // Then draw non-cameras, sorted by entity world position y
       const sortedEnts = [...entities].sort((entA, entB) => {
-        // Always draw stage first
-        if (entA === stage) return -1;
-        if (entB === stage) return 1;
+        // Always draw bg first
+        if (entA === bg) return -1;
+        if (entB === bg) return 1;
 
         const posA =
           entA.getComponent(Position)?.asWorldPosition() || new Vec2(0, 0);
@@ -197,10 +167,9 @@ const canvas = createEntity(() => {
 });
 
 canvas.addChild(bg);
-canvas.addChild(stage);
 canvas.addChild(camera);
-stage.addChild(player);
-stage.addChild(slime);
+canvas.addChild(player);
+canvas.addChild(slime);
 
 // @ts-ignore
 window.canvas = canvas;
