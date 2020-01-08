@@ -160,8 +160,12 @@ export default function Aseprite(data: AsepriteLoader.Data) {
 
       context.save();
 
+      let alpha = cel.opacity / 255;
+
       const layer = data.layers[cel.layerIndex];
       if (layer) {
+        alpha = alpha * (layer.opacity / 255);
+
         const blendMode = layer.blendMode;
         const compositeOperation =
           CANVAS_COMPOSITE_OPERATIONS_BY_BLEND_MODE[blendMode];
@@ -177,7 +181,7 @@ export default function Aseprite(data: AsepriteLoader.Data) {
       }
 
       context.translate(x + cel.xpos, y + cel.ypos);
-      context.globalAlpha = cel.opacity / 255;
+      context.globalAlpha = alpha;
 
       for (let i = 0; i < cel.w; i++) {
         for (let j = 0; j < cel.h; j++) {
