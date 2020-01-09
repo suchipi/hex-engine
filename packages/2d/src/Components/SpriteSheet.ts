@@ -33,29 +33,19 @@ export default function SpriteSheet({ url, tileWidth, tileHeight }: Props) {
       const data = image.data;
       if (data == null) return;
 
-      const sourceWidth = tileWidth;
-      const sourceHeight = tileHeight;
+      const tilesPerRow = Math.floor(data.width / tileWidth);
 
-      let searchX = 0,
-        searchY = 0;
-
-      for (let i = 0; i < tileIndex; i++) {
-        if (searchX + sourceWidth > data.width) {
-          searchX = 0;
-          searchY += sourceHeight;
-        } else {
-          searchX += sourceWidth;
-        }
-      }
+      let tileX = tileIndex % tilesPerRow;
+      let tileY = Math.floor(tileIndex / tilesPerRow);
 
       image.drawIntoContext({
         context,
         targetX: x,
         targetY: y,
-        sourceX: searchX,
-        sourceY: searchY,
-        sourceWidth,
-        sourceHeight,
+        sourceX: tileX * tileWidth,
+        sourceY: tileY * tileHeight,
+        sourceWidth: tileWidth,
+        sourceHeight: tileHeight,
         targetWidth: width,
         targetHeight: height,
       });

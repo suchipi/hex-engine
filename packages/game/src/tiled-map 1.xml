@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.1" orientation="orthogonal" renderorder="left-down" compressionlevel="-1" width="10" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="4">
+<map version="1.2" tiledversion="1.3.1" orientation="orthogonal" renderorder="left-down" compressionlevel="0" width="10" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="4">
  <tileset firstgid="1" source="tiled-RPG Nature.xml"/>
  <layer id="1" name="Tile Layer 1" width="10" height="10">
   <data encoding="csv">
-41,41,41,83,43,61,85,41,41,41,
+41,41,41,83,43,61,85,16,17,18,
 41,41,41,83,43,81,41,41,41,41,
 41,64,102,103,43,81,41,41,41,41,
 41,83,43,43,43,81,41,69,107,70,

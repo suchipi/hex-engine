@@ -90,18 +90,22 @@ function Layer(layer: XMLSourceLoader.Element) {
   }
 
   const csv = dataEl.children.join(" ");
-  const numbers = csv.split(",").map((cell) => Number(cell.trim()));
+  const numbers = csv
+    .split(",")
+    .map((cell) => Number(cell.trim()))
+    .map((tileIndex) => tileIndex - 1);
 
   const grid = new Grid(width, height, 0);
   grid.setData(numbers);
 
   return {
     grid,
+    visible: layer.attributes.visible !== 0,
   };
 }
 
-function Map(data: XMLSourceLoader.Element) {
-  useType(Map);
+function TiledMap(data: XMLSourceLoader.Element) {
+  useType(TiledMap);
 
   if (typeof data === "string" || data.tagName !== "map") {
     throw new Error("Invalid XML data passed to Tiled.Map");
@@ -125,9 +129,11 @@ function Map(data: XMLSourceLoader.Element) {
     layers.push(useNewComponent(() => Layer(layerEl)));
   }
 
-  const tileMaps = layers.map((layer) =>
-    useNewComponent(() => TileMap(tileset.spriteSheet, layer.grid))
-  );
+  const tileMaps = layers
+    .filter((layer) => layer.visible)
+    .map((layer) =>
+      useNewComponent(() => TileMap(tileset.spriteSheet, layer.grid))
+    );
 
   // TODO: objectgroup
 
@@ -137,10 +143,14 @@ function Map(data: XMLSourceLoader.Element) {
   };
 }
 
+Object.defineProperty(Tileset, "name", { value: "Tiled.Tileset" });
+Object.defineProperty(Layer, "name", { value: "Tiled.Layer" });
+Object.defineProperty(TiledMap, "name", { value: "Tiled.Map" });
+
 const Tiled = {
   Tileset,
   Layer,
-  Map,
+  Map: TiledMap,
 };
 
 export default Tiled;

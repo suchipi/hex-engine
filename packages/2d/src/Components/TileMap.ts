@@ -19,6 +19,8 @@ export default function TileMap(
       y?: number | void;
     }) {
       for (const [gridX, gridY, tileIndex] of grid.contents()) {
+        if (tileIndex === -1) continue;
+
         sheet.drawSpriteIntoContext({
           context,
           x: x + gridX * sheet.tileSize.x,
