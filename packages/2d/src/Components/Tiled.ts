@@ -1,7 +1,7 @@
 import { useType, useNewComponent, Component } from "@hex-engine/core";
 import SpriteSheet from "./SpriteSheet";
 import TileMap from "./TileMap";
-import { Grid } from "../Models";
+import { Grid, Vec2 } from "../Models";
 
 function Tileset(data: XMLSourceLoader.Element) {
   useType(Tileset);
@@ -137,9 +137,22 @@ function TiledMap(data: XMLSourceLoader.Element) {
 
   // TODO: objectgroup
 
+  const maxX = layers.reduce(
+    (prev, layer) => Math.max(prev, layer.grid.size.x),
+    0
+  );
+  const maxY = layers.reduce(
+    (prev, layer) => Math.max(prev, layer.grid.size.y),
+    0
+  );
+  const sizeInTiles = new Vec2(maxX, maxY);
+  const sizeInPixels = sizeInTiles.times(tileset.spriteSheet.tileSize);
+
   return {
     tileset,
     tileMaps,
+    sizeInTiles,
+    sizeInPixels,
   };
 }
 

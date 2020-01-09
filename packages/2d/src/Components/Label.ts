@@ -42,6 +42,7 @@ export default function Label({
   useUpdate(updateBounds);
 
   return {
+    bounds,
     drawLabel({
       context,
       x = 0,

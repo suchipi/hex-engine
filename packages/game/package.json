@@ -2,5 +2,8 @@
   "name": "game",
   "version": "0.0.0",
   "private": true,
-  "main": "dist/index.html"
+  "main": "dist/index.html",
+  "dependencies": {
+    "safety-match": "^0.1.1"
+  }
 }

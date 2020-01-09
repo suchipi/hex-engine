@@ -5,6 +5,7 @@ export interface Entity {
   addChild(child: Entity): void;
   removeChild(child: Entity): void;
   name?: string | null;
+  id: number;
 
   components: Set<Component>;
   getComponent<Func extends (...args: any[]) => any>(

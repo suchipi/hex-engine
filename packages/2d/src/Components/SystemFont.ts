@@ -33,7 +33,7 @@ export default function SystemFont({
   const api: FontImplementation = {
     drawText({ context, text, x = 0, y = 0 }) {
       prepareContext(context);
-      context.fillText(text, x, y);
+      context.fillText(text, x, y - state.size * 0.1);
     },
     measureTextWidth(text) {
       prepareContext(internalContext);

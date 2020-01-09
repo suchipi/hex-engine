@@ -3,7 +3,6 @@ import {
   Component as ComponentInterface,
 } from "./Interface";
 import instantiate from "./instantiate";
-import EntityLifecycle from "./Components/EntityLifecycle";
 
 function enable(entity: Entity) {
   for (const component of entity.components) {
@@ -27,16 +26,30 @@ function disable(entity: Entity) {
   }
 }
 
+let id = 0;
+
 export default class Entity implements EntityInterface {
   _kind: "entity" = "entity";
 
   components: Set<ComponentInterface> = new Set();
   children: Set<Entity> = new Set();
   parent: Entity | null = null;
-  name = null;
+  name: string | null = null;
+  id: number = -1;
 
-  static _create(componentFactory: () => any): Entity {
+  static _create(
+    componentFactory: () => any,
+    parent?: EntityInterface
+  ): Entity {
     const ent: Entity = new Entity();
+    ent.id = id;
+    id++;
+
+    if (parent) {
+      parent.addChild(ent);
+    }
+
+    ent.name = componentFactory.name;
 
     const component = instantiate(componentFactory, ent);
     ent.components.add(component);
@@ -56,20 +69,10 @@ export default class Entity implements EntityInterface {
   addChild(child: Entity): void {
     this.children.add(child);
     child.parent = this;
-
-    const entityLifeCycle = child.getComponent(EntityLifecycle);
-    if (entityLifeCycle) {
-      entityLifeCycle.entityApi.performAddedToParent();
-    }
   }
   removeChild(child: Entity): void {
     this.children.delete(child);
     child.parent = null;
-
-    const entityLifeCycle = child.getComponent(EntityLifecycle);
-    if (entityLifeCycle) {
-      entityLifeCycle.entityApi.performRemovedFromParent();
-    }
   }
 
   getComponent<Func extends (...args: any[]) => any>(

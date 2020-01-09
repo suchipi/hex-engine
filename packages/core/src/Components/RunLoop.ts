@@ -1,17 +1,19 @@
 import HooksSystem from "../HooksSystem";
 import useEnableDisable from "../Hooks/useEnableDisable";
+import ErrorBoundary from "./ErrorBoundary";
 
-const { useType } = HooksSystem.hooks;
+const { useType, useEntity } = HooksSystem.hooks;
 
 export default function RunLoop() {
   useType(RunLoop);
+
+  const ent = useEntity();
 
   let frameNumber: number = 0;
   let frameRequest: number | null = null;
   let lastTimestamp: number | null = null;
   let onFrameCallbacks: Set<(delta: number) => void> = new Set();
   let isPaused = false;
-  let error: Error | null = null;
 
   const { onEnabled, onDisabled } = useEnableDisable();
 
@@ -21,12 +23,7 @@ export default function RunLoop() {
       try {
         onFrameCallback(delta);
       } catch (err) {
-        error = err;
-        console.error(err);
-        if (process.env.NODE_ENV !== "production") {
-          pause();
-          break;
-        }
+        ErrorBoundary.runHandlers(ent, err);
       }
     }
   }
@@ -53,8 +50,6 @@ export default function RunLoop() {
   }
 
   function step() {
-    error = null;
-
     if (frameRequest != null) {
       cancelAnimationFrame(frameRequest);
     }
@@ -66,7 +61,6 @@ export default function RunLoop() {
   }
 
   function resume() {
-    error = null;
     if (frameRequest != null) {
       cancelAnimationFrame(frameRequest);
     }
@@ -101,9 +95,6 @@ export default function RunLoop() {
     step,
     resume,
     isPaused: () => isPaused,
-    get error() {
-      return error;
-    },
     get frameNumber() {
       return frameNumber;
     },

@@ -258,6 +258,7 @@ export default function Tree({
         "name",
         "enable",
         "disable",
+        "id",
       ]);
     } else if (data._kind === "component") {
       className = data.type?.name

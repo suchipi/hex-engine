@@ -3,7 +3,6 @@ import {
   useEnableDisable,
   useStateAccumlator,
   useRootEntity,
-  useEntityLifecycle,
   useCallbackAsCurrent,
 } from "@hex-engine/core";
 import Canvas from "../Canvas";
@@ -13,6 +12,7 @@ const MOUSE_MOVE = Symbol("MOUSE_MOVE");
 const MOUSE_DOWN = Symbol("MOUSE_DOWN");
 const MOUSE_UP = Symbol("MOUSE_UP");
 
+// TODO: Run inside of useFrame
 export default function Mouse() {
   useType(Mouse);
 
@@ -72,23 +72,13 @@ export default function Mouse() {
 
   let canvas: HTMLCanvasElement | undefined = undefined;
 
-  useEntityLifecycle({
-    onAddedToParent: () => {
-      const root = useRootEntity();
-      canvas = root.getComponent(Canvas)?.element;
-      if (!canvas) {
-        throw new Error(
-          "Could not find the root canvas. Does the root entity have a Canvas component?"
-        );
-      }
-      bindListeners(canvas);
-    },
-    onRemovedFromParent: () => {
-      if (canvas) {
-        unbindListeners(canvas);
-      }
-    },
-  });
+  const root = useRootEntity();
+  canvas = root.getComponent(Canvas)?.element;
+  if (!canvas) {
+    throw new Error(
+      "Could not find the root canvas. Does the root entity have a Canvas component?"
+    );
+  }
 
   const { onEnabled, onDisabled } = useEnableDisable();
 

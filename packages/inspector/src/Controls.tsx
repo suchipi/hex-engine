@@ -13,14 +13,15 @@ type RunLoopAPI = ReturnType<typeof RunLoop>;
 
 export default function Controls({
   runLoop,
+  error,
   isOpen,
   toggleOpen,
 }: {
   runLoop: RunLoopAPI;
+  error: Error | null;
   isOpen: boolean;
   toggleOpen: () => void;
 }) {
-  const error = runLoop.error;
   return (
     <div
       style={{

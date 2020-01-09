@@ -1,4 +1,5 @@
 import { makeHooksSystem } from "concubine";
+import Entity from "./Entity";
 import { Component as ComponentInterface } from "./Interface";
 import Component from "./Component";
 import instantiate from "./instantiate";
@@ -48,6 +49,11 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
   },
 
   useIsEnabled: (instance) => () => instance.isEnabled,
+
+  useChild: (instance) => (componentFactory: () => any) => {
+    const ent = instance.entity;
+    return Entity._create(componentFactory, ent);
+  },
 });
 
 export default HooksSystem;

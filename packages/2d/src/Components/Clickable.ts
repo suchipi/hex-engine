@@ -21,18 +21,18 @@ type Callback = () => void;
 export default function Clickable() {
   useType(Clickable);
 
-  const boundingBox = useExistingComponentByType(BoundingBox)!;
-  if (!boundingBox) {
-    throw new Error(
-      "The Clickable component requires a BoundingBox component on the same entity."
-    );
-  }
-
-  const position =
-    useExistingComponentByType(Position)?.asWorldPosition() || new Vec2(0, 0);
-  const origin = useExistingComponentByType(Origin) || new Vec2(0, 0);
-
   function pointIsWithinBounds(point: Vec2) {
+    const boundingBox = useExistingComponentByType(BoundingBox)!;
+    if (!boundingBox) {
+      throw new Error(
+        "The Clickable component requires a BoundingBox component on the same entity."
+      );
+    }
+
+    const position =
+      useExistingComponentByType(Position)?.asWorldPosition() || new Vec2(0, 0);
+    const origin = useExistingComponentByType(Origin) || new Vec2(0, 0);
+
     const topLeft = position.subtract(origin);
     const bottomRight = topLeft.add(boundingBox);
 

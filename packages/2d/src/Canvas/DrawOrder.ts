@@ -17,8 +17,8 @@ export default Object.assign(
         );
       }
 
-      // Then draw non-cameras
-      for (const ent of entities) {
+      // Then draw non-cameras, sorted by id (so that later-created entities are drawn above earlier-created entities)
+      for (const ent of [...entities].sort((entA, entB) => entA.id - entB.id)) {
         components = components.concat(
           [...ent.components].filter((comp: any) => !comp.isCamera)
         );

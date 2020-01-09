@@ -10,7 +10,10 @@ module.exports = {
     path: rootDir("packages/game/dist"),
   },
 
-  resolve: { mainFields: ["browser", "main"] },
+  resolve: {
+    mainFields: ["browser", "main"],
+    extensions: [".mjs", ".js", ".jsx", ".ts", ".tsx", ".json"],
+  },
 
   module: {
     rules: [
@@ -39,7 +42,9 @@ module.exports = {
     ],
   },
   plugins: [
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      title: "hex-engine game",
+    }),
     new webpack.EnvironmentPlugin({ NODE_ENV: "development" }),
   ],
   optimization: {

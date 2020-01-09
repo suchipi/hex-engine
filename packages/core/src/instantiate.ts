@@ -4,6 +4,7 @@ import {
   Component as ComponentInterface,
   Entity as EntityInterface,
 } from "./Interface";
+import ErrorBoundary from "./Components/ErrorBoundary";
 
 function gatherPropertyNames(obj: Object, soFar: Set<string> = new Set()) {
   const proto = Object.getPrototypeOf(obj);
@@ -39,7 +40,19 @@ export default function instantiate<T>(
   const instance = new Component(entity);
 
   const ret: unknown = HooksSystem.withInstance(instance, () => {
-    return componentFactory();
+    try {
+      return componentFactory();
+    } catch (error) {
+      Object.defineProperty(error, "message", {
+        value: `Failed to instantiate ${entity.name || "unnamed entity"}: ${
+          error.message
+        }`,
+      });
+
+      ErrorBoundary.runHandlers(entity, error);
+
+      return null;
+    }
   });
 
   const api = {};

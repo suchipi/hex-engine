@@ -5,7 +5,7 @@ import {
 } from "./Interface";
 import HooksSystem from "./HooksSystem";
 import RunLoop from "./Components/RunLoop";
-import { useEntityLifecycle } from "./Components/EntityLifecycle";
+import ErrorBoundary from "./Components/ErrorBoundary";
 
 const {
   useNewComponent,
@@ -15,32 +15,26 @@ const {
   useStateAccumlator,
   useType,
   useIsEnabled,
+  useChild,
 } = HooksSystem.hooks;
 
-const createEntity = (func: () => any): EntityInterface => {
-  function fromCreateEntity() {
-    Object.defineProperty(fromCreateEntity, "name", {
-      value: func.name || "from createEntity",
-    });
-    useType(fromCreateEntity);
-
-    return func();
-  }
-  return Entity._create(fromCreateEntity);
+const renderRootComponent = (componentFactory: () => any) => {
+  return Entity._create(componentFactory);
 };
 
 export {
   RunLoop,
+  ErrorBoundary,
   EntityInterface as Entity,
   ComponentInterface as Component,
-  createEntity,
+  renderRootComponent,
   useNewComponent,
   useExistingComponentByType,
   useEntity,
   useCallbackAsCurrent,
   useStateAccumlator,
   useType,
-  useEntityLifecycle,
   useIsEnabled,
+  useChild,
 };
 export * from "./Hooks";

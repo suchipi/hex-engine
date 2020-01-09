@@ -9,9 +9,11 @@ type RunLoopAPI = ReturnType<typeof RunLoop>;
 export default function App({
   entity,
   runLoop,
+  error,
 }: {
   entity: Entity;
   runLoop: RunLoopAPI | null;
+  error: Error | null;
 }) {
   let ent = entity;
 
@@ -35,11 +37,12 @@ export default function App({
         }}
       >
         <StateKey value="controls">
-          {runLoop ? (
+          {runLoop && !open ? (
             <Controls
               isOpen={open}
               toggleOpen={() => setOpen(!open)}
               runLoop={runLoop}
+              error={error}
             />
           ) : null}
         </StateKey>
@@ -69,6 +72,7 @@ export default function App({
               isOpen={open}
               toggleOpen={() => setOpen(!open)}
               runLoop={runLoop}
+              error={error}
             />
           ) : null}
         </StateKey>
