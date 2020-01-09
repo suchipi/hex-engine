@@ -1,4 +1,4 @@
 import useDraw from "./useDraw";
-import useTransforms from "./useTransforms";
+import useEntityTransforms from "./useEntityTransforms";
 
-export { useDraw, useTransforms };
+export { useDraw, useEntityTransforms };

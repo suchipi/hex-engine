@@ -15,6 +15,7 @@ import Mouse from "./Mouse";
 import Origin from "./Origin";
 import Position from "./Position";
 import Rotation from "./Rotation";
+import Scale from "./Scale";
 import SpriteSheet from "./SpriteSheet";
 import SystemFont from "./SystemFont";
 import Tiled from "./Tiled";
@@ -40,6 +41,7 @@ export {
   Origin,
   Position,
   Rotation,
+  Scale,
   SpriteSheet,
   SystemFont,
   Tiled,

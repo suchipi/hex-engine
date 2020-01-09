@@ -2,16 +2,15 @@ import { useExistingComponentByType, useType } from "@hex-engine/core";
 import { useRawDraw } from "../Canvas";
 import Position from "./Position";
 import Rotation from "./Rotation";
+import Scale from "./Scale";
 
-export default function Camera(options?: { zoom: number }) {
+export default function Camera() {
   useType(Camera);
 
   const state = {
     // this property indicates to the Canvas.DrawOrder's default
     // sort algorithm that we should be drawn before other entities
     isCamera: true,
-
-    zoom: (options && options.zoom) || 1,
   };
 
   useRawDraw((context) => {
@@ -26,8 +25,9 @@ export default function Camera(options?: { zoom: number }) {
       context.rotate(-rotation.radians);
     }
 
-    if (state.zoom) {
-      context.scale(state.zoom, state.zoom);
+    const scale = useExistingComponentByType(Scale);
+    if (scale) {
+      context.scale(-scale.x, -scale.y);
     }
   });
 

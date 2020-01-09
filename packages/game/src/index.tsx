@@ -7,7 +7,6 @@ import {
   Aseprite,
   Canvas,
   Vec2,
-  Angle,
   Keyboard,
   Position,
   Origin,
@@ -26,6 +25,8 @@ import {
   useType,
   Component,
   Tiled,
+  Scale,
+  ImageFilter,
 } from "@hex-engine/2d";
 import bouncy from "./bouncy-29x41.png";
 import jump from "./jump.wav";
@@ -37,18 +38,21 @@ window.tiledMap = tiledMap;
 
 const camera = createEntity(() => {
   useEntityName("camera");
-  useNewComponent(() => Position(new Vec2(-100, -100)));
-  useNewComponent(() => Rotation(new Angle(0)));
+  useNewComponent(Position);
+  useNewComponent(Rotation);
+  useNewComponent(Scale);
   useNewComponent(Camera);
 });
 
 const player = createEntity(() => {
   useEntityName("player");
-  useNewComponent(() => Keyboard());
-  useNewComponent(() => Position(new Vec2(0, 0)));
-  const size = useNewComponent(() => BoundingBox(new Vec2(29, 41)));
+
+  useNewComponent(Position);
+  const size = new Vec2(29, 41);
+  useNewComponent(() => BoundingBox(size));
   useNewComponent(() => Origin(size.dividedBy(2)));
-  useNewComponent(() => Rotation(0));
+  useNewComponent(Rotation);
+  useNewComponent(Scale);
 
   const jumpSound = useNewComponent(() => Audio({ url: jump }));
   const animSheet = useNewComponent(() =>
@@ -78,15 +82,25 @@ const player = createEntity(() => {
   );
   animSheet.currentAnim.play();
 
-  useDraw((context) => {
-    animSheet.drawSpriteIntoContext({ context });
+  const imageFilter = useNewComponent(() =>
+    ImageFilter((imageData) => {
+      const pixels = imageData.data;
+      for (let i = 0; i < pixels.length; i += 4) {
+        pixels[i + 0] = 255; // very red
+      }
+    })
+  );
+
+  useDraw((context, backstage) => {
+    animSheet.drawSpriteIntoContext({ context: backstage });
+    imageFilter.apply(backstage, context);
   });
 
+  const keyboard = useNewComponent(() => Keyboard());
   useNewComponent(function PlayerControls() {
     useType(PlayerControls);
 
     useUpdate((delta) => {
-      const keyboard = useExistingComponentByType(Keyboard)!;
       const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
       vector.magnitude *= delta * 0.1;
 
@@ -97,6 +111,8 @@ const player = createEntity(() => {
 });
 
 const slime = createEntity(() => {
+  useEntityName("slime");
+
   useNewComponent(() => Position(new Vec2(100, 50)));
 
   const aseprite = useNewComponent(() => Aseprite(slimeBlue));
