@@ -14,7 +14,6 @@ import {
   AnimationSheet,
   Animation,
   AnimationFrame,
-  BasicRenderer,
   BoundingBox,
   useUpdate,
   useExistingComponentByType,
@@ -79,11 +78,14 @@ const player = createEntity(() => {
   );
   animSheet.currentAnim.play();
 
-  useNewComponent(BasicRenderer);
+  useDraw((context) => {
+    animSheet.drawSpriteIntoContext({ context });
+  });
+
   useNewComponent(function PlayerControls() {
     useType(PlayerControls);
 
-    return useUpdate((delta) => {
+    useUpdate((delta) => {
       const keyboard = useExistingComponentByType(Keyboard)!;
       const vector = keyboard.vectorFromKeys("w", "s", "a", "d");
       vector.magnitude *= delta * 0.1;
@@ -95,34 +97,25 @@ const player = createEntity(() => {
 });
 
 const slime = createEntity(() => {
-  const position = useNewComponent(() =>
-    Position(new Vec2(100, 50))
-  ).asWorldPosition();
+  useNewComponent(() => Position(new Vec2(100, 50)));
 
   const aseprite = useNewComponent(() => Aseprite(slimeBlue));
   aseprite.currentAnim.play();
 
   useDraw((context) => {
-    aseprite.drawCurrentFrameIntoContext({
-      context,
-      x: position.x,
-      y: position.y,
-    });
+    aseprite.drawCurrentFrameIntoContext({ context });
   });
 });
 
 const bg = createEntity(() => {
   useEntityName("bg");
 
-  const position = useNewComponent(Position);
   const map = useNewComponent(() => Tiled.Map(tiledMap));
 
   useDraw((context) => {
     map.tileMaps.forEach((tileMap) =>
       tileMap.drawMapIntoContext({
         context,
-        x: position.asWorldPosition().x,
-        y: position.asWorldPosition().y,
       })
     );
   });

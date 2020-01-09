@@ -1,7 +1,7 @@
 import { useNewComponent, useType, RunLoop } from "@hex-engine/core";
 import Inspector from "@hex-engine/inspector";
 import { UpdateChildren, useUpdate } from "./UpdateChildren";
-import { DrawChildren, useDraw } from "./DrawChildren";
+import { DrawChildren, useRawDraw } from "./DrawChildren";
 import DrawOrder from "./DrawOrder";
 
 type Props = {
@@ -139,4 +139,4 @@ export default Object.assign(
   }
 );
 
-export { useUpdate, useDraw };
+export { useUpdate, useRawDraw };

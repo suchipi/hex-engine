@@ -16,7 +16,7 @@ type DrawCallback = (
   backstage: CanvasRenderingContext2D
 ) => void;
 
-export function useDraw(callback: DrawCallback) {
+export function useRawDraw(callback: DrawCallback) {
   useStateAccumlator<DrawCallback>(DRAW_CALLBACKS).add(
     useCallbackAsCurrent(callback)
   );

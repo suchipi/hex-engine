@@ -2,11 +2,9 @@ import Animation, { AnimationFrame } from "./Animation";
 import AnimationSheet from "./AnimationSheet";
 import Aseprite from "./Aseprite";
 import Audio from "./Audio";
-import BasicRenderer from "./BasicRenderer";
 import BoundingBox from "./BoundingBox";
 import Camera from "./Camera";
 import Clickable from "./Clickable";
-import FilterRenderer from "./FilterRenderer";
 import Font from "./Font";
 import Gamepad from "./Gamepad";
 import Image from "./Image";
@@ -29,11 +27,9 @@ export {
   AnimationSheet,
   Aseprite,
   Audio,
-  BasicRenderer,
   BoundingBox,
   Camera,
   Clickable,
-  FilterRenderer,
   Font,
   Gamepad,
   Image,
