@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const rootDir = (...parts) => path.resolve(__dirname, ...parts);
 
 module.exports = {
-  entry: [rootDir("./polyfills"), rootDir("./packages/game/src/index.tsx")],
+  entry: [rootDir("./polyfills"), rootDir("./packages/game/src/index.ts")],
   output: {
     path: rootDir("packages/game/dist"),
   },
