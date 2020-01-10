@@ -18,7 +18,11 @@ const {
   useChild,
 } = HooksSystem.hooks;
 
-const renderRootComponent = (componentFactory: () => any) => {
+const renderRootComponent = <T>(
+  componentFactory: () => T
+): EntityInterface & {
+  api: T extends {} ? T & ComponentInterface : ComponentInterface;
+} => {
   return Entity._create(componentFactory);
 };
 

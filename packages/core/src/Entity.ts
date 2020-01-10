@@ -36,11 +36,14 @@ export default class Entity implements EntityInterface {
   parent: Entity | null = null;
   name: string | null = null;
   id: number = -1;
+  api: any;
 
-  static _create(
-    componentFactory: () => any,
+  static _create<T>(
+    componentFactory: () => T,
     parent?: EntityInterface
-  ): Entity {
+  ): Entity & {
+    api: T extends {} ? ComponentInterface & T : ComponentInterface;
+  } {
     const ent: Entity = new Entity();
     ent.id = id;
     id++;
@@ -52,6 +55,7 @@ export default class Entity implements EntityInterface {
     ent.name = componentFactory.name;
 
     const component = instantiate(componentFactory, ent);
+    ent.api = component;
     ent.components.add(component);
 
     return ent;

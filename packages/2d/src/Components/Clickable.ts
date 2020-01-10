@@ -5,36 +5,30 @@ import {
   useStateAccumlator,
   useCallbackAsCurrent,
 } from "@hex-engine/core";
-import BoundingBox from "./BoundingBox";
 import Mouse from "./Mouse";
 import Origin from "./Origin";
 import Position from "./Position";
 import { Vec2 } from "../Models";
 
 const ON_ENTER = Symbol("ON_ENTER");
+const ON_MOVE = Symbol("ON_MOVE");
 const ON_LEAVE = Symbol("ON_LEAVE");
 const ON_DOWN = Symbol("ON_DOWN");
 const ON_UP = Symbol("ON_UP");
 const ON_CLICK = Symbol("ON_CLICK");
-type Callback = () => void;
+type Callback = (pos: Vec2) => void;
 
-export default function Clickable() {
+export default function Clickable({ bounds }: { bounds: Vec2 }) {
   useType(Clickable);
 
-  function pointIsWithinBounds(point: Vec2) {
-    const boundingBox = useExistingComponentByType(BoundingBox)!;
-    if (!boundingBox) {
-      throw new Error(
-        "The Clickable component requires a BoundingBox component on the same entity."
-      );
-    }
+  const position = useExistingComponentByType(Position);
 
-    const position =
-      useExistingComponentByType(Position)?.asWorldPosition() || new Vec2(0, 0);
+  function pointIsWithinBounds(point: Vec2) {
+    const pos = position?.asWorldPosition() || new Vec2(0, 0);
     const origin = useExistingComponentByType(Origin) || new Vec2(0, 0);
 
-    const topLeft = position.subtract(origin);
-    const bottomRight = topLeft.add(boundingBox);
+    const topLeft = pos.subtract(origin);
+    const bottomRight = topLeft.add(bounds);
 
     return (
       point.x >= topLeft.x &&
@@ -45,6 +39,7 @@ export default function Clickable() {
   }
 
   const onEnterState = useStateAccumlator<Callback>(ON_ENTER);
+  const onMoveState = useStateAccumlator<Callback>(ON_MOVE);
   const onLeaveState = useStateAccumlator<Callback>(ON_LEAVE);
   const onDownState = useStateAccumlator<Callback>(ON_DOWN);
   const onUpState = useStateAccumlator<Callback>(ON_UP);
@@ -57,28 +52,34 @@ export default function Clickable() {
 
   onMouseMove((pos) => {
     if (pointIsWithinBounds(pos)) {
+      const localPos = position?.getLocalPosition(pos) || pos;
       if (!isHovering) {
-        onEnterState.all().forEach((callback) => callback());
+        onEnterState.all().forEach((callback) => callback(localPos));
       }
       isHovering = true;
+
+      onMoveState.all().forEach((callback) => callback(localPos));
     } else if (isHovering) {
-      onLeaveState.all().forEach((callback) => callback());
+      const localPos = position?.getLocalPosition(pos) || pos;
+      onLeaveState.all().forEach((callback) => callback(localPos));
       isHovering = false;
     }
   });
 
   onMouseDown((pos) => {
     if (pointIsWithinBounds(pos)) {
+      const localPos = position?.getLocalPosition(pos) || pos;
       isPressing = true;
-      onDownState.all().forEach((callback) => callback());
+      onDownState.all().forEach((callback) => callback(localPos));
     }
   });
 
   onMouseUp((pos) => {
     if (pointIsWithinBounds(pos)) {
-      onUpState.all().forEach((callback) => callback());
+      const localPos = position?.getLocalPosition(pos) || pos;
+      onUpState.all().forEach((callback) => callback(localPos));
       if (isPressing) {
-        onClickState.all().forEach((callback) => callback());
+        onClickState.all().forEach((callback) => callback(localPos));
       }
     }
     isPressing = false;
@@ -94,6 +95,9 @@ export default function Clickable() {
 
     onEnter(callback: Callback) {
       onEnterState.add(useCallbackAsCurrent(callback));
+    },
+    onMove(callback: Callback) {
+      onMoveState.add(useCallbackAsCurrent(callback));
     },
     onLeave(callback: Callback) {
       onLeaveState.add(useCallbackAsCurrent(callback));

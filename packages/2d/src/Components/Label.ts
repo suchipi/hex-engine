@@ -1,10 +1,5 @@
-import {
-  useNewComponent,
-  useType,
-  useExistingComponentByType,
-} from "@hex-engine/core";
+import { useType } from "@hex-engine/core";
 import { useUpdate } from "../Canvas";
-import BoundingBox from "./BoundingBox";
 import { FontImplementation } from "./Font";
 import { Vec2 } from "../Models";
 
@@ -21,28 +16,20 @@ export default function Label({
     text,
   };
 
-  let hasCustomBounds = false;
-  let bounds: Vec2 = useExistingComponentByType(BoundingBox)!;
-  if (bounds) {
-    hasCustomBounds = true;
-  } else {
-    bounds = useNewComponent(() => BoundingBox(new Vec2(0, 0)));
-  }
+  const size = new Vec2(0, 0);
 
-  function updateBounds() {
-    if (hasCustomBounds) return;
-
+  function updateSize() {
     const width = font.measureTextWidth(state.text);
     const height = font.estimateFontHeight();
-    bounds.x = width;
-    bounds.y = height;
+    size.x = width;
+    size.y = height;
   }
 
-  updateBounds();
-  useUpdate(updateBounds);
+  updateSize();
+  useUpdate(updateSize);
 
   return {
-    bounds,
+    size,
     drawLabel({
       context,
       x = 0,
@@ -56,7 +43,7 @@ export default function Label({
         context,
         text: state.text,
         x: x,
-        y: y + bounds.y,
+        y: y + size.y,
       });
     },
     get text() {
@@ -64,7 +51,7 @@ export default function Label({
     },
     set text(nextValue) {
       state.text = nextValue;
-      updateBounds();
+      updateSize();
     },
   };
 }

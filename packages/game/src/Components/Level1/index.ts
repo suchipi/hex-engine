@@ -6,8 +6,11 @@ import {
   Tiled,
   useType,
   useChild,
-  Mouse,
+  Clickable,
   Label,
+  Grid,
+  Entity,
+  useEntityName,
 } from "@hex-engine/2d";
 import { makeTaggedUnion } from "safety-match";
 import Button from "game/src/Components/Button";
@@ -20,7 +23,7 @@ import level1Xml from "./level1.xml";
 export default function Level1() {
   useType(Level1);
 
-  const position = useNewComponent(() => Position(new Vec2(25, 25)));
+  useNewComponent(() => Position(new Vec2(25, 25)));
   const map = useNewComponent(() => Tiled.Map(level1Xml));
 
   const GameState = makeTaggedUnion({
@@ -30,20 +33,68 @@ export default function Level1() {
 
   const state = GameState.PLACING(1);
 
-  const mouse = useNewComponent(Mouse);
+  // TODO: Grid constructor and methods should allow Vec2 inputs
+  const towersGrid = new Grid<null | Entity>(
+    map.sizeInTiles.x,
+    map.sizeInTiles.y,
+    null
+  );
 
-  let mouseDown = false;
-  mouse.onMouseDown((pos) => {
-    mouseDown = true;
-    const localPos = position.getLocalPosition(pos);
-  });
-  mouse.onMouseUp(() => {
-    mouseDown = false;
+  const clickable = useNewComponent(() =>
+    Clickable({ bounds: map.sizeInPixels })
+  );
+
+  const tileHighlight = useChild(() => {
+    useEntityName("Tile Highlight");
+    const position = useNewComponent(Position);
+
+    const state = {
+      position,
+    };
+
+    useDraw((context) => {
+      if (clickable.isHovering) {
+        context.fillStyle = "rgba(255, 255, 255, 0.5)";
+        context.fillRect(0, 0, map.tileSize.x, map.tileSize.y);
+      }
+    });
+
+    return state;
   });
 
-  const start = useChild(() =>
+  clickable.onMove((localPos) => {
+    state.match({
+      PLACING: () => {
+        const pos = localPos
+          .dividedBy(map.tileSize)
+          .roundDown()
+          .times(map.tileSize);
+        tileHighlight.api.position.replace(pos);
+      },
+      _: () => {},
+    });
+  });
+
+  clickable.onClick((localPos) => {
+    state.match({
+      PLACING: () => {
+        const tilePos = localPos.dividedBy(map.tileSize).roundDown();
+        if (!towersGrid.get(tilePos.x, tilePos.y)) {
+          towersGrid.set(
+            tilePos.x,
+            tilePos.y,
+            useChild(() => Tower({ position: tilePos.times(map.tileSize) }))
+          );
+        }
+      },
+      _: () => {},
+    });
+  });
+
+  useChild(() =>
     Button({
-      position: (size) => new Vec2(map.sizeInPixels.x - size.x, 0),
+      calcPosition: (size) =>
+        new Vec2(map.sizeInPixels.x - size.x, -size.y - 1),
       text: "Start!",
       onClick: () => {
         alert("do something");
@@ -65,4 +116,8 @@ export default function Level1() {
 
     waveLabel.drawLabel({ context });
   });
+
+  return {
+    towersGrid,
+  };
 }

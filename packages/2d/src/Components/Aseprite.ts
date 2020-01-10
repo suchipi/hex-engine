@@ -125,7 +125,15 @@ export default function Aseprite(data: AsepriteLoader.Data) {
       }
       const color = data.palette.colors[index];
 
-      return `rgba(${color.red}, ${color.green}, ${color.blue}, ${color.alpha})`;
+      // TODO: ase-parser doesn't give us the palette entry that represents transparent from the header
+      // as described here: https://github.com/aseprite/aseprite/blob/master/docs/ase-file-specs.md#header
+      // so we have to assume it's index 0 (which is the default, but the user can change it)
+      if (index === 0) {
+        return `rgba(0, 0, 0, 0)`;
+      }
+
+      return `rgba(${color.red}, ${color.green}, ${color.blue}, ${color.alpha /
+        255})`;
     } else if (data.colorDepth === 16) {
       // grayscale
       const offset = 2 * (x + cel.w * y);

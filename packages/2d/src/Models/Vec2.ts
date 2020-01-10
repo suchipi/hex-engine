@@ -7,12 +7,20 @@ export default class Vec2 {
     this.y = y;
   }
 
-  add(other: Vec2): Vec2 {
-    return new Vec2(this.x + other.x, this.y + other.y);
+  add(other: Vec2 | number): Vec2 {
+    if (typeof other === "number") {
+      return new Vec2(this.x + other, this.y + other);
+    } else {
+      return new Vec2(this.x + other.x, this.y + other.y);
+    }
   }
 
-  subtract(other: Vec2): Vec2 {
-    return new Vec2(this.x - other.x, this.y - other.y);
+  subtract(other: Vec2 | number): Vec2 {
+    if (typeof other === "number") {
+      return new Vec2(this.x - other, this.y - other);
+    } else {
+      return new Vec2(this.x - other.x, this.y - other.y);
+    }
   }
 
   times(other: Vec2 | number): Vec2 {
@@ -49,6 +57,14 @@ export default class Vec2 {
 
   round(): Vec2 {
     return new Vec2(Math.round(this.x), Math.round(this.y));
+  }
+
+  roundDown(): Vec2 {
+    return new Vec2(Math.floor(this.x), Math.floor(this.y));
+  }
+
+  roundUp(): Vec2 {
+    return new Vec2(Math.ceil(this.x), Math.ceil(this.y));
   }
 
   replace(other: Vec2) {

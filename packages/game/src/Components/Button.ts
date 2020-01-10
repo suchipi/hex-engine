@@ -4,18 +4,20 @@ import {
   Position,
   Vec2,
   useDraw,
+  useUpdate,
   Clickable,
   Label,
   useType,
+  BoundingBox,
 } from "@hex-engine/2d";
 import useGameFont from "game/src/Hooks/useGameFont";
 
 export default function Button({
-  position,
+  calcPosition,
   text,
   onClick,
 }: {
-  position: (bounds: Vec2) => Vec2;
+  calcPosition: (bounds: Vec2) => Vec2;
   text: string;
   onClick: () => void;
 }) {
@@ -25,17 +27,29 @@ export default function Button({
   const font = useGameFont();
   const label = useNewComponent(() => Label({ text, font }));
 
-  useNewComponent(() => Position(position(label.bounds)));
+  const position = useNewComponent(Position);
 
-  const clickable = useNewComponent(Clickable);
+  const padding = 2;
+  const size = label.size.add(padding * 2);
+
+  const clickable = useNewComponent(() => Clickable({ bounds: size }));
 
   clickable.onClick(onClick);
 
+  useUpdate(() => {
+    size.replace(label.size.add(padding));
+    position.replace(calcPosition(size));
+  });
+
   useDraw((context) => {
-    context.fillStyle = clickable.isHovering ? "red" : "blue";
-    const rect = label.bounds.round();
+    context.fillStyle =
+      clickable.isPressing && clickable.isHovering ? "grey" : "white";
+    const rect = size.round();
     context.fillRect(0, 0, rect.x, rect.y);
 
-    label.drawLabel({ context });
+    context.strokeStyle = clickable.isHovering ? "black" : "transparent";
+    context.strokeRect(0.5, 0.5, rect.x, rect.y);
+
+    label.drawLabel({ context, x: padding, y: padding });
   });
 }

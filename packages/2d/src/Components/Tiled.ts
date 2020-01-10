@@ -153,6 +153,7 @@ function TiledMap(data: XMLSourceLoader.Element) {
     tileMaps,
     sizeInTiles,
     sizeInPixels,
+    tileSize: tileset.spriteSheet.tileSize,
   };
 }
 

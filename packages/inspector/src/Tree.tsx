@@ -291,6 +291,9 @@ export default function Tree({
           {entriesForProperties(gatherPropertyNames(data))}
         </>
       );
+    } else if (data._kind === "grid") {
+      className = `Grid (${data.size.x}, ${data.size.y})`;
+      content = entriesForProperties(gatherPropertyNames(data));
     } else {
       className = data.constructor?.name || "";
       content = entriesForProperties(gatherPropertyNames(data));
