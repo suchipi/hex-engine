@@ -5,7 +5,7 @@ import {
   useRootEntity,
   useCallbackAsCurrent,
 } from "@hex-engine/core";
-import Canvas, { useUpdate } from "../Canvas";
+import Canvas, { useUpdate, useRawDraw } from "../Canvas";
 import { Vec2 } from "../Models";
 
 const MOUSE_MOVE = Symbol("MOUSE_MOVE");
@@ -15,10 +15,15 @@ const MOUSE_UP = Symbol("MOUSE_UP");
 export default function CanvasMouse() {
   useType(CanvasMouse);
 
-  function translatePos(event: MouseEvent): Vec2 {
-    const canvas = event.currentTarget as HTMLCanvasElement;
+  let context: CanvasRenderingContext2D;
+  // TODO: need a way to get the context without needing to call into useDraw every frame
+  useRawDraw((ctx) => {
+    context = ctx;
+  });
 
-    const { clientX, clientY } = event;
+  function translatePos(clientX: number, clientY: number): Vec2 {
+    const canvas = context.canvas;
+
     const rect = canvas.getBoundingClientRect();
     const scaleX = rect.width / canvas.width;
     const scaleY = rect.height / canvas.height;
@@ -26,7 +31,11 @@ export default function CanvasMouse() {
     const x = (clientX - rect.left) / scaleX;
     const y = (clientY - rect.top) / scaleY;
 
-    return new Vec2(x, y);
+    const untransformedPos = new Vec2(x, y);
+
+    const inverseContextMatrix = context.getTransform().inverse();
+
+    return untransformedPos.transformUsingMatrix(inverseContextMatrix);
   }
 
   const moveState = useStateAccumlator<(pos: Vec2, delta: Vec2) => void>(
@@ -35,37 +44,40 @@ export default function CanvasMouse() {
   const downState = useStateAccumlator<(pos: Vec2) => void>(MOUSE_DOWN);
   const upState = useStateAccumlator<(pos: Vec2) => void>(MOUSE_UP);
 
-  let pendingMove: () => void = () => {};
-  let pendingDown: () => void = () => {};
-  let pendingUp: () => void = () => {};
+  let pendingMove: null | (() => void) = null;
+  let pendingDown: null | (() => void) = null;
+  let pendingUp: null | (() => void) = null;
 
   let lastPos = new Vec2(0, 0);
-  const handleMouseMove = (event: MouseEvent) => {
-    const pos = translatePos(event);
+  const handleMouseMove = ({ clientX, clientY }: MouseEvent) => {
     pendingMove = () => {
+      pendingMove = null;
+      const pos = translatePos(clientX, clientY);
       const delta = pos.subtract(lastPos);
       moveState.all().forEach((callback) => callback(pos, delta));
       lastPos = pos;
     };
   };
-  const handleMouseDown = (event: MouseEvent) => {
-    const pos = translatePos(event);
+  const handleMouseDown = ({ clientX, clientY }: MouseEvent) => {
     pendingDown = () => {
+      pendingDown = null;
+      const pos = translatePos(clientX, clientY);
       downState.all().forEach((callback) => callback(pos));
     };
   };
-  const handleMouseUp = (event: MouseEvent) => {
-    const pos = translatePos(event);
+  const handleMouseUp = ({ clientX, clientY }: MouseEvent) => {
     pendingUp = () => {
+      pendingUp = null;
+      const pos = translatePos(clientX, clientY);
       upState.all().forEach((callback) => callback(pos));
     };
   };
 
   useUpdate(() => {
     // Very important that we process move before down/up, so that touch screens work
-    pendingMove();
-    pendingDown();
-    pendingUp();
+    if (pendingMove) pendingMove();
+    if (pendingDown) pendingDown();
+    if (pendingUp) pendingUp();
   });
 
   let bound = false;

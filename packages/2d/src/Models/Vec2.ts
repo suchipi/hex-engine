@@ -71,4 +71,26 @@ export default class Vec2 {
     this.x = other.x;
     this.y = other.y;
   }
+
+  asDOMPoint(): DOMPoint {
+    if (window.DOMPoint) {
+      return new DOMPoint(this.x, this.y);
+    }
+
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    if (typeof (g as any).createSVGPoint === "function") {
+      const point = (g as any).createSVGPoint();
+      point.x = this.x;
+      point.y = this.y;
+      return point;
+    } else {
+      throw new Error("Unable to convert Vec2 to DOMPoint on this browser");
+    }
+  }
+
+  transformUsingMatrix(matrix: DOMMatrix) {
+    const domPoint = this.asDOMPoint();
+    const transformed = domPoint.matrixTransform(matrix);
+    return new Vec2(transformed.x, transformed.y);
+  }
 }
