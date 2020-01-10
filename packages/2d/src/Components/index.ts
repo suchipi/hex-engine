@@ -4,7 +4,7 @@ import Aseprite from "./Aseprite";
 import Audio from "./Audio";
 import BoundingBox from "./BoundingBox";
 import Camera from "./Camera";
-import Clickable from "./Clickable";
+import CanvasMouse from "./CanvasMouse";
 import Font from "./Font";
 import Gamepad from "./Gamepad";
 import Image from "./Image";
@@ -30,7 +30,7 @@ export {
   Audio,
   BoundingBox,
   Camera,
-  Clickable,
+  CanvasMouse,
   Font,
   Gamepad,
   Image,

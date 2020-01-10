@@ -1,104 +1,115 @@
 import {
   useType,
-  useEnableDisable,
+  useExistingComponentByType,
+  useNewComponent,
   useStateAccumlator,
-  useRootEntity,
   useCallbackAsCurrent,
 } from "@hex-engine/core";
-import Canvas from "../Canvas";
+import CanvasMouse from "./CanvasMouse";
+import Origin from "./Origin";
+import Position from "./Position";
 import { Vec2 } from "../Models";
 
-const MOUSE_MOVE = Symbol("MOUSE_MOVE");
-const MOUSE_DOWN = Symbol("MOUSE_DOWN");
-const MOUSE_UP = Symbol("MOUSE_UP");
+const ON_ENTER = Symbol("ON_ENTER");
+const ON_MOVE = Symbol("ON_MOVE");
+const ON_LEAVE = Symbol("ON_LEAVE");
+const ON_DOWN = Symbol("ON_DOWN");
+const ON_UP = Symbol("ON_UP");
+const ON_CLICK = Symbol("ON_CLICK");
+type Callback = (pos: Vec2) => void;
 
-// TODO: Run inside of useFrame
-export default function Mouse() {
+export default function Mouse({ bounds }: { bounds: Vec2 }) {
   useType(Mouse);
 
-  function translatePos(event: MouseEvent): Vec2 {
-    const canvas = event.currentTarget as HTMLCanvasElement;
+  const position = useExistingComponentByType(Position);
 
-    const { clientX, clientY } = event;
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = rect.width / canvas.width;
-    const scaleY = rect.height / canvas.height;
+  function pointIsWithinBounds(point: Vec2) {
+    const pos = position?.asWorldPosition() || new Vec2(0, 0);
+    const origin = useExistingComponentByType(Origin) || new Vec2(0, 0);
 
-    const x = (clientX - rect.left) / scaleX;
-    const y = (clientY - rect.top) / scaleY;
+    const topLeft = pos.subtract(origin);
+    const bottomRight = topLeft.add(bounds);
 
-    return new Vec2(x, y);
-  }
-
-  const moveState = useStateAccumlator<(pos: Vec2, delta: Vec2) => void>(
-    MOUSE_MOVE
-  );
-  const downState = useStateAccumlator<(pos: Vec2) => void>(MOUSE_DOWN);
-  const upState = useStateAccumlator<(pos: Vec2) => void>(MOUSE_UP);
-
-  let lastPos = new Vec2(0, 0);
-  const handleMouseMove = (event: MouseEvent) => {
-    const pos = translatePos(event);
-    const delta = pos.subtract(lastPos);
-    moveState.all().forEach((callback) => callback(pos, delta));
-    lastPos = pos;
-  };
-  const handleMouseDown = (event: MouseEvent) => {
-    const pos = translatePos(event);
-    downState.all().forEach((callback) => callback(pos));
-  };
-  const handleMouseUp = (event: MouseEvent) => {
-    const pos = translatePos(event);
-    upState.all().forEach((callback) => callback(pos));
-  };
-
-  let bound = false;
-
-  function bindListeners(canvas: HTMLCanvasElement) {
-    if (bound) return;
-    canvas.addEventListener("mousemove", handleMouseMove);
-    canvas.addEventListener("mousedown", handleMouseDown);
-    canvas.addEventListener("mouseup", handleMouseUp);
-    bound = true;
-  }
-
-  function unbindListeners(canvas: HTMLCanvasElement) {
-    if (!bound) return;
-    canvas.removeEventListener("mousemove", handleMouseMove);
-    canvas.removeEventListener("mousedown", handleMouseDown);
-    canvas.removeEventListener("mouseup", handleMouseUp);
-    bound = false;
-  }
-
-  let canvas: HTMLCanvasElement | undefined = undefined;
-
-  const root = useRootEntity();
-  canvas = root.getComponent(Canvas)?.element;
-  if (!canvas) {
-    throw new Error(
-      "Could not find the root canvas. Does the root entity have a Canvas component?"
+    return (
+      point.x >= topLeft.x &&
+      point.y >= topLeft.y &&
+      point.x <= bottomRight.x &&
+      point.y <= bottomRight.y
     );
   }
 
-  const { onEnabled, onDisabled } = useEnableDisable();
+  const onEnterState = useStateAccumlator<Callback>(ON_ENTER);
+  const onMoveState = useStateAccumlator<Callback>(ON_MOVE);
+  const onLeaveState = useStateAccumlator<Callback>(ON_LEAVE);
+  const onDownState = useStateAccumlator<Callback>(ON_DOWN);
+  const onUpState = useStateAccumlator<Callback>(ON_UP);
+  const onClickState = useStateAccumlator<Callback>(ON_CLICK);
 
-  onEnabled(() => {
-    if (canvas) bindListeners(canvas);
+  const { onMouseMove, onMouseDown, onMouseUp } = useNewComponent(CanvasMouse);
+
+  let isHovering = false;
+  let isPressing = false;
+
+  onMouseMove((pos) => {
+    if (pointIsWithinBounds(pos)) {
+      const localPos = position?.getLocalPosition(pos) || pos;
+      if (!isHovering) {
+        onEnterState.all().forEach((callback) => callback(localPos));
+      }
+      isHovering = true;
+
+      onMoveState.all().forEach((callback) => callback(localPos));
+    } else if (isHovering) {
+      const localPos = position?.getLocalPosition(pos) || pos;
+      onLeaveState.all().forEach((callback) => callback(localPos));
+      isHovering = false;
+    }
   });
 
-  onDisabled(() => {
-    if (canvas) unbindListeners(canvas);
+  onMouseDown((pos) => {
+    if (pointIsWithinBounds(pos)) {
+      const localPos = position?.getLocalPosition(pos) || pos;
+      isPressing = true;
+      onDownState.all().forEach((callback) => callback(localPos));
+    }
+  });
+
+  onMouseUp((pos) => {
+    if (pointIsWithinBounds(pos)) {
+      const localPos = position?.getLocalPosition(pos) || pos;
+      onUpState.all().forEach((callback) => callback(localPos));
+      if (isPressing) {
+        onClickState.all().forEach((callback) => callback(localPos));
+      }
+    }
+    isPressing = false;
   });
 
   return {
-    onMouseMove: (callback: (pos: Vec2, delta: Vec2) => void) => {
-      moveState.add(useCallbackAsCurrent(callback));
+    get isHovering() {
+      return isHovering;
     },
-    onMouseDown: (callback: (pos: Vec2) => void) => {
-      downState.add(useCallbackAsCurrent(callback));
+    get isPressing() {
+      return isPressing;
     },
-    onMouseUp: (callback: (pos: Vec2) => void) => {
-      upState.add(useCallbackAsCurrent(callback));
+
+    onEnter(callback: Callback) {
+      onEnterState.add(useCallbackAsCurrent(callback));
+    },
+    onMove(callback: Callback) {
+      onMoveState.add(useCallbackAsCurrent(callback));
+    },
+    onLeave(callback: Callback) {
+      onLeaveState.add(useCallbackAsCurrent(callback));
+    },
+    onDown(callback: Callback) {
+      onDownState.add(useCallbackAsCurrent(callback));
+    },
+    onUp(callback: Callback) {
+      onUpState.add(useCallbackAsCurrent(callback));
+    },
+    onClick(callback: Callback) {
+      onClickState.add(useCallbackAsCurrent(callback));
     },
   };
 }

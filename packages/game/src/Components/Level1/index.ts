@@ -6,7 +6,7 @@ import {
   Tiled,
   useType,
   useChild,
-  Clickable,
+  Mouse,
   Label,
   Grid,
   Entity,
@@ -40,9 +40,7 @@ export default function Level1() {
     null
   );
 
-  const clickable = useNewComponent(() =>
-    Clickable({ bounds: map.sizeInPixels })
-  );
+  const mouse = useNewComponent(() => Mouse({ bounds: map.sizeInPixels }));
 
   const tileHighlight = useChild(() => {
     useEntityName("Tile Highlight");
@@ -53,7 +51,7 @@ export default function Level1() {
     };
 
     useDraw((context) => {
-      if (clickable.isHovering) {
+      if (mouse.isHovering) {
         context.fillStyle = "rgba(255, 255, 255, 0.5)";
         context.fillRect(0, 0, map.tileSize.x, map.tileSize.y);
       }
@@ -62,7 +60,7 @@ export default function Level1() {
     return state;
   });
 
-  clickable.onMove((localPos) => {
+  mouse.onMove((localPos) => {
     state.match({
       PLACING: () => {
         const pos = localPos
@@ -75,7 +73,7 @@ export default function Level1() {
     });
   });
 
-  clickable.onClick((localPos) => {
+  mouse.onClick((localPos) => {
     state.match({
       PLACING: () => {
         const tilePos = localPos.dividedBy(map.tileSize).roundDown();
