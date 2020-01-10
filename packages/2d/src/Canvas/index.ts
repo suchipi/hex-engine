@@ -3,6 +3,7 @@ import Inspector from "@hex-engine/inspector";
 import { UpdateChildren, useUpdate } from "./UpdateChildren";
 import { DrawChildren, useRawDraw } from "./DrawChildren";
 import DrawOrder from "./DrawOrder";
+import polyfillContext from "./polyfillContext";
 
 type Props = {
   element?: HTMLCanvasElement;
@@ -28,6 +29,7 @@ export default Object.assign(
     if (context == null) {
       throw new Error("2d drawing context type not supported by browser");
     }
+    polyfillContext(context);
 
     const backstageCanvas = document.createElement("canvas");
     backstageCanvas.width = canvas.width;
@@ -37,6 +39,7 @@ export default Object.assign(
     if (backstageContext == null) {
       throw new Error("2d drawing context type not supported by browser");
     }
+    polyfillContext(backstageContext);
 
     useNewComponent(RunLoop);
     useNewComponent(() =>

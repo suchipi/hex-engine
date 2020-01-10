@@ -44,7 +44,7 @@ export function DrawChildren({ context, backstage, backgroundColor }: Props) {
 
   useFrame(() => {
     // Reset transform
-    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.resetTransform();
 
     // Clear canvas
     context.fillStyle = backgroundColor;

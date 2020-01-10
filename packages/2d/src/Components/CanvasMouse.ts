@@ -62,6 +62,7 @@ export default function CanvasMouse() {
   };
 
   useUpdate(() => {
+    // Very important that we process move before down/up, so that touch screens work
     pendingMove();
     pendingDown();
     pendingUp();
