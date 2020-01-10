@@ -27,7 +27,7 @@ export default function Camera() {
 
     const scale = useExistingComponentByType(Scale);
     if (scale) {
-      context.scale(-scale.x, -scale.y);
+      context.scale(1 / scale.x, 1 / scale.y);
     }
   });
 

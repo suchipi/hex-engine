@@ -80,8 +80,12 @@ export default function EditableString({
             delta = 1;
           }
 
-          if (event.shiftKey) {
+          if (event.shiftKey && event.altKey) {
+            delta *= Math.PI / 16;
+          } else if (event.shiftKey) {
             delta *= 10;
+          } else if (event.altKey) {
+            delta *= 0.1;
           }
 
           const newValue = String(Number(currentValue) + delta);

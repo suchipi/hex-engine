@@ -5,14 +5,13 @@ import {
   useRootEntity,
   useCallbackAsCurrent,
 } from "@hex-engine/core";
-import Canvas from "../Canvas";
+import Canvas, { useUpdate } from "../Canvas";
 import { Vec2 } from "../Models";
 
 const MOUSE_MOVE = Symbol("MOUSE_MOVE");
 const MOUSE_DOWN = Symbol("MOUSE_DOWN");
 const MOUSE_UP = Symbol("MOUSE_UP");
 
-// TODO: Run inside of useFrame
 export default function CanvasMouse() {
   useType(CanvasMouse);
 
@@ -36,21 +35,37 @@ export default function CanvasMouse() {
   const downState = useStateAccumlator<(pos: Vec2) => void>(MOUSE_DOWN);
   const upState = useStateAccumlator<(pos: Vec2) => void>(MOUSE_UP);
 
+  let pendingMove: () => void = () => {};
+  let pendingDown: () => void = () => {};
+  let pendingUp: () => void = () => {};
+
   let lastPos = new Vec2(0, 0);
   const handleMouseMove = (event: MouseEvent) => {
     const pos = translatePos(event);
-    const delta = pos.subtract(lastPos);
-    moveState.all().forEach((callback) => callback(pos, delta));
-    lastPos = pos;
+    pendingMove = () => {
+      const delta = pos.subtract(lastPos);
+      moveState.all().forEach((callback) => callback(pos, delta));
+      lastPos = pos;
+    };
   };
   const handleMouseDown = (event: MouseEvent) => {
     const pos = translatePos(event);
-    downState.all().forEach((callback) => callback(pos));
+    pendingDown = () => {
+      downState.all().forEach((callback) => callback(pos));
+    };
   };
   const handleMouseUp = (event: MouseEvent) => {
     const pos = translatePos(event);
-    upState.all().forEach((callback) => callback(pos));
+    pendingUp = () => {
+      upState.all().forEach((callback) => callback(pos));
+    };
   };
+
+  useUpdate(() => {
+    pendingMove();
+    pendingDown();
+    pendingUp();
+  });
 
   let bound = false;
 
