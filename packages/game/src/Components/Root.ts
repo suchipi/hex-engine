@@ -10,6 +10,7 @@ import {
   Camera,
 } from "@hex-engine/2d";
 import Level1 from "./Level1";
+import FPS from "./FPS";
 
 export default function Root() {
   useType(Root);
@@ -28,4 +29,5 @@ export default function Root() {
   });
 
   useChild(Level1);
+  useChild(FPS);
 }
