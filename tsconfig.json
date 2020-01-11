@@ -3,6 +3,7 @@
     "./packages",
     "node_modules/aseprite-loader/index.d.ts",
     "node_modules/xml-source-loader/index.d.ts",
+    "node_modules/bmfont-loader/index.d.ts",
     "./ts-webpack.ts"
   ],
   "exclude": ["./packages/**/*.test.ts"],

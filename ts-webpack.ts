@@ -47,3 +47,8 @@ declare module "*.xml" {
   const data: XMLSourceLoader.Element;
   export default data;
 }
+
+declare module "*.fnt" {
+  const data: BMFontLoader.Font;
+  export default data;
+}

@@ -18,6 +18,7 @@
     "aseprite-loader": "0.1.2",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
+    "bmfont-loader": "^0.1.0",
     "chokidar-cli": "^2.1.0",
     "concurrently": "^5.0.2",
     "eslint": "^6.8.0",

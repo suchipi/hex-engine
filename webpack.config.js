@@ -39,6 +39,10 @@ module.exports = {
         test: /\.(xml)$/i,
         use: ["xml-source-loader"],
       },
+      {
+        test: /\.(fnt)$/i,
+        use: ["bmfont-loader"],
+      },
     ],
   },
   plugins: [

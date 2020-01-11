@@ -2,6 +2,7 @@ import Animation, { AnimationFrame } from "./Animation";
 import AnimationSheet from "./AnimationSheet";
 import Aseprite from "./Aseprite";
 import Audio from "./Audio";
+import BMFont from "./BMFont";
 import BoundingBox from "./BoundingBox";
 import Camera from "./Camera";
 import CanvasMouse from "./CanvasMouse";
@@ -28,6 +29,7 @@ export {
   AnimationSheet,
   Aseprite,
   Audio,
+  BMFont,
   BoundingBox,
   Camera,
   CanvasMouse,
