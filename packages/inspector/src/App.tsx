@@ -47,41 +47,41 @@ export default function App({
           ) : null}
         </StateKey>
       </div>
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          right: 0,
-          bottom: 0,
-          width: "33vw",
-          overflow: "auto",
-          backgroundColor: "white",
-          transform: open ? "translate(0, 0)" : "translate(33vw, 0)",
-          boxShadow: open ? "0px 0px 10px rgba(0, 0, 0, 0.5)" : "",
-          transition: "all 0.2s ease-in-out",
+      {open ? (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            right: 0,
+            bottom: 0,
+            width: "33vw",
+            overflow: "auto",
+            backgroundColor: "white",
+            boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
 
-          display: "flex",
-          flexDirection: "column",
-          height: "100%",
-          boxSizing: "border-box",
-        }}
-      >
-        <StateKey value="controls">
-          {runLoop ? (
-            <Controls
-              isOpen={open}
-              toggleOpen={() => setOpen(!open)}
-              runLoop={runLoop}
-              error={error}
-            />
-          ) : null}
-        </StateKey>
-        <StateKey value="tree">
-          <div style={{ flexBasis: "100%" }}>
-            <Tree name="root" data={ent} parent={null} />
-          </div>
-        </StateKey>
-      </div>
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            boxSizing: "border-box",
+          }}
+        >
+          <StateKey value="controls">
+            {runLoop ? (
+              <Controls
+                isOpen={open}
+                toggleOpen={() => setOpen(!open)}
+                runLoop={runLoop}
+                error={error}
+              />
+            ) : null}
+          </StateKey>
+          <StateKey value="tree">
+            <div style={{ flexBasis: "100%" }}>
+              <Tree name="root" data={ent} parent={null} />
+            </div>
+          </StateKey>
+        </div>
+      ) : null}
     </div>
   );
 }
