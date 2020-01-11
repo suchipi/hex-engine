@@ -11,6 +11,7 @@ import {
 } from "@hex-engine/core";
 import { StateTreeProvider } from "react-state-tree";
 import debounce from "lodash.debounce";
+import useForceUpdate from "use-force-update";
 import App from "./App";
 
 type RunLoopAPI = ReturnType<typeof RunLoop>;
@@ -29,11 +30,17 @@ function Root({
   entity,
   runLoop,
   error,
+  forceUpdateTarget,
 }: {
   entity: Entity;
   runLoop: RunLoopAPI | null;
   error: Error | null;
+  forceUpdateTarget: { forceUpdate: null | (() => void) };
 }) {
+  const forceUpdate = useForceUpdate();
+
+  forceUpdateTarget.forceUpdate = forceUpdate;
+
   return (
     <StateTreeProvider
       initialValue={initialState}
@@ -70,19 +77,32 @@ export default function Inspector({
   const el = document.createElement("div");
   document.body.appendChild(el);
 
-  const tick = useCallbackAsCurrent(() => {
-    if (runLoop && pauseOnStart && !hasPausedOnStart) {
-      runLoop.pause();
-      hasPausedOnStart = true;
-    }
+  const forceUpdateTarget: { forceUpdate: null | (() => void) } = {
+    forceUpdate: null,
+  };
+  ReactDOM.render(
+    <Root
+      entity={entity}
+      runLoop={runLoop}
+      error={error}
+      forceUpdateTarget={forceUpdateTarget}
+    />,
+    el,
+    useCallbackAsCurrent(() => {
+      const tick = useCallbackAsCurrent(() => {
+        if (runLoop && pauseOnStart && !hasPausedOnStart) {
+          runLoop.pause();
+          hasPausedOnStart = true;
+        }
 
-    ReactDOM.render(
-      <Root entity={entity} runLoop={runLoop} error={error} />,
-      el
-    );
+        if (forceUpdateTarget.forceUpdate != null) {
+          forceUpdateTarget.forceUpdate();
+        }
 
-    requestAnimationFrame(tick);
-  });
+        requestAnimationFrame(tick);
+      });
 
-  tick();
+      tick();
+    })
+  );
 }
