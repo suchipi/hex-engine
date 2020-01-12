@@ -6,7 +6,7 @@ const textToTokens = (text: string): Array<string> => {
   return text
     .replace(/\n/g, " _-_LINE_BREAK_-_ ")
     .replace(/\t/g, " _-_TAB_-_ ")
-    .split(/ /);
+    .split(/ /); // TODO: doesn't work for CJK, where there's no spaces
 };
 
 const tokensToText = (tokens: Array<string>): string => {

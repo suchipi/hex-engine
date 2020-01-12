@@ -8,7 +8,9 @@ import {
 import silver from "./silver.fnt";
 
 export default function useGameFont() {
-  // return useNewComponent(() => SystemFont({ name: "Arial", size: 12 }));
+  // return useNewComponent(() =>
+  //   SystemFont({ name: "Yu Mincho Regular", size: 12 })
+  // );
 
   const font = useNewComponent(() => BMFont(silver));
 
