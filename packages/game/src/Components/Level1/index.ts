@@ -11,6 +11,7 @@ import {
   Grid,
   Entity,
   useEntityName,
+  TextBox,
 } from "@hex-engine/2d";
 import { makeTaggedUnion } from "safety-match";
 import Button from "../Button";
@@ -99,10 +100,38 @@ export default function Level1() {
     })
   );
 
+  const font = useGameFont();
+
+  useChild(() => {
+    useNewComponent(() => Position(new Vec2(map.sizeInPixels.x, 0)));
+
+    const size = new Vec2(map.sizeInPixels.x, 54);
+    const textBox = useNewComponent(() =>
+      TextBox({
+        font,
+        size,
+      })
+    );
+
+    const state = {
+      text:
+        "Stuff goes\nhere, yaknow. Ain't\tthat somethin? I think it's pretty cool, myself. I mean, it's *really* cool, frankly. Like, super damn cool. Incredible, really. Really, *really* cool.",
+    };
+
+    useDraw((context) => {
+      textBox.drawText({
+        context,
+        text: state.text,
+      });
+    });
+
+    return state;
+  });
+
   const waveLabel = useNewComponent(() =>
     Label({
       text: "Wave 0",
-      font: useGameFont(),
+      font,
     })
   );
 

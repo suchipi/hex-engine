@@ -18,7 +18,7 @@ export default function BMFont(data: BMFontLoader.Font) {
       return images.every((image) => image.loaded);
     },
     measureWidth(text: string) {
-      layout.update({ font: data, text });
+      layout.update({ font: data, text, mode: "pre" });
       return layout.width;
     },
     getFontSize() {
@@ -29,15 +29,13 @@ export default function BMFont(data: BMFontLoader.Font) {
       text,
       x = 0,
       y = 0,
-      wrapWidth,
     }: {
       context: CanvasRenderingContext2D;
       text: string;
       x?: undefined | number;
       y?: undefined | number;
-      wrapWidth?: undefined | number;
     }) {
-      layout.update({ font: data, text, width: wrapWidth });
+      layout.update({ font: data, text });
 
       for (const glyph of layout.glyphs) {
         const image = images[glyph.data.page];
@@ -70,20 +68,17 @@ export default function BMFont(data: BMFontLoader.Font) {
       text,
       x = 0,
       y = 0,
-      wrapWidth,
     }: {
       context: CanvasRenderingContext2D;
       text: string;
       x?: undefined | number;
       y?: undefined | number;
-      wrapWidth?: undefined | number;
     }) {
       api.drawText({
         context,
         text,
         x,
         y: y + fontMetrics.measureText(text).height,
-        wrapWidth,
       });
     },
     measureText: fontMetrics.measureText,

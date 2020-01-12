@@ -38,6 +38,8 @@ export default function Label({
       x?: number | undefined;
       y?: number | undefined;
     }) {
+      if (!font.readyToDraw()) return;
+
       font.drawText({
         context,
         text: state.text,

@@ -20,6 +20,7 @@ import Rotation from "./Rotation";
 import Scale from "./Scale";
 import SpriteSheet from "./SpriteSheet";
 import SystemFont from "./SystemFont";
+import TextBox from "./TextBox";
 import Tiled from "./Tiled";
 import TileMap from "./TileMap";
 import Timer from "./Timer";
@@ -48,6 +49,7 @@ export {
   Scale,
   SpriteSheet,
   SystemFont,
+  TextBox,
   Tiled,
   TileMap,
   Timer,
