@@ -2,7 +2,7 @@ import { useType, useNewComponent } from "@hex-engine/core";
 import createLayout from "layout-bmfont-text";
 import Image from "./Image";
 import Font from "./Font";
-// import FontMetrics from "./FontMetrics";
+import FontMetrics from "./FontMetrics";
 
 export default function BMFont(data: BMFontLoader.Font) {
   useType(BMFont);
@@ -49,7 +49,7 @@ export default function BMFont(data: BMFontLoader.Font) {
         image.drawIntoContext({
           context,
           targetX: glyph.position[0] + x + glyph.data.xoffset,
-          targetY: glyph.position[1] + y + glyph.data.yoffset + layout.baseline,
+          targetY: glyph.position[1] + y + glyph.data.yoffset,
           sourceX: glyph.data.x,
           sourceY: glyph.data.y,
           sourceWidth: glyph.data.width,
@@ -59,29 +59,41 @@ export default function BMFont(data: BMFontLoader.Font) {
         });
       }
     },
-    measureText(text: string, wrapWidth?: number) {
-      layout.update({ font: data, text, width: wrapWidth });
-
-      return {
-        baseline: layout.baseline,
-        median: layout.height / 2,
-        descender: layout.descender,
-        ascender: layout.ascender,
-        capHeight: layout.capHeight,
-        ascent: Math.max(layout.ascender, layout.capHeight),
-        height: layout.height,
-        lineHeight: layout.lineHeight,
-        width: layout.width,
-      };
-    },
   };
 
-  useNewComponent(() => Font(api));
+  const fontMetrics = useNewComponent(() => FontMetrics(api));
+
+  const fontApi = {
+    ...api,
+    drawText({
+      context,
+      text,
+      x = 0,
+      y = 0,
+      wrapWidth,
+    }: {
+      context: CanvasRenderingContext2D;
+      text: string;
+      x?: undefined | number;
+      y?: undefined | number;
+      wrapWidth?: undefined | number;
+    }) {
+      api.drawText({
+        context,
+        text,
+        x,
+        y: y + fontMetrics.measureText(text).height,
+        wrapWidth,
+      });
+    },
+    measureText: fontMetrics.measureText,
+  };
+  useNewComponent(() => Font(fontApi));
 
   return {
     data,
     images,
     layout,
-    ...api,
+    ...fontApi,
   };
 }

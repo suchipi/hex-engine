@@ -78,7 +78,7 @@ export default function FontMetrics(impl: DrawableFont) {
       capHeight: baseline - capHeight,
       ascent: baseline - ascent,
       height: descender - ascent,
-      lineHeight: size * 1.5,
+      lineHeight: size * 1.25,
     };
   }
 

@@ -21,7 +21,7 @@ export default function Label({
   function updateSize() {
     const metrics = font.measureText(state.text);
     size.x = metrics.width;
-    size.y = metrics.height;
+    size.y = metrics.height + metrics.descender;
   }
 
   updateSize();
@@ -38,9 +38,6 @@ export default function Label({
       x?: number | undefined;
       y?: number | undefined;
     }) {
-      context.fillStyle = "red";
-      context.fillRect(x, y, size.x, size.y);
-
       font.drawText({
         context,
         text: state.text,

@@ -28,26 +28,31 @@ export default function Button({
 
   const position = useNewComponent(Position);
 
-  const padding = 2;
-  const size = label.size.add(padding * 2);
+  const padding = 3;
+  function calcSize() {
+    const metrics = font.measureText(label.text);
+    return new Vec2(metrics.width, metrics.height).add(padding * 2);
+  }
+  const size = calcSize();
 
   const mouse = useNewComponent(() => Mouse({ bounds: size }));
 
   mouse.onClick(onClick);
 
   useUpdate(() => {
-    size.replace(label.size.add(padding));
+    size.replace(calcSize());
     position.replace(calcPosition(size));
   });
 
   useDraw((context) => {
-    context.fillStyle = mouse.isPressing && mouse.isHovering ? "grey" : "white";
+    context.fillStyle =
+      mouse.isPressing && mouse.isHovering
+        ? "#aaa"
+        : mouse.isHovering
+        ? "#ddd"
+        : "#eee";
     const rect = size.round();
     context.fillRect(0, 0, rect.x, rect.y);
-
-    context.strokeStyle = mouse.isHovering ? "black" : "transparent";
-    context.strokeRect(0.5, 0.5, rect.x + 1, rect.y + 1);
-
     label.drawLabel({ context, x: padding, y: padding });
   });
 }

@@ -91,8 +91,7 @@ export default function Level1() {
 
   useChild(() =>
     Button({
-      calcPosition: (size) =>
-        new Vec2(map.sizeInPixels.x - size.x, -size.y - 1),
+      calcPosition: (size) => new Vec2(map.sizeInPixels.x - size.x, -size.y),
       text: "Start!",
       onClick: () => {
         alert("do something");
