@@ -2,6 +2,20 @@ import { useType } from "@hex-engine/core";
 import { FontImplementation } from "./Font";
 import { Vec2 } from "../Models";
 
+const textToTokens = (text: string): Array<string> => {
+  return text
+    .replace(/\n/g, " _-_LINE_BREAK_-_ ")
+    .replace(/\t/g, " _-_TAB_-_ ")
+    .split(/ /);
+};
+
+const tokensToText = (tokens: Array<string>): string => {
+  return tokens
+    .join(" ")
+    .replace(/ _-_LINE_BREAK_-_ /g, "\n")
+    .replace(/ _-_TAB_-_ /g, "\t");
+};
+
 export default function TextBox({
   font,
   size,
@@ -25,46 +39,54 @@ export default function TextBox({
       x?: number;
       y?: number;
     }) {
-      if (!font.readyToDraw()) return;
-
-      context.fillStyle = "red";
-      context.fillRect(x, y, size.x, size.y);
+      if (!font.readyToDraw())
+        return { textFit: false, remainingText: text, printedLines: [] };
 
       let lineHeight = receivedLineHeight!;
       if (lineHeight == null) {
         const metrics = font.measureText("hi");
-        lineHeight = (metrics.height + metrics.descender) * 1.25;
+        lineHeight = metrics.height + metrics.descender;
       }
 
-      const words = text
-        .replace(/\n/g, " _-_LINE_BREAK_-_ ")
-        .replace(/\t/g, " _-_TAB_-_ ")
-        .split(/ /);
+      const tokens = textToTokens(text);
+      const seenTokens = [];
 
       const lines: Array<string> = [];
 
-      while (words.length > 0 && (lines.length + 1) * lineHeight < size.y) {
+      let textFit = true;
+      let remainingText = "";
+      while (tokens.length > 0 && (lines.length + 1) * lineHeight < size.y) {
         let widthSoFarOnLine = 0;
         let line = "";
-        while (words.length > 0 && widthSoFarOnLine < size.x) {
-          let word = words.shift()!;
-          if (word === "_-_LINE_BREAK_-_") {
+        while (tokens.length > 0 && widthSoFarOnLine < size.x) {
+          let token = tokens.shift()!;
+          if (token === "_-_LINE_BREAK_-_") {
+            seenTokens.push(token);
             break;
           }
-          if (word === "_-_TAB_-_") {
-            word = "    ";
+          if (token === "_-_TAB_-_") {
+            token = "    ";
           }
 
-          const addition = line ? " " + word : word;
+          const addition = line ? " " + token : token;
           const additionWidth = font.measureText(addition).width;
           if (widthSoFarOnLine + additionWidth < size.x) {
             line += addition;
             widthSoFarOnLine += additionWidth;
+            seenTokens.push(token);
           } else {
-            words.unshift(word);
+            tokens.unshift(token);
             break;
           }
         }
+        if (tokens.length > 0) {
+          textFit = false;
+          remainingText = tokensToText(tokens);
+        } else {
+          textFit = true;
+          remainingText = "";
+        }
+
         lines.push(line);
       }
 
@@ -72,6 +94,12 @@ export default function TextBox({
         const lineOffset = lineHeight * index;
         font.drawText({ context, text: line, x, y: y + lineOffset });
       });
+
+      return {
+        textFit,
+        remainingText,
+        printedLines: lines,
+      };
     },
   };
 }

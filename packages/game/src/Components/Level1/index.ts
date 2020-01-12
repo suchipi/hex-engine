@@ -12,6 +12,9 @@ import {
   Entity,
   useEntityName,
   TextBox,
+  Keyboard,
+  useUpdate,
+  Timer,
 } from "@hex-engine/2d";
 import { makeTaggedUnion } from "safety-match";
 import Button from "../Button";
@@ -115,14 +118,41 @@ export default function Level1() {
 
     const state = {
       text:
-        "Stuff goes\nhere, yaknow. Ain't\tthat somethin? I think it's pretty cool, myself. I mean, it's *really* cool, frankly. Like, super damn cool. Incredible, really. Really, *really* cool.",
+        "Stuff goes\nhere, Shyaknow. Ain't\tthat Somethin? I think it's pretty cool, myself. I mean, it's *really* cool, frankly. Like, super damn cool. Incredible, really. Really, *really* cool.",
     };
 
+    const keyboard = useNewComponent(Keyboard);
+
+    let unseenText = state.text;
+    let done = false;
     useDraw((context) => {
-      textBox.drawText({
+      if (done) return;
+
+      context.fillStyle = "#ddd";
+      context.fillRect(0, 0, size.x, size.y);
+
+      const { textFit, remainingText, printedLines } = textBox.drawText({
         context,
         text: state.text,
       });
+      unseenText = remainingText
+        ? printedLines[printedLines.length - 1] + "\n" + remainingText
+        : "";
+
+      if (!textFit) {
+      }
+    });
+
+    const advanceTimer = useNewComponent(Timer);
+    useUpdate(() => {
+      if (advanceTimer.delta() < 0) return;
+
+      if (unseenText && keyboard.pressed.has(" ")) {
+        state.text = unseenText;
+        advanceTimer.set(500);
+      } else if (keyboard.pressed.has(" ")) {
+        done = true;
+      }
     });
 
     return state;

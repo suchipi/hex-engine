@@ -3,10 +3,13 @@ import {
   BMFont,
   ImageFilter,
   useRawDraw,
+  // SystemFont,
 } from "@hex-engine/2d";
 import silver from "./silver.fnt";
 
 export default function useGameFont() {
+  // return useNewComponent(() => SystemFont({ name: "Arial", size: 12 }));
+
   const font = useNewComponent(() => BMFont(silver));
 
   const filter = useNewComponent(() =>
