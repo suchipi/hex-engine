@@ -52,7 +52,7 @@ export default class Entity implements EntityInterface {
       parent.addChild(ent);
     }
 
-    ent.name = componentFactory.name;
+    ent.name = componentFactory.name || null;
 
     const component = instantiate(componentFactory, ent);
     ent.api = component;
