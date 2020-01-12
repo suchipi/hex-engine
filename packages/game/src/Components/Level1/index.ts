@@ -13,10 +13,10 @@ import {
   useEntityName,
 } from "@hex-engine/2d";
 import { makeTaggedUnion } from "safety-match";
-import Button from "game/src/Components/Button";
-import Balloon from "game/src/Components/Balloon";
-import Tower from "game/src/Components/Tower";
-import useGameFont from "game/src/Hooks/useGameFont";
+import Button from "../Button";
+import Balloon from "../Balloon";
+import Tower from "../Tower";
+import useGameFont from "../../Hooks/useGameFont";
 
 import level1Xml from "./level1.xml";
 

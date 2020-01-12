@@ -1,18 +1,7 @@
-import {
-  renderRootComponent,
-  useNewComponent,
-  BMFont,
-  useEntityName,
-} from "@hex-engine/2d";
+import { renderRootComponent } from "@hex-engine/2d";
 import Root from "./Components/Root";
-import testFnt from "./test.fnt";
+
+const root = renderRootComponent(Root);
 
 // @ts-ignore
-window.testFnt = testFnt;
-
-renderRootComponent(() => {
-  useEntityName("Root");
-
-  useNewComponent(Root);
-  useNewComponent(() => BMFont(testFnt));
-});
+window.root = root;

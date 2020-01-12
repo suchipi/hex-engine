@@ -29,12 +29,12 @@ const debouncedSaveState = debounce(saveState, 100);
 function Root({
   entity,
   runLoop,
-  error,
+  errorHolder,
   forceUpdateTarget,
 }: {
   entity: Entity;
   runLoop: RunLoopAPI | null;
-  error: Error | null;
+  errorHolder: { err: Error | null };
   forceUpdateTarget: { forceUpdate: null | (() => void) };
 }) {
   const forceUpdate = useForceUpdate();
@@ -46,7 +46,7 @@ function Root({
       initialValue={initialState}
       onUpdate={debouncedSaveState}
     >
-      <App entity={entity} runLoop={runLoop} error={error} />
+      <App entity={entity} runLoop={runLoop} error={errorHolder.err} />
     </StateTreeProvider>
   );
 }
@@ -62,13 +62,21 @@ export default function Inspector({
   const entity = useRootEntity();
   const runLoop = entity.getComponent(RunLoop);
 
-  let error: Error | null = null;
+  const errorHolder: { err: Error | null } = { err: null };
+
+  const forceUpdateTarget: { forceUpdate: null | (() => void) } = {
+    forceUpdate: null,
+  };
 
   useNewComponent(() =>
     ErrorBoundary((err) => {
       console.error(err);
-      error = err;
+      errorHolder.err = err;
+
       runLoop?.pause();
+      if (forceUpdateTarget.forceUpdate) {
+        forceUpdateTarget.forceUpdate();
+      }
     })
   );
 
@@ -77,14 +85,11 @@ export default function Inspector({
   const el = document.createElement("div");
   document.body.appendChild(el);
 
-  const forceUpdateTarget: { forceUpdate: null | (() => void) } = {
-    forceUpdate: null,
-  };
   ReactDOM.render(
     <Root
       entity={entity}
       runLoop={runLoop}
-      error={error}
+      errorHolder={errorHolder}
       forceUpdateTarget={forceUpdateTarget}
     />,
     el,

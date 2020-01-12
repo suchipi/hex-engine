@@ -7,6 +7,7 @@ import BoundingBox from "./BoundingBox";
 import Camera from "./Camera";
 import CanvasMouse from "./CanvasMouse";
 import Font from "./Font";
+import FontMetrics from "./FontMetrics";
 import Gamepad from "./Gamepad";
 import Image from "./Image";
 import ImageFilter from "./ImageFilter";
@@ -34,6 +35,7 @@ export {
   Camera,
   CanvasMouse,
   Font,
+  FontMetrics,
   Gamepad,
   Image,
   ImageFilter,

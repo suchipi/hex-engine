@@ -19,10 +19,9 @@ export default function Label({
   const size = new Vec2(0, 0);
 
   function updateSize() {
-    const width = font.measureTextWidth(state.text);
-    const height = font.estimateFontHeight();
-    size.x = width;
-    size.y = height;
+    const metrics = font.measureText(state.text);
+    size.x = metrics.width;
+    size.y = metrics.height;
   }
 
   updateSize();
@@ -39,11 +38,14 @@ export default function Label({
       x?: number | undefined;
       y?: number | undefined;
     }) {
+      context.fillStyle = "red";
+      context.fillRect(x, y, size.x, size.y);
+
       font.drawText({
         context,
         text: state.text,
-        x: x,
-        y: y + size.y,
+        x,
+        y,
       });
     },
     get text() {

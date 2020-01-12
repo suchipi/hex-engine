@@ -1,20 +1,24 @@
 import {
   useNewComponent,
-  SystemFont,
+  BMFont,
   ImageFilter,
   useRawDraw,
+  SystemFont,
 } from "@hex-engine/2d";
+import silver from "./silver.fnt";
 
 export default function useGameFont() {
-  const font = useNewComponent(() => SystemFont({ name: "Silver", size: 18 }));
+  // return useNewComponent(() => SystemFont({ name: "Arial", size: 12 }));
 
-  const onlyDrawFullyOpaquePixels = useNewComponent(() =>
+  const font = useNewComponent(() => BMFont(silver));
+
+  const filter = useNewComponent(() =>
     ImageFilter((imageData) => {
       const pixels = imageData.data;
-      for (let i = 0; i < pixels.length; i++) {
-        if (pixels[i + 3] < 255) {
-          pixels[i + 3] = 0;
-        }
+      for (let i = 0; i < pixels.length; i += 4) {
+        pixels[i + 0] = 0; // r
+        pixels[i + 1] = 0; // g
+        pixels[i + 2] = 0; // b
       }
     })
   );
@@ -28,15 +32,16 @@ export default function useGameFont() {
   });
 
   const normalDrawText = font.drawText;
-  font.drawText = ({ context, text, x, y }) => {
+  font.drawText = ({ context, text, x, y, wrapWidth }) => {
     normalDrawText.call(font, {
       context: backstage,
       text,
       x,
       y,
+      wrapWidth,
     });
 
-    onlyDrawFullyOpaquePixels.apply(backstage, context);
+    filter.apply(backstage, context);
   };
 
   return font;

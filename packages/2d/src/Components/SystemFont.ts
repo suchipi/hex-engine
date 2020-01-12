@@ -1,5 +1,6 @@
 import { useType, useNewComponent } from "@hex-engine/core";
 import Font, { FontImplementation } from "./Font";
+import FontMetrics, { DrawableFont } from "./FontMetrics";
 
 export default function SystemFont({
   name,
@@ -23,6 +24,7 @@ export default function SystemFont({
     color,
     align,
   };
+  state.size = size;
 
   function prepareContext(context: CanvasRenderingContext2D) {
     context.font = `${state.size}px ${state.name}`;
@@ -30,26 +32,43 @@ export default function SystemFont({
     context.textAlign = state.align;
   }
 
-  const api: FontImplementation = {
+  const baseApi: DrawableFont = {
+    readyToDraw() {
+      return true;
+    },
     drawText({ context, text, x = 0, y = 0 }) {
       prepareContext(context);
-      context.fillText(text, x, y - state.size * 0.1);
+      context.fillText(text, x, y);
     },
-    measureTextWidth(text) {
+    getFontSize() {
+      return state.size;
+    },
+    measureWidth(text) {
       prepareContext(internalContext);
-      const metrics = internalContext.measureText(text);
-      return metrics.width;
-    },
-    estimateFontHeight() {
-      // No great way to get this :\
-      return state.size * 0.75;
+      const textMetrics = internalContext.measureText(text);
+      return textMetrics.width;
     },
   };
 
-  useNewComponent(() => Font(api));
+  const fontMetrics = useNewComponent(() => FontMetrics(baseApi));
+
+  const fontApi: FontImplementation = {
+    ...baseApi,
+    measureText: fontMetrics.measureText,
+    drawText({ context, text, x = 0, y = 0 }) {
+      baseApi.drawText({
+        context,
+        text,
+        x,
+        y: y + fontMetrics.measureText(text).baseline,
+      });
+    },
+  };
+
+  useNewComponent(() => Font(fontApi));
 
   return {
-    ...api,
+    ...fontApi,
 
     get name() {
       return state.name;

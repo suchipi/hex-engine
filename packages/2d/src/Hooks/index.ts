@@ -1,4 +1,5 @@
 import useDraw from "./useDraw";
 import useEntityTransforms from "./useEntityTransforms";
+import useFilledPixelBounds from "./useFilledPixelBounds";
 
-export { useDraw, useEntityTransforms };
+export { useDraw, useEntityTransforms, useFilledPixelBounds };

@@ -9,7 +9,7 @@ import {
   Label,
   useType,
 } from "@hex-engine/2d";
-import useGameFont from "game/src/Hooks/useGameFont";
+import useGameFont from "../Hooks/useGameFont";
 
 export default function Button({
   calcPosition,
@@ -46,7 +46,7 @@ export default function Button({
     context.fillRect(0, 0, rect.x, rect.y);
 
     context.strokeStyle = mouse.isHovering ? "black" : "transparent";
-    context.strokeRect(0.5, 0.5, rect.x, rect.y);
+    context.strokeRect(0.5, 0.5, rect.x + 1, rect.y + 1);
 
     label.drawLabel({ context, x: padding, y: padding });
   });

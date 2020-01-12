@@ -52,3 +52,41 @@ declare module "*.fnt" {
   const data: BMFontLoader.Font;
   export default data;
 }
+
+declare module "layout-bmfont-text" {
+  export interface LayoutOptions {
+    font: BMFontLoader.Font;
+    text: string;
+    width?: number;
+    mode?: "pre" | "nowrap";
+    align?: "left" | "center" | "right";
+    letterSpacing?: number;
+    lineHeight?: number;
+    tabSize?: number;
+    start?: number;
+    end?: number;
+  }
+
+  export interface Layout {
+    update(opt: LayoutOptions): void;
+    glyphs: Array<{
+      index: number;
+      data: BMFontLoader.Font["chars"][0];
+      position: [number, number];
+      line: number;
+    }>;
+
+    width: number;
+    height: number;
+    baseline: number;
+    xHeight: number;
+    descender: number;
+    ascender: number;
+    capHeight: number;
+    lineHeight: number;
+  }
+
+  function createLayout(opts: LayoutOptions): Layout;
+
+  export default createLayout;
+}
