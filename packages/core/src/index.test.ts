@@ -1,8 +1,8 @@
 import * as core from "./index";
 
 describe("@hex-engine/core", () => {
-  test("renderRootComponent returns entity", () => {
-    const ent = core.renderRootComponent(() => {
+  test("createEntityWithComponent returns entity", () => {
+    const ent = core.createEntityWithComponent(() => {
       return { something: "yeah" };
     });
     expect(ent.children).toBeInstanceOf(Set);
@@ -19,15 +19,15 @@ describe("@hex-engine/core", () => {
   });
 
   test("root component api is written to rootEntity.api", () => {
-    const ent = core.renderRootComponent(() => {
+    const ent = core.createEntityWithComponent(() => {
       return { something: "yeah" };
     });
     expect(ent.api.something).toBe("yeah");
   });
 
   test("entity children (imperative API)", () => {
-    const ent1 = core.renderRootComponent(() => {});
-    const ent2 = core.renderRootComponent(() => {});
+    const ent1 = core.createEntityWithComponent(() => {});
+    const ent2 = core.createEntityWithComponent(() => {});
 
     expect(ent1.hasChild(ent2)).toBe(false);
     expect(ent1.children.size).toBe(0);
@@ -44,7 +44,7 @@ describe("@hex-engine/core", () => {
     let innerEnt: any;
     let childEnt: any;
     let innerChildEnt: any;
-    const rootEnt = core.renderRootComponent(() => {
+    const rootEnt = core.createEntityWithComponent(() => {
       innerEnt = core.useEntity();
       childEnt = core.useChild(() => {
         innerChildEnt = core.useEntity();
@@ -59,10 +59,10 @@ describe("@hex-engine/core", () => {
   });
 
   test("useNewComponent", () => {
-    const ent1 = core.renderRootComponent(() => {});
+    const ent1 = core.createEntityWithComponent(() => {});
     expect(ent1.components.size).toBe(1);
 
-    const ent2 = core.renderRootComponent(() => {
+    const ent2 = core.createEntityWithComponent(() => {
       core.useNewComponent(() => {
         return { innerApi: true };
       });
@@ -82,7 +82,7 @@ describe("@hex-engine/core", () => {
       return { hi: "yeah" };
     }
 
-    const ent = core.renderRootComponent(() => {
+    const ent = core.createEntityWithComponent(() => {
       core.useNewComponent(Component);
     });
 
@@ -108,7 +108,7 @@ describe("@hex-engine/core", () => {
       return { comp };
     }
 
-    const ent = core.renderRootComponent(() => {
+    const ent = core.createEntityWithComponent(() => {
       core.useNewComponent(Component);
       core.useNewComponent(Component2);
     });
@@ -138,7 +138,7 @@ describe("@hex-engine/core", () => {
       return { comp };
     }
 
-    const ent = core.renderRootComponent(() => {
+    const ent = core.createEntityWithComponent(() => {
       core.useNewComponent(Component2);
     });
 
@@ -170,7 +170,7 @@ describe("@hex-engine/core", () => {
       };
     }
 
-    const ent = core.renderRootComponent(() => {
+    const ent = core.createEntityWithComponent(() => {
       core.useNewComponent(Component);
       core.useNewComponent(Component2);
     });
@@ -200,7 +200,7 @@ describe("@hex-engine/core", () => {
   test("useStateAccumulator", () => {
     const sym = Symbol();
 
-    const ent = core.renderRootComponent(() => {
+    const ent = core.createEntityWithComponent(() => {
       return core.useStateAccumlator<number>(sym);
     });
 
@@ -218,8 +218,8 @@ describe("@hex-engine/core", () => {
       core.useType(Component2);
     }
 
-    const ent1 = core.renderRootComponent(Component);
-    const ent2 = core.renderRootComponent(Component2);
+    const ent1 = core.createEntityWithComponent(Component);
+    const ent2 = core.createEntityWithComponent(Component2);
 
     expect(ent1.api.type).toBe(null);
     expect(ent2.api.type).toBe(Component2);
@@ -229,7 +229,7 @@ describe("@hex-engine/core", () => {
   });
 
   test("useIsEnabled", () => {
-    const ent = core.renderRootComponent(() => {
+    const ent = core.createEntityWithComponent(() => {
       return {
         checkIfEnabled: core.useCallbackAsCurrent(() => core.useIsEnabled()),
       };
@@ -247,7 +247,7 @@ describe("@hex-engine/core", () => {
   });
 
   test("useDescendantEntities", () => {
-    const ent1 = core.renderRootComponent(() => {
+    const ent1 = core.createEntityWithComponent(() => {
       return {
         getDescendants: core.useCallbackAsCurrent(() => {
           return core.useDescendantEntities();
@@ -256,15 +256,15 @@ describe("@hex-engine/core", () => {
     });
     expect(ent1.api.getDescendants()).toEqual([]);
 
-    const ent2 = core.renderRootComponent(() => {});
+    const ent2 = core.createEntityWithComponent(() => {});
     ent1.addChild(ent2);
     expect(ent1.api.getDescendants()).toEqual([ent2]);
 
-    const ent3 = core.renderRootComponent(() => {});
+    const ent3 = core.createEntityWithComponent(() => {});
     ent2.addChild(ent3);
     expect(ent1.api.getDescendants()).toEqual([ent2, ent3]);
 
-    const ent4 = core.renderRootComponent(() => {});
+    const ent4 = core.createEntityWithComponent(() => {});
     ent2.addChild(ent4);
     expect(ent1.api.getDescendants()).toEqual([ent2, ent3, ent4]);
   });
@@ -273,7 +273,7 @@ describe("@hex-engine/core", () => {
     const messages: Array<string> = [];
     const log = (message: string) => messages.push(message);
 
-    core.renderRootComponent(() => {
+    core.createEntityWithComponent(() => {
       const { onEnabled, onDisabled } = core.useEnableDisable();
       onEnabled(() => log("enabled"));
       onDisabled(() => log("disabled"));
@@ -286,7 +286,7 @@ describe("@hex-engine/core", () => {
     const messages: Array<string> = [];
     const log = (message: string) => messages.push(message);
 
-    const ent = core.renderRootComponent(() => {
+    const ent = core.createEntityWithComponent(() => {
       const { onEnabled, onDisabled } = core.useEnableDisable();
       onEnabled(() => log("enabled"));
       onDisabled(() => log("disabled"));
@@ -307,7 +307,7 @@ describe("@hex-engine/core", () => {
     const messages: Array<string> = [];
     const log = (message: string) => messages.push(message);
 
-    const ent = core.renderRootComponent(() => {
+    const ent = core.createEntityWithComponent(() => {
       const { onEnabled, onDisabled } = core.useEnableDisable();
       onEnabled(() => log("enabled"));
       onDisabled(() => log("disabled"));
@@ -327,10 +327,10 @@ describe("@hex-engine/core", () => {
   test.todo("useFrame");
 
   test("useEntityName", () => {
-    const ent1 = core.renderRootComponent(() => {});
+    const ent1 = core.createEntityWithComponent(() => {});
     expect(ent1.name).toBe(null);
 
-    const ent2 = core.renderRootComponent(() => {
+    const ent2 = core.createEntityWithComponent(() => {
       core.useEntityName("bob");
     });
     expect(ent2.name).toBe("bob");
@@ -339,7 +339,7 @@ describe("@hex-engine/core", () => {
   test("useRootEntity", () => {
     expect.assertions(4);
 
-    core.renderRootComponent(() => {
+    core.createEntityWithComponent(() => {
       const root = core.useEntity();
       expect(core.useRootEntity()).toBe(root);
 
