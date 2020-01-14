@@ -4,6 +4,7 @@ import {
   useFrame,
   useStateAccumulator,
   useType,
+  useEntity,
 } from "@hex-engine/core";
 
 const UPDATE_CALLBACKS = Symbol("UPDATE_CALLBACKS");
@@ -20,7 +21,7 @@ export function UpdateChildren() {
   useType(UpdateChildren);
 
   useFrame((delta) => {
-    const ents = useDescendantEntities();
+    const ents = [useEntity(), ...useDescendantEntities()];
     for (const ent of ents) {
       for (const component of ent.components) {
         if (component.isEnabled) {

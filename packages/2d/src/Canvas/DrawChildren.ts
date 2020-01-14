@@ -53,7 +53,7 @@ export function DrawChildren({ context, backstage, backgroundColor }: Props) {
     const drawOrder = useEntity().getComponent(DrawOrder);
     const sort = drawOrder ? drawOrder.sort : DrawOrder.defaultSort;
 
-    const ents = useDescendantEntities();
+    const ents = [useEntity(), ...useDescendantEntities()];
     const components = sort(ents);
 
     for (const component of components) {
