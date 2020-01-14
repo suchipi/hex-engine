@@ -37,12 +37,7 @@ export default function Level1() {
 
   const state = GameState.PLACING(1);
 
-  // TODO: Grid constructor and methods should allow Vec2 inputs
-  const towersGrid = new Grid<null | Entity>(
-    map.sizeInTiles.x,
-    map.sizeInTiles.y,
-    null
-  );
+  const towersGrid = new Grid<null | Entity>(map.sizeInTiles, null);
 
   const mouse = useNewComponent(() => Mouse({ bounds: map.sizeInPixels }));
 

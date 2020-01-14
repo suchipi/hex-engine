@@ -5,8 +5,9 @@ import {
   useRootEntity,
   useCallbackAsCurrent,
 } from "@hex-engine/core";
-import Canvas, { useUpdate, useRawDraw } from "../Canvas";
+import Canvas, { useUpdate } from "../Canvas";
 import { Vec2 } from "../Models";
+import { useContext } from "../Hooks";
 
 const MOUSE_MOVE = Symbol("MOUSE_MOVE");
 const MOUSE_DOWN = Symbol("MOUSE_DOWN");
@@ -15,11 +16,7 @@ const MOUSE_UP = Symbol("MOUSE_UP");
 export default function CanvasMouse() {
   useType(CanvasMouse);
 
-  let context: CanvasRenderingContext2D;
-  // TODO: need a way to get the context without needing to call into useDraw every frame
-  useRawDraw((ctx) => {
-    context = ctx;
-  });
+  const context = useContext();
 
   function translatePos(clientX: number, clientY: number): Vec2 {
     const canvas = context.canvas;

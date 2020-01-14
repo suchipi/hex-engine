@@ -6,7 +6,27 @@ export default class Grid<T> {
   data: Array<Array<T>>;
   defaultValue: T;
 
-  constructor(rows: number, columns: number, defaultValue: T) {
+  constructor(rows: number, columns: number, defaultValue: T);
+  constructor(rowsAndCols: Vec2, defaultValue: T);
+  constructor(
+    rowsOrRowsAndCols: number | Vec2,
+    columnsOrDefaultValue: number | T,
+    maybeDefaultValue?: T
+  ) {
+    let rows: number, columns: number, defaultValue: T;
+    if (
+      typeof rowsOrRowsAndCols === "number" &&
+      typeof columnsOrDefaultValue === "number"
+    ) {
+      rows = rowsOrRowsAndCols;
+      columns = columnsOrDefaultValue;
+      defaultValue = maybeDefaultValue!;
+    } else {
+      rows = (rowsOrRowsAndCols as Vec2).x;
+      columns = (rowsOrRowsAndCols as Vec2).y;
+      defaultValue = maybeDefaultValue as T;
+    }
+
     this.data = Array(columns)
       .fill(defaultValue)
       .map(() => Array(rows).fill(defaultValue));
@@ -28,7 +48,18 @@ export default class Grid<T> {
     }
   }
 
-  get(row: number, column: number): T {
+  get(row: number, column: number): T;
+  get(pos: Vec2): T;
+  get(rowOrPos: number | Vec2, maybeColumn?: number) {
+    let row: number, column: number;
+    if (typeof rowOrPos === "number" && typeof maybeColumn === "number") {
+      row = rowOrPos;
+      column = maybeColumn;
+    } else {
+      row = (rowOrPos as Vec2).x;
+      column = (rowOrPos as Vec2).y;
+    }
+
     if (
       row > this.size.x - 1 ||
       row < 0 ||
@@ -41,7 +72,20 @@ export default class Grid<T> {
     }
   }
 
-  set(row: number, column: number, value: T): void {
+  set(row: number, column: number, value: T): void;
+  set(pos: Vec2, value: T): void;
+  set(rowOrPos: number | Vec2, columnOrValue: number | T, maybeValue?: T) {
+    let row: number, column: number, value: T;
+    if (typeof rowOrPos === "number" && typeof columnOrValue === "number") {
+      row = rowOrPos;
+      column = columnOrValue;
+      value = maybeValue!;
+    } else {
+      row = (rowOrPos as Vec2).x;
+      column = (rowOrPos as Vec2).y;
+      value = columnOrValue as T;
+    }
+
     if (
       row > this.size.x - 1 ||
       row < 0 ||

@@ -2,7 +2,7 @@ import {
   useNewComponent,
   BMFont,
   ImageFilter,
-  useRawDraw,
+  useBackstage,
   // SystemFont,
 } from "@hex-engine/2d";
 import silver from "./silver.fnt";
@@ -25,22 +25,15 @@ export default function useGameFont() {
     })
   );
 
-  // TODO: this is hacky. Need to break up useRawDraw into
-  // fundamental useContext and useBackstage so we can use
-  // those here instead.
-  let backstage: CanvasRenderingContext2D;
-  useRawDraw((_context, back) => {
-    backstage = back;
-  });
+  const backstage = useBackstage();
 
   const normalDrawText = font.drawText;
-  font.drawText = ({ context, text, x, y, wrapWidth }) => {
+  font.drawText = ({ context, text, x, y }) => {
     normalDrawText.call(font, {
       context: backstage,
       text,
       x,
       y,
-      wrapWidth,
     });
 
     filter.apply(backstage, context);

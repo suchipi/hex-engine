@@ -1,7 +1,6 @@
 import { useEnableDisable, useType } from "@hex-engine/core";
 import { Vector, Angle } from "../Models";
 
-// TODO: run inside useFrame
 export default function Keyboard() {
   useType(Keyboard);
 
