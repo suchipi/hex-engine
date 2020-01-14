@@ -2,10 +2,9 @@ import {
   useType,
   useEnableDisable,
   useStateAccumulator,
-  useRootEntity,
   useCallbackAsCurrent,
 } from "@hex-engine/core";
-import Canvas, { useUpdate } from "../Canvas";
+import { useUpdate } from "../Canvas";
 import { Vec2 } from "../Models";
 import { useContext, useOwnAndAncestorEntityTransforms } from "../Hooks";
 
@@ -17,12 +16,11 @@ export default function Mouse() {
   useType(Mouse);
 
   const context = useContext();
+  const canvas: HTMLCanvasElement = context.canvas;
 
   const transforms = useOwnAndAncestorEntityTransforms();
 
   function translatePos(clientX: number, clientY: number): Vec2 {
-    const canvas = context.canvas;
-
     const rect = canvas.getBoundingClientRect();
     const scaleX = rect.width / canvas.width;
     const scaleY = rect.height / canvas.height;
@@ -96,16 +94,6 @@ export default function Mouse() {
     canvas.removeEventListener("mousedown", handleMouseDown);
     canvas.removeEventListener("mouseup", handleMouseUp);
     bound = false;
-  }
-
-  let canvas: HTMLCanvasElement | undefined = undefined;
-
-  const root = useRootEntity();
-  canvas = root.getComponent(Canvas)?.element;
-  if (!canvas) {
-    throw new Error(
-      "Could not find the root canvas. Does the root entity have a Canvas component?"
-    );
   }
 
   const { onEnabled, onDisabled } = useEnableDisable();

@@ -1,7 +1,7 @@
 import Angle from "./Angle";
 import Vec2 from "./Vec2";
 
-export function createMatrix(): DOMMatrix {
+export function createSVGMatrix(): DOMMatrix {
   const matrix = document
     .createElementNS("http://www.w3.org/2000/svg", "g")
     .getCTM();
@@ -24,7 +24,7 @@ export default class TransformMatrix {
   constructor();
   constructor(a: number, b: number, c: number, d: number, e: number, f: number);
   constructor(...args: Array<any>) {
-    this._matrix = createMatrix();
+    this._matrix = createSVGMatrix();
     if (args.length === 6) {
       const [a, b, c, d, e, f] = args;
       Object.assign(this._matrix, {

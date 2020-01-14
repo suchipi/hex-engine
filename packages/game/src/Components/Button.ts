@@ -46,9 +46,9 @@ export default function Button({
 
   useDraw((context) => {
     context.fillStyle =
-      pointer.isPressing && pointer.isHovering
+      pointer.isPressing && pointer.isInsideBounds
         ? "#aaa"
-        : pointer.isHovering
+        : pointer.isInsideBounds
         ? "#ddd"
         : "#eee";
     const rect = size.round();

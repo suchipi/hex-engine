@@ -50,7 +50,7 @@ export default function Level1() {
     };
 
     useDraw((context) => {
-      if (pointer.isHovering) {
+      if (pointer.isInsideBounds) {
         context.fillStyle = "rgba(255, 255, 255, 0.5)";
         context.fillRect(0, 0, map.tileSize.x, map.tileSize.y);
       }

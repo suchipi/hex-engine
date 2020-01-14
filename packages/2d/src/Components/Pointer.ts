@@ -43,20 +43,20 @@ export default function Pointer({ bounds }: { bounds: Vec2 }) {
 
   const { onMouseMove, onMouseDown, onMouseUp } = useNewComponent(Mouse);
 
-  let isHovering = false;
+  let isInsideBounds = false;
   let isPressing = false;
 
   onMouseMove((pos) => {
     if (pointIsWithinBounds(pos)) {
-      if (!isHovering) {
+      if (!isInsideBounds) {
         onEnterState.all().forEach((callback) => callback(pos));
       }
-      isHovering = true;
+      isInsideBounds = true;
 
       onMoveState.all().forEach((callback) => callback(pos));
-    } else if (isHovering) {
+    } else if (isInsideBounds) {
       onLeaveState.all().forEach((callback) => callback(pos));
-      isHovering = false;
+      isInsideBounds = false;
     }
   });
 
@@ -77,14 +77,7 @@ export default function Pointer({ bounds }: { bounds: Vec2 }) {
     isPressing = false;
   });
 
-  return {
-    get isHovering() {
-      return isHovering;
-    },
-    get isPressing() {
-      return isPressing;
-    },
-
+  const callbackSetters = {
     onEnter(callback: Callback) {
       onEnterState.add(useCallbackAsCurrent(callback));
     },
@@ -102,6 +95,34 @@ export default function Pointer({ bounds }: { bounds: Vec2 }) {
     },
     onClick(callback: Callback) {
       onClickState.add(useCallbackAsCurrent(callback));
+    },
+  };
+
+  return {
+    get isInsideBounds() {
+      return isInsideBounds;
+    },
+    get isPressing() {
+      return isPressing;
+    },
+
+    get onEnter() {
+      return callbackSetters.onEnter;
+    },
+    get onMove() {
+      return callbackSetters.onMove;
+    },
+    get onLeave() {
+      return callbackSetters.onLeave;
+    },
+    get onDown() {
+      return callbackSetters.onDown;
+    },
+    get onUp() {
+      return callbackSetters.onUp;
+    },
+    get onClick() {
+      return callbackSetters.onClick;
     },
   };
 }

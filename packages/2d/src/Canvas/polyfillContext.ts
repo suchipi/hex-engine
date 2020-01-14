@@ -1,25 +1,15 @@
-function createMatrix(): DOMMatrix {
-  const matrix = document
-    .createElementNS("http://www.w3.org/2000/svg", "g")
-    .getCTM();
-  if (matrix == null) {
-    throw new Error(
-      "Unable to create transformation matrix for CanvasRenderingContext2D getTransform polyfill. Maybe try using a newer browser?"
-    );
-  }
-  return matrix;
-}
+import { createSVGMatrix } from "../Models/TransformMatrix";
 
 // Based on code from https://stackoverflow.com/a/7397026/868460
 // polyfills resetTransform and getTransform on the context
 export default function polyfillContext(context: CanvasRenderingContext2D) {
   if (context.resetTransform && context.getTransform) return;
 
-  let matrix = createMatrix();
+  let matrix = createSVGMatrix();
   // the stack of saved matrices
   let savedMatrices = [matrix];
 
-  const CanvasRenderingContext2DClass: typeof CanvasRenderingContext2D = context.constructor as any;
+  const CanvasRenderingContext2DClass = context.constructor as typeof CanvasRenderingContext2D;
   class PolyfilledCanvasRenderingContext2D extends CanvasRenderingContext2DClass {
     save() {
       savedMatrices.push(matrix);
@@ -69,7 +59,7 @@ export default function polyfillContext(context: CanvasRenderingContext2D) {
     ): void;
     setTransform(transform?: DOMMatrix2DInit): void;
     setTransform(...args: Array<any>): void {
-      matrix = createMatrix();
+      matrix = createSVGMatrix();
 
       const [aOrTransform, b, c, d, e, f] = args;
       if (typeof aOrTransform === "object") {
@@ -106,7 +96,7 @@ export default function polyfillContext(context: CanvasRenderingContext2D) {
       e: number,
       f: number
     ) {
-      const rhs = createMatrix();
+      const rhs = createSVGMatrix();
       // 2x2 scale-skew matrix
       rhs.a = a;
       rhs.b = b;
@@ -121,7 +111,7 @@ export default function polyfillContext(context: CanvasRenderingContext2D) {
     }
 
     resetTransform() {
-      matrix = createMatrix();
+      matrix = createSVGMatrix();
       if (super.resetTransform) {
         super.resetTransform();
       } else {
