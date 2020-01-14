@@ -4,8 +4,8 @@ import Aseprite from "./Aseprite";
 import Audio from "./Audio";
 import BMFont from "./BMFont";
 import BoundingBox from "./BoundingBox";
-import Camera from "./Camera";
-import CanvasMouse from "./CanvasMouse";
+import Mouse from "./Mouse";
+import DOMElement from "./DOMElement";
 import Font from "./Font";
 import FontMetrics from "./FontMetrics";
 import Gamepad from "./Gamepad";
@@ -13,8 +13,8 @@ import Image from "./Image";
 import ImageFilter from "./ImageFilter";
 import Keyboard from "./Keyboard";
 import Label from "./Label";
-import Mouse from "./Mouse";
 import Origin from "./Origin";
+import Pointer from "./Pointer";
 import Position from "./Position";
 import Rotation from "./Rotation";
 import Scale from "./Scale";
@@ -33,8 +33,8 @@ export {
   Audio,
   BMFont,
   BoundingBox,
-  Camera,
-  CanvasMouse,
+  Mouse,
+  DOMElement,
   Font,
   FontMetrics,
   Gamepad,
@@ -42,8 +42,8 @@ export {
   ImageFilter,
   Keyboard,
   Label,
-  Mouse,
   Origin,
+  Pointer,
   Position,
   Rotation,
   Scale,

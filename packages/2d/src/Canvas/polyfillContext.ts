@@ -1,5 +1,3 @@
-// in theory, SVGMatrix will be used by the Canvas API in the future;
-// in practice, we can borrow an SVG matrix today!
 function createMatrix(): DOMMatrix {
   const matrix = document
     .createElementNS("http://www.w3.org/2000/svg", "g")
@@ -51,7 +49,7 @@ export default function polyfillContext(context: CanvasRenderingContext2D) {
     }
 
     rotate(theta: number) {
-      // canvas `rotate` uses radians, SVGMatrix uses degrees.
+      // canvas `rotate` uses radians, DOMMatrix uses degrees.
       matrix = matrix.rotate((theta * 180) / Math.PI);
       super.rotate(theta);
     }

@@ -1,13 +1,13 @@
 import useBackstage from "./useBackstage";
 import useContext from "./useContext";
 import useDraw from "./useDraw";
-import useEntityTransforms from "./useEntityTransforms";
 import useFilledPixelBounds from "./useFilledPixelBounds";
+import useOwnAndAncestorEntityTransforms from "./useOwnAndAncestorEntityTransforms";
 
 export {
   useBackstage,
   useContext,
   useDraw,
-  useEntityTransforms,
   useFilledPixelBounds,
+  useOwnAndAncestorEntityTransforms,
 };

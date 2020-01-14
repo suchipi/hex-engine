@@ -10,18 +10,9 @@ export default Object.assign(
     defaultSort: (entities: Array<Entity>): Array<Component> => {
       let components: Array<Component> = [];
 
-      // Draw cameras first
-      for (const ent of entities) {
-        components = components.concat(
-          [...ent.components].filter((comp: any) => comp.isCamera)
-        );
-      }
-
-      // Then draw non-cameras, sorted by id (so that later-created entities are drawn above earlier-created entities)
+      // Draw all components, sorted by id (so that later-created entities are drawn above earlier-created entities)
       for (const ent of [...entities].sort((entA, entB) => entA.id - entB.id)) {
-        components = components.concat(
-          [...ent.components].filter((comp: any) => !comp.isCamera)
-        );
+        components = components.concat([...ent.components]);
       }
 
       return components;

@@ -6,7 +6,7 @@ import {
   Tiled,
   useType,
   useChild,
-  Mouse,
+  Pointer,
   Label,
   Grid,
   Entity,
@@ -39,7 +39,7 @@ export default function Level1() {
 
   const towersGrid = new Grid<null | Entity>(map.sizeInTiles, null);
 
-  const mouse = useNewComponent(() => Mouse({ bounds: map.sizeInPixels }));
+  const pointer = useNewComponent(() => Pointer({ bounds: map.sizeInPixels }));
 
   const tileHighlight = useChild(() => {
     useEntityName("Tile Highlight");
@@ -50,7 +50,7 @@ export default function Level1() {
     };
 
     useDraw((context) => {
-      if (mouse.isHovering) {
+      if (pointer.isHovering) {
         context.fillStyle = "rgba(255, 255, 255, 0.5)";
         context.fillRect(0, 0, map.tileSize.x, map.tileSize.y);
       }
@@ -59,7 +59,7 @@ export default function Level1() {
     return state;
   });
 
-  mouse.onMove((localPos) => {
+  pointer.onMove((localPos) => {
     state.match({
       PLACING: () => {
         const pos = localPos
@@ -72,7 +72,7 @@ export default function Level1() {
     });
   });
 
-  mouse.onClick((localPos) => {
+  pointer.onClick((localPos) => {
     state.match({
       PLACING: () => {
         const tilePos = localPos.dividedBy(map.tileSize).roundDown();
@@ -167,8 +167,4 @@ export default function Level1() {
 
     waveLabel.drawLabel({ context });
   });
-
-  return {
-    towersGrid,
-  };
 }

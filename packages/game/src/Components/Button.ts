@@ -5,7 +5,7 @@ import {
   Vec2,
   useDraw,
   useUpdate,
-  Mouse,
+  Pointer,
   Label,
   useType,
 } from "@hex-engine/2d";
@@ -35,9 +35,9 @@ export default function Button({
   }
   const size = calcSize();
 
-  const mouse = useNewComponent(() => Mouse({ bounds: size }));
+  const pointer = useNewComponent(() => Pointer({ bounds: size }));
 
-  mouse.onClick(onClick);
+  pointer.onClick(onClick);
 
   useUpdate(() => {
     size.replace(calcSize());
@@ -46,9 +46,9 @@ export default function Button({
 
   useDraw((context) => {
     context.fillStyle =
-      mouse.isPressing && mouse.isHovering
+      pointer.isPressing && pointer.isHovering
         ? "#aaa"
-        : mouse.isHovering
+        : pointer.isHovering
         ? "#ddd"
         : "#eee";
     const rect = size.round();

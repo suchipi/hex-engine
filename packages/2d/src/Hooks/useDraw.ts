@@ -1,5 +1,5 @@
 import { useRawDraw } from "../Canvas";
-import useEntityTransforms from "./useEntityTransforms";
+import useOwnAndAncestorEntityTransforms from "./useOwnAndAncestorEntityTransforms";
 
 export default function useDraw(
   onDraw: (
@@ -7,7 +7,7 @@ export default function useDraw(
     backstage: CanvasRenderingContext2D
   ) => void
 ) {
-  const transforms = useEntityTransforms();
+  const transforms = useOwnAndAncestorEntityTransforms();
 
   useRawDraw((context, backstage) => {
     transforms.apply(context);

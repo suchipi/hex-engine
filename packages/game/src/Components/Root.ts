@@ -7,7 +7,6 @@ import {
   useChild,
   useType,
   useEntityName,
-  Camera,
 } from "@hex-engine/2d";
 import Level1 from "./Level1";
 import FPS from "./FPS";
@@ -19,14 +18,9 @@ export default function Root() {
   canvas.setPixelated(true);
   canvas.fullscreen({ pixelZoom: 3 });
 
-  useChild(() => {
-    useEntityName("camera");
-
-    useNewComponent(Position);
-    useNewComponent(Rotation);
-    useNewComponent(Scale);
-    useNewComponent(Camera);
-  });
+  useNewComponent(Position);
+  useNewComponent(Rotation);
+  useNewComponent(Scale);
 
   useChild(Level1);
   useChild(FPS);
