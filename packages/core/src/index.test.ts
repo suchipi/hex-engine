@@ -190,29 +190,6 @@ describe("@hex-engine/core", () => {
     expect(ent.api.checkIfEnabled()).toBe(true);
   });
 
-  test("useDescendantEntities", () => {
-    const ent1 = core.createRoot(() => {
-      return {
-        getDescendants: core.useCallbackAsCurrent(() => {
-          return core.useDescendantEntities();
-        }),
-      };
-    });
-    expect(ent1.api.getDescendants()).toEqual([]);
-
-    const ent2 = core.createRoot(() => {});
-    ent1.addChild(ent2);
-    expect(ent1.api.getDescendants()).toEqual([ent2]);
-
-    const ent3 = core.createRoot(() => {});
-    ent2.addChild(ent3);
-    expect(ent1.api.getDescendants()).toEqual([ent2, ent3]);
-
-    const ent4 = core.createRoot(() => {});
-    ent2.addChild(ent4);
-    expect(ent1.api.getDescendants()).toEqual([ent2, ent3, ent4]);
-  });
-
   test("useEnableDisable - runs onEnabled on initial creation", () => {
     const messages: Array<string> = [];
     const log = (message: string) => messages.push(message);

@@ -10,10 +10,12 @@ export default function App({
   entity,
   runLoop,
   error,
+  isHovered,
 }: {
   entity: Entity;
   runLoop: RunLoopAPI | null;
   error: Error | null;
+  isHovered: boolean;
 }) {
   let ent = entity;
 
@@ -34,6 +36,12 @@ export default function App({
           borderBottomLeftRadius: "4px",
           overflow: "hidden",
           boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
+          ...(isHovered
+            ? {
+                outlineStyle: "auto",
+                outlineColor: "magenta",
+              }
+            : null),
         }}
       >
         <StateKey value="controls">
@@ -63,6 +71,13 @@ export default function App({
             flexDirection: "column",
             height: "100%",
             boxSizing: "border-box",
+
+            ...(isHovered
+              ? {
+                  outlineStyle: "auto",
+                  outlineColor: "magenta",
+                }
+              : null),
           }}
         >
           <StateKey value="controls">

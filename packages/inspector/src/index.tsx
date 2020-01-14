@@ -13,6 +13,7 @@ import { StateTreeProvider } from "react-state-tree";
 import debounce from "lodash.debounce";
 import useForceUpdate from "use-force-update";
 import App from "./App";
+import useInspectorHover from "./useInspectorHover";
 
 type RunLoopAPI = ReturnType<typeof RunLoop>;
 
@@ -29,24 +30,31 @@ const debouncedSaveState = debounce(saveState, 100);
 function Root({
   entity,
   runLoop,
-  errorHolder,
-  forceUpdateTarget,
+  stateHolder,
 }: {
   entity: Entity;
   runLoop: RunLoopAPI | null;
-  errorHolder: { err: Error | null };
-  forceUpdateTarget: { forceUpdate: null | (() => void) };
+  stateHolder: {
+    err: Error | null;
+    forceUpdate: null | (() => void);
+    isHovered: boolean;
+  };
 }) {
   const forceUpdate = useForceUpdate();
 
-  forceUpdateTarget.forceUpdate = forceUpdate;
+  stateHolder.forceUpdate = forceUpdate;
 
   return (
     <StateTreeProvider
       initialValue={initialState}
       onUpdate={debouncedSaveState}
     >
-      <App entity={entity} runLoop={runLoop} error={errorHolder.err} />
+      <App
+        entity={entity}
+        runLoop={runLoop}
+        error={stateHolder.err}
+        isHovered={stateHolder.isHovered}
+      />
     </StateTreeProvider>
   );
 }
@@ -54,7 +62,6 @@ function Root({
 export default function Inspector({
   pauseOnStart = false,
 }: Partial<{
-  el: HTMLElement;
   pauseOnStart: boolean;
 }> = {}) {
   useType(Inspector);
@@ -62,20 +69,24 @@ export default function Inspector({
   const entity = useRootEntity();
   const runLoop = entity.getComponent(RunLoop);
 
-  const errorHolder: { err: Error | null } = { err: null };
-
-  const forceUpdateTarget: { forceUpdate: null | (() => void) } = {
+  const stateHolder: {
+    err: Error | null;
+    forceUpdate: null | (() => void);
+    isHovered: boolean;
+  } = {
+    err: null,
     forceUpdate: null,
+    isHovered: false,
   };
 
   useNewComponent(() =>
     ErrorBoundary((err) => {
       console.error(err);
-      errorHolder.err = err;
+      stateHolder.err = err;
 
       runLoop?.pause();
-      if (forceUpdateTarget.forceUpdate) {
-        forceUpdateTarget.forceUpdate();
+      if (stateHolder.forceUpdate) {
+        stateHolder.forceUpdate();
       }
     })
   );
@@ -85,13 +96,18 @@ export default function Inspector({
   const el = document.createElement("div");
   document.body.appendChild(el);
 
+  const { onHoverStart, onHoverEnd } = useInspectorHover();
+  onHoverStart(() => {
+    stateHolder.isHovered = true;
+    if (stateHolder.forceUpdate) stateHolder.forceUpdate();
+  });
+  onHoverEnd(() => {
+    stateHolder.isHovered = false;
+    if (stateHolder.forceUpdate) stateHolder.forceUpdate();
+  });
+
   ReactDOM.render(
-    <Root
-      entity={entity}
-      runLoop={runLoop}
-      errorHolder={errorHolder}
-      forceUpdateTarget={forceUpdateTarget}
-    />,
+    <Root entity={entity} runLoop={runLoop} stateHolder={stateHolder} />,
     el,
     useCallbackAsCurrent(() => {
       const tick = useCallbackAsCurrent(() => {
@@ -100,8 +116,8 @@ export default function Inspector({
           hasPausedOnStart = true;
         }
 
-        if (forceUpdateTarget.forceUpdate != null) {
-          forceUpdateTarget.forceUpdate();
+        if (stateHolder.forceUpdate != null) {
+          stateHolder.forceUpdate();
         }
 
         requestAnimationFrame(tick);
@@ -111,3 +127,5 @@ export default function Inspector({
     })
   );
 }
+
+export { useInspectorHover };

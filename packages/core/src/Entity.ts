@@ -26,6 +26,16 @@ function disable(entity: Entity) {
   }
 }
 
+function gatherDescendants(ent: Entity, descendants: Array<Entity> = []) {
+  for (const child of ent.children) {
+    descendants.push(child);
+  }
+  for (const child of ent.children) {
+    gatherDescendants(child, descendants);
+  }
+  return descendants;
+}
+
 let id = 0;
 
 export default class Entity implements EntityInterface {
@@ -97,5 +107,21 @@ export default class Entity implements EntityInterface {
 
   disable() {
     disable(this);
+  }
+
+  descendants() {
+    return gatherDescendants(this);
+  }
+
+  ancestors() {
+    const ancestors = [];
+
+    let currentEnt = this.parent;
+    while (currentEnt) {
+      ancestors.unshift(currentEnt);
+      currentEnt = currentEnt.parent;
+    }
+
+    return ancestors;
   }
 }

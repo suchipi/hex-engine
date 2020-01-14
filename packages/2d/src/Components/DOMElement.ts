@@ -1,9 +1,25 @@
-import { useType } from "@hex-engine/core";
-import { useContext } from "../Hooks";
+import { useType, useEntity } from "@hex-engine/core";
+import {
+  useContext,
+  useOwnAndAncestorEntityTransforms,
+  useDraw,
+  useInspectorHoverOutline,
+} from "../Hooks";
 import { Vec2, TransformMatrix } from "../Models";
+import Origin from "./Origin";
 
-export default function DOMElement({ size }: { size: Vec2 }) {
+export default function DOMElement({
+  size,
+  noInspectorOutline,
+}: {
+  size: Vec2;
+  noInspectorOutline?: boolean;
+}) {
   useType(DOMElement);
+
+  if (!noInspectorOutline) {
+    useInspectorHoverOutline(size);
+  }
 
   const element = document.createElement("div");
   element.style.position = "absolute";
@@ -29,15 +45,25 @@ export default function DOMElement({ size }: { size: Vec2 }) {
     return matrix.scale(scaleX, scaleY, 0, 0);
   }
 
-  element.textContent = "Hi everybody!";
-  return {
-    element,
-    setTransformMatrix: (matrix: TransformMatrix): void => {
-      const realMatrix = canvasScaleMatrix().times(matrix);
+  const transforms = useOwnAndAncestorEntityTransforms();
 
-      element.style.width = size.x + "px";
-      element.style.height = size.y + "px";
-      element.style.transform = `matrix(${realMatrix.a}, ${realMatrix.b}, ${realMatrix.c}, ${realMatrix.d}, ${realMatrix.e}, ${realMatrix.f})`;
-    },
+  const state = {
+    element,
+    size,
   };
+
+  useDraw(() => {
+    const realMatrix = canvasScaleMatrix().times(transforms.asMatrix());
+
+    element.style.width = size.x + "px";
+    element.style.height = size.y + "px";
+
+    const origin = useEntity().getComponent(Origin);
+    element.style.transformOrigin = origin
+      ? `${origin.x}px ${origin.y}px`
+      : "top left";
+    element.style.transform = `matrix(${realMatrix.a}, ${realMatrix.b}, ${realMatrix.c}, ${realMatrix.d}, ${realMatrix.e}, ${realMatrix.f})`;
+  });
+
+  return state;
 }

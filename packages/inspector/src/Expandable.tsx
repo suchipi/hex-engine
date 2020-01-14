@@ -8,12 +8,16 @@ export default function Expandable({
   className,
   children,
   hasContent,
+  onMouseEnter,
+  onMouseLeave,
 }: {
   label?: React.ReactNode;
   preview?: React.ReactNode;
   className: React.ReactNode;
   children: React.ReactNode;
   hasContent: boolean;
+  onMouseEnter?: (event: React.MouseEvent) => void;
+  onMouseLeave?: (event: React.MouseEvent) => void;
 }) {
   const [expanded, setExpanded] = useStateTree(false, "e");
 
@@ -23,38 +27,42 @@ export default function Expandable({
 
   return (
     <div style={{ paddingLeft: 8, paddingTop: 2 }}>
-      <Button
-        style={{
-          color: "rgb(110, 110, 110)",
-          display: "inline-block",
-          fontSize: 12,
-          marginRight: 3,
-          userSelect: "none",
-          transform: expanded ? "rotateZ(90deg)" : "",
-        }}
-        onClick={toggle}
-      >
-        ▶
-      </Button>
-
-      {label ? (
+      <span onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         <Button
           style={{
-            color: "rgb(136, 19, 145)",
+            color: "rgb(110, 110, 110)",
+            display: "inline-block",
+            fontSize: 12,
+            marginRight: 3,
             userSelect: "none",
-            marginRight: "0.7em",
+            transform: expanded ? "rotateZ(90deg)" : "",
           }}
           onClick={toggle}
         >
-          {label}:
+          ▶
         </Button>
-      ) : null}
 
-      {className ? (
-        <Button style={{ marginRight: "0.7em" }} onClick={toggle}>
-          {className}
-        </Button>
-      ) : null}
+        {label ? (
+          <Button
+            style={{
+              color: "rgb(136, 19, 145)",
+              userSelect: "none",
+              marginRight: "0.7em",
+            }}
+            onClick={toggle}
+          >
+            {label}:
+          </Button>
+        ) : null}
+
+        {className ? (
+          <Button style={{ marginRight: "0.7em" }} onClick={toggle}>
+            {className}
+          </Button>
+        ) : null}
+
+        {expanded ? null : preview}
+      </span>
 
       {expanded ? (
         <div>
@@ -62,9 +70,7 @@ export default function Expandable({
             <span style={{ paddingLeft: 8, paddingTop: 2 }}>{preview}</span>
           )}
         </div>
-      ) : (
-        <span>{preview}</span>
-      )}
+      ) : null}
     </div>
   );
 }

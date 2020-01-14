@@ -1,6 +1,7 @@
 export default class Vec2 {
   x: number;
   y: number;
+  _kind: "Vec2" = "Vec2";
 
   constructor(x: number, y: number) {
     this.x = x;

@@ -1,20 +1,17 @@
-import {
-  useCallbackAsCurrent,
-  useAncestorEntities,
-  useEntity,
-} from "@hex-engine/core";
+import { useCallbackAsCurrent, useEntity } from "@hex-engine/core";
 import { TransformMatrix } from "../Models";
 import useEntityTransformMatrix from "./useEntityTransformMatrix";
 
 export default function useOwnAndAncestorEntityTransforms() {
   const asMatrix = useCallbackAsCurrent(() => {
-    const ancestors = useAncestorEntities();
+    const entity = useEntity();
+    const ancestors = entity.ancestors();
 
     let matrix = new TransformMatrix();
     for (const ancestor of ancestors) {
       matrix = matrix.times(useEntityTransformMatrix(ancestor));
     }
-    matrix = matrix.times(useEntityTransformMatrix(useEntity()));
+    matrix = matrix.times(useEntityTransformMatrix(entity));
 
     return matrix;
   });

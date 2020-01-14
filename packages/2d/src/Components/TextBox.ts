@@ -1,4 +1,5 @@
 import { useType } from "@hex-engine/core";
+import { useInspectorHoverOutline } from "../Hooks";
 import { FontImplementation } from "./Font";
 import { Vec2 } from "../Models";
 
@@ -26,6 +27,8 @@ export default function TextBox({
   lineHeight?: number;
 }) {
   useType(TextBox);
+
+  useInspectorHoverOutline(size);
 
   return {
     drawText({

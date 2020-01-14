@@ -1,11 +1,14 @@
 export interface Entity {
+  name?: string | null;
+  id: number;
+
   children: Set<Entity>;
   parent: Entity | null;
   hasChild(child: Entity): boolean;
   addChild(child: Entity): void;
   removeChild(child: Entity): void;
-  name?: string | null;
-  id: number;
+  descendants(): Array<Entity>;
+  ancestors(): Array<Entity>;
 
   components: Set<Component>;
   getComponent<Func extends (...args: any[]) => any>(

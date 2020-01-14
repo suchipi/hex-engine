@@ -8,6 +8,7 @@ import {
   Pointer,
   Label,
   useType,
+  useInspectorHoverOutline,
 } from "@hex-engine/2d";
 import useGameFont from "../Hooks/useGameFont";
 
@@ -34,6 +35,7 @@ export default function Button({
     return new Vec2(metrics.width, metrics.height).add(padding * 2);
   }
   const size = calcSize();
+  useInspectorHoverOutline(size);
 
   const pointer = useNewComponent(() => Pointer({ bounds: size }));
 

@@ -1,6 +1,5 @@
 import {
   useCallbackAsCurrent,
-  useDescendantEntities,
   useEntity,
   useFrame,
   useStateAccumulator,
@@ -53,7 +52,8 @@ export function DrawChildren({ context, backstage, backgroundColor }: Props) {
     const drawOrder = useEntity().getComponent(DrawOrder);
     const sort = drawOrder ? drawOrder.sort : DrawOrder.defaultSort;
 
-    const ents = [useEntity(), ...useDescendantEntities()];
+    const ent = useEntity();
+    const ents = [ent, ...ent.descendants()];
     const components = sort(ents);
 
     for (const component of components) {

@@ -1,11 +1,13 @@
+import { Component } from "@hex-engine/core";
 import React from "react";
 import { StateKey, StateListKey } from "react-state-tree";
 import Expandable from "./Expandable";
 import Button from "./Button";
 import EditableString from "./EditableString";
 import EditableBoolean from "./EditableBoolean";
+import { HOVER_BEGIN, HOVER_END } from "./useInspectorHover";
 
-const PROPERTY_NAMES = Symbol("PROPERTY_NAMES");
+const PROPERTY_NAMES = Symbol("HEX_ENGINE_INSPECTOR_CACHED_PROPERTY_NAMES");
 
 function gatherPropertyNames(
   obj: Object,
@@ -49,6 +51,8 @@ export default function Tree({
   let hasContent = false;
   let preview: React.ReactNode = "";
   let content: React.ReactNode = "";
+  let onMouseEnter: undefined | (() => void);
+  let onMouseLeave: undefined | (() => void);
 
   const setValue = (newValue: any) => {
     parent[name] = newValue;
@@ -260,6 +264,34 @@ export default function Tree({
         "disable",
         "id",
       ]);
+
+      const hoverables: Array<Component> = [];
+      for (const component of data.components) {
+        hoverables.push(component);
+      }
+      for (const descendant of data.descendants()) {
+        for (const component of descendant.components) {
+          hoverables.push(component);
+        }
+      }
+
+      onMouseEnter = () => {
+        hoverables.forEach((component) => {
+          component
+            .stateAccumulator<() => void>(HOVER_BEGIN)
+            .all()
+            .forEach((callback: () => void) => callback());
+        });
+      };
+
+      onMouseLeave = () => {
+        hoverables.forEach((component) => {
+          component
+            .stateAccumulator<() => void>(HOVER_END)
+            .all()
+            .forEach((callback: () => void) => callback());
+        });
+      };
     } else if (data._kind === "component") {
       className = data.type?.name
         ? `Component (${data.type?.name})`
@@ -268,6 +300,19 @@ export default function Tree({
         className += " - disabled";
       }
       content = entriesForProperties(gatherPropertyNames(data));
+      onMouseEnter = () => {
+        data
+          .stateAccumulator(HOVER_BEGIN)
+          .all()
+          .forEach((callback: () => void) => callback());
+      };
+
+      onMouseLeave = () => {
+        data
+          .stateAccumulator(HOVER_END)
+          .all()
+          .forEach((callback: () => void) => callback());
+      };
     } else if (data._kind === "grid" && typeof data.defaultValue === "number") {
       className = `Grid (${data.size.x}, ${data.size.y})`;
       content = (
@@ -294,6 +339,9 @@ export default function Tree({
     } else if (data._kind === "grid") {
       className = `Grid (${data.size.x}, ${data.size.y})`;
       content = entriesForProperties(gatherPropertyNames(data));
+    } else if (data._kind === "Vec2") {
+      className = `Vec2 (${data.x}, ${data.y})`;
+      content = entriesForProperties(gatherPropertyNames(data));
     } else {
       className = data.constructor?.name || "";
       content = entriesForProperties(gatherPropertyNames(data));
@@ -306,6 +354,8 @@ export default function Tree({
       label={name}
       hasContent={hasContent}
       preview={preview}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       {content}
     </Expandable>

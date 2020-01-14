@@ -1,6 +1,5 @@
 import {
   useCallbackAsCurrent,
-  useDescendantEntities,
   useFrame,
   useStateAccumulator,
   useType,
@@ -21,7 +20,8 @@ export function UpdateChildren() {
   useType(UpdateChildren);
 
   useFrame((delta) => {
-    const ents = [useEntity(), ...useDescendantEntities()];
+    const ent = useEntity();
+    const ents = [ent, ...ent.descendants()];
     for (const ent of ents) {
       for (const component of ent.components) {
         if (component.isEnabled) {

@@ -2,6 +2,7 @@ import { useType } from "@hex-engine/core";
 import { useUpdate } from "../Canvas";
 import { FontImplementation } from "./Font";
 import { Vec2 } from "../Models";
+import { useInspectorHoverOutline } from "../Hooks";
 
 export default function Label({
   text,
@@ -17,6 +18,7 @@ export default function Label({
   };
 
   const size = new Vec2(0, 0);
+  useInspectorHoverOutline(size);
 
   function updateSize() {
     const metrics = font.measureText(state.text);
