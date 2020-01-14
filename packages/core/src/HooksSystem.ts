@@ -4,7 +4,6 @@ import {
   Component as ComponentInterface,
   Entity as EntityInterface,
 } from "./Interface";
-import Component from "./Component";
 import instantiate from "./instantiate";
 
 const HooksSystem = makeHooksSystem<ComponentInterface>()({
@@ -37,9 +36,7 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
   useStateAccumulator: (instance) => <T>(
     key: symbol
   ): { add(newValue: T): void; all(): Array<T> } => {
-    const implInstance = instance as Component;
-
-    return implInstance.stateAccumulator<T>(key);
+    return instance.stateAccumulator<T>(key);
   },
 
   useIsEnabled: (instance) => () => instance.isEnabled,

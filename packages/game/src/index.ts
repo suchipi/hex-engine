@@ -1,7 +1,7 @@
-import { createEntityWithComponent } from "@hex-engine/2d";
+import { createRoot } from "@hex-engine/2d";
 import Root from "./Components/Root";
 
-const root = createEntityWithComponent(Root);
+const root = createRoot(Root);
 
 // @ts-ignore
 window.root = root;

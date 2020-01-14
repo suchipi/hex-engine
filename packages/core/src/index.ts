@@ -17,7 +17,7 @@ const {
   useChild,
 } = HooksSystem.hooks;
 
-const createEntityWithComponent = <T>(
+const createRoot = <T>(
   componentFactory: () => T
 ): EntityInterface & {
   api: T extends {} ? T & ComponentInterface : ComponentInterface;
@@ -30,7 +30,7 @@ export {
   ErrorBoundary,
   EntityInterface as Entity,
   ComponentInterface as Component,
-  createEntityWithComponent,
+  createRoot,
   useNewComponent,
   useEntity,
   useCallbackAsCurrent,

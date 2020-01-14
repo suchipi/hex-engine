@@ -9,7 +9,7 @@ export default function useFrame(callback: (delta: number) => void) {
   const runLoopApi = root.getComponent(RunLoop);
   if (!runLoopApi) {
     throw new Error(
-      "Attempted to call useFrame, but the root entity for the component did not have a RunLoop component on it. Please add a RunLoop to your root entity- or, maybe you forgot to add a child entity to the tree?"
+      "Attempted to call useFrame, but the root entity for the component did not have a RunLoop component on it. Please add a RunLoop to your root entity."
     );
   }
   const { addFrameCallback, removeFrameCallback } = runLoopApi;
