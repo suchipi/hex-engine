@@ -34,7 +34,7 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
     };
   },
 
-  useStateAccumlator: (instance) => <T>(
+  useStateAccumulator: (instance) => <T>(
     key: symbol
   ): { add(newValue: T): void; all(): Array<T> } => {
     const implInstance = instance as Component;

@@ -3,7 +3,7 @@ import {
   useDescendantEntities,
   useEntity,
   useFrame,
-  useStateAccumlator,
+  useStateAccumulator,
   Component,
   useType,
 } from "@hex-engine/core";
@@ -17,7 +17,7 @@ type DrawCallback = (
 ) => void;
 
 export function useRawDraw(callback: DrawCallback) {
-  useStateAccumlator<DrawCallback>(DRAW_CALLBACKS).add(
+  useStateAccumulator<DrawCallback>(DRAW_CALLBACKS).add(
     useCallbackAsCurrent(callback)
   );
 }

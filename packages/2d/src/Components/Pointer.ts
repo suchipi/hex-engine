@@ -1,7 +1,7 @@
 import {
   useType,
   useNewComponent,
-  useStateAccumlator,
+  useStateAccumulator,
   useCallbackAsCurrent,
   useEntity,
 } from "@hex-engine/core";
@@ -34,12 +34,12 @@ export default function Pointer({ bounds }: { bounds: Vec2 }) {
     );
   }
 
-  const onEnterState = useStateAccumlator<Callback>(ON_ENTER);
-  const onMoveState = useStateAccumlator<Callback>(ON_MOVE);
-  const onLeaveState = useStateAccumlator<Callback>(ON_LEAVE);
-  const onDownState = useStateAccumlator<Callback>(ON_DOWN);
-  const onUpState = useStateAccumlator<Callback>(ON_UP);
-  const onClickState = useStateAccumlator<Callback>(ON_CLICK);
+  const onEnterState = useStateAccumulator<Callback>(ON_ENTER);
+  const onMoveState = useStateAccumulator<Callback>(ON_MOVE);
+  const onLeaveState = useStateAccumulator<Callback>(ON_LEAVE);
+  const onDownState = useStateAccumulator<Callback>(ON_DOWN);
+  const onUpState = useStateAccumulator<Callback>(ON_UP);
+  const onClickState = useStateAccumulator<Callback>(ON_CLICK);
 
   const { onMouseMove, onMouseDown, onMouseUp } = useNewComponent(Mouse);
 

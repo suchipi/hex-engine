@@ -145,7 +145,7 @@ describe("@hex-engine/core", () => {
     const sym = Symbol();
 
     const ent = core.createEntityWithComponent(() => {
-      return core.useStateAccumlator<number>(sym);
+      return core.useStateAccumulator<number>(sym);
     });
 
     const state = ent.api;

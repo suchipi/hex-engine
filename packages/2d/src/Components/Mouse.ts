@@ -1,7 +1,7 @@
 import {
   useType,
   useEnableDisable,
-  useStateAccumlator,
+  useStateAccumulator,
   useRootEntity,
   useCallbackAsCurrent,
 } from "@hex-engine/core";
@@ -38,11 +38,11 @@ export default function Mouse() {
       .transformPoint(untransformedPoint);
   }
 
-  const moveState = useStateAccumlator<(pos: Vec2, delta: Vec2) => void>(
+  const moveState = useStateAccumulator<(pos: Vec2, delta: Vec2) => void>(
     MOUSE_MOVE
   );
-  const downState = useStateAccumlator<(pos: Vec2) => void>(MOUSE_DOWN);
-  const upState = useStateAccumlator<(pos: Vec2) => void>(MOUSE_UP);
+  const downState = useStateAccumulator<(pos: Vec2) => void>(MOUSE_DOWN);
+  const upState = useStateAccumulator<(pos: Vec2) => void>(MOUSE_UP);
 
   let pendingMove: null | (() => void) = null;
   let pendingDown: null | (() => void) = null;

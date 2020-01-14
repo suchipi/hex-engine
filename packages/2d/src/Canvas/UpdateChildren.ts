@@ -2,7 +2,7 @@ import {
   useCallbackAsCurrent,
   useDescendantEntities,
   useFrame,
-  useStateAccumlator,
+  useStateAccumulator,
   useType,
 } from "@hex-engine/core";
 
@@ -11,7 +11,7 @@ const UPDATE_CALLBACKS = Symbol("UPDATE_CALLBACKS");
 type UpdateCallback = (delta: number) => void;
 
 export function useUpdate(callback: UpdateCallback) {
-  useStateAccumlator<UpdateCallback>(UPDATE_CALLBACKS).add(
+  useStateAccumulator<UpdateCallback>(UPDATE_CALLBACKS).add(
     useCallbackAsCurrent(callback)
   );
 }
