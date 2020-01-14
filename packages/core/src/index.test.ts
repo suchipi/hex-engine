@@ -93,62 +93,6 @@ describe("@hex-engine/core", () => {
     }
   });
 
-  test("useExistingComponentByType - when exists", () => {
-    function Component() {
-      core.useType(Component);
-
-      return { hi: "yeah" };
-    }
-
-    function Component2() {
-      core.useType(Component2);
-
-      const comp = core.useExistingComponentByType(Component);
-
-      return { comp };
-    }
-
-    const ent = core.createEntityWithComponent(() => {
-      core.useNewComponent(Component);
-      core.useNewComponent(Component2);
-    });
-
-    const comp2 = ent.getComponent(Component2);
-    expect(comp2).not.toBe(null);
-    if (comp2 != null) {
-      expect(comp2.comp).not.toBe(null);
-      if (comp2.comp != null) {
-        expect(comp2.comp.hi).toBe("yeah");
-      }
-    }
-  });
-
-  test("useExistingComponentByType - when doesn't exist", () => {
-    function Component() {
-      core.useType(Component);
-
-      return { hi: "yeah" };
-    }
-
-    function Component2() {
-      core.useType(Component2);
-
-      const comp = core.useExistingComponentByType(Component);
-
-      return { comp };
-    }
-
-    const ent = core.createEntityWithComponent(() => {
-      core.useNewComponent(Component2);
-    });
-
-    const comp2 = ent.getComponent(Component2);
-    expect(comp2).not.toBe(null);
-    if (comp2 != null) {
-      expect(comp2.comp).toBe(null);
-    }
-  });
-
   test("useCallbackAsCurrent", () => {
     function Component() {
       core.useType(Component);

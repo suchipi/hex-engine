@@ -22,15 +22,6 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
     instance.type = type;
   },
 
-  useExistingComponentByType: (instance) => <F extends (...args: any[]) => any>(
-    componentClass: F
-  ): ReturnType<F> extends {}
-    ? null | (ComponentInterface & ReturnType<F>)
-    : null | ComponentInterface => {
-    // @ts-ignore
-    return instance.entity.getComponent(componentClass);
-  },
-
   useEntity: (instance) => () => instance.entity,
 
   useCallbackAsCurrent: (instance) => <Func extends (...args: any[]) => any>(

@@ -9,7 +9,6 @@ import ErrorBoundary from "./Components/ErrorBoundary";
 
 const {
   useNewComponent,
-  useExistingComponentByType,
   useEntity,
   useCallbackAsCurrent,
   useStateAccumlator,
@@ -33,7 +32,6 @@ export {
   ComponentInterface as Component,
   createEntityWithComponent,
   useNewComponent,
-  useExistingComponentByType,
   useEntity,
   useCallbackAsCurrent,
   useStateAccumlator,

@@ -1,9 +1,9 @@
 import {
   useType,
-  useExistingComponentByType,
   useNewComponent,
   useStateAccumlator,
   useCallbackAsCurrent,
+  useEntity,
 } from "@hex-engine/core";
 import Mouse from "./Mouse";
 import Origin from "./Origin";
@@ -21,7 +21,7 @@ export default function Pointer({ bounds }: { bounds: Vec2 }) {
   useType(Pointer);
 
   function pointIsWithinBounds(point: Vec2) {
-    const origin = useExistingComponentByType(Origin) || new Vec2(0, 0);
+    const origin = useEntity().getComponent(Origin) || new Vec2(0, 0);
 
     const topLeft = new Vec2(0, 0).subtract(origin);
     const bottomRight = topLeft.add(bounds);
