@@ -239,15 +239,16 @@ export default function Aseprite(data: AsepriteLoader.Data) {
     Object.values(animations).forEach((animation) => animation.disable());
   });
 
-  function drawCurrentFrameIntoContext({
-    context,
-    x = 0,
-    y = 0,
-  }: {
-    context: CanvasRenderingContext2D;
-    x?: number | void;
-    y?: number | void;
-  }) {
+  function draw(
+    context: CanvasRenderingContext2D,
+    {
+      x = 0,
+      y = 0,
+    }: {
+      x?: number | undefined;
+      y?: number | undefined;
+    } = {}
+  ) {
     const frame = currentAnim.currentFrame.data;
 
     context.drawImage(frame, x, y);
@@ -263,7 +264,7 @@ export default function Aseprite(data: AsepriteLoader.Data) {
     data,
     animations,
 
-    drawCurrentFrameIntoContext,
+    draw,
     size,
   };
 }

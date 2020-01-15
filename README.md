@@ -35,7 +35,7 @@ export default MyComponent() {
   });
 
   useDraw((context) => {
-    label.drawLabel({ context, x: 10, y: 10 });
+    label.draw(context, { x: 10, y: 10 });
   });
 }
 ```

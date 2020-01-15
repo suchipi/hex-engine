@@ -31,19 +31,19 @@ export default function TextBox({
   useInspectorHoverOutline(size);
 
   return {
-    drawText({
-      context,
-      text,
-      x = 0,
-      y = 0,
-    }: {
-      context: CanvasRenderingContext2D;
-      text: string;
-      x?: number;
-      y?: number;
-    }) {
+    drawText(
+      context: CanvasRenderingContext2D,
+      text: string,
+      {
+        x = 0,
+        y = 0,
+      }: {
+        x?: number;
+        y?: number;
+      } = {}
+    ) {
       if (!font.readyToDraw())
-        return { textFit: false, remainingText: text, printedLines: [] };
+        return { didTextFit: false, remainingText: text, printedLines: [] };
 
       let lineHeight = receivedLineHeight!;
       if (lineHeight == null) {
@@ -56,7 +56,7 @@ export default function TextBox({
 
       const lines: Array<string> = [];
 
-      let textFit = true;
+      let didTextFit = true;
       let remainingText = "";
       while (tokens.length > 0 && (lines.length + 1) * lineHeight < size.y) {
         let widthSoFarOnLine = 0;
@@ -83,10 +83,10 @@ export default function TextBox({
           }
         }
         if (tokens.length > 0) {
-          textFit = false;
+          didTextFit = false;
           remainingText = tokensToText(tokens);
         } else {
-          textFit = true;
+          didTextFit = true;
           remainingText = "";
         }
 
@@ -95,11 +95,11 @@ export default function TextBox({
 
       lines.forEach((line, index) => {
         const lineOffset = lineHeight * index;
-        font.drawText({ context, text: line, x, y: y + lineOffset });
+        font.drawText(context, line, { x, y: y + lineOffset });
       });
 
       return {
-        textFit,
+        didTextFit,
         remainingText,
         printedLines: lines,
       };

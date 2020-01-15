@@ -25,17 +25,17 @@ export default function BMFont(data: BMFontLoader.Font) {
     getFontSize() {
       return data.info.size;
     },
-    drawText({
-      context,
-      text,
-      x = 0,
-      y = 0,
-    }: {
-      context: CanvasRenderingContext2D;
-      text: string;
-      x?: undefined | number;
-      y?: undefined | number;
-    }) {
+    drawText(
+      context: CanvasRenderingContext2D,
+      text: string,
+      {
+        x = 0,
+        y = 0,
+      }: {
+        x?: number | undefined;
+        y?: number | undefined;
+      } = {}
+    ) {
       layout.update({ font: data, text });
 
       for (const glyph of layout.glyphs) {
@@ -45,10 +45,9 @@ export default function BMFont(data: BMFontLoader.Font) {
         }
         if (!image.data) return;
 
-        image.drawIntoContext({
-          context,
-          targetX: glyph.position[0] + x + glyph.data.xoffset,
-          targetY: glyph.position[1] + y + glyph.data.yoffset,
+        image.draw(context, {
+          x: glyph.position[0] + x + glyph.data.xoffset,
+          y: glyph.position[1] + y + glyph.data.yoffset,
           sourceX: glyph.data.x,
           sourceY: glyph.data.y,
           sourceWidth: glyph.data.width,
@@ -64,20 +63,18 @@ export default function BMFont(data: BMFontLoader.Font) {
 
   const fontApi = {
     ...api,
-    drawText({
-      context,
-      text,
-      x = 0,
-      y = 0,
-    }: {
-      context: CanvasRenderingContext2D;
-      text: string;
-      x?: undefined | number;
-      y?: undefined | number;
-    }) {
-      api.drawText({
-        context,
-        text,
+    drawText(
+      context: CanvasRenderingContext2D,
+      text: string,
+      {
+        x = 0,
+        y = 0,
+      }: {
+        x?: number | undefined;
+        y?: number | undefined;
+      }
+    ) {
+      api.drawText(context, text, {
         x,
         y: y + fontMetrics.measureText(text).height,
       });

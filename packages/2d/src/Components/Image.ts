@@ -46,27 +46,28 @@ class Image {
     return this._loadingPromise;
   }
 
-  drawIntoContext({
-    context,
-    targetX,
-    targetY,
-    sourceX = 0,
-    sourceY = 0,
-    sourceWidth = this.data?.width ?? 100,
-    sourceHeight = this.data?.height ?? 100,
-    targetWidth = this.data?.width ?? 100,
-    targetHeight = this.data?.height ?? 100,
-  }: {
-    context: CanvasRenderingContext2D;
-    targetX: number;
-    targetY: number;
-    sourceX?: void | number;
-    sourceY?: void | number;
-    sourceWidth?: void | number;
-    sourceHeight?: void | number;
-    targetWidth?: void | number;
-    targetHeight?: void | number;
-  }) {
+  draw(
+    context: CanvasRenderingContext2D,
+    {
+      x,
+      y,
+      sourceX = 0,
+      sourceY = 0,
+      sourceWidth = this.data?.width ?? 100,
+      sourceHeight = this.data?.height ?? 100,
+      targetWidth = this.data?.width ?? 100,
+      targetHeight = this.data?.height ?? 100,
+    }: {
+      x: number;
+      y: number;
+      sourceX?: undefined | number;
+      sourceY?: undefined | number;
+      sourceWidth?: undefined | number;
+      sourceHeight?: undefined | number;
+      targetWidth?: undefined | number;
+      targetHeight?: undefined | number;
+    }
+  ) {
     const data = this.data;
     if (data == null) return;
 
@@ -76,8 +77,8 @@ class Image {
       sourceY,
       sourceWidth,
       sourceHeight,
-      targetX,
-      targetY,
+      x,
+      y,
       targetWidth,
       targetHeight
     );

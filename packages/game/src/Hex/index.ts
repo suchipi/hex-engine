@@ -22,6 +22,6 @@ export default function Hex({ position }: { position: Vec2 }) {
   });
 
   useDraw((context) => {
-    aseprite.drawCurrentFrameIntoContext({ context });
+    aseprite.draw(context);
   });
 }

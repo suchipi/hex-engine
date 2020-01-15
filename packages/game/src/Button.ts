@@ -55,6 +55,6 @@ export default function Button({
         : "#eee";
     const rect = size.round();
     context.fillRect(0, 0, rect.x, rect.y);
-    label.drawLabel({ context, x: padding, y: padding });
+    label.draw(context, { x: padding, y: padding });
   });
 }

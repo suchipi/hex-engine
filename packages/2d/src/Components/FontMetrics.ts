@@ -4,12 +4,14 @@ import { useFilledPixelBounds } from "../Hooks";
 
 export type DrawableFont = {
   readyToDraw(): boolean;
-  drawText(options: {
-    context: CanvasRenderingContext2D;
-    text: string;
-    x?: number | void;
-    y?: number | void;
-  }): void;
+  drawText(
+    context: CanvasRenderingContext2D,
+    text: string,
+    options?: {
+      x?: number | undefined;
+      y?: number | undefined;
+    }
+  ): void;
   getFontSize(): number;
   measureWidth(text: string): number;
 };
@@ -42,25 +44,23 @@ export default function FontMetrics(impl: DrawableFont) {
     context.fillStyle = "black";
     const size = impl.getFontSize();
 
-    impl.drawText({ context, text: "acemnorsuvwxz", x: 0, y: size });
+    impl.drawText(context, "acemnorsuvwxz", { x: 0, y: size });
     const lowercases = useFilledPixelBounds(context);
     const baseline = lowercases.maxY;
     const median = lowercases.minY;
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-    impl.drawText({ context, text: "gjypq", x: 0, y: size });
+    impl.drawText(context, "gjypq", { x: 0, y: size });
     const tails = useFilledPixelBounds(context);
     const descender = tails.maxY;
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-    impl.drawText({ context, text: "fhijklt", x: 0, y: size });
+    impl.drawText(context, "fhijklt", { x: 0, y: size });
     const ascenders = useFilledPixelBounds(context);
     const ascender = ascenders.minY;
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-    impl.drawText({
-      context,
-      text: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    impl.drawText(context, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", {
       x: 0,
       y: size,
     });

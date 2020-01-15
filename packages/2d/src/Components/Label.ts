@@ -31,23 +31,18 @@ export default function Label({
 
   return {
     size,
-    drawLabel({
-      context,
-      x = 0,
-      y = 0,
-    }: {
-      context: CanvasRenderingContext2D;
-      x?: number | undefined;
-      y?: number | undefined;
-    }) {
+    draw(
+      context: CanvasRenderingContext2D,
+      {
+        x = 0,
+        y = 0,
+      }: {
+        x?: number | undefined;
+        y?: number | undefined;
+      } = {}
+    ) {
       if (!font.readyToDraw()) return;
-
-      font.drawText({
-        context,
-        text: state.text,
-        x,
-        y,
-      });
+      font.drawText(context, state.text, { x, y });
     },
     get text() {
       return state.text;

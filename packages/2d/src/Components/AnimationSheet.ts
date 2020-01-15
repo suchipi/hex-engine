@@ -35,23 +35,23 @@ export default function AnimationSheet({
     set currentAnim(nextValue) {
       currentAnim = nextValue;
     },
-    drawSpriteIntoContext({
-      context,
-      x,
-      y,
-      width,
-      height,
-    }: {
-      context: CanvasRenderingContext2D;
-      x?: number | void;
-      y?: number | void;
-      width?: number | void;
-      height?: number | void;
-    }) {
+    draw(
+      context: CanvasRenderingContext2D,
+      {
+        x,
+        y,
+        width,
+        height,
+      }: {
+        x?: number | undefined;
+        y?: number | undefined;
+        width?: number | undefined;
+        height?: number | undefined;
+      } = {}
+    ) {
       const frame = currentAnim.currentFrame;
 
-      spriteSheet.drawSpriteIntoContext({
-        context,
+      spriteSheet.draw(context, {
         x,
         y,
         width,

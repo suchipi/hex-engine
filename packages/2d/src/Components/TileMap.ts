@@ -9,20 +9,20 @@ export default function TileMap(
   useType(TileMap);
 
   return {
-    drawMapIntoContext({
-      context,
-      x = 0,
-      y = 0,
-    }: {
-      context: CanvasRenderingContext2D;
-      x?: number | void;
-      y?: number | void;
-    }) {
+    draw(
+      context: CanvasRenderingContext2D,
+      {
+        x = 0,
+        y = 0,
+      }: {
+        x?: number | void;
+        y?: number | void;
+      } = {}
+    ) {
       for (const [gridX, gridY, tileIndex] of grid.contents()) {
         if (tileIndex === -1) continue;
 
-        sheet.drawSpriteIntoContext({
-          context,
+        sheet.draw(context, {
           x: x + gridX * sheet.tileSize.x,
           y: y + gridY * sheet.tileSize.y,
           tileIndex,
