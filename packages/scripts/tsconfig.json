@@ -1,12 +1,12 @@
 {
   "include": [
-    "./packages",
+    "./src",
     "node_modules/aseprite-loader/index.d.ts",
     "node_modules/xml-source-loader/index.d.ts",
     "node_modules/bmfont-loader/index.d.ts",
-    "./ts-webpack.ts"
+    "node_modules/hex-engine-scripts/ts-webpack.ts"
   ],
-  "exclude": ["./packages/**/*.test.ts", "./packages/scripts/**/*"],
+  "exclude": ["./src/**/*.test.ts"],
 
   "compilerOptions": {
     "lib": ["es2019", "dom"],

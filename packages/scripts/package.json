@@ -1,0 +1,33 @@
+{
+  "name": "hex-engine-scripts",
+  "version": "0.0.2",
+  "main": "dist/index.js",
+  "bin": "dist/cli.js",
+  "workspace-builder": "@workspace-builder/babel",
+  "dependencies": {
+    "@babel/core": "^7.8.3",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.8.3",
+    "@babel/plugin-proposal-optional-chaining": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@babel/preset-react": "^7.8.3",
+    "@babel/preset-typescript": "^7.8.3",
+    "@types/lodash.debounce": "^4.0.6",
+    "@types/react-dev-utils": "^9.0.2",
+    "@types/webpack": "^4.41.2",
+    "aseprite-loader": "^0.1.2",
+    "babel-loader": "^8.0.6",
+    "bmfont-loader": "^0.1.0",
+    "chalk": "^3.0.0",
+    "core-js": "^3.6.4",
+    "file-loader": "^5.0.2",
+    "html-webpack-plugin": "^3.2.0",
+    "react-dev-utils": "^10.0.0",
+    "regenerator-runtime": "^0.13.3",
+    "resolve": "^1.14.2",
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.5",
+    "webpack-dev-server": "^3.10.1",
+    "xml-source-loader": "^0.1.2"
+  }
+}

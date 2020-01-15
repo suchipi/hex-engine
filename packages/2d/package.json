@@ -1,7 +1,6 @@
 {
   "name": "@hex-engine/2d",
   "version": "0.0.0",
-  "private": true,
   "main": "dist/index.js",
   "types": "src/index.ts",
   "sideEffects": false,

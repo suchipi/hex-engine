@@ -1,7 +1,6 @@
 {
   "name": "@hex-engine/inspector",
   "version": "0.0.0",
-  "private": true,
   "main": "dist/index.js",
   "types": "src/index.tsx",
   "sideEffects": false,

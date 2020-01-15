@@ -1,7 +1,6 @@
 {
   "name": "@hex-engine/core",
   "version": "0.0.0",
-  "private": true,
   "main": "dist/index.js",
   "types": "src/index.ts",
   "sideEffects": false,

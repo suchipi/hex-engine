@@ -4,7 +4,8 @@
     "packages/2d",
     "packages/core",
     "packages/game",
-    "packages/inspector"
+    "packages/inspector",
+    "packages/scripts"
   ],
   "devDependencies": {
     "@babel/cli": "^7.7.7",
@@ -17,26 +18,15 @@
     "@babel/preset-typescript": "^7.7.7",
     "@types/jest": "^24.0.25",
     "@workspace-builder/babel": "^1.0.0",
-    "@workspace-builder/webpack-dev-server": "^1.0.0",
-    "aseprite-loader": "0.1.2",
-    "babel-eslint": "^10.0.3",
-    "babel-loader": "^8.0.6",
-    "bmfont-loader": "^0.1.0",
+    "@workspace-builder/shell-command": "^1.0.0",
     "eslint": "^6.8.0",
     "eslint-config-unobtrusive": "^1.2.5",
     "eslint-plugin-import": "^2.19.1",
-    "file-loader": "^5.0.2",
-    "html-webpack-plugin": "^3.2.0",
-    "http-server": "^0.12.0",
     "jest": "^24.9.0",
     "prettier": "^1.19.1",
     "ts-jest": "^24.3.0",
     "typescript": "^3.7.4",
-    "webpack": "^4.41.4",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.10.1",
-    "workspace-builder": "^1.0.0",
-    "xml-source-loader": "0.1.2"
+    "workspace-builder": "^1.0.0"
   },
   "scripts": {
     "clean": "workspace-builder clean",

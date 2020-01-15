@@ -1,4 +1,5 @@
 import { useType, useNewComponent } from "@hex-engine/core";
+// @ts-ignore
 import createLayout from "layout-bmfont-text";
 import Image from "./Image";
 import Font from "./Font";

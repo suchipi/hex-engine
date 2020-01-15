@@ -4,11 +4,16 @@
   "private": true,
   "main": "dist/index.html",
   "dependencies": {
-    "safety-match": "^0.1.1",
-    "@hex-engine/2d": "0.0.0"
+    "@hex-engine/2d": "0.0.0",
+    "safety-match": "^0.1.1"
   },
-  "scripts": {
-    "build": "env NODE_ENV=production webpack --mode production"
+  "devDependencies": {
+    "typescript": "^3.7.4",
+    "hex-engine-scripts": "0.0.2"
   },
-  "workspace-builder": "@workspace-builder/webpack-dev-server"
+  "workspace-builder": "@workspace-builder/shell-command",
+  "@workspace-builder/shell-command": {
+    "build": "hex-engine-scripts build",
+    "watch": "hex-engine-scripts dev"
+  }
 }
