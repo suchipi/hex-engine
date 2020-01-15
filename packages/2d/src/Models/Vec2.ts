@@ -16,6 +16,17 @@ export default class Vec2 {
     }
   }
 
+  addMutate(other: Vec2 | number): this {
+    if (typeof other === "number") {
+      this.x += other;
+      this.y += other;
+    } else {
+      this.x += other.x;
+      this.y += other.y;
+    }
+    return this;
+  }
+
   subtract(other: Vec2 | number): Vec2 {
     if (typeof other === "number") {
       return new Vec2(this.x - other, this.y - other);
@@ -24,26 +35,53 @@ export default class Vec2 {
     }
   }
 
-  times(other: Vec2 | number): Vec2 {
-    let otherVec2: Vec2;
+  subtractMutate(other: Vec2 | number): this {
     if (typeof other === "number") {
-      otherVec2 = new Vec2(other, other);
+      this.x -= other;
+      this.y -= other;
     } else {
-      otherVec2 = other;
+      this.x -= other.x;
+      this.y -= other.y;
     }
+    return this;
+  }
 
-    return new Vec2(this.x * otherVec2.x, this.y * otherVec2.y);
+  times(other: Vec2 | number): Vec2 {
+    if (typeof other === "number") {
+      return new Vec2(this.x * other, this.y * other);
+    } else {
+      return new Vec2(this.x * other.x, this.y * other.y);
+    }
+  }
+
+  timesMutate(other: Vec2 | number): this {
+    if (typeof other === "number") {
+      this.x *= other;
+      this.y *= other;
+    } else {
+      this.x *= other.x;
+      this.y *= other.y;
+    }
+    return this;
   }
 
   dividedBy(other: Vec2 | number): Vec2 {
-    let otherVec2: Vec2;
     if (typeof other === "number") {
-      otherVec2 = new Vec2(other, other);
+      return new Vec2(this.x / other, this.y / other);
     } else {
-      otherVec2 = other;
+      return new Vec2(this.x / other.x, this.y / other.y);
     }
+  }
 
-    return new Vec2(this.x / otherVec2.x, this.y / otherVec2.y);
+  dividedByMutate(other: Vec2 | number): this {
+    if (typeof other === "number") {
+      this.x /= other;
+      this.y /= other;
+    } else {
+      this.x /= other.x;
+      this.y /= other.y;
+    }
+    return this;
   }
 
   equals(other: Vec2): boolean {
@@ -60,15 +98,33 @@ export default class Vec2 {
     return new Vec2(Math.round(this.x), Math.round(this.y));
   }
 
+  roundMutate(): this {
+    this.x = Math.round(this.x);
+    this.y = Math.round(this.y);
+    return this;
+  }
+
   roundDown(): Vec2 {
     return new Vec2(Math.floor(this.x), Math.floor(this.y));
+  }
+
+  roundDownMutate(): this {
+    this.x = Math.floor(this.x);
+    this.y = Math.floor(this.y);
+    return this;
   }
 
   roundUp(): Vec2 {
     return new Vec2(Math.ceil(this.x), Math.ceil(this.y));
   }
 
-  replace(other: Vec2) {
+  roundUpMutate(): this {
+    this.x = Math.ceil(this.x);
+    this.y = Math.ceil(this.y);
+    return this;
+  }
+
+  mutateInto(other: Vec2) {
     this.x = other.x;
     this.y = other.y;
   }
@@ -89,9 +145,17 @@ export default class Vec2 {
     }
   }
 
-  transformUsingMatrix(matrix: DOMMatrix) {
+  transformUsingMatrix(matrix: DOMMatrix): Vec2 {
     const domPoint = this.asDOMPoint();
     const transformed = domPoint.matrixTransform(matrix);
     return new Vec2(transformed.x, transformed.y);
+  }
+
+  transformUsingMatrixMutate(matrix: DOMMatrix): this {
+    const domPoint = this.asDOMPoint();
+    const transformed = domPoint.matrixTransform(matrix);
+    this.x = transformed.x;
+    this.y = transformed.y;
+    return this;
   }
 }

@@ -66,7 +66,7 @@ export default function Level1() {
           .dividedBy(map.tileSize)
           .roundDown()
           .times(map.tileSize);
-        tileHighlight.api.position.replace(pos);
+        tileHighlight.api.position.mutateInto(pos);
       },
       _: () => {},
     });

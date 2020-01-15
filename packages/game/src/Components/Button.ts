@@ -42,8 +42,8 @@ export default function Button({
   pointer.onClick(onClick);
 
   useUpdate(() => {
-    size.replace(calcSize());
-    position.replace(calcPosition(size));
+    size.mutateInto(calcSize());
+    position.mutateInto(calcPosition(size));
   });
 
   useDraw((context) => {
