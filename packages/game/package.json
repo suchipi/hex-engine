@@ -4,9 +4,11 @@
   "private": true,
   "main": "dist/index.html",
   "dependencies": {
-    "safety-match": "^0.1.1"
+    "safety-match": "^0.1.1",
+    "@hex-engine/2d": "0.0.0"
   },
   "scripts": {
     "build": "env NODE_ENV=production webpack --mode production"
-  }
+  },
+  "workspace-builder": "@workspace-builder/webpack-dev-server"
 }
