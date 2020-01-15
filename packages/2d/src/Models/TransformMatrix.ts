@@ -1,5 +1,5 @@
 import Angle from "./Angle";
-import Vec2 from "./Vec2";
+import Point from "./Point";
 
 export function createSVGMatrix(): DOMMatrix {
   const matrix = document
@@ -38,7 +38,7 @@ export default class TransformMatrix {
     }
   }
 
-  scale(size: Vec2, origin: Vec2): TransformMatrix;
+  scale(size: Point, origin: Point): TransformMatrix;
   scale(
     sizeX: number,
     sizeY: number,
@@ -64,7 +64,7 @@ export default class TransformMatrix {
     );
   }
 
-  scaleMutate(size: Vec2, origin: Vec2): this;
+  scaleMutate(size: Point, origin: Point): this;
   scaleMutate(
     sizeX: number,
     sizeY: number,
@@ -108,31 +108,31 @@ export default class TransformMatrix {
     return this;
   }
 
-  translate(pos: Vec2): TransformMatrix;
+  translate(pos: Point): TransformMatrix;
   translate(x: number, y: number): TransformMatrix;
-  translate(posOrX: Vec2 | number, maybeY?: number): TransformMatrix {
+  translate(posOrX: Point | number, maybeY?: number): TransformMatrix {
     let x: number, y: number;
     if (typeof posOrX === "number") {
       x = posOrX;
       y = maybeY!;
     } else {
-      x = (posOrX as Vec2).x;
-      y = (posOrX as Vec2).y;
+      x = (posOrX as Point).x;
+      y = (posOrX as Point).y;
     }
 
     return TransformMatrix.fromDOMMatrix(this._matrix.translate(x, y));
   }
 
-  translateMutate(pos: Vec2): this;
+  translateMutate(pos: Point): this;
   translateMutate(x: number, y: number): this;
-  translateMutate(posOrX: Vec2 | number, maybeY?: number): this {
+  translateMutate(posOrX: Point | number, maybeY?: number): this {
     let x: number, y: number;
     if (typeof posOrX === "number") {
       x = posOrX;
       y = maybeY!;
     } else {
-      x = (posOrX as Vec2).x;
-      y = (posOrX as Vec2).y;
+      x = (posOrX as Point).x;
+      y = (posOrX as Point).y;
     }
 
     if (typeof this._matrix.translateSelf === "function") {
@@ -186,9 +186,9 @@ export default class TransformMatrix {
     return this;
   }
 
-  transformPoint(point: Vec2): Vec2 {
+  transformPoint(point: Point): Point {
     const domPoint = point.asDOMPoint().matrixTransform(this._matrix);
-    return new Vec2(domPoint.x, domPoint.y);
+    return new Point(domPoint.x, domPoint.y);
   }
 
   inverse(): TransformMatrix {

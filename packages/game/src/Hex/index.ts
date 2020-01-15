@@ -3,14 +3,14 @@ import {
   Position,
   Rotation,
   Origin,
-  Vec2,
+  Point,
   Aseprite,
   useUpdate,
   useDraw,
 } from "@hex-engine/2d";
 import hexSprite from "./hex.aseprite";
 
-export default function Hex({ position }: { position: Vec2 }) {
+export default function Hex({ position }: { position: Point }) {
   const aseprite = useNewComponent(() => Aseprite(hexSprite));
 
   useNewComponent(() => Origin(aseprite.size.dividedBy(2)));

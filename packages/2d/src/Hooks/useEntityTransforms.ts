@@ -1,14 +1,14 @@
 import { useCallbackAsCurrent, useEntity, Entity } from "@hex-engine/core";
-import { Vec2, TransformMatrix } from "../Models";
+import { Point, TransformMatrix } from "../Models";
 import { Position, Origin, Rotation, Scale } from "../Components";
 
 function getEntityTransformMatrix(entity: Entity) {
   const matrix = new TransformMatrix();
 
-  const position = entity.getComponent(Position) || new Vec2(0, 0);
+  const position = entity.getComponent(Position) || new Point(0, 0);
 
-  let origin: Vec2 | null = entity.getComponent(Origin);
-  if (!origin) origin = new Vec2(0, 0);
+  let origin: Point | null = entity.getComponent(Origin);
+  if (!origin) origin = new Point(0, 0);
   const drawPos = position.subtract(origin).round();
   matrix.translateMutate(drawPos);
 

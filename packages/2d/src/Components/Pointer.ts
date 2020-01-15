@@ -7,7 +7,7 @@ import {
 } from "@hex-engine/core";
 import Mouse from "./Mouse";
 import Origin from "./Origin";
-import { Vec2 } from "../Models";
+import { Point } from "../Models";
 
 const ON_ENTER = Symbol("ON_ENTER");
 const ON_MOVE = Symbol("ON_MOVE");
@@ -15,15 +15,15 @@ const ON_LEAVE = Symbol("ON_LEAVE");
 const ON_DOWN = Symbol("ON_DOWN");
 const ON_UP = Symbol("ON_UP");
 const ON_CLICK = Symbol("ON_CLICK");
-type Callback = (pos: Vec2) => void;
+type Callback = (pos: Point) => void;
 
-export default function Pointer({ bounds }: { bounds: Vec2 }) {
+export default function Pointer({ bounds }: { bounds: Point }) {
   useType(Pointer);
 
-  function pointIsWithinBounds(point: Vec2) {
-    const origin = useEntity().getComponent(Origin) || new Vec2(0, 0);
+  function pointIsWithinBounds(point: Point) {
+    const origin = useEntity().getComponent(Origin) || new Point(0, 0);
 
-    const topLeft = new Vec2(0, 0).subtract(origin);
+    const topLeft = new Point(0, 0).subtract(origin);
     const bottomRight = topLeft.add(bounds);
 
     return (

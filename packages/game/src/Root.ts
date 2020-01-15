@@ -4,7 +4,7 @@ import {
   useChild,
   useType,
   useCallbackAsCurrent,
-  Vec2,
+  Point,
 } from "@hex-engine/2d";
 import Button from "./Button";
 import FPS from "./FPS";
@@ -24,7 +24,7 @@ export default function Root() {
     useNewComponent(() =>
       Button({
         calcPosition: (size) =>
-          new Vec2(
+          new Point(
             canvas.element.width / 2,
             canvas.element.height / 2
           ).subtractMutate(size.dividedBy(2)),
@@ -33,7 +33,7 @@ export default function Root() {
           const randomX = Math.random() * canvas.element.width;
           const randomY = Math.random() * canvas.element.height;
 
-          useRootChild(() => Hex({ position: new Vec2(randomX, randomY) }));
+          useRootChild(() => Hex({ position: new Point(randomX, randomY) }));
         },
       })
     );
@@ -43,7 +43,7 @@ export default function Root() {
     useNewComponent(() =>
       Button({
         calcPosition: (size) =>
-          new Vec2(canvas.element.width, canvas.element.height).subtractMutate(
+          new Point(canvas.element.width, canvas.element.height).subtractMutate(
             size
           ),
         text: "Font: Silver by Poppy Works",

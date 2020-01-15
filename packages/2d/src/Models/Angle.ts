@@ -1,4 +1,4 @@
-import Vec2 from "./Vec2";
+import Point from "./Point";
 import Vector from "./Vector";
 
 // Radians in canvas-style polar coordinate space;
@@ -30,7 +30,7 @@ export default class Angle {
 
   // Calculate the angle of the vector whose tail is at `first` and whose head
   // is at `second`.
-  static fromPoints(first: Vec2, second: Vec2): Angle {
+  static fromPoints(first: Point, second: Point): Angle {
     const deltaX = second.x - first.x;
     const deltaY = second.y - first.y;
     // Invert y component because JS math functions
@@ -41,9 +41,9 @@ export default class Angle {
 
   // Calculate the position of the head of a unit vector with the given angle
   // whose tail is at the origin.
-  toVec2(): Vec2 {
+  toPoint(): Point {
     const vector = new Vector(this, 1);
-    return vector.toVec2();
+    return vector.toPoint();
   }
 
   add(amount: number | Angle): Angle {

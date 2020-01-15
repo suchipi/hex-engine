@@ -1,10 +1,10 @@
 import { useType } from "@hex-engine/core";
-import { Vec2 } from "../Models";
+import { Point } from "../Models";
 
 type OriginFunc = {
-  (): Vec2;
-  (vec2: Vec2): Vec2;
-  (x: number, y: number): Vec2;
+  (): Point;
+  (vec2: Point): Point;
+  (x: number, y: number): Point;
 };
 
 const Origin: OriginFunc = (...args: any[]) => {
@@ -21,7 +21,7 @@ const Origin: OriginFunc = (...args: any[]) => {
     y = args[1];
   }
 
-  return new Vec2(x, y);
+  return new Point(x, y);
 };
 
 export default Origin;

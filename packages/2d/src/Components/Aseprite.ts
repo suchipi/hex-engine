@@ -5,7 +5,7 @@ import {
   Component,
 } from "@hex-engine/core";
 import Animation, { AnimationFrame, AnimationAPI } from "./Animation";
-import { Vec2 } from "../Models";
+import { Point } from "../Models";
 
 const LAYER_BLEND_MODES: { [mode: number]: string } = {
   0: "Normal",
@@ -81,7 +81,7 @@ export default function Aseprite(data: AsepriteLoader.Data) {
       ),
     0
   );
-  const size = new Vec2(maxW, maxH);
+  const size = new Point(maxW, maxH);
 
   const animations: {
     [name: string]: AnimationAPI<HTMLCanvasElement> & Component;

@@ -1,11 +1,11 @@
 import { useType } from "@hex-engine/core";
-import { Vec2 } from "../Models";
+import { Point } from "../Models";
 
 type ScaleFunc = {
-  (): Vec2;
-  (scaleFactor: Vec2): Vec2;
-  (scaleFactor: number): Vec2;
-  (scaleFactorX: number, scaleFactorY: number): Vec2;
+  (): Point;
+  (scaleFactor: Point): Point;
+  (scaleFactor: number): Point;
+  (scaleFactorX: number, scaleFactorY: number): Point;
 };
 
 const Scale: ScaleFunc = (...args: any[]) => {
@@ -28,7 +28,7 @@ const Scale: ScaleFunc = (...args: any[]) => {
     y = args[1];
   }
 
-  return new Vec2(x, y);
+  return new Point(x, y);
 };
 
 export default Scale;

@@ -1,10 +1,10 @@
 import { useNewComponent } from "@hex-engine/core";
 import { useInspectorHover } from "@hex-engine/inspector";
 import { DOMElement } from "../Components";
-import { Vec2 } from "../Models";
+import { Point } from "../Models";
 import { useDraw } from "../Hooks";
 
-export default function useInspectorHoverOutline(size: Vec2) {
+export default function useInspectorHoverOutline(size: Point) {
   if (process.env.NODE_ENV === "production") return;
 
   const { element } = useNewComponent(() =>

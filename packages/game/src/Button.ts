@@ -2,7 +2,7 @@ import {
   useNewComponent,
   useEntityName,
   Position,
-  Vec2,
+  Point,
   useDraw,
   useUpdate,
   Pointer,
@@ -17,7 +17,7 @@ export default function Button({
   text,
   onClick,
 }: {
-  calcPosition: (bounds: Vec2) => Vec2;
+  calcPosition: (bounds: Point) => Point;
   text: string;
   onClick: () => void;
 }) {
@@ -32,7 +32,7 @@ export default function Button({
   const padding = 3;
   function calcSize() {
     const metrics = font.measureText(label.text);
-    return new Vec2(metrics.width, metrics.height).add(padding * 2);
+    return new Point(metrics.width, metrics.height).add(padding * 2);
   }
   const size = calcSize();
   useInspectorHoverOutline(size);

@@ -1,15 +1,15 @@
-import Vec2 from "./Vec2";
+import Point from "./Point";
 
 export default class Grid<T> {
   _kind = "grid";
-  size: Vec2;
+  size: Point;
   data: Array<Array<T>>;
   defaultValue: T;
 
   constructor(rows: number, columns: number, defaultValue: T);
-  constructor(rowsAndCols: Vec2, defaultValue: T);
+  constructor(rowsAndCols: Point, defaultValue: T);
   constructor(
-    rowsOrRowsAndCols: number | Vec2,
+    rowsOrRowsAndCols: number | Point,
     columnsOrDefaultValue: number | T,
     maybeDefaultValue?: T
   ) {
@@ -22,8 +22,8 @@ export default class Grid<T> {
       columns = columnsOrDefaultValue;
       defaultValue = maybeDefaultValue!;
     } else {
-      rows = (rowsOrRowsAndCols as Vec2).x;
-      columns = (rowsOrRowsAndCols as Vec2).y;
+      rows = (rowsOrRowsAndCols as Point).x;
+      columns = (rowsOrRowsAndCols as Point).y;
       defaultValue = maybeDefaultValue as T;
     }
 
@@ -32,7 +32,7 @@ export default class Grid<T> {
       .map(() => Array(rows).fill(defaultValue));
 
     this.defaultValue = defaultValue;
-    this.size = new Vec2(rows, columns);
+    this.size = new Point(rows, columns);
   }
 
   setData(data: Array<T>) {
@@ -49,15 +49,15 @@ export default class Grid<T> {
   }
 
   get(row: number, column: number): T;
-  get(pos: Vec2): T;
-  get(rowOrPos: number | Vec2, maybeColumn?: number) {
+  get(pos: Point): T;
+  get(rowOrPos: number | Point, maybeColumn?: number) {
     let row: number, column: number;
     if (typeof rowOrPos === "number" && typeof maybeColumn === "number") {
       row = rowOrPos;
       column = maybeColumn;
     } else {
-      row = (rowOrPos as Vec2).x;
-      column = (rowOrPos as Vec2).y;
+      row = (rowOrPos as Point).x;
+      column = (rowOrPos as Point).y;
     }
 
     if (
@@ -73,16 +73,16 @@ export default class Grid<T> {
   }
 
   set(row: number, column: number, value: T): void;
-  set(pos: Vec2, value: T): void;
-  set(rowOrPos: number | Vec2, columnOrValue: number | T, maybeValue?: T) {
+  set(pos: Point, value: T): void;
+  set(rowOrPos: number | Point, columnOrValue: number | T, maybeValue?: T) {
     let row: number, column: number, value: T;
     if (typeof rowOrPos === "number" && typeof columnOrValue === "number") {
       row = rowOrPos;
       column = columnOrValue;
       value = maybeValue!;
     } else {
-      row = (rowOrPos as Vec2).x;
-      column = (rowOrPos as Vec2).y;
+      row = (rowOrPos as Point).x;
+      column = (rowOrPos as Point).y;
       value = columnOrValue as T;
     }
 

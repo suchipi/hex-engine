@@ -5,14 +5,14 @@ import {
   useDraw,
   useInspectorHoverOutline,
 } from "../Hooks";
-import { Vec2, TransformMatrix } from "../Models";
+import { Point, TransformMatrix } from "../Models";
 import Origin from "./Origin";
 
 export default function DOMElement({
   size,
   noInspectorOutline,
 }: {
-  size: Vec2;
+  size: Point;
   noInspectorOutline?: boolean;
 }) {
   useType(DOMElement);

@@ -1,4 +1,4 @@
-import Vec2 from "./Vec2";
+import Point from "./Point";
 import Angle from "./Angle";
 
 export default class Vector {
@@ -11,16 +11,16 @@ export default class Vector {
   }
 
   // Create a vector with tail at `first` and head at `second`.
-  static fromPoints(first: Vec2, second: Vec2): Vector {
+  static fromPoints(first: Point, second: Point): Vector {
     const angle = Angle.fromPoints(first, second);
     const magnitude = first.distanceTo(second);
     return new Vector(angle, magnitude);
   }
 
   // Place a vector at the origin, and return the location of its head.
-  toVec2(): Vec2 {
+  toPoint(): Point {
     const x = this.magnitude * Math.cos(this.angle.radians);
     const y = this.magnitude * Math.sin(this.angle.radians);
-    return new Vec2(x, y);
+    return new Point(x, y);
   }
 }

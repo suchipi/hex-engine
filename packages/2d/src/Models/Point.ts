@@ -1,4 +1,4 @@
-export default class Vec2 {
+export default class Point {
   x: number;
   y: number;
 
@@ -7,15 +7,15 @@ export default class Vec2 {
     this.y = y;
   }
 
-  add(other: Vec2 | number): Vec2 {
+  add(other: Point | number): Point {
     if (typeof other === "number") {
-      return new Vec2(this.x + other, this.y + other);
+      return new Point(this.x + other, this.y + other);
     } else {
-      return new Vec2(this.x + other.x, this.y + other.y);
+      return new Point(this.x + other.x, this.y + other.y);
     }
   }
 
-  addMutate(other: Vec2 | number): this {
+  addMutate(other: Point | number): this {
     if (typeof other === "number") {
       this.x += other;
       this.y += other;
@@ -26,15 +26,15 @@ export default class Vec2 {
     return this;
   }
 
-  subtract(other: Vec2 | number): Vec2 {
+  subtract(other: Point | number): Point {
     if (typeof other === "number") {
-      return new Vec2(this.x - other, this.y - other);
+      return new Point(this.x - other, this.y - other);
     } else {
-      return new Vec2(this.x - other.x, this.y - other.y);
+      return new Point(this.x - other.x, this.y - other.y);
     }
   }
 
-  subtractMutate(other: Vec2 | number): this {
+  subtractMutate(other: Point | number): this {
     if (typeof other === "number") {
       this.x -= other;
       this.y -= other;
@@ -45,15 +45,15 @@ export default class Vec2 {
     return this;
   }
 
-  times(other: Vec2 | number): Vec2 {
+  times(other: Point | number): Point {
     if (typeof other === "number") {
-      return new Vec2(this.x * other, this.y * other);
+      return new Point(this.x * other, this.y * other);
     } else {
-      return new Vec2(this.x * other.x, this.y * other.y);
+      return new Point(this.x * other.x, this.y * other.y);
     }
   }
 
-  timesMutate(other: Vec2 | number): this {
+  timesMutate(other: Point | number): this {
     if (typeof other === "number") {
       this.x *= other;
       this.y *= other;
@@ -64,15 +64,15 @@ export default class Vec2 {
     return this;
   }
 
-  dividedBy(other: Vec2 | number): Vec2 {
+  dividedBy(other: Point | number): Point {
     if (typeof other === "number") {
-      return new Vec2(this.x / other, this.y / other);
+      return new Point(this.x / other, this.y / other);
     } else {
-      return new Vec2(this.x / other.x, this.y / other.y);
+      return new Point(this.x / other.x, this.y / other.y);
     }
   }
 
-  dividedByMutate(other: Vec2 | number): this {
+  dividedByMutate(other: Point | number): this {
     if (typeof other === "number") {
       this.x /= other;
       this.y /= other;
@@ -83,18 +83,18 @@ export default class Vec2 {
     return this;
   }
 
-  equals(other: Vec2): boolean {
+  equals(other: Point): boolean {
     return this.x === other.x && this.y === other.y;
   }
 
-  distanceTo(other: Vec2): number {
+  distanceTo(other: Point): number {
     return Math.sqrt(
       Math.pow(other.x - this.x, 2) + Math.pow(other.y - this.y, 2)
     );
   }
 
-  round(): Vec2 {
-    return new Vec2(Math.round(this.x), Math.round(this.y));
+  round(): Point {
+    return new Point(Math.round(this.x), Math.round(this.y));
   }
 
   roundMutate(): this {
@@ -103,8 +103,8 @@ export default class Vec2 {
     return this;
   }
 
-  roundDown(): Vec2 {
-    return new Vec2(Math.floor(this.x), Math.floor(this.y));
+  roundDown(): Point {
+    return new Point(Math.floor(this.x), Math.floor(this.y));
   }
 
   roundDownMutate(): this {
@@ -113,8 +113,8 @@ export default class Vec2 {
     return this;
   }
 
-  roundUp(): Vec2 {
-    return new Vec2(Math.ceil(this.x), Math.ceil(this.y));
+  roundUp(): Point {
+    return new Point(Math.ceil(this.x), Math.ceil(this.y));
   }
 
   roundUpMutate(): this {
@@ -123,7 +123,7 @@ export default class Vec2 {
     return this;
   }
 
-  mutateInto(other: Vec2) {
+  mutateInto(other: Point) {
     this.x = other.x;
     this.y = other.y;
   }
@@ -140,14 +140,14 @@ export default class Vec2 {
       point.y = this.y;
       return point;
     } else {
-      throw new Error("Unable to convert Vec2 to DOMPoint on this browser");
+      throw new Error("Unable to convert Point to DOMPoint on this browser");
     }
   }
 
-  transformUsingMatrix(matrix: DOMMatrix): Vec2 {
+  transformUsingMatrix(matrix: DOMMatrix): Point {
     const domPoint = this.asDOMPoint();
     const transformed = domPoint.matrixTransform(matrix);
-    return new Vec2(transformed.x, transformed.y);
+    return new Point(transformed.x, transformed.y);
   }
 
   transformUsingMatrixMutate(matrix: DOMMatrix): this {

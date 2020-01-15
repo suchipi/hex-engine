@@ -5,7 +5,7 @@ import {
   useCallbackAsCurrent,
 } from "@hex-engine/core";
 import { useUpdate } from "../Canvas";
-import { Vec2 } from "../Models";
+import { Point } from "../Models";
 import { useContext, useEntityTransforms } from "../Hooks";
 
 const MOUSE_MOVE = Symbol("MOUSE_MOVE");
@@ -20,7 +20,7 @@ export default function Mouse() {
 
   const transforms = useEntityTransforms();
 
-  function translatePos(clientX: number, clientY: number): Vec2 {
+  function translatePos(clientX: number, clientY: number): Point {
     const rect = canvas.getBoundingClientRect();
     const scaleX = rect.width / canvas.width;
     const scaleY = rect.height / canvas.height;
@@ -28,7 +28,7 @@ export default function Mouse() {
     const x = (clientX - rect.left) / scaleX;
     const y = (clientY - rect.top) / scaleY;
 
-    const untransformedPoint = new Vec2(x, y);
+    const untransformedPoint = new Point(x, y);
 
     return transforms
       .asMatrix()
@@ -36,17 +36,17 @@ export default function Mouse() {
       .transformPoint(untransformedPoint);
   }
 
-  const moveState = useStateAccumulator<(pos: Vec2, delta: Vec2) => void>(
+  const moveState = useStateAccumulator<(pos: Point, delta: Point) => void>(
     MOUSE_MOVE
   );
-  const downState = useStateAccumulator<(pos: Vec2) => void>(MOUSE_DOWN);
-  const upState = useStateAccumulator<(pos: Vec2) => void>(MOUSE_UP);
+  const downState = useStateAccumulator<(pos: Point) => void>(MOUSE_DOWN);
+  const upState = useStateAccumulator<(pos: Point) => void>(MOUSE_UP);
 
   let pendingMove: null | (() => void) = null;
   let pendingDown: null | (() => void) = null;
   let pendingUp: null | (() => void) = null;
 
-  let lastPos = new Vec2(0, 0);
+  let lastPos = new Point(0, 0);
   const handleMouseMove = ({ clientX, clientY }: MouseEvent) => {
     pendingMove = () => {
       pendingMove = null;
@@ -107,13 +107,13 @@ export default function Mouse() {
   });
 
   return {
-    onMouseMove: (callback: (pos: Vec2, delta: Vec2) => void) => {
+    onMouseMove: (callback: (pos: Point, delta: Point) => void) => {
       moveState.add(useCallbackAsCurrent(callback));
     },
-    onMouseDown: (callback: (pos: Vec2) => void) => {
+    onMouseDown: (callback: (pos: Point) => void) => {
       downState.add(useCallbackAsCurrent(callback));
     },
-    onMouseUp: (callback: (pos: Vec2) => void) => {
+    onMouseUp: (callback: (pos: Point) => void) => {
       upState.add(useCallbackAsCurrent(callback));
     },
   };

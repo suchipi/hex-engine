@@ -1,6 +1,6 @@
 import { useNewComponent, useType } from "@hex-engine/core";
 import Image from "./Image";
-import { Vec2 } from "../Models";
+import { Point } from "../Models";
 
 type Props = {
   url: string;
@@ -14,7 +14,7 @@ export default function SpriteSheet({ url, tileWidth, tileHeight }: Props) {
   const image = useNewComponent(() => Image({ url }));
 
   return {
-    tileSize: new Vec2(tileWidth, tileHeight),
+    tileSize: new Point(tileWidth, tileHeight),
     draw(
       context: CanvasRenderingContext2D,
       {

@@ -1,7 +1,7 @@
 import { useType } from "@hex-engine/core";
 import { useInspectorHoverOutline } from "../Hooks";
 import { FontImplementation } from "./Font";
-import { Vec2 } from "../Models";
+import { Point } from "../Models";
 
 const textToTokens = (text: string): Array<string> => {
   return text
@@ -23,7 +23,7 @@ export default function TextBox({
   lineHeight: receivedLineHeight,
 }: {
   font: FontImplementation;
-  size: Vec2;
+  size: Point;
   lineHeight?: number;
 }) {
   useType(TextBox);
