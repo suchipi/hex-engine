@@ -44,7 +44,7 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
   useChild: (instance) => <T>(
     componentFactory: () => T
   ): EntityInterface & {
-    api: T extends {} ? T & ComponentInterface : ComponentInterface;
+    rootComponent: T extends {} ? T & ComponentInterface : ComponentInterface;
   } => {
     const ent = instance.entity;
     return Entity._create(componentFactory, ent);

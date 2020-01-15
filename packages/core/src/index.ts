@@ -20,7 +20,7 @@ const {
 const createRoot = <T>(
   componentFactory: () => T
 ): EntityInterface & {
-  api: T extends {} ? T & ComponentInterface : ComponentInterface;
+  rootComponent: T extends {} ? T & ComponentInterface : ComponentInterface;
 } => {
   return Entity._create(componentFactory);
 };

@@ -18,11 +18,11 @@ describe("@hex-engine/core", () => {
     expect(ent.removeChild).toBeInstanceOf(Function);
   });
 
-  test("root component api is written to rootEntity.api", () => {
+  test("root component api is written to rootEntity.rootComponent", () => {
     const ent = core.createRoot(() => {
       return { something: "yeah" };
     });
-    expect(ent.api.something).toBe("yeah");
+    expect(ent.rootComponent.something).toBe("yeah");
   });
 
   test("entity children (imperative API)", () => {
@@ -148,7 +148,7 @@ describe("@hex-engine/core", () => {
       return core.useStateAccumulator<number>(sym);
     });
 
-    const state = ent.api;
+    const state = ent.rootComponent;
     expect(state.all()).toEqual([]);
     state.add(4);
     expect(state.all()).toEqual([4]);
@@ -165,8 +165,8 @@ describe("@hex-engine/core", () => {
     const ent1 = core.createRoot(Component);
     const ent2 = core.createRoot(Component2);
 
-    expect(ent1.api.type).toBe(null);
-    expect(ent2.api.type).toBe(Component2);
+    expect(ent1.rootComponent.type).toBe(null);
+    expect(ent2.rootComponent.type).toBe(Component2);
 
     expect(ent1.getComponent(Component)).toBe(null);
     expect(ent2.getComponent(Component2)).not.toBe(null);
@@ -179,15 +179,15 @@ describe("@hex-engine/core", () => {
       };
     });
 
-    expect(ent.api.checkIfEnabled()).toBe(true);
+    expect(ent.rootComponent.checkIfEnabled()).toBe(true);
     ent.disable();
-    expect(ent.api.checkIfEnabled()).toBe(false);
+    expect(ent.rootComponent.checkIfEnabled()).toBe(false);
     ent.enable();
-    expect(ent.api.checkIfEnabled()).toBe(true);
-    ent.api.disable();
-    expect(ent.api.checkIfEnabled()).toBe(false);
-    ent.api.enable();
-    expect(ent.api.checkIfEnabled()).toBe(true);
+    expect(ent.rootComponent.checkIfEnabled()).toBe(true);
+    ent.rootComponent.disable();
+    expect(ent.rootComponent.checkIfEnabled()).toBe(false);
+    ent.rootComponent.enable();
+    expect(ent.rootComponent.checkIfEnabled()).toBe(true);
   });
 
   test("useEnableDisable - runs onEnabled on initial creation", () => {
@@ -215,11 +215,11 @@ describe("@hex-engine/core", () => {
 
     expect(messages).toEqual(["enabled"]);
 
-    ent.api.disable();
+    ent.rootComponent.disable();
 
     expect(messages).toEqual(["enabled", "disabled"]);
 
-    ent.api.enable();
+    ent.rootComponent.enable();
 
     expect(messages).toEqual(["enabled", "disabled", "enabled"]);
   });
