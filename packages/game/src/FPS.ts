@@ -15,6 +15,8 @@ export default function FPS() {
 
   let last10: Array<number> = [];
 
+  const documentTitle = document.title;
+
   useUpdate((delta) => {
     const fps = 1 / (delta / 1000);
 
@@ -27,6 +29,8 @@ export default function FPS() {
       last10.reduce((prev, curr) => prev + curr, 0) / last10.length;
 
     label.text = `${Math.round(average)}fps`;
+
+    document.title = `${documentTitle} (${label.text})`;
   });
 
   useDraw((context) => {
