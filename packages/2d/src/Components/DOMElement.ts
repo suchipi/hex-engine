@@ -1,7 +1,7 @@
 import { useType, useEntity } from "@hex-engine/core";
 import {
   useContext,
-  useOwnAndAncestorEntityTransforms,
+  useEntityTransforms,
   useDraw,
   useInspectorHoverOutline,
 } from "../Hooks";
@@ -45,7 +45,7 @@ export default function DOMElement({
     return matrix.scale(scaleX, scaleY, 0, 0);
   }
 
-  const transforms = useOwnAndAncestorEntityTransforms();
+  const transforms = useEntityTransforms();
 
   const state = {
     element,

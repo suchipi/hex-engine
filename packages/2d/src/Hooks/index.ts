@@ -3,7 +3,7 @@ import useContext from "./useContext";
 import useDraw from "./useDraw";
 import useFilledPixelBounds from "./useFilledPixelBounds";
 import useInspectorHoverOutline from "./useInspectorHoverOutline";
-import useOwnAndAncestorEntityTransforms from "./useOwnAndAncestorEntityTransforms";
+import useEntityTransforms from "./useEntityTransforms";
 
 export {
   useBackstage,
@@ -11,5 +11,5 @@ export {
   useDraw,
   useFilledPixelBounds,
   useInspectorHoverOutline,
-  useOwnAndAncestorEntityTransforms,
+  useEntityTransforms,
 };

@@ -6,7 +6,7 @@ import {
 } from "@hex-engine/core";
 import { useUpdate } from "../Canvas";
 import { Vec2 } from "../Models";
-import { useContext, useOwnAndAncestorEntityTransforms } from "../Hooks";
+import { useContext, useEntityTransforms } from "../Hooks";
 
 const MOUSE_MOVE = Symbol("MOUSE_MOVE");
 const MOUSE_DOWN = Symbol("MOUSE_DOWN");
@@ -18,7 +18,7 @@ export default function Mouse() {
   const context = useContext();
   const canvas: HTMLCanvasElement = context.canvas;
 
-  const transforms = useOwnAndAncestorEntityTransforms();
+  const transforms = useEntityTransforms();
 
   function translatePos(clientX: number, clientY: number): Vec2 {
     const rect = canvas.getBoundingClientRect();
