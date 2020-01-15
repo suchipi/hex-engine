@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "typescript": "^3.7.4",
-    "hex-engine-scripts": "0.0.2"
+    "hex-engine-scripts": "0.0.3"
   },
   "workspace-builder": "@workspace-builder/shell-command",
   "@workspace-builder/shell-command": {
