@@ -3,25 +3,25 @@ import { Vec2, TransformMatrix } from "../Models";
 import { Position, Origin, Rotation, Scale } from "../Components";
 
 function getEntityTransformMatrix(entity: Entity) {
-  let matrix = new TransformMatrix();
+  const matrix = new TransformMatrix();
 
   const position = entity.getComponent(Position) || new Vec2(0, 0);
 
   let origin: Vec2 | null = entity.getComponent(Origin);
   if (!origin) origin = new Vec2(0, 0);
   const drawPos = position.subtract(origin).round();
-  matrix = matrix.translate(drawPos);
+  matrix.translateMutate(drawPos);
 
   const rotation = entity.getComponent(Rotation);
   if (rotation) {
-    matrix = matrix.translate(origin);
-    matrix = matrix.rotate(rotation);
-    matrix = matrix.translate(-origin.x, -origin.y);
+    matrix.translateMutate(origin);
+    matrix.rotateMutate(rotation);
+    matrix.translateMutate(-origin.x, -origin.y);
   }
 
   const scale = entity.getComponent(Scale);
   if (scale) {
-    matrix.scale(scale, origin);
+    matrix.scaleMutate(scale, origin);
   }
 
   return matrix;
@@ -32,11 +32,11 @@ export default function useEntityTransforms() {
     const entity = useEntity();
     const ancestors = entity.ancestors();
 
-    let matrix = new TransformMatrix();
+    const matrix = new TransformMatrix();
     for (const ancestor of ancestors) {
-      matrix = matrix.times(getEntityTransformMatrix(ancestor));
+      matrix.timesMutate(getEntityTransformMatrix(ancestor));
     }
-    matrix = matrix.times(getEntityTransformMatrix(entity));
+    matrix.timesMutate(getEntityTransformMatrix(entity));
 
     return matrix;
   });

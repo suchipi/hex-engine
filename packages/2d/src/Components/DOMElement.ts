@@ -42,7 +42,7 @@ export default function DOMElement({
     const scaleX = parseFloat(canvas.style.width) / canvas.width;
     const scaleY = parseFloat(canvas.style.height) / canvas.height;
 
-    return matrix.scale(scaleX, scaleY, 0, 0);
+    return matrix.scaleMutate(scaleX, scaleY, 0, 0);
   }
 
   const transforms = useEntityTransforms();
@@ -53,7 +53,7 @@ export default function DOMElement({
   };
 
   useDraw(() => {
-    const realMatrix = canvasScaleMatrix().times(transforms.asMatrix());
+    const realMatrix = canvasScaleMatrix().timesMutate(transforms.asMatrix());
 
     element.style.width = size.x + "px";
     element.style.height = size.y + "px";

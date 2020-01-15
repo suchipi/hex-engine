@@ -64,6 +64,50 @@ export default class TransformMatrix {
     );
   }
 
+  scaleMutate(size: Vec2, origin: Vec2): this;
+  scaleMutate(
+    sizeX: number,
+    sizeY: number,
+    originX: number,
+    originY: number
+  ): this;
+  scaleMutate(...args: Array<any>): this {
+    let sizeX: number, sizeY: number, originX: number, originY: number;
+    if (args.length === 2) {
+      sizeX = args[0].x;
+      sizeY = args[0].y;
+      originX = args[1].x;
+      originY = args[1].y;
+    } else {
+      sizeX = args[0];
+      sizeY = args[1];
+      originX = args[2];
+      originY = args[3];
+    }
+
+    if (typeof this._matrix.scaleSelf === "function") {
+      this._matrix.scaleSelf(
+        sizeX,
+        sizeY,
+        undefined,
+        originX,
+        originY,
+        undefined
+      );
+    } else {
+      this._matrix = this._matrix.scale(
+        sizeX,
+        sizeY,
+        undefined,
+        originX,
+        originY,
+        undefined
+      );
+    }
+
+    return this;
+  }
+
   translate(pos: Vec2): TransformMatrix;
   translate(x: number, y: number): TransformMatrix;
   translate(posOrX: Vec2 | number, maybeY?: number): TransformMatrix {
@@ -79,15 +123,47 @@ export default class TransformMatrix {
     return TransformMatrix.fromDOMMatrix(this._matrix.translate(x, y));
   }
 
+  translateMutate(pos: Vec2): this;
+  translateMutate(x: number, y: number): this;
+  translateMutate(posOrX: Vec2 | number, maybeY?: number): this {
+    let x: number, y: number;
+    if (typeof posOrX === "number") {
+      x = posOrX;
+      y = maybeY!;
+    } else {
+      x = (posOrX as Vec2).x;
+      y = (posOrX as Vec2).y;
+    }
+
+    if (typeof this._matrix.translateSelf === "function") {
+      this._matrix.translateSelf(x, y);
+    } else {
+      this._matrix = this._matrix.translate(x, y);
+    }
+
+    return this;
+  }
+
   rotate(radians: Angle | number): TransformMatrix {
     const rotation = typeof radians === "number" ? radians : radians.radians;
-    const degrees = (rotation * 180) / Math.PI;
     // canvas `rotate` uses radians, DOMMatrix uses degrees.
+    const degrees = (rotation * 180) / Math.PI;
+
     return TransformMatrix.fromDOMMatrix(this._matrix.rotate(degrees));
   }
 
-  multiply(other: TransformMatrix | DOMMatrix): TransformMatrix {
-    return this.times(other);
+  rotateMutate(radians: Angle | number): this {
+    const rotation = typeof radians === "number" ? radians : radians.radians;
+    // canvas `rotate` uses radians, DOMMatrix uses degrees.
+    const degrees = (rotation * 180) / Math.PI;
+
+    if (typeof this._matrix.rotateSelf === "function") {
+      this._matrix.rotateSelf(degrees);
+    } else {
+      this._matrix = this._matrix.rotate(degrees);
+    }
+
+    return this;
   }
 
   times(other: TransformMatrix | DOMMatrix): TransformMatrix {
@@ -97,6 +173,19 @@ export default class TransformMatrix {
     return TransformMatrix.fromDOMMatrix(this._matrix.multiply(otherDomMatrix));
   }
 
+  timesMutate(other: TransformMatrix | DOMMatrix): this {
+    const otherDomMatrix =
+      other instanceof TransformMatrix ? other._matrix : other;
+
+    if (typeof this._matrix.multiplySelf === "function") {
+      this._matrix.multiplySelf(otherDomMatrix);
+    } else {
+      this._matrix = this._matrix.multiply(otherDomMatrix);
+    }
+
+    return this;
+  }
+
   transformPoint(point: Vec2): Vec2 {
     const domPoint = point.asDOMPoint().matrixTransform(this._matrix);
     return new Vec2(domPoint.x, domPoint.y);
@@ -104,6 +193,16 @@ export default class TransformMatrix {
 
   inverse(): TransformMatrix {
     return TransformMatrix.fromDOMMatrix(this._matrix.inverse());
+  }
+
+  inverseMutate(): this {
+    if (typeof this._matrix.invertSelf === "function") {
+      this._matrix.invertSelf();
+    } else {
+      this._matrix = this._matrix.inverse();
+    }
+
+    return this;
   }
 
   get a() {
