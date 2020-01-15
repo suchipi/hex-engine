@@ -5,15 +5,15 @@ import {
   Label,
   useType,
 } from "@hex-engine/2d";
-import useGameFont from "../Hooks/useGameFont";
-
-let last10: Array<number> = [];
+import useGameFont from "./useGameFont";
 
 export default function FPS() {
   useType(FPS);
 
   const font = useGameFont();
   const label = useNewComponent(() => Label({ text: "0fps", font }));
+
+  let last10: Array<number> = [];
 
   useUpdate((delta) => {
     const fps = 1 / (delta / 1000);

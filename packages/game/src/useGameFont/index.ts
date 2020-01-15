@@ -3,15 +3,10 @@ import {
   BMFont,
   ImageFilter,
   useBackstage,
-  // SystemFont,
 } from "@hex-engine/2d";
 import silver from "./silver.fnt";
 
 export default function useGameFont() {
-  // return useNewComponent(() =>
-  //   SystemFont({ name: "Yu Mincho Regular", size: 12 })
-  // );
-
   const font = useNewComponent(() => BMFont(silver));
 
   const filter = useNewComponent(() =>

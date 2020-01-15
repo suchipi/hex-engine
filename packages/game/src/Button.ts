@@ -10,7 +10,7 @@ import {
   useType,
   useInspectorHoverOutline,
 } from "@hex-engine/2d";
-import useGameFont from "../Hooks/useGameFont";
+import useGameFont from "./useGameFont";
 
 export default function Button({
   calcPosition,
