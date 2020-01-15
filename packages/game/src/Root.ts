@@ -38,4 +38,19 @@ export default function Root() {
       })
     );
   });
+
+  useChild(() => {
+    useNewComponent(() =>
+      Button({
+        calcPosition: (size) =>
+          new Vec2(canvas.element.width, canvas.element.height).subtractMutate(
+            size
+          ),
+        text: "Font: Silver by Poppy Works",
+        onClick: () => {
+          window.open("https://poppyworks.itch.io/silver", "_blank");
+        },
+      })
+    );
+  });
 }
