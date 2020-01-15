@@ -3,12 +3,20 @@ set -e
 
 export PATH="./node_modules/.bin:$PATH"
 
-./scripts/build-core.sh
-./scripts/build-inspector.sh
-./scripts/build-2d.sh
+cd packages/core
+yarn build
+cd ../..
+
+cd packages/inspector
+yarn build
+cd ../..
+
+cd packages/2d
+yarn build
+cd ../..
 
 concurrently \
-  'chokidar "packages/core/src/**/*" -c "./scripts/build-core.sh"'\
-  'chokidar "packages/2d/src/**/*" -c "./scripts/build-2d.sh"'\
-  'chokidar "packages/inspector/src/**/*" -c "./scripts/build-inspector.sh"'\
+  'cd packages/core && chokidar "src/**/*" -c "yarn build"'\
+  'cd packages/2d && chokidar "src/**/*" -c "yarn build"'\
+  'cd packages/inspector && chokidar "src/**/*" -c "yarn build"'\
   'webpack-dev-server --mode development'

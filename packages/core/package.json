@@ -7,5 +7,8 @@
   "sideEffects": false,
   "dependencies": {
     "concubine": "^1.0.2"
+  },
+  "scripts": {
+    "build": "babel --extensions '.ts,.tsx,.js,.jsx' --config-file ../../babel.config.js src --out-dir dist"
   }
 }

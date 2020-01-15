@@ -3,10 +3,18 @@ set -e
 
 export PATH="./node_modules/.bin:../node_modules/.bin:../../node_modules/.bin:$PATH"
 
-./scripts/build-core.sh
-./scripts/build-inspector.sh
-./scripts/build-2d.sh
+cd packages/core
+yarn build
+cd ../..
+
+cd packages/inspector
+yarn build
+cd ../..
+
+cd packages/2d
+yarn build
+cd ../..
 
 cd packages/game
-env NODE_ENV=production webpack --mode production
+yarn build
 cd ../..
