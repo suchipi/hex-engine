@@ -54,6 +54,8 @@ const CANVAS_COMPOSITE_OPERATIONS_BY_BLEND_MODE: { [mode: number]: string } = {
   // 18: "Divide",
 };
 
+const frameCache = new WeakMap();
+
 export default function Aseprite(data: AsepriteLoader.Data) {
   useType(Aseprite);
 
@@ -129,6 +131,10 @@ export default function Aseprite(data: AsepriteLoader.Data) {
   }
 
   function convertFrameToImage(frame: AsepriteLoader.Frame): HTMLCanvasElement {
+    if (frameCache.has(frame)) {
+      return frameCache.get(frame);
+    }
+
     const canvas = document.createElement("canvas");
     canvas.width = size.x;
     canvas.height = size.y;
@@ -181,6 +187,7 @@ export default function Aseprite(data: AsepriteLoader.Data) {
       context.restore();
     }
 
+    frameCache.set(frame, canvas);
     return canvas;
   }
 
