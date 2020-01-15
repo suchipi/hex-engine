@@ -5,6 +5,7 @@ import {
   Component,
 } from "@hex-engine/core";
 import Animation, { AnimationFrame, AnimationAPI } from "./Animation";
+import { Vec2 } from "../Models";
 
 const LAYER_BLEND_MODES: { [mode: number]: string } = {
   0: "Normal",
@@ -56,52 +57,33 @@ const CANVAS_COMPOSITE_OPERATIONS_BY_BLEND_MODE: { [mode: number]: string } = {
 export default function Aseprite(data: AsepriteLoader.Data) {
   useType(Aseprite);
 
-  const animations: {
-    [name: string]: AnimationAPI<AsepriteLoader.Frame> & Component;
-  } = {};
-
-  animations.default = useNewComponent(() =>
-    Animation(
-      data.frames.map(
-        (frame) => new AnimationFrame(frame, { duration: frame.frameDuration })
-      )
-    )
-  );
-
-  for (const tag of data.tags) {
-    let frames = data.frames.slice(tag.from, tag.to + 1);
-    if (tag.animDirection === "Reverse") {
-      frames.reverse();
-    } else if (tag.animDirection === "Ping-pong") {
-      frames = frames.concat(
-        frames
-          .slice(1)
-          .reverse()
-          .slice(1)
-      );
-    }
-
-    animations[tag.name] = useNewComponent(() =>
-      Animation(
-        frames.map(
-          (frame) =>
-            new AnimationFrame(frame, { duration: frame.frameDuration })
+  const maxW = data.frames.reduce(
+    (prevFrameVal, frame) =>
+      Math.max(
+        prevFrameVal,
+        frame.cels.reduce(
+          (prevCelVal, cel) => Math.max(prevCelVal, cel.w + cel.xpos),
+          0
         )
-      )
-    );
-  }
+      ),
+    0
+  );
+  const maxH = data.frames.reduce(
+    (prevFrameVal, frame) =>
+      Math.max(
+        prevFrameVal,
+        frame.cels.reduce(
+          (prevCelVal, cel) => Math.max(prevCelVal, cel.h + cel.ypos),
+          0
+        )
+      ),
+    0
+  );
+  const size = new Vec2(maxW, maxH);
 
-  let currentAnim = animations.default;
-
-  const { onEnabled, onDisabled } = useEnableDisable();
-
-  onEnabled(() => {
-    Object.values(animations).forEach((animation) => animation.enable());
-  });
-
-  onDisabled(() => {
-    Object.values(animations).forEach((animation) => animation.disable());
-  });
+  const animations: {
+    [name: string]: AnimationAPI<HTMLCanvasElement> & Component;
+  } = {};
 
   function colorAtPixel(cel: AsepriteLoader.Cel, x: number, y: number): string {
     if (data.colorDepth === 32) {
@@ -146,16 +128,14 @@ export default function Aseprite(data: AsepriteLoader.Data) {
     }
   }
 
-  function drawCurrentFrameIntoContext({
-    context,
-    x = 0,
-    y = 0,
-  }: {
-    context: CanvasRenderingContext2D;
-    x?: number | void;
-    y?: number | void;
-  }) {
-    const frame = currentAnim.currentFrame.data;
+  function convertFrameToImage(frame: AsepriteLoader.Frame): HTMLCanvasElement {
+    const canvas = document.createElement("canvas");
+    canvas.width = size.x;
+    canvas.height = size.y;
+    const context = canvas.getContext("2d");
+    if (!context) {
+      throw new Error("Couldn't get 2d context for canvas");
+    }
 
     const celsSortedByLayerIndex = frame.cels.sort(
       (celA, celB) => celA.layerIndex - celB.layerIndex
@@ -188,7 +168,7 @@ export default function Aseprite(data: AsepriteLoader.Data) {
         }
       }
 
-      context.translate(x + cel.xpos, y + cel.ypos);
+      context.translate(cel.xpos, cel.ypos);
       context.globalAlpha = alpha;
 
       for (let i = 0; i < cel.w; i++) {
@@ -200,6 +180,70 @@ export default function Aseprite(data: AsepriteLoader.Data) {
 
       context.restore();
     }
+
+    return canvas;
+  }
+
+  animations.default = useNewComponent(() =>
+    Animation(
+      data.frames.map(
+        (frame) =>
+          new AnimationFrame(convertFrameToImage(frame), {
+            duration: frame.frameDuration,
+          })
+      )
+    )
+  );
+
+  for (const tag of data.tags) {
+    let frames = data.frames.slice(tag.from, tag.to + 1);
+    if (tag.animDirection === "Reverse") {
+      frames.reverse();
+    } else if (tag.animDirection === "Ping-pong") {
+      frames = frames.concat(
+        frames
+          .slice(1)
+          .reverse()
+          .slice(1)
+      );
+    }
+
+    animations[tag.name] = useNewComponent(() =>
+      Animation(
+        frames.map(
+          (frame) =>
+            new AnimationFrame(convertFrameToImage(frame), {
+              duration: frame.frameDuration,
+            })
+        )
+      )
+    );
+  }
+
+  let currentAnim = animations.default;
+
+  const { onEnabled, onDisabled } = useEnableDisable();
+
+  onEnabled(() => {
+    Object.values(animations).forEach((animation) => animation.enable());
+  });
+
+  onDisabled(() => {
+    Object.values(animations).forEach((animation) => animation.disable());
+  });
+
+  function drawCurrentFrameIntoContext({
+    context,
+    x = 0,
+    y = 0,
+  }: {
+    context: CanvasRenderingContext2D;
+    x?: number | void;
+    y?: number | void;
+  }) {
+    const frame = currentAnim.currentFrame.data;
+
+    context.drawImage(frame, x, y);
   }
 
   return {
@@ -213,5 +257,6 @@ export default function Aseprite(data: AsepriteLoader.Data) {
     animations,
 
     drawCurrentFrameIntoContext,
+    size,
   };
 }
