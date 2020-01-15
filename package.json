@@ -43,7 +43,7 @@
     "build": "workspace-builder",
     "watch": "workspace-builder watch",
     "start": "yarn watch",
-    "test": "jest"
+    "test": "yarn clean && tsc --noEmit && jest"
   },
   "dependencies": {
     "core-js": "^3.6.1",

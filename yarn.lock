@@ -2003,7 +2003,7 @@
   dependencies:
     "@types/lodash" "*"
 
-"@types/lodash@*":
+"@types/lodash@*", "@types/lodash@^4.14.149":
   version "4.14.149"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.149.tgz#1342d63d948c6062838fbf961012f74d4e638440"
   integrity sha512-ijGqzZt/b7BfzcK9vTrS6MFljQRPn5BFWOx8oE0GYxribu6uV+aA9zZuXI1zc/etK9E8nrgdoF2+LgUw7+9tJQ==
@@ -2023,14 +2023,14 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
   integrity sha512-KfRL3PuHmqQLOG+2tGpRO26Ctg+Cq1E01D2DMriKEATHgWLfeNDmq9e29Q9WIky0dQ3NPkd1mzYH8Lm936Z9qw==
 
-"@types/react-dom@^16.9.4":
+"@types/react-dom@^16.8.3", "@types/react-dom@^16.9.4":
   version "16.9.4"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.4.tgz#0b58df09a60961dcb77f62d4f1832427513420df"
   integrity sha512-fya9xteU/n90tda0s+FtN5Ym4tbgxpq/hb/Af24dvs6uYnYn+fspaxw5USlw0R8apDNwxsqumdRoCoKitckQqw==
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^16.9.17":
+"@types/react@*", "@types/react@^16.8.8", "@types/react@^16.9.17":
   version "16.9.17"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.17.tgz#58f0cc0e9ec2425d1441dd7b623421a867aa253e"
   integrity sha512-UP27In4fp4sWF5JgyV6pwVPAQM83Fj76JOcg02X5BZcpSu5Wx+fP9RMqc2v0ssBoQIFvD5JdKY41gjJJKmw6Bg==
@@ -7147,11 +7147,14 @@ react-is@^16.8.1, react-is@^16.8.4:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
-react-state-tree@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/react-state-tree/-/react-state-tree-0.1.0.tgz#82d088bad2b779ad9e9e696615206771b9ac2fe3"
-  integrity sha512-g9435kTRRRGBliF9zqL3HRMpVk8MI+s0Wzs2xDhCXmSx85zVPaU/Ol4arjMGEHSd/YSsYXuOruWbJ4hvretnFw==
+react-state-tree@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/react-state-tree/-/react-state-tree-0.1.1.tgz#840397a0de8f41c7db267ff0e8fc983dade1cf74"
+  integrity sha512-7o0l8Ly1eBO2MQewI1AmBbXyGZLYhJCOfadnfifFAO5atLehmAhyR/YW+tyhiC1KhWGyZxIAzAkIZUjRY7///w==
   dependencies:
+    "@types/lodash" "^4.14.149"
+    "@types/react" "^16.8.8"
+    "@types/react-dom" "^16.8.3"
     immer "^2.1.4"
     lodash "^4.17.11"
 

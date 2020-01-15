@@ -4,7 +4,6 @@ import {
   Vec2,
   Aseprite,
   useDraw,
-  BoundingBox,
   ImageFilter,
   useType,
 } from "@hex-engine/2d";
@@ -27,7 +26,6 @@ export default function Balloon({
   useType(Balloon);
 
   useNewComponent(() => Position(new Vec2(x, y)));
-  const size = useNewComponent(() => BoundingBox(new Vec2(16, 16)));
 
   const aseprite = useNewComponent(() => Aseprite(sprite));
 

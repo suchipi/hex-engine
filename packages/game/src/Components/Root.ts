@@ -6,7 +6,6 @@ import {
   useNewComponent,
   useChild,
   useType,
-  useEntityName,
 } from "@hex-engine/2d";
 import Level1 from "./Level1";
 import FPS from "./FPS";
