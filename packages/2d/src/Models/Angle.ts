@@ -46,11 +46,37 @@ export default class Angle {
     return vector.toVec2();
   }
 
-  add(amount: number) {
-    return new Angle(this.radians + amount);
+  add(amount: number | Angle): Angle {
+    if (typeof amount === "number") {
+      return new Angle(this.radians + amount);
+    } else {
+      return new Angle(this.radians + amount.radians);
+    }
   }
 
-  subtract(amount: number) {
-    return new Angle(this.radians - amount);
+  addMutate(amount: number | Angle): this {
+    if (typeof amount === "number") {
+      this.radians += amount;
+    } else {
+      this.radians += amount.radians;
+    }
+    return this;
+  }
+
+  subtract(amount: number | Angle): Angle {
+    if (typeof amount === "number") {
+      return new Angle(this.radians - amount);
+    } else {
+      return new Angle(this.radians - amount.radians);
+    }
+  }
+
+  subtractMutate(amount: number | Angle): this {
+    if (typeof amount === "number") {
+      this.radians -= amount;
+    } else {
+      this.radians -= amount.radians;
+    }
+    return this;
   }
 }
