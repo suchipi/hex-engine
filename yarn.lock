@@ -7972,10 +7972,10 @@ xml-parse-from-string@^1.0.0:
   resolved "https://registry.yarnpkg.com/xml-parse-from-string/-/xml-parse-from-string-1.0.1.tgz#a9029e929d3dbcded169f3c6e28238d95a5d5a28"
   integrity sha1-qQKekp09vN7RafPG4oI42VpdWig=
 
-xml-source-loader@0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/xml-source-loader/-/xml-source-loader-0.1.1.tgz#fe112df91f8653846695005fc29417a622098d94"
-  integrity sha512-E9PMPPFP022gQWSoCgcCl94Mi2YHe1ZwYCZsPMIsm3JswUtCqD7iIqm89L4f6/dsgsDFS8PnT1ALwPoCBEC+Jg==
+xml-source-loader@0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/xml-source-loader/-/xml-source-loader-0.1.2.tgz#87a24e7c9450d00dce2ca0f83637a980d3f2d65e"
+  integrity sha512-Cu03UCBR7dcaWLqLpSstZc9Sc/Vev+4bE39aJQYrH8bLDNvATNk4aQ7l8LSt0vQHOYKRpS/3kng+UtjQX5wkLg==
   dependencies:
     "@babel/generator" "^7.7.7"
     "@babel/template" "^7.7.4"

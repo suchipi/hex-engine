@@ -35,7 +35,7 @@
     "webpack": "^4.41.4",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.10.1",
-    "xml-source-loader": "0.1.1"
+    "xml-source-loader": "0.1.2"
   },
   "scripts": {
     "clean": "rm -rf packages/*/dist",
