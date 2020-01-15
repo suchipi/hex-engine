@@ -5,10 +5,10 @@ import { Vec2 } from "../Models";
 import { useInspectorHoverOutline } from "../Hooks";
 
 export default function Label({
-  text,
+  text = "",
   font,
 }: {
-  text: string;
+  text?: string;
   font: FontImplementation;
 }) {
   useType(Label);
