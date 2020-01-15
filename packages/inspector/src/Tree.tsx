@@ -339,9 +339,6 @@ export default function Tree({
     } else if (data._kind === "grid") {
       className = `Grid (${data.size.x}, ${data.size.y})`;
       content = entriesForProperties(gatherPropertyNames(data));
-    } else if (data._kind === "Vec2") {
-      className = `Vec2 (${data.x}, ${data.y})`;
-      content = entriesForProperties(gatherPropertyNames(data));
     } else {
       className = data.constructor?.name || "";
       content = entriesForProperties(gatherPropertyNames(data));
