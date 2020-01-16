@@ -49,7 +49,7 @@ export default class Point {
     return this;
   }
 
-  times(other: Point | number): Point {
+  multiply(other: Point | number): Point {
     if (typeof other === "number") {
       return new Point(this.x * other, this.y * other);
     } else {
@@ -57,7 +57,7 @@ export default class Point {
     }
   }
 
-  timesMutate(other: Point | number): this {
+  multiplyMutate(other: Point | number): this {
     if (typeof other === "number") {
       this.x *= other;
       this.y *= other;
@@ -68,7 +68,7 @@ export default class Point {
     return this;
   }
 
-  dividedBy(other: Point | number): Point {
+  divide(other: Point | number): Point {
     if (typeof other === "number") {
       return new Point(this.x / other, this.y / other);
     } else {
@@ -76,7 +76,7 @@ export default class Point {
     }
   }
 
-  dividedByMutate(other: Point | number): this {
+  divideMutate(other: Point | number): this {
     if (typeof other === "number") {
       this.x /= other;
       this.y /= other;

@@ -13,7 +13,7 @@ import hexSprite from "./hex.aseprite";
 export default function Hex({ position }: { position: Point }) {
   const aseprite = useNewComponent(() => Aseprite(hexSprite));
 
-  useNewComponent(() => Origin(aseprite.size.dividedBy(2)));
+  useNewComponent(() => Origin(aseprite.size.divide(2)));
   useNewComponent(() => Position(position));
   const rotation = useNewComponent(Rotation);
 

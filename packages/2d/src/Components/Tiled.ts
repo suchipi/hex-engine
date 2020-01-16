@@ -247,7 +247,8 @@ function makeTiledObject(object: XMLSourceLoader.Element): TiledObjectApi {
         .split(" ")
         .map((pairString: string) => pairString.split(","))
         .map(
-          (pair: [string, string]) => new Point(Number(pair[0]), Number(pair[1]))
+          (pair: [string, string]) =>
+            new Point(Number(pair[0]), Number(pair[1]))
         ),
     };
   }
@@ -298,7 +299,7 @@ function TiledMap(data: XMLSourceLoader.Element) {
     0
   );
   const sizeInTiles = new Point(maxX, maxY);
-  const sizeInPixels = sizeInTiles.times(tileset.spriteSheet.tileSize);
+  const sizeInPixels = sizeInTiles.multiply(tileset.spriteSheet.tileSize);
 
   const objectGroups = data.children
     ? data.children.filter(

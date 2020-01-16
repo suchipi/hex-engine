@@ -27,7 +27,7 @@ export default function Root() {
           new Point(
             canvas.element.width / 2,
             canvas.element.height / 2
-          ).subtractMutate(size.dividedBy(2)),
+          ).subtractMutate(size.divide(2)),
         text: "Create Hex",
         onClick: () => {
           const randomX = Math.random() * canvas.element.width;

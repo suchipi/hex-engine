@@ -34,9 +34,9 @@ export default function useEntityTransforms() {
 
     const matrix = new TransformMatrix();
     for (const ancestor of ancestors) {
-      matrix.timesMutate(getEntityTransformMatrix(ancestor));
+      matrix.multiplyMutate(getEntityTransformMatrix(ancestor));
     }
-    matrix.timesMutate(getEntityTransformMatrix(entity));
+    matrix.multiplyMutate(getEntityTransformMatrix(entity));
 
     return matrix;
   });

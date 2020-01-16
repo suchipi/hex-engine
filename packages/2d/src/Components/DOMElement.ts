@@ -53,7 +53,9 @@ export default function DOMElement({
   };
 
   useDraw(() => {
-    const realMatrix = canvasScaleMatrix().timesMutate(transforms.asMatrix());
+    const realMatrix = canvasScaleMatrix().multiplyMutate(
+      transforms.asMatrix()
+    );
 
     element.style.width = size.x + "px";
     element.style.height = size.y + "px";

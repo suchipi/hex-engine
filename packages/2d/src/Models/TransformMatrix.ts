@@ -166,14 +166,14 @@ export default class TransformMatrix {
     return this;
   }
 
-  times(other: TransformMatrix | DOMMatrix): TransformMatrix {
+  multiply(other: TransformMatrix | DOMMatrix): TransformMatrix {
     const otherDomMatrix =
       other instanceof TransformMatrix ? other._matrix : other;
 
     return TransformMatrix.fromDOMMatrix(this._matrix.multiply(otherDomMatrix));
   }
 
-  timesMutate(other: TransformMatrix | DOMMatrix): this {
+  multiplyMutate(other: TransformMatrix | DOMMatrix): this {
     const otherDomMatrix =
       other instanceof TransformMatrix ? other._matrix : other;
 
