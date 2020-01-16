@@ -30,10 +30,9 @@ function getEntityTransformMatrixForContext(entity: Entity) {
 
   // It's easier to draw things from the top-left, so move
   // the canvas there instead of to the center.
-  const topLeft = new Point(
-    geometry.shape.width / 2,
-    geometry.shape.height / 2
-  ).oppositeMutate();
+  const topLeft = new Point(geometry.shape.width / 2, geometry.shape.height / 2)
+    .oppositeMutate()
+    .roundMutate();
   matrix.translateMutate(topLeft);
 
   matrix.scaleMutate(geometry.scale, topLeft.opposite());
