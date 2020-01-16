@@ -7,6 +7,10 @@ export default class Point {
     this.y = y;
   }
 
+  clone(): Point {
+    return new Point(this.x, this.y);
+  }
+
   add(other: Point | number): Point {
     if (typeof other === "number") {
       return new Point(this.x + other, this.y + other);

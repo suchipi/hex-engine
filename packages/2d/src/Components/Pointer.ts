@@ -23,7 +23,7 @@ export default function Pointer({ bounds }: { bounds: Point }) {
   function pointIsWithinBounds(point: Point) {
     const origin = useEntity().getComponent(Origin) || new Point(0, 0);
 
-    const topLeft = new Point(0, 0).subtract(origin);
+    const topLeft = new Point(0, 0).subtractMutate(origin);
     const bottomRight = topLeft.add(bounds);
 
     return (

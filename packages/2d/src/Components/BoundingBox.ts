@@ -1,7 +1,7 @@
 import { useType } from "@hex-engine/core";
 import { Point } from "../Models";
 
-export default function BoundingBox(vec2: Point) {
+export default function BoundingBox(point: Point) {
   useType(BoundingBox);
-  return vec2;
+  return point.clone();
 }

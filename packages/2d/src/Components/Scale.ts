@@ -19,9 +19,9 @@ const Scale: ScaleFunc = (...args: any[]) => {
       x = args[0];
       y = args[0];
     } else {
-      const vec2 = args[0];
-      x = vec2.x;
-      y = vec2.y;
+      const point = args[0];
+      x = point.x;
+      y = point.y;
     }
   } else if (args.length === 2) {
     x = args[0];
