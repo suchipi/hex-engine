@@ -6,7 +6,6 @@ import {
   useInspectorHoverOutline,
 } from "../Hooks";
 import { Point, TransformMatrix } from "../Models";
-import Origin from "./Origin";
 
 export default function DOMElement({
   size,
@@ -25,6 +24,7 @@ export default function DOMElement({
   element.style.position = "absolute";
   element.style.top = "0";
   element.style.left = "0";
+  element.style.transformOrigin = "center";
 
   const canvas = useContext().canvas;
   if (canvas.parentElement) {
@@ -60,10 +60,6 @@ export default function DOMElement({
     element.style.width = size.x + "px";
     element.style.height = size.y + "px";
 
-    const origin = useEntity().getComponent(Origin);
-    element.style.transformOrigin = origin
-      ? `${origin.x}px ${origin.y}px`
-      : "top left";
     element.style.transform = `matrix(${realMatrix.a}, ${realMatrix.b}, ${realMatrix.c}, ${realMatrix.d}, ${realMatrix.e}, ${realMatrix.f})`;
   });
 

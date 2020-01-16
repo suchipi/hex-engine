@@ -1,53 +1,75 @@
 import { useCallbackAsCurrent, useEntity, Entity } from "@hex-engine/core";
 import { Point, TransformMatrix } from "../Models";
-import { Position, Origin, Rotation, Scale } from "../Components";
+import { Geometry } from "../Components";
 
 function getEntityTransformMatrix(entity: Entity) {
   const matrix = new TransformMatrix();
 
-  const position = entity.getComponent(Position) || new Point(0, 0);
-
-  let origin: Point | null = entity.getComponent(Origin);
-  if (!origin) origin = new Point(0, 0);
-  const drawPos = position.subtract(origin).round();
-  matrix.translateMutate(drawPos);
-
-  const rotation = entity.getComponent(Rotation);
-  if (rotation) {
-    matrix.translateMutate(origin);
-    matrix.rotateMutate(rotation);
-    matrix.translateMutate(-origin.x, -origin.y);
+  const geometry = entity.getComponent(Geometry);
+  if (!geometry) {
+    return matrix;
   }
 
-  const scale = entity.getComponent(Scale);
-  if (scale) {
-    matrix.scaleMutate(scale, origin);
+  matrix.translateMutate(geometry.position);
+  matrix.rotateMutate(geometry.rotation);
+  matrix.scaleMutate(geometry.scale, new Point(0, 0));
+
+  return matrix;
+}
+
+function getEntityTransformMatrixForContext(entity: Entity) {
+  const matrix = new TransformMatrix();
+
+  const geometry = entity.getComponent(Geometry);
+  if (!geometry) {
+    return matrix;
   }
+
+  matrix.translateMutate(geometry.position.round());
+  matrix.rotateMutate(geometry.rotation);
+
+  // It's easier to draw things from the top-left, so move
+  // the canvas there instead of to the center.
+  const topLeft = new Point(
+    geometry.shape.width / 2,
+    geometry.shape.height / 2
+  ).oppositeMutate();
+  matrix.translateMutate(topLeft);
+
+  matrix.scaleMutate(geometry.scale, topLeft.opposite());
 
   return matrix;
 }
 
 export default function useEntityTransforms() {
-  const asMatrix = useCallbackAsCurrent(() => {
-    const entity = useEntity();
-    const ancestors = entity.ancestors();
+  const asMatrix = useCallbackAsCurrent(
+    (getTransform: typeof getEntityTransformMatrix) => {
+      const entity = useEntity();
+      const ancestors = entity.ancestors();
 
-    const matrix = new TransformMatrix();
-    for (const ancestor of ancestors) {
-      matrix.multiplyMutate(getEntityTransformMatrix(ancestor));
+      const matrix = new TransformMatrix();
+      for (const ancestor of ancestors) {
+        matrix.multiplyMutate(getTransform(ancestor));
+      }
+      matrix.multiplyMutate(getTransform(entity));
+
+      return matrix;
     }
-    matrix.multiplyMutate(getEntityTransformMatrix(entity));
-
-    return matrix;
-  });
+  );
 
   return {
-    asMatrix,
+    asMatrix: asMatrix.bind(null, getEntityTransformMatrix),
     applyToContext: useCallbackAsCurrent(
       (context: CanvasRenderingContext2D) => {
         context.save();
 
-        const matrix = asMatrix();
+        const entity = useEntity();
+        const geometry = entity.getComponent(Geometry);
+        if (!geometry) {
+          return;
+        }
+
+        const matrix = asMatrix(getEntityTransformMatrixForContext);
 
         context.transform(
           matrix.a,

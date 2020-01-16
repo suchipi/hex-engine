@@ -6,7 +6,7 @@ import {
   useEntity,
 } from "@hex-engine/core";
 import Mouse from "./Mouse";
-import Origin from "./Origin";
+import Geometry from "./Geometry";
 import { Point } from "../Models";
 
 const ON_ENTER = Symbol("ON_ENTER");
@@ -17,21 +17,14 @@ const ON_UP = Symbol("ON_UP");
 const ON_CLICK = Symbol("ON_CLICK");
 type Callback = (pos: Point) => void;
 
-export default function Pointer({ bounds }: { bounds: Point }) {
+export default function Pointer() {
   useType(Pointer);
+  const shape = useEntity().getComponent(Geometry)?.shape;
 
   function pointIsWithinBounds(point: Point) {
-    const origin = useEntity().getComponent(Origin) || new Point(0, 0);
+    if (!shape) return false;
 
-    const topLeft = new Point(0, 0).subtractMutate(origin);
-    const bottomRight = topLeft.add(bounds);
-
-    return (
-      point.x >= topLeft.x &&
-      point.y >= topLeft.y &&
-      point.x <= bottomRight.x &&
-      point.y <= bottomRight.y
-    );
+    return shape.containsPoint(point);
   }
 
   const onEnterState = useStateAccumulator<Callback>(ON_ENTER);

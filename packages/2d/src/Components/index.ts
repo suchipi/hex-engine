@@ -9,15 +9,12 @@ import DOMElement from "./DOMElement";
 import Font from "./Font";
 import FontMetrics from "./FontMetrics";
 import Gamepad from "./Gamepad";
+import Geometry from "./Geometry";
 import Image from "./Image";
 import ImageFilter from "./ImageFilter";
 import Keyboard from "./Keyboard";
 import Label from "./Label";
-import Origin from "./Origin";
 import Pointer from "./Pointer";
-import Position from "./Position";
-import Rotation from "./Rotation";
-import Scale from "./Scale";
 import SpriteSheet from "./SpriteSheet";
 import SystemFont from "./SystemFont";
 import TextBox from "./TextBox";
@@ -38,15 +35,12 @@ export {
   Font,
   FontMetrics,
   Gamepad,
+  Geometry,
   Image,
   ImageFilter,
   Keyboard,
   Label,
-  Origin,
   Pointer,
-  Position,
-  Rotation,
-  Scale,
   SpriteSheet,
   SystemFont,
   TextBox,

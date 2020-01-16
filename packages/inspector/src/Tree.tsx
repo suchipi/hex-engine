@@ -9,6 +9,7 @@ import { HOVER_BEGIN, HOVER_END } from "./useInspectorHover";
 
 const PROPERTY_NAMES = Symbol("HEX_ENGINE_INSPECTOR_CACHED_PROPERTY_NAMES");
 
+// TODO: sometimes not all the property names are shown. What's going on?
 function gatherPropertyNames(
   obj: Object,
   soFar: Set<string | symbol> = new Set()
@@ -340,7 +341,50 @@ export default function Tree({
       className = `Grid (${data.size.x}, ${data.size.y})`;
       content = entriesForProperties(gatherPropertyNames(data));
     } else {
-      className = data.constructor?.name || "";
+      const formatNumber = (val: any) => {
+        const num = Number(val);
+        const isInteger = num % 1 === 0;
+        if (isInteger) return String(num);
+        return num.toFixed(2);
+      };
+
+      className =
+        (data.constructor?.name || "") +
+        // Point
+        (data.x != null && data.y != null
+          ? ` (${formatNumber(data.x)}, ${formatNumber(data.y)})`
+          : "") +
+        // Angle
+        (data.radians != null
+          ? ` (${formatNumber(data.radians / Math.PI)}π)`
+          : "") +
+        // LineSegment
+        (typeof data.start === "object" &&
+        data.start != null &&
+        typeof data.end === "object" &&
+        data.end != null &&
+        data.start.x != null &&
+        data.start.y != null &&
+        data.end.x != null &&
+        data.end.y != null
+          ? ` (${formatNumber(data.start.x)}, ${formatNumber(
+              data.start.y
+            )}), (${formatNumber(data.end.x)}, ${formatNumber(data.end.y)})`
+          : "") +
+        // Polygon
+        (Array.isArray(data.points) &&
+        data.points.every(
+          (point: any) =>
+            typeof point === "object" &&
+            point != null &&
+            point.x != null &&
+            point.x != null
+        )
+          ? ` [${data.points.map(
+              (point: any) =>
+                `(${formatNumber(point.x)}, ${formatNumber(point.y)})`
+            )}]`
+          : "");
       content = entriesForProperties(gatherPropertyNames(data));
     }
   }

@@ -11,6 +11,16 @@ export default class Point {
     return new Point(this.x, this.y);
   }
 
+  opposite(): Point {
+    return new Point(-this.x, -this.y);
+  }
+
+  oppositeMutate(): this {
+    this.x = -this.x;
+    this.y = -this.y;
+    return this;
+  }
+
   add(other: Point | number): Point {
     if (typeof other === "number") {
       return new Point(this.x + other, this.y + other);

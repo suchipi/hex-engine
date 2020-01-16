@@ -23,11 +23,11 @@ export default function Root() {
   useChild(() => {
     useNewComponent(() =>
       Button({
-        calcPosition: (size) =>
+        calcPosition: () =>
           new Point(
             canvas.element.width / 2,
             canvas.element.height / 2
-          ).subtractMutate(size.divide(2)),
+          ).roundMutate(),
         text: "Create Hex",
         onClick: () => {
           const randomX = Math.random() * canvas.element.width;
@@ -43,9 +43,9 @@ export default function Root() {
     useNewComponent(() =>
       Button({
         calcPosition: (size) =>
-          new Point(canvas.element.width, canvas.element.height).subtractMutate(
-            size
-          ),
+          new Point(canvas.element.width, canvas.element.height)
+            .subtractMutate(size.divide(2))
+            .roundMutate(),
         text: "Font: Silver by Poppy Works",
         onClick: () => {
           window.open("https://poppyworks.itch.io/silver", "_blank");

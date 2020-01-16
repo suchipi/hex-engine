@@ -1,5 +1,6 @@
 import Point from "./Point";
 import Angle from "./Angle";
+import LineSegment from "./LineSegment";
 
 export default class Vector {
   angle: Angle;
@@ -19,6 +20,12 @@ export default class Vector {
     const angle = Angle.fromPoints(first, second);
     const magnitude = first.distanceTo(second);
     return new Vector(angle, magnitude);
+  }
+
+  // Create a vector with tail at `start` and head at `end`.
+  static fromLineSegment(lineSegment: LineSegment): Vector {
+    const { start, end } = lineSegment;
+    return Vector.fromPoints(start, end);
   }
 
   // Place a vector at the origin, and return the location of its head.
