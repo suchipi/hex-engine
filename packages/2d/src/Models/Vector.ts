@@ -10,6 +10,10 @@ export default class Vector {
     this.magnitude = magnitude;
   }
 
+  clone() {
+    return new Vector(this.angle.clone(), this.magnitude);
+  }
+
   // Create a vector with tail at `first` and head at `second`.
   static fromPoints(first: Point, second: Point): Vector {
     const angle = Angle.fromPoints(first, second);

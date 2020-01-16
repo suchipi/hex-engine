@@ -28,6 +28,10 @@ export default class Angle {
     this.radians = radians;
   }
 
+  clone(): Angle {
+    return new Angle(this.radians);
+  }
+
   // Calculate the angle of the vector whose tail is at `first` and whose head
   // is at `second`.
   static fromPoints(first: Point, second: Point): Angle {
