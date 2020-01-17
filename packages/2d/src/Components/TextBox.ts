@@ -1,7 +1,7 @@
 import { useType } from "@hex-engine/core";
 import { useInspectorHoverOutline } from "../Hooks";
 import { FontImplementation } from "./Font";
-import { Point } from "../Models";
+import { Point, Polygon } from "../Models";
 
 const textToTokens = (text: string): Array<string> => {
   return text
@@ -28,7 +28,8 @@ export default function TextBox({
 }) {
   useType(TextBox);
 
-  useInspectorHoverOutline(size);
+  const shape = Polygon.rectangle(size);
+  useInspectorHoverOutline(() => shape);
 
   return {
     drawText(

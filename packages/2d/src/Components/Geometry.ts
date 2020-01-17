@@ -1,5 +1,5 @@
 import { useType } from "@hex-engine/core";
-import { Angle, Circle, Point, Polygon } from "../Models";
+import { Angle, Point, Polygon, Shape } from "../Models";
 import { useInspectorHoverOutline } from "../Hooks";
 
 function Geometry({
@@ -8,15 +8,12 @@ function Geometry({
   rotation = new Angle(0),
   scale = new Point(1, 1),
 }: {
-  shape?: Polygon | Circle | undefined;
+  shape?: Shape | undefined;
   position?: Point | undefined;
   rotation?: Angle | undefined;
   scale?: Point | undefined;
 }) {
   useType(Geometry);
-
-  const size = new Point(shape.width, shape.height);
-  useInspectorHoverOutline(size);
 
   const geometry = {
     shape,
@@ -24,6 +21,8 @@ function Geometry({
     rotation,
     scale,
   };
+
+  useInspectorHoverOutline(() => geometry.shape);
 
   return geometry;
 }

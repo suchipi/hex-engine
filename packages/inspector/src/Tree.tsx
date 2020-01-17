@@ -7,19 +7,11 @@ import EditableString from "./EditableString";
 import EditableBoolean from "./EditableBoolean";
 import { HOVER_BEGIN, HOVER_END } from "./useInspectorHover";
 
-const PROPERTY_NAMES = Symbol("HEX_ENGINE_INSPECTOR_CACHED_PROPERTY_NAMES");
-
 // TODO: sometimes not all the property names are shown. What's going on?
 function gatherPropertyNames(
   obj: Object,
   soFar: Set<string | symbol> = new Set()
 ): Array<string | symbol> {
-  // @ts-ignore
-  if (obj[PROPERTY_NAMES]) {
-    // @ts-ignore
-    return obj[PROPERTY_NAMES];
-  }
-
   const proto = Object.getPrototypeOf(obj);
   if (proto && proto !== Object.prototype) {
     gatherPropertyNames(proto, soFar);
@@ -29,13 +21,9 @@ function gatherPropertyNames(
 
   const results = [...soFar].filter((prop) => {
     return (
-      prop !== "constructor" &&
-      prop !== PROPERTY_NAMES &&
-      !(typeof prop === "string" && prop.match(/^_/))
+      prop !== "constructor" && !(typeof prop === "string" && prop.match(/^_/))
     );
   });
-  // @ts-ignore
-  obj[PROPERTY_NAMES] = results;
   return results;
 }
 

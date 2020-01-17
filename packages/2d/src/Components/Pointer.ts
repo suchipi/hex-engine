@@ -19,9 +19,11 @@ type Callback = (pos: Point) => void;
 
 export default function Pointer() {
   useType(Pointer);
-  const shape = useEntity().getComponent(Geometry)?.shape;
+
+  const geometry = useEntity().getComponent(Geometry);
 
   function pointIsWithinBounds(point: Point) {
+    const shape = geometry?.shape;
     if (!shape) return false;
 
     return shape.containsPoint(point);

@@ -9,7 +9,6 @@ import {
   Label,
   useType,
   Geometry,
-  useInspectorHoverOutline,
 } from "@hex-engine/2d";
 import useGameFont from "./useGameFont";
 
@@ -28,19 +27,16 @@ export default function Button({
   const font = useGameFont();
   const label = useNewComponent(() => Label({ text, font }));
 
-  let calculatedSize: Point;
   const padding = 3;
   function calcSize() {
     const metrics = font.measureText(label.text);
-    return (calculatedSize = new Point(metrics.width, metrics.height).add(
-      padding * 2
-    ));
+    return new Point(metrics.width, metrics.height).add(padding * 2);
   }
-  const size = calcSize();
-  useInspectorHoverOutline(size);
+
+  let currentSize = calcSize();
 
   const geometry = useNewComponent(() =>
-    Geometry({ shape: Polygon.rectangle(size) })
+    Geometry({ shape: Polygon.rectangle(currentSize) })
   );
 
   const pointer = useNewComponent(Pointer);
@@ -48,12 +44,11 @@ export default function Button({
   pointer.onClick(onClick);
 
   useUpdate(() => {
-    const previousSize = calculatedSize;
-    const currentSize = calcSize();
+    const previousSize = currentSize;
+    currentSize = calcSize();
     if (!previousSize.equals(currentSize)) {
-      size.mutateInto(currentSize);
-      geometry.position.mutateInto(calcPosition(size));
-      geometry.shape = Polygon.rectangle(size);
+      geometry.position.mutateInto(calcPosition(currentSize));
+      geometry.shape = Polygon.rectangle(currentSize);
     }
   });
 
@@ -64,7 +59,7 @@ export default function Button({
         : pointer.isInsideBounds
         ? "#ddd"
         : "#eee";
-    const rect = size.round();
+    const rect = currentSize.round();
     context.fillRect(0, 0, rect.x, rect.y);
     label.draw(context, { x: padding, y: padding });
   });

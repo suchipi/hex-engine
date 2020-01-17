@@ -5,7 +5,6 @@ import Audio from "./Audio";
 import BMFont from "./BMFont";
 import BoundingBox from "./BoundingBox";
 import Mouse from "./Mouse";
-import DOMElement from "./DOMElement";
 import Font from "./Font";
 import FontMetrics from "./FontMetrics";
 import Gamepad from "./Gamepad";
@@ -31,7 +30,6 @@ export {
   BMFont,
   BoundingBox,
   Mouse,
-  DOMElement,
   Font,
   FontMetrics,
   Gamepad,

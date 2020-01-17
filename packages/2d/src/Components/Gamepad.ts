@@ -7,6 +7,8 @@ type Props = {
   buttonNames: Array<string>;
 };
 
+const origin = new Point(0, 0);
+
 export default function Gamepad(props: Partial<Props>) {
   useType(Gamepad);
 
@@ -38,7 +40,6 @@ export default function Gamepad(props: Partial<Props>) {
   };
 
   function stickToVector(x: number, y: number) {
-    const origin = new Point(0, 0);
     // Invert y component because gamepad
     // sticks are normal polar coordinate system
     const target = new Point(x, -y);

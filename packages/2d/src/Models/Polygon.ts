@@ -1,5 +1,4 @@
 import Point from "./Point";
-import LineSegment from "./LineSegment";
 
 /**
  * Represents a closed shape consisting of a set of connected straight line segments.
@@ -28,11 +27,9 @@ export default class Polygon {
   readonly height: number;
 
   /**
-   * All the line segments that this polygon is made out of. Note that a Polygon is a *closed* shape,
-   * so there will be an equivalent number of line segments as there are points in the polygon,
-   * because the last point in the polygon is connected to the first point.
+   * The size of the bounding rectangle around this polygon.
    */
-  readonly lineSegments: Array<LineSegment>;
+  readonly bounds: Point;
 
   /**
    * @param points Points representing the corners where the polygon's line segments meet.
@@ -76,14 +73,7 @@ export default class Polygon {
 
     this.height = maxY - minY;
 
-    const lineSegments: Array<LineSegment> = [];
-    this.points.reduce((prev, current) => {
-      lineSegments.push(new LineSegment(prev, current));
-
-      return current;
-    }, this.points[this.points.length - 1]);
-
-    this.lineSegments = lineSegments.slice(1).concat(lineSegments[0]);
+    this.bounds = new Point(this.width, this.height);
   }
 
   /**
@@ -124,26 +114,61 @@ export default class Polygon {
     return Polygon.rectangle(this.width, this.height);
   }
 
-  // TODO: this isn't working right
-  containsPoint(point: Point) {
-    // Based on description of ray casting algorithm from https://en.wikipedia.org/wiki/Point_in_polygon on Jan 16 2020
-    const intersectingRay = new LineSegment(
-      point,
-      point.add(new Point(0, 9999999))
-    );
-    let intersections = 0;
-    for (const lineSegment of this.lineSegments) {
-      if (lineSegment.intersectsWith(intersectingRay)) {
-        intersections++;
-      }
+  /**
+   * Returns whether the given point falls inside the polygon.
+   * @param point The point to check.
+   */
+  containsPoint(point: Point): boolean {
+    const { x, y } = point;
+    const points = this.points;
+
+    let inside = false;
+    for (let i = 0, j = points.length - 1; i < points.length; j = i++) {
+      const xi = points[i].x;
+      const yi = points[i].y;
+      const xj = points[j].x;
+      const yj = points[j].y;
+
+      let intersect =
+        yi > y != yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+
+      if (intersect) inside = !inside;
     }
-    return intersections % 2 !== 0;
+
+    return inside;
   }
 
+  /**
+   * Returns whether this polygon has the same point values as another.
+   * @param other The other polygon to compare to.
+   */
   equals(other: Polygon) {
     return this.points.every((point, index) => {
       const otherPoint = other.points[index];
       return otherPoint && point.equals(otherPoint);
     });
+  }
+
+  /**
+   * Draws this polygon onto a canvas context, using the current stroke style.
+   * @param context The canvas context to draw onto.
+   */
+  draw(context: CanvasRenderingContext2D) {
+    if (this.points.length === 0) return;
+
+    const xOffset = this.width / 2;
+    const yOffset = this.height / 2;
+
+    context.save();
+    context.translate(xOffset, yOffset);
+
+    context.beginPath();
+    context.moveTo(this.points[0].x, this.points[1].y);
+    for (const point of this.points.slice(1)) {
+      context.lineTo(point.x, point.y);
+    }
+    context.lineTo(this.points[0].x, this.points[1].y);
+    context.stroke();
+    context.restore();
   }
 }
