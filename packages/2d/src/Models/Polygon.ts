@@ -163,11 +163,11 @@ export default class Polygon {
     context.translate(xOffset, yOffset);
 
     context.beginPath();
-    context.moveTo(this.points[0].x, this.points[1].y);
+    context.moveTo(this.points[0].x, this.points[0].y);
     for (const point of this.points.slice(1)) {
       context.lineTo(point.x, point.y);
     }
-    context.lineTo(this.points[0].x, this.points[1].y);
+    context.lineTo(this.points[0].x, this.points[0].y);
     context.stroke();
     context.restore();
   }
