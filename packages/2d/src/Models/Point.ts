@@ -7,6 +7,10 @@ export default class Point {
     this.y = y;
   }
 
+  static from({ x, y }: { x: number; y: number }): Point {
+    return new Point(x, y);
+  }
+
   clone(): Point {
     return new Point(this.x, this.y);
   }
@@ -137,7 +141,7 @@ export default class Point {
     return this;
   }
 
-  mutateInto(other: Point) {
+  mutateInto(other: { x: number; y: number }) {
     this.x = other.x;
     this.y = other.y;
   }

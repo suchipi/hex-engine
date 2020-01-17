@@ -5,12 +5,17 @@ export default function useDraw(
   onDraw: (
     context: CanvasRenderingContext2D,
     backstage: CanvasRenderingContext2D
-  ) => void
+  ) => void,
+  {
+    roundToNearestPixel = false,
+  }: {
+    roundToNearestPixel?: boolean | undefined;
+  } = {}
 ) {
   const transforms = useEntityTransforms();
 
   useRawDraw((context, backstage) => {
-    transforms.applyToContext(context);
+    transforms.applyToContext(context, roundToNearestPixel);
 
     onDraw(context, backstage);
 

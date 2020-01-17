@@ -5,10 +5,12 @@ import {
   useType,
   useCallbackAsCurrent,
   Point,
+  Physics,
 } from "@hex-engine/2d";
 import Button from "./Button";
 import FPS from "./FPS";
 import Hex from "./Hex";
+import Floor from "./Floor";
 
 export default function Root() {
   useType(Root);
@@ -17,6 +19,7 @@ export default function Root() {
   canvas.setPixelated(true);
   canvas.fullscreen({ pixelZoom: 3 });
 
+  useNewComponent(Physics.Engine);
   useNewComponent(FPS);
 
   const useRootChild = useCallbackAsCurrent(useChild);
@@ -31,9 +34,8 @@ export default function Root() {
         text: "Create Hex",
         onClick: () => {
           const randomX = Math.random() * canvas.element.width;
-          const randomY = Math.random() * canvas.element.height;
 
-          useRootChild(() => Hex({ position: new Point(randomX, randomY) }));
+          useRootChild(() => Hex({ position: new Point(randomX, 0) }));
         },
       })
     );
@@ -53,4 +55,6 @@ export default function Root() {
       })
     );
   });
+
+  useChild(Floor);
 }

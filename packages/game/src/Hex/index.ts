@@ -1,4 +1,5 @@
 import {
+  useType,
   useNewComponent,
   Geometry,
   Polygon,
@@ -6,10 +7,17 @@ import {
   Aseprite,
   useUpdate,
   useDraw,
+  Physics,
+  useDestroy,
+  useEntityName,
+  useContext,
 } from "@hex-engine/2d";
 import hexSprite from "./hex.aseprite";
 
 export default function Hex({ position }: { position: Point }) {
+  useType(Hex);
+  useEntityName("Hex");
+
   const aseprite = useNewComponent(() => Aseprite(hexSprite));
 
   const geometry = useNewComponent(() =>
@@ -26,8 +34,16 @@ export default function Hex({ position }: { position: Point }) {
     })
   );
 
+  useNewComponent(() => Physics.Body(geometry));
+
+  const { canvas } = useContext();
+
   useUpdate((delta) => {
     geometry.rotation.addMutate(Math.PI * 0.001 * delta);
+
+    if (geometry.position.y > canvas.height * 2) {
+      useDestroy().destroy();
+    }
   });
 
   useDraw((context) => {

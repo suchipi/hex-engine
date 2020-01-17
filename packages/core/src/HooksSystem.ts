@@ -26,11 +26,14 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
   useCallbackAsCurrent: (instance) => <Func extends (...args: any[]) => any>(
     callback: Func
   ): ((...args: Parameters<Func>) => ReturnType<Func>) => {
-    return (...args: Parameters<Func>): ReturnType<Func> => {
+    const func = (...args: Parameters<Func>): ReturnType<Func> => {
       return HooksSystem.withInstance(instance, () => {
         return callback(...args);
       });
     };
+    // To make debugging easier
+    func.toString = () => "useCallbackAsCurrent(" + callback.toString() + ")";
+    return func;
   },
 
   useStateAccumulator: (instance) => <T>(

@@ -17,7 +17,10 @@ function getEntityTransformMatrix(entity: Entity) {
   return matrix;
 }
 
-function getEntityTransformMatrixForContext(entity: Entity) {
+function getEntityTransformMatrixForContext(
+  entity: Entity,
+  roundToNearestPixel: boolean
+) {
   const matrix = new TransformMatrix();
 
   const geometry = entity.getComponent(Geometry);
@@ -25,14 +28,23 @@ function getEntityTransformMatrixForContext(entity: Entity) {
     return matrix;
   }
 
-  matrix.translateMutate(geometry.position.round());
+  if (roundToNearestPixel) {
+    matrix.translateMutate(geometry.position.round());
+  } else {
+    matrix.translateMutate(geometry.position);
+  }
   matrix.rotateMutate(geometry.rotation);
 
   // It's easier to draw things from the top-left, so move
   // the canvas there instead of to the center.
-  const topLeft = new Point(geometry.shape.width / 2, geometry.shape.height / 2)
-    .oppositeMutate()
-    .roundMutate();
+  const topLeft = new Point(
+    geometry.shape.width / 2,
+    geometry.shape.height / 2
+  ).oppositeMutate();
+
+  if (roundToNearestPixel) {
+    topLeft.roundMutate();
+  }
   matrix.translateMutate(topLeft);
 
   matrix.scaleMutate(geometry.scale, topLeft.opposite());
@@ -59,7 +71,7 @@ export default function useEntityTransforms() {
   return {
     asMatrix: asMatrix.bind(null, getEntityTransformMatrix),
     applyToContext: useCallbackAsCurrent(
-      (context: CanvasRenderingContext2D) => {
+      (context: CanvasRenderingContext2D, roundToNearestPixel: boolean) => {
         context.save();
 
         const entity = useEntity();
@@ -68,7 +80,9 @@ export default function useEntityTransforms() {
           return;
         }
 
-        const matrix = asMatrix(getEntityTransformMatrixForContext);
+        const matrix = asMatrix((context) =>
+          getEntityTransformMatrixForContext(context, roundToNearestPixel)
+        );
 
         context.transform(
           matrix.a,

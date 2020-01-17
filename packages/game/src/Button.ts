@@ -30,7 +30,9 @@ export default function Button({
   const padding = 3;
   function calcSize() {
     const metrics = font.measureText(label.text);
-    return new Point(metrics.width, metrics.height).add(padding * 2);
+    return new Point(metrics.width, metrics.height)
+      .add(padding * 2)
+      .roundMutate();
   }
 
   let currentSize = calcSize();
@@ -52,15 +54,18 @@ export default function Button({
     }
   });
 
-  useDraw((context) => {
-    context.fillStyle =
-      pointer.isPressing && pointer.isInsideBounds
-        ? "#aaa"
-        : pointer.isInsideBounds
-        ? "#ddd"
-        : "#eee";
-    const rect = currentSize.round();
-    context.fillRect(0, 0, rect.x, rect.y);
-    label.draw(context, { x: padding, y: padding });
-  });
+  useDraw(
+    (context) => {
+      context.fillStyle =
+        pointer.isPressing && pointer.isInsideBounds
+          ? "#aaa"
+          : pointer.isInsideBounds
+          ? "#ddd"
+          : "#eee";
+      const rect = currentSize.round();
+      context.fillRect(0, 0, rect.x, rect.y);
+      label.draw(context, { x: padding, y: padding });
+    },
+    { roundToNearestPixel: true }
+  );
 }
