@@ -2,12 +2,13 @@ import Angle from "./Angle";
 import Point from "./Point";
 
 export function createSVGMatrix(): DOMMatrix {
-  const matrix = document
-    .createElementNS("http://www.w3.org/2000/svg", "g")
-    .getCTM();
+  const matrix = window.DOMMatrix
+    ? new DOMMatrix()
+    : document.createElementNS("http://www.w3.org/2000/svg", "g").getCTM();
   if (matrix == null) {
+    debugger;
     throw new Error(
-      "Unable to create transformation matrix for CanvasRenderingContext2D getTransform polyfill. Maybe try using a newer browser?"
+      "Unable to create transformation matrix. Maybe try using a newer browser?"
     );
   }
   return matrix;
