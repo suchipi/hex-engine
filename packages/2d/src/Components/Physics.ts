@@ -2,7 +2,7 @@ import { useType, useRootEntity, useDestroy } from "@hex-engine/core";
 import Matter from "matter-js";
 import { useUpdate } from "../Canvas";
 import Geometry from "./Geometry";
-import { Polygon, Circle } from "../Models";
+import { Angle, Point, Polygon, Circle } from "../Models";
 import { useContext } from "../Hooks";
 
 // Matter needs this
@@ -50,16 +50,32 @@ function useEngine() {
 function PhysicsBody(
   geometry: ReturnType<typeof Geometry>,
   {
-    isStatic = false,
     respondsToMouseConstraint = false,
-  }: {
-    isStatic?: boolean | undefined;
-    respondsToMouseConstraint?: boolean | undefined;
-  } = {}
+    ...otherOpts
+  }: Partial<{
+    respondsToMouseConstraint: boolean;
+    isStatic: boolean;
+    density: number;
+    friction: number;
+    frictionAir: number;
+    isSensor: boolean;
+    restitution: number;
+    timeScale: number;
+    frictionStatic: number;
+  }> = {}
 ) {
   useType(PhysicsBody);
 
   const engine = useEngine();
+
+  const opts = {
+    collisionFilter: {
+      category: respondsToMouseConstraint ? 3 : 1,
+      mask: respondsToMouseConstraint ? 3 : 1,
+    },
+    angle: geometry.rotation.radians,
+    ...otherOpts,
+  };
 
   let body: Matter.Body;
   if ((geometry.shape as Polygon).points) {
@@ -68,15 +84,8 @@ function PhysicsBody(
     body = Matter.Bodies.fromVertices(
       geometry.position.x,
       geometry.position.y,
-      [shape.points.map((point) => Matter.Vector.create(point.x, point.y))],
-      {
-        isStatic,
-        collisionFilter: {
-          category: respondsToMouseConstraint ? 3 : 1,
-          mask: respondsToMouseConstraint ? 3 : 1,
-        },
-        angle: geometry.rotation.radians,
-      }
+      [shape.points],
+      opts
     );
   } else if ((geometry.shape as Circle).radius != null) {
     const shape = geometry.shape as Circle;
@@ -85,14 +94,7 @@ function PhysicsBody(
       geometry.position.x,
       geometry.position.y,
       shape.radius,
-      {
-        isStatic,
-        collisionFilter: {
-          category: respondsToMouseConstraint ? 3 : 1,
-          mask: respondsToMouseConstraint ? 3 : 1,
-        },
-        angle: geometry.rotation.radians,
-      }
+      opts
     );
   } else {
     throw new Error("Unknown shape type; cannot construct physics body");
@@ -104,12 +106,9 @@ function PhysicsBody(
     Matter.World.remove(engine.world, body, true);
   });
 
-  if (isStatic) {
+  if (opts.isStatic) {
     useUpdate(() => {
-      Matter.Body.setPosition(
-        body,
-        Matter.Vector.create(geometry.position.x, geometry.position.y)
-      );
+      Matter.Body.setPosition(body, geometry.position);
       Matter.Body.setAngle(body, geometry.rotation.radians);
     });
   } else {
@@ -118,6 +117,63 @@ function PhysicsBody(
       geometry.rotation.radians = body.angle;
     });
   }
+
+  return {
+    body,
+    applyForce(position: Point, force: Point) {
+      Matter.Body.applyForce(body, position, force);
+    },
+    setAngle(angle: Angle | number) {
+      Matter.Body.setAngle(
+        body,
+        typeof angle === "number" ? angle : angle.radians
+      );
+    },
+    setAngularVelocity(velocity: number) {
+      Matter.Body.setAngularVelocity(body, velocity);
+    },
+    setDensity(density: number) {
+      Matter.Body.setDensity(body, density);
+    },
+    setInertia(inertia: number) {
+      Matter.Body.setInertia(body, inertia);
+    },
+    setMass(mass: number) {
+      Matter.Body.setMass(body, mass);
+    },
+    setPosition(position: Point) {
+      Matter.Body.setPosition(body, position);
+    },
+    setStatic(isStatic: boolean) {
+      Matter.Body.setStatic(body, isStatic);
+    },
+    setVelocity(velocity: Point) {
+      Matter.Body.setVelocity(body, velocity);
+    },
+  };
+}
+
+function PhysicsConstraint(
+  options: Partial<{
+    stiffness: number;
+    damping: number;
+    bodyA: Matter.Body;
+    bodyB: Matter.Body;
+    pointA: Point;
+    pointB: Point;
+  }>
+) {
+  useType(PhysicsConstraint);
+
+  const engine = useEngine();
+
+  const constraint = Matter.Constraint.create(options);
+
+  Matter.World.add(engine.world, constraint);
+
+  return {
+    constraint,
+  };
 }
 
 function PhysicsMouseConstraint() {
@@ -139,6 +195,7 @@ function PhysicsMouseConstraint() {
 const Physics = {
   Engine: name("Physics.Engine", PhysicsEngine),
   Body: name("Physics.Body", PhysicsBody),
+  Constraint: name("Physics.Constraint", PhysicsConstraint),
   MouseConstraint: name("Physics.MouseConstraint", PhysicsMouseConstraint),
 };
 

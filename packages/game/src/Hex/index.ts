@@ -45,9 +45,7 @@ export default function Hex({ position }: { position: Point }) {
 
   const { canvas } = useContext();
 
-  useUpdate((delta) => {
-    geometry.rotation.addMutate(Math.PI * 0.001 * delta);
-
+  useUpdate(() => {
     if (geometry.position.y > canvas.height * 2) {
       useDestroy().destroy();
     }

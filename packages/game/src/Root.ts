@@ -6,11 +6,14 @@ import {
   useCallbackAsCurrent,
   Point,
   Physics,
+  useDraw,
+  useEntityTransforms,
 } from "@hex-engine/2d";
 import Button from "./Button";
 import FPS from "./FPS";
 import Hex from "./Hex";
 import Floor from "./Floor";
+import Box from "./Box";
 
 export default function Root() {
   useType(Root);
@@ -59,4 +62,29 @@ export default function Root() {
   });
 
   useNewComponent(Physics.MouseConstraint);
+
+  const box1 = useChild(() => Box({ position: new Point(50, 50) }));
+  const box2 = useChild(() => Box({ position: new Point(100, 50) }));
+
+  useChild(() => {
+    useNewComponent(() =>
+      Physics.Constraint({
+        bodyA: box1.rootComponent.physics.body,
+        bodyB: box2.rootComponent.physics.body,
+        stiffness: 0.01,
+      })
+    );
+
+    useDraw((context) => {
+      context.lineWidth = 1;
+      context.strokeStyle = "#666";
+
+      const box1Pos = box1.rootComponent.geometry.worldPosition();
+      const box2Pos = box2.rootComponent.geometry.worldPosition();
+
+      context.moveTo(box1Pos.x, box1Pos.y);
+      context.lineTo(box2Pos.x, box2Pos.y);
+      context.stroke();
+    });
+  });
 }

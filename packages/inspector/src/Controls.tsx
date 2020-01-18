@@ -34,6 +34,7 @@ export default function Controls({
         <>
           <Button
             onClick={() => {
+              localStorage.inspectorPauseOnStart = "false";
               runLoop.resume();
             }}
             title="Resume execution"
@@ -56,6 +57,7 @@ export default function Controls({
       ) : (
         <Button
           onClick={() => {
+            localStorage.inspectorPauseOnStart = "true";
             runLoop.pause();
           }}
           title="Pause execution"

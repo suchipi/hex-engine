@@ -59,12 +59,10 @@ function Root({
   );
 }
 
-export default function Inspector({
-  pauseOnStart = false,
-}: Partial<{
-  pauseOnStart: boolean;
-}> = {}) {
+export default function Inspector() {
   useType(Inspector);
+
+  const pauseOnStart = localStorage.inspectorPauseOnStart === "true";
 
   const entity = useRootEntity();
   const runLoop = entity.getComponent(RunLoop);
