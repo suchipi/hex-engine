@@ -7,7 +7,9 @@ import {
   Point,
   Physics,
   useDraw,
-  useEntityTransforms,
+  useDestroy,
+  useUpdate,
+  useEntityName,
 } from "@hex-engine/2d";
 import Button from "./Button";
 import FPS from "./FPS";
@@ -67,6 +69,14 @@ export default function Root() {
   const box2 = useChild(() => Box({ position: new Point(100, 50) }));
 
   useChild(() => {
+    useEntityName("Constraint");
+
+    useUpdate(() => {
+      if (box1.parent == null || box2.parent == null) {
+        useDestroy().destroy();
+      }
+    });
+
     useNewComponent(() =>
       Physics.Constraint({
         bodyA: box1.rootComponent.physics.body,

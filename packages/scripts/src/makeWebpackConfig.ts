@@ -17,6 +17,7 @@ const localDir = (...parts: Array<string>) =>
 export default (mode: "production" | "development") => {
   return {
     context: localDir(),
+    devtool: mode === "development" ? "eval-source-map" : undefined,
 
     mode,
 

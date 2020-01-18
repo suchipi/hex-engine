@@ -171,6 +171,10 @@ function PhysicsConstraint(
 
   Matter.World.add(engine.world, constraint);
 
+  useDestroy().onDestroy(() => {
+    Matter.World.remove(engine.world, constraint, true);
+  });
+
   return {
     constraint,
   };
@@ -189,6 +193,7 @@ function PhysicsMouseConstraint() {
       mask: 2,
     },
   });
+
   Matter.World.add(engine.world, constraint);
 }
 

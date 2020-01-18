@@ -79,7 +79,7 @@ export default function Inspector() {
 
   useNewComponent(() =>
     ErrorBoundary((err) => {
-      console.error(err);
+      console.error(err, err.stack);
       stateHolder.err = err;
 
       runLoop?.pause();
