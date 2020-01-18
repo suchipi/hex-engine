@@ -75,7 +75,19 @@ export default class Circle {
    * Draws this polygon onto a canvas context, using the current stroke style.
    * @param context The canvas context to draw onto.
    */
-  draw(context: CanvasRenderingContext2D) {
-    context.arc(this.width / 2, this.height / 2, this.radius, 0, 2 * Math.PI);
+  draw(
+    context: CanvasRenderingContext2D,
+    strokeOrFill: "stroke" | "fill",
+    { x = 0, y = 0 }: { x?: number | undefined; y?: number | undefined } = {}
+  ) {
+    const xOffset = this.width / 2 + x;
+    const yOffset = this.height / 2 + y;
+
+    context.arc(xOffset, yOffset, this.radius, 0, 2 * Math.PI);
+    if (strokeOrFill === "stroke") {
+      context.stroke();
+    } else {
+      context.fill();
+    }
   }
 }

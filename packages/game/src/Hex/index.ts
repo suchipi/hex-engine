@@ -11,6 +11,8 @@ import {
   useDestroy,
   useEntityName,
   useContext,
+  Pointer,
+  Angle,
 } from "@hex-engine/2d";
 import hexSprite from "./hex.aseprite";
 
@@ -31,10 +33,15 @@ export default function Hex({ position }: { position: Point }) {
         new Point(5, 14),
       ]),
       position,
+      rotation: new Angle(Math.random() * 2 * Math.PI),
     })
   );
 
-  useNewComponent(() => Physics.Body(geometry));
+  useNewComponent(() =>
+    Physics.Body(geometry, { respondsToMouseConstraint: true })
+  );
+
+  const pointer = useNewComponent(Pointer);
 
   const { canvas } = useContext();
 
@@ -47,7 +54,16 @@ export default function Hex({ position }: { position: Point }) {
   });
 
   useDraw((context) => {
-    // TODO: is this a bug in the aseprite component?
-    aseprite.draw(context, { x: -5, y: 0 });
+    aseprite.draw(context, { x: -5 });
+
+    if (pointer.isInsideBounds) {
+      context.lineWidth = 2;
+      if (pointer.isPressing) {
+        context.strokeStyle = "red";
+      } else {
+        context.strokeStyle = "cyan";
+      }
+      geometry.shape.draw(context, "stroke");
+    }
   });
 }

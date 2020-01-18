@@ -14,7 +14,7 @@ export default function Floor() {
 
   const context = useContext();
   const canvasSize = new Point(context.canvas.width, context.canvas.height);
-  const rectangleSize = new Point(canvasSize.x, 10);
+  const rectangleSize = new Point(canvasSize.x, 48);
 
   const geometry = useNewComponent(() =>
     Geometry({
@@ -26,7 +26,7 @@ export default function Floor() {
   useNewComponent(() => Physics.Body(geometry, { isStatic: true }));
 
   useDraw((context) => {
-    context.strokeStyle = "red";
-    geometry.shape.draw(context);
+    context.fillStyle = "#eee";
+    geometry.shape.draw(context, "fill");
   });
 }

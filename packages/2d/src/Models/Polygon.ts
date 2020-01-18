@@ -153,11 +153,15 @@ export default class Polygon {
    * Draws this polygon onto a canvas context, using the current stroke style.
    * @param context The canvas context to draw onto.
    */
-  draw(context: CanvasRenderingContext2D) {
+  draw(
+    context: CanvasRenderingContext2D,
+    strokeOrFill: "stroke" | "fill",
+    { x = 0, y = 0 }: { x?: number | undefined; y?: number | undefined } = {}
+  ) {
     if (this.points.length === 0) return;
 
-    const xOffset = this.width / 2;
-    const yOffset = this.height / 2;
+    const xOffset = this.width / 2 + x;
+    const yOffset = this.height / 2 + y;
 
     context.save();
     context.translate(xOffset, yOffset);
@@ -168,7 +172,12 @@ export default class Polygon {
       context.lineTo(point.x, point.y);
     }
     context.lineTo(this.points[0].x, this.points[0].y);
-    context.stroke();
+
+    if (strokeOrFill === "stroke") {
+      context.stroke();
+    } else {
+      context.fill();
+    }
     context.restore();
   }
 }

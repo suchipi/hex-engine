@@ -19,8 +19,9 @@ export default function useInspectorHoverOutline(getShape: () => Shape) {
   useDraw((context) => {
     if (visible) {
       const shape = getShape();
+      context.lineWidth = 3;
       context.strokeStyle = "magenta";
-      shape.draw(context);
+      shape.draw(context, "stroke");
     }
   });
 }

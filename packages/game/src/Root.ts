@@ -17,7 +17,7 @@ export default function Root() {
 
   const canvas = useNewComponent(() => Canvas({ backgroundColor: "white" }));
   canvas.setPixelated(true);
-  canvas.fullscreen({ pixelZoom: 3 });
+  canvas.fullscreen({ pixelZoom: 2 });
 
   useNewComponent(Physics.Engine);
   useNewComponent(FPS);
@@ -41,6 +41,8 @@ export default function Root() {
     );
   });
 
+  useChild(Floor);
+
   useChild(() => {
     useNewComponent(() =>
       Button({
@@ -56,5 +58,5 @@ export default function Root() {
     );
   });
 
-  useChild(Floor);
+  useNewComponent(Physics.MouseConstraint);
 }

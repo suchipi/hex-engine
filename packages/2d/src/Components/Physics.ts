@@ -3,6 +3,7 @@ import Matter from "matter-js";
 import { useUpdate } from "../Canvas";
 import Geometry from "./Geometry";
 import { Polygon, Circle } from "../Models";
+import { useContext } from "../Hooks";
 
 // Matter needs this
 // @ts-ignore
@@ -18,8 +19,19 @@ function PhysicsEngine() {
 
   const engine = Matter.Engine.create();
 
+  let lastDelta: number | null = null;
   useUpdate((delta) => {
-    Matter.Engine.update(engine, delta);
+    if (delta > 100) {
+      // Don't freeze up the main thread by making the engine calculate a ton of iterations.
+      Matter.Engine.update(engine, 16.66);
+      return;
+    }
+
+    if (lastDelta != null) {
+      Matter.Engine.update(engine, delta, delta / lastDelta);
+    } else {
+      Matter.Engine.update(engine, delta);
+    }
   });
 
   return { engine };
@@ -37,7 +49,13 @@ function useEngine() {
 
 function PhysicsBody(
   geometry: ReturnType<typeof Geometry>,
-  { isStatic }: { isStatic?: boolean | undefined } = {}
+  {
+    isStatic = false,
+    respondsToMouseConstraint = false,
+  }: {
+    isStatic?: boolean | undefined;
+    respondsToMouseConstraint?: boolean | undefined;
+  } = {}
 ) {
   useType(PhysicsBody);
 
@@ -51,7 +69,14 @@ function PhysicsBody(
       geometry.position.x,
       geometry.position.y,
       [shape.points.map((point) => Matter.Vector.create(point.x, point.y))],
-      { isStatic }
+      {
+        isStatic,
+        collisionFilter: {
+          category: respondsToMouseConstraint ? 3 : 1,
+          mask: respondsToMouseConstraint ? 3 : 1,
+        },
+        angle: geometry.rotation.radians,
+      }
     );
   } else if ((geometry.shape as Circle).radius != null) {
     const shape = geometry.shape as Circle;
@@ -60,7 +85,14 @@ function PhysicsBody(
       geometry.position.x,
       geometry.position.y,
       shape.radius,
-      { isStatic }
+      {
+        isStatic,
+        collisionFilter: {
+          category: respondsToMouseConstraint ? 3 : 1,
+          mask: respondsToMouseConstraint ? 3 : 1,
+        },
+        angle: geometry.rotation.radians,
+      }
     );
   } else {
     throw new Error("Unknown shape type; cannot construct physics body");
@@ -88,9 +120,26 @@ function PhysicsBody(
   }
 }
 
+function PhysicsMouseConstraint() {
+  useType(PhysicsMouseConstraint);
+
+  const engine = useEngine();
+  const { canvas } = useContext();
+
+  const constraint = Matter.MouseConstraint.create(engine, {
+    mouse: Matter.Mouse.create(canvas),
+    collisionFilter: {
+      category: 2,
+      mask: 2,
+    },
+  });
+  Matter.World.add(engine.world, constraint);
+}
+
 const Physics = {
   Engine: name("Physics.Engine", PhysicsEngine),
   Body: name("Physics.Body", PhysicsBody),
+  MouseConstraint: name("Physics.MouseConstraint", PhysicsMouseConstraint),
 };
 
 export default Physics;
