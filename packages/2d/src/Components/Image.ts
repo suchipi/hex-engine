@@ -71,6 +71,15 @@ class Image {
     const data = this.data;
     if (data == null) return;
 
+    if (
+      sourceWidth === 0 ||
+      sourceHeight === 0 ||
+      targetWidth === 0 ||
+      targetHeight === 0
+    ) {
+      return;
+    }
+
     context.drawImage(
       data,
       sourceX,
