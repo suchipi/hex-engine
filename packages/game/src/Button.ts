@@ -57,7 +57,7 @@ export default function Button({
   useDraw(
     (context) => {
       context.fillStyle =
-        mouse.isPressing && mouse.isInsideBounds
+        mouse.isPressingLeft && mouse.isInsideBounds
           ? "#aaa"
           : mouse.isInsideBounds
           ? "#ddd"

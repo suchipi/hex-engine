@@ -13,7 +13,7 @@ import Image from "./Image";
 import ImageFilter from "./ImageFilter";
 import Keyboard from "./Keyboard";
 import Label from "./Label";
-import LowLevelMouse from "./LowLevelMouse";
+import LowLevelMouse, { HexMouseEvent } from "./LowLevelMouse";
 import Mouse from "./Mouse";
 import Physics from "./Physics";
 import ProceduralSfx from "./ProceduralSfx";
@@ -42,6 +42,7 @@ export {
   Keyboard,
   Label,
   LowLevelMouse,
+  HexMouseEvent,
   Mouse,
   Physics,
   ProceduralSfx,

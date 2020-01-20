@@ -6,19 +6,16 @@ import {
   useEntity,
   Entity,
 } from "@hex-engine/core";
-import { useUpdate } from "../Canvas";
-import { useEntitiesAtPoint } from "../Hooks";
-import LowLevelMouse from "./LowLevelMouse";
+import LowLevelMouse, { HexMouseEvent } from "./LowLevelMouse";
+import MousePosition from "./MousePosition";
 import Geometry from "./Geometry";
-import { Point } from "../Models";
 
-const ON_ENTER = Symbol("ON_ENTER");
-const ON_MOVE = Symbol("ON_MOVE");
-const ON_LEAVE = Symbol("ON_LEAVE");
 const ON_DOWN = Symbol("ON_DOWN");
 const ON_UP = Symbol("ON_UP");
 const ON_CLICK = Symbol("ON_CLICK");
-type Callback = (pos: Point) => void;
+const ON_RIGHT_CLICK = Symbol("ON_RIGHT_CLICK");
+const ON_MIDDLE_CLICK = Symbol("ON_MIDDLE_CLICK");
+type Callback = (event: HexMouseEvent) => void;
 
 export default function Mouse({
   entity = useEntity(),
@@ -29,119 +26,107 @@ export default function Mouse({
 } = {}) {
   useType(Mouse);
 
-  function pointIsWithinBounds(localPoint: Point) {
-    if (!geometry) return false;
-
-    const worldPoint = geometry.worldPosition().addMutate(localPoint);
-    return useEntitiesAtPoint(worldPoint)[0] === entity;
-  }
-
-  const onEnterState = useStateAccumulator<Callback>(ON_ENTER);
-  const onMoveState = useStateAccumulator<Callback>(ON_MOVE);
-  const onLeaveState = useStateAccumulator<Callback>(ON_LEAVE);
   const onDownState = useStateAccumulator<Callback>(ON_DOWN);
   const onUpState = useStateAccumulator<Callback>(ON_UP);
   const onClickState = useStateAccumulator<Callback>(ON_CLICK);
+  const onRightClickState = useStateAccumulator<Callback>(ON_RIGHT_CLICK);
+  const onMiddleClickState = useStateAccumulator<Callback>(ON_MIDDLE_CLICK);
 
-  const { onMouseMove, onMouseDown, onMouseUp } = useNewComponent(
-    LowLevelMouse
+  const { onMouseDown, onMouseUp } = useNewComponent(LowLevelMouse);
+  const mousePosition = useNewComponent(() =>
+    MousePosition({ entity, geometry })
   );
 
-  let isInsideBounds = false;
-  let pressingStack = 0;
-  const position = new Point(Infinity, Infinity);
+  let pressingLeft = false;
+  let pressingRight = false;
+  let pressingMiddle = false;
 
-  onMouseMove(({ pos }) => {
-    position.mutateInto(pos);
+  onMouseDown((event) => {
+    if (!mousePosition.isInsideBounds) return;
+    const { buttons } = event;
 
-    if (pointIsWithinBounds(pos)) {
-      if (!isInsideBounds) {
-        onEnterState.all().forEach((callback) => callback(pos));
-      }
-      isInsideBounds = true;
-
-      onMoveState.all().forEach((callback) => callback(pos));
-    } else if (isInsideBounds) {
-      onLeaveState.all().forEach((callback) => callback(pos));
-      isInsideBounds = false;
+    if (buttons.left) {
+      pressingLeft = true;
+      onDownState.all().forEach((callback) => callback(event));
+    }
+    if (buttons.right) {
+      pressingRight = true;
+    }
+    if (buttons.middle) {
+      pressingMiddle = true;
     }
   });
 
-  onMouseDown(({ pos }) => {
-    if (pointIsWithinBounds(pos)) {
-      pressingStack++;
-      onDownState.all().forEach((callback) => callback(pos));
-    }
-  });
+  onMouseUp((event) => {
+    const { buttons } = event;
 
-  onMouseUp(({ pos }) => {
-    if (pointIsWithinBounds(pos)) {
-      onUpState.all().forEach((callback) => callback(pos));
-      if (pressingStack > 0) {
-        onClickState.all().forEach((callback) => callback(pos));
+    if (mousePosition.isInsideBounds) {
+      if (pressingLeft && buttons.left) {
+        onClickState.all().forEach((callback) => callback(event));
+      }
+      if (pressingRight && buttons.right) {
+        onRightClickState.all().forEach((callback) => callback(event));
+      }
+      if (pressingMiddle && buttons.middle) {
+        onMiddleClickState.all().forEach((callback) => callback(event));
       }
     }
-    pressingStack--;
+
+    if (buttons.left) {
+      pressingLeft = false;
+      onUpState.all().forEach((callback) => callback(event));
+    }
+    if (buttons.right) {
+      pressingRight = false;
+    }
+    if (buttons.middle) {
+      pressingMiddle = false;
+    }
   });
 
   const callbackSetters = {
-    onEnter(callback: Callback) {
-      onEnterState.add(useCallbackAsCurrent(callback));
-    },
-    onMove(callback: Callback) {
-      onMoveState.add(useCallbackAsCurrent(callback));
-    },
-    onLeave(callback: Callback) {
-      onLeaveState.add(useCallbackAsCurrent(callback));
-    },
-    onDown(callback: Callback) {
+    onDown(callback: (event: HexMouseEvent) => void) {
       onDownState.add(useCallbackAsCurrent(callback));
     },
-    onUp(callback: Callback) {
+    onUp(callback: (event: HexMouseEvent) => void) {
       onUpState.add(useCallbackAsCurrent(callback));
     },
-    onClick(callback: Callback) {
+    onClick(callback: (event: HexMouseEvent) => void) {
       onClickState.add(useCallbackAsCurrent(callback));
+    },
+    onRightClick(callback: (event: HexMouseEvent) => void) {
+      onRightClickState.add(useCallbackAsCurrent(callback));
+    },
+    onMiddleClick(callback: (event: HexMouseEvent) => void) {
+      onMiddleClickState.add(useCallbackAsCurrent(callback));
     },
   };
 
-  if (geometry) {
-    // Handle the fact that isInsideBounds could change due to the entity moving
-    // underneath the cursor.
-    let lastEntPosition = geometry.position.clone();
-    useUpdate(() => {
-      const thisEntPosition = geometry.position;
-
-      if (!thisEntPosition.equals(lastEntPosition)) {
-        const diff = thisEntPosition.subtract(lastEntPosition);
-        position.addMutate(diff);
-
-        isInsideBounds = pointIsWithinBounds(position);
-
-        lastEntPosition.mutateInto(thisEntPosition);
-      }
-    });
-  }
-
   return {
     get isInsideBounds() {
-      return isInsideBounds;
+      return mousePosition.isInsideBounds;
     },
-    get isPressing() {
-      return pressingStack > 0;
+    get isPressingLeft() {
+      return pressingLeft;
+    },
+    get isPressingRight() {
+      return pressingRight;
+    },
+    get isPressingMiddle() {
+      return pressingMiddle;
     },
     get position() {
-      return position;
+      return mousePosition.position;
     },
 
     get onEnter() {
-      return callbackSetters.onEnter;
+      return mousePosition.onEnter;
     },
     get onMove() {
-      return callbackSetters.onMove;
+      return mousePosition.onMove;
     },
     get onLeave() {
-      return callbackSetters.onLeave;
+      return mousePosition.onLeave;
     },
     get onDown() {
       return callbackSetters.onDown;
@@ -151,6 +136,12 @@ export default function Mouse({
     },
     get onClick() {
       return callbackSetters.onClick;
+    },
+    get onRightClick() {
+      return callbackSetters.onRightClick;
+    },
+    get onMiddleClick() {
+      return callbackSetters.onMiddleClick;
     },
   };
 }

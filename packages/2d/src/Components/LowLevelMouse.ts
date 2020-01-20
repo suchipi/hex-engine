@@ -12,7 +12,7 @@ const MOUSE_MOVE = Symbol("MOUSE_MOVE");
 const MOUSE_DOWN = Symbol("MOUSE_DOWN");
 const MOUSE_UP = Symbol("MOUSE_UP");
 
-type HexMouseEvent = {
+export type HexMouseEvent = {
   pos: Point;
   delta: Point;
   buttons: {
@@ -76,22 +76,24 @@ export default function LowLevelMouse() {
   function updateEvent({
     clientX,
     clientY,
-    buttons,
+    buttons = 0,
+    button,
   }: {
     clientX: number;
     clientY: number;
-    buttons: number;
+    buttons?: number;
+    button?: number;
   }) {
     event.pos = translatePos(clientX, clientY);
     event.delta.mutateInto(event.pos);
     event.delta.subtractMutate(lastPos);
     lastPos.mutateInto(event.pos);
 
-    event.buttons.left = Boolean(buttons & 1);
-    event.buttons.right = Boolean(buttons & 2);
-    event.buttons.middle = Boolean(buttons & 4);
-    event.buttons.mouse4 = Boolean(buttons & 8);
-    event.buttons.mouse5 = Boolean(buttons & 16);
+    event.buttons.left = Boolean(buttons & 1) || button === 0;
+    event.buttons.right = Boolean(buttons & 2) || button === 2;
+    event.buttons.middle = Boolean(buttons & 4) || button === 1;
+    event.buttons.mouse4 = Boolean(buttons & 8) || button === 3;
+    event.buttons.mouse5 = Boolean(buttons & 16) || button === 4;
   }
 
   const moveState = useStateAccumulator<(event: HexMouseEvent) => void>(
@@ -113,7 +115,7 @@ export default function LowLevelMouse() {
       moveState.all().forEach((callback) => callback(event));
     };
   };
-  const handleMouseDown = ({ clientX, clientY, buttons }: MouseEvent) => {
+  const handleMouseDown = ({ clientX, clientY, button }: MouseEvent) => {
     if (!firstClickHasHappened) {
       firstClickHasHappened = true;
       pendingFirstClickHandlers.forEach((handler) => {
@@ -124,14 +126,14 @@ export default function LowLevelMouse() {
 
     pendingDown = () => {
       pendingDown = null;
-      updateEvent({ clientX, clientY, buttons });
+      updateEvent({ clientX, clientY, button });
       downState.all().forEach((callback) => callback(event));
     };
   };
-  const handleMouseUp = ({ clientX, clientY, buttons }: MouseEvent) => {
+  const handleMouseUp = ({ clientX, clientY, button }: MouseEvent) => {
     pendingUp = () => {
       pendingUp = null;
-      updateEvent({ clientX, clientY, buttons });
+      updateEvent({ clientX, clientY, button });
       upState.all().forEach((callback) => callback(event));
     };
   };

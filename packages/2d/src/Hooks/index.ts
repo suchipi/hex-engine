@@ -12,7 +12,7 @@ import {
   useDebugOverlayDrawTime,
   useCanvasDrawOrderSort,
 } from "../Canvas";
-import { useFirstClick } from "../Components/Mouse";
+import { useFirstClick } from "../Components/LowLevelMouse";
 import { useFirstKey } from "../Components/Keyboard";
 import { useAudioContext } from "../Components/AudioContext";
 
