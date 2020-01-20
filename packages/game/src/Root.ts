@@ -17,6 +17,7 @@ import FPS from "./FPS";
 import Hex from "./Hex";
 import Floor from "./Floor";
 import Box from "./Box";
+import Flick from "./Flick";
 
 export default function Root() {
   useType(Root);
@@ -65,7 +66,8 @@ export default function Root() {
     );
   });
 
-  useNewComponent(Physics.MouseConstraint);
+  // useNewComponent(Physics.MouseConstraint);
+  useChild(Flick);
 
   const box1 = useChild(() => Box({ position: new Point(50, 50) }));
   const box2 = useChild(() => Box({ position: new Point(100, 50) }));
@@ -88,12 +90,10 @@ export default function Root() {
     );
 
     useDraw((context) => {
-      context.lineWidth = 1;
-      context.strokeStyle = "#666";
-
       const box1Pos = box1.rootComponent.geometry.worldPosition();
       const box2Pos = box2.rootComponent.geometry.worldPosition();
-
+      context.lineWidth = 1;
+      context.strokeStyle = "#666";
       context.moveTo(box1Pos.x, box1Pos.y);
       context.lineTo(box2Pos.x, box2Pos.y);
       context.stroke();

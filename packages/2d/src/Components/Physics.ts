@@ -269,8 +269,8 @@ function PhysicsBody(
 
   return {
     body,
-    applyForce(position: Point, force: Point) {
-      Matter.Body.applyForce(body, position, force);
+    applyForce(position: Point, force: Vector) {
+      Matter.Body.applyForce(body, position, force.toPoint());
     },
     setAngle(angle: Angle | number) {
       Matter.Body.setAngle(

@@ -1,6 +1,5 @@
 import Point from "./Point";
 import Angle from "./Angle";
-import LineSegment from "./LineSegment";
 
 export default class Vector {
   angle: Angle;
@@ -22,16 +21,28 @@ export default class Vector {
     return new Vector(angle, magnitude);
   }
 
-  // Create a vector with tail at `start` and head at `end`.
-  static fromLineSegment(lineSegment: LineSegment): Vector {
-    const { start, end } = lineSegment;
-    return Vector.fromPoints(start, end);
-  }
-
   // Place a vector at the origin, and return the location of its head.
   toPoint(): Point {
     const x = this.magnitude * Math.cos(this.angle.radians);
-    const y = this.magnitude * Math.sin(this.angle.radians);
+    const y = -(this.magnitude * Math.sin(this.angle.radians)); // Inverted because of canvas coordinate space
     return new Point(x, y);
+  }
+
+  multiply(amount: number): Vector {
+    return new Vector(this.angle, this.magnitude * amount);
+  }
+
+  multiplyMutate(amount: number): this {
+    this.magnitude *= amount;
+    return this;
+  }
+
+  divide(amount: number): Vector {
+    return new Vector(this.angle, this.magnitude / amount);
+  }
+
+  divideMutate(amount: number): this {
+    this.magnitude /= amount;
+    return this;
   }
 }
