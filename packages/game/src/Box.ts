@@ -11,7 +11,9 @@ import {
   useEntityName,
   useContext,
   Pointer,
+  ProceduralSfx,
 } from "@hex-engine/2d";
+import samples from "modal-synthesis/samples";
 
 export default function Box({ position }: { position: Point }) {
   useType(Box);
@@ -25,8 +27,35 @@ export default function Box({ position }: { position: Point }) {
   );
 
   const physics = useNewComponent(() =>
-    Physics.Body(geometry, { respondsToMouseConstraint: true })
+    Physics.Body(geometry, {
+      collisionMask:
+        Physics.CollisionCategories.DEFAULT |
+        Physics.CollisionCategories.MOUSE_CONSTRAINT,
+    })
   );
+
+  const sound = useNewComponent(() =>
+    ProceduralSfx(
+      samples.forkDrop.map((mode) => ({
+        ...mode,
+        decay: mode.decay * 0.2,
+      }))
+    )
+  );
+
+  physics.onCollision((other) => {
+    sound.play({
+      amplitudeMultiplier() {
+        return Math.min(
+          Math.random() * ((physics.body.speed + other.body.speed) / 20),
+          5
+        );
+      },
+      decayMultiplier() {
+        return Math.random();
+      },
+    });
+  });
 
   const pointer = useNewComponent(Pointer);
 

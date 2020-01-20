@@ -5,6 +5,7 @@ import {
   useCallbackAsCurrent,
   useEntity,
 } from "@hex-engine/core";
+import { useUpdate } from "../Canvas";
 import Mouse from "./Mouse";
 import Geometry from "./Geometry";
 import { Point } from "../Models";
@@ -40,8 +41,11 @@ export default function Pointer() {
 
   let isInsideBounds = false;
   let isPressing = false;
+  const position = new Point(Infinity, Infinity);
 
   onMouseMove((pos) => {
+    position.mutateInto(pos);
+
     if (pointIsWithinBounds(pos)) {
       if (!isInsideBounds) {
         onEnterState.all().forEach((callback) => callback(pos));
@@ -93,12 +97,31 @@ export default function Pointer() {
     },
   };
 
+  if (geometry) {
+    let lastEntPosition = geometry.position.clone();
+    useUpdate(() => {
+      const thisEntPosition = geometry.position;
+
+      if (!thisEntPosition.equals(lastEntPosition)) {
+        const diff = thisEntPosition.subtract(lastEntPosition);
+        position.addMutate(diff);
+
+        isInsideBounds = pointIsWithinBounds(position);
+
+        lastEntPosition.mutateInto(thisEntPosition);
+      }
+    });
+  }
+
   return {
     get isInsideBounds() {
       return isInsideBounds;
     },
     get isPressing() {
       return isPressing;
+    },
+    get position() {
+      return position;
     },
 
     get onEnter() {

@@ -19,7 +19,9 @@ export default function Floor() {
   const geometry = useNewComponent(() =>
     Geometry({
       shape: Polygon.rectangle(rectangleSize),
-      position: canvasSize.subtract(rectangleSize.divide(2)),
+      position: canvasSize
+        .subtract(rectangleSize.divide(2))
+        .add(new Point(0, 20)),
     })
   );
 

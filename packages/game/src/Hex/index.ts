@@ -13,7 +13,9 @@ import {
   useContext,
   Pointer,
   Angle,
+  ProceduralSfx,
 } from "@hex-engine/2d";
+import samples from "modal-synthesis/samples";
 import hexSprite from "./hex.aseprite";
 
 export default function Hex({ position }: { position: Point }) {
@@ -37,11 +39,38 @@ export default function Hex({ position }: { position: Point }) {
     })
   );
 
-  useNewComponent(() =>
-    Physics.Body(geometry, { respondsToMouseConstraint: true })
+  const sound = useNewComponent(() =>
+    ProceduralSfx(
+      samples.glassHit.map((mode) => ({
+        ...mode,
+        decay: mode.decay * 0.2,
+        frequency: mode.frequency * (1 + Math.random() * 0.25),
+      }))
+    )
   );
 
-  const pointer = useNewComponent(Pointer);
+  const physics = useNewComponent(() =>
+    Physics.Body(geometry, {
+      collisionMask:
+        Physics.CollisionCategories.DEFAULT |
+        Physics.CollisionCategories.MOUSE_CONSTRAINT,
+    })
+  );
+
+  function playSound(speed: number) {
+    sound.play({
+      amplitudeMultiplier() {
+        return speed / 20;
+      },
+      decayMultiplier() {
+        return Math.random();
+      },
+    });
+  }
+
+  physics.onCollision(() => {
+    playSound(physics.body.speed);
+  });
 
   const { canvas } = useContext();
 
@@ -51,6 +80,7 @@ export default function Hex({ position }: { position: Point }) {
     }
   });
 
+  const pointer = useNewComponent(Pointer);
   useDraw((context) => {
     aseprite.draw(context, { x: -5 });
 

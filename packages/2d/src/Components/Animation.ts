@@ -39,7 +39,7 @@ export default function Animation<T>(props: Props<T>): AnimationAPI<T> {
   }
 
   useUpdate(() => {
-    if (timer.delta() > 0) {
+    if (timer.hasReachedSetTime()) {
       if (currentFrameIndex === frames.length - 1) {
         currentFrameIndex = 0;
       } else {
@@ -47,7 +47,7 @@ export default function Animation<T>(props: Props<T>): AnimationAPI<T> {
       }
 
       const currentFrame = getCurrentFrame();
-      timer.set(currentFrame.duration);
+      timer.setToTimeFromNow(currentFrame.duration);
 
       if (currentFrame.onFrame) {
         currentFrame.onFrame();
@@ -66,7 +66,7 @@ export default function Animation<T>(props: Props<T>): AnimationAPI<T> {
 
     play() {
       timer.enable();
-      timer.set(getCurrentFrame().duration);
+      timer.setToTimeFromNow(getCurrentFrame().duration);
     },
 
     restart() {

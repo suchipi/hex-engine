@@ -2,7 +2,10 @@ import { useNewComponent, useType, RunLoop } from "@hex-engine/core";
 import Inspector from "@hex-engine/inspector";
 import { UpdateChildren, useUpdate } from "./UpdateChildren";
 import { DrawChildren, useRawDraw } from "./DrawChildren";
-import DrawOrder from "./DrawOrder";
+import DrawOrder, {
+  useDebugOverlayDrawTime,
+  useCanvasDrawOrderSort,
+} from "./DrawOrder";
 import polyfillContext from "./polyfillContext";
 
 type Props = {
@@ -139,4 +142,9 @@ export default Object.assign(
   }
 );
 
-export { useUpdate, useRawDraw };
+export {
+  useUpdate,
+  useRawDraw,
+  useDebugOverlayDrawTime,
+  useCanvasDrawOrderSort,
+};

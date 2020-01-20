@@ -52,10 +52,9 @@ function getEntityTransformMatrixForContext(
   return matrix;
 }
 
-export default function useEntityTransforms() {
+export default function useEntityTransforms(entity = useEntity()) {
   const asMatrix = useCallbackAsCurrent(
     (getTransform: typeof getEntityTransformMatrix) => {
-      const entity = useEntity();
       const ancestors = entity.ancestors();
 
       const matrix = new TransformMatrix();
@@ -74,7 +73,6 @@ export default function useEntityTransforms() {
       (context: CanvasRenderingContext2D, roundToNearestPixel: boolean) => {
         context.save();
 
-        const entity = useEntity();
         const geometry = entity.getComponent(Geometry);
         if (!geometry) {
           return;

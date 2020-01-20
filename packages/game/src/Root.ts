@@ -10,6 +10,7 @@ import {
   useDestroy,
   useUpdate,
   useEntityName,
+  AudioContext,
 } from "@hex-engine/2d";
 import Button from "./Button";
 import FPS from "./FPS";
@@ -24,6 +25,7 @@ export default function Root() {
   canvas.setPixelated(true);
   canvas.fullscreen({ pixelZoom: 2 });
 
+  useNewComponent(AudioContext);
   useNewComponent(Physics.Engine);
   useNewComponent(FPS);
 

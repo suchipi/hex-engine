@@ -10,6 +10,7 @@ export default function Expandable({
   hasContent,
   onMouseEnter,
   onMouseLeave,
+  onContextMenu,
 }: {
   label?: React.ReactNode;
   preview?: React.ReactNode;
@@ -18,6 +19,7 @@ export default function Expandable({
   hasContent: boolean;
   onMouseEnter?: (event: React.MouseEvent) => void;
   onMouseLeave?: (event: React.MouseEvent) => void;
+  onContextMenu?: (event: React.MouseEvent) => void;
 }) {
   const [expanded, setExpanded] = useStateTree(false, "e");
 
@@ -27,7 +29,11 @@ export default function Expandable({
 
   return (
     <div style={{ paddingLeft: 8, paddingTop: 2 }}>
-      <span onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+      <span
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onContextMenu={onContextMenu}
+      >
         <Button
           style={{
             color: "rgb(110, 110, 110)",

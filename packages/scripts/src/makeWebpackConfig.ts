@@ -73,6 +73,10 @@ export default (mode: "production" | "development") => {
           test: /\.(fnt)$/i,
           use: require.resolve("bmfont-loader"),
         },
+        {
+          test: /\.css$/i,
+          use: [require.resolve("style-loader"), require.resolve("css-loader")],
+        },
       ],
     },
     plugins: [

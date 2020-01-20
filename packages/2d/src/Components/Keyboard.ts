@@ -1,5 +1,22 @@
-import { useEnableDisable, useType } from "@hex-engine/core";
+import {
+  useEnableDisable,
+  useType,
+  useCallbackAsCurrent,
+} from "@hex-engine/core";
 import { Vector, Angle } from "../Models";
+
+let firstKeyHasHappened = false;
+let pendingFirstKeyHandlers: Array<() => void> = [];
+
+export function useFirstKey(handler: () => void) {
+  pendingFirstKeyHandlers.push(useCallbackAsCurrent(handler));
+
+  return {
+    get firstKeyHasHappened() {
+      return firstKeyHasHappened;
+    },
+  };
+}
 
 export default function Keyboard() {
   useType(Keyboard);
@@ -7,6 +24,12 @@ export default function Keyboard() {
   const pressed: Set<string> = new Set();
 
   const processKeydown = (event: KeyboardEvent) => {
+    if (!firstKeyHasHappened) {
+      firstKeyHasHappened = true;
+      pendingFirstKeyHandlers.forEach((cb) => cb());
+      pendingFirstKeyHandlers = [];
+    }
+
     if (event.repeat) {
       return;
     }

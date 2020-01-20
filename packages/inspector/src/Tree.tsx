@@ -7,7 +7,6 @@ import EditableString from "./EditableString";
 import EditableBoolean from "./EditableBoolean";
 import { HOVER_BEGIN, HOVER_END } from "./useInspectorHover";
 
-// TODO: sometimes not all the property names are shown. What's going on?
 function gatherPropertyNames(
   obj: Object,
   soFar: Set<string | symbol> = new Set()
@@ -27,6 +26,7 @@ function gatherPropertyNames(
   return results;
 }
 
+let globalVariableId = 0;
 export default function Tree({
   name,
   data,
@@ -385,6 +385,16 @@ export default function Tree({
       preview={preview}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      onContextMenu={(event) => {
+        event.preventDefault();
+
+        const variableName = "temp" + globalVariableId++;
+        // @ts-ignore
+        window[variableName] = data;
+        console.log(variableName, data);
+
+        alert(`Target stored as ${variableName}`);
+      }}
     >
       {content}
     </Expandable>

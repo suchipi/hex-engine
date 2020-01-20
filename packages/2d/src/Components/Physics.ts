@@ -1,9 +1,21 @@
-import { useType, useRootEntity, useDestroy } from "@hex-engine/core";
+import {
+  useType,
+  useRootEntity,
+  useDestroy,
+  useEntity,
+  Entity,
+  useCallbackAsCurrent,
+  useNewComponent,
+} from "@hex-engine/core";
 import Matter from "matter-js";
-import { useUpdate } from "../Canvas";
 import Geometry from "./Geometry";
 import { Angle, Point, Polygon, Circle } from "../Models";
-import { useContext } from "../Hooks";
+import {
+  useUpdate,
+  useContext,
+  useDraw,
+  useDebugOverlayDrawTime,
+} from "../Hooks";
 
 // Matter needs this
 // @ts-ignore
@@ -14,10 +26,31 @@ function name<T>(name: string, fn: T): T {
   return fn;
 }
 
-function PhysicsEngine() {
+type CollisionListener = (other: {
+  body: Matter.Body;
+  entity: null | Entity;
+}) => void;
+
+function PhysicsEngine({
+  debugDraw = false,
+  gravity = new Point(0, 1),
+  enableSleeping = true,
+}: {
+  debugDraw?: boolean;
+  gravity?: Point;
+  enableSleeping?: boolean;
+} = {}) {
   useType(PhysicsEngine);
 
-  const engine = Matter.Engine.create();
+  const engine = Matter.Engine.create(undefined, {
+    enableSleeping,
+  });
+  engine.world.gravity.x = gravity.x;
+  engine.world.gravity.y = gravity.y;
+
+  const { addCollisionListener } = useNewComponent(() =>
+    PhysicsCollisionsListeners(engine)
+  );
 
   let lastDelta: number | null = null;
   useUpdate((delta) => {
@@ -34,7 +67,56 @@ function PhysicsEngine() {
     }
   });
 
-  return { engine };
+  const state = { engine, addCollisionListener, debugDraw };
+
+  function drawComposite(
+    context: CanvasRenderingContext2D,
+    composite: Matter.Composite
+  ) {
+    composite.bodies.forEach(drawBody.bind(null, context));
+    composite.constraints.forEach(drawConstraint.bind(null, context));
+    composite.composites.forEach(drawComposite.bind(null, context));
+  }
+
+  function drawBody(context: CanvasRenderingContext2D, body: Matter.Body) {
+    body.vertices.reduce((prev, curr) => {
+      context.moveTo(prev.x, prev.y);
+      context.lineTo(curr.x, curr.y);
+      context.stroke();
+
+      return curr;
+    }, body.vertices[body.vertices.length - 1]);
+  }
+
+  function drawConstraint(
+    context: CanvasRenderingContext2D,
+    constraint: Matter.Constraint
+  ) {
+    if (!constraint.bodyA || !constraint.bodyB) return;
+
+    const pos1 = Matter.Vector.add(
+      constraint.bodyA.position,
+      constraint.pointA
+    );
+    const pos2 = Matter.Vector.add(
+      constraint.bodyB.position,
+      constraint.pointB
+    );
+    context.moveTo(pos1.x, pos1.y);
+    context.lineTo(pos2.x, pos2.y);
+    context.stroke();
+  }
+
+  useDebugOverlayDrawTime();
+  useDraw((context) => {
+    if (state.debugDraw) {
+      context.strokeStyle = "red";
+      context.lineWidth = 1;
+      drawComposite(context, engine.world);
+    }
+  });
+
+  return state;
 }
 
 function useEngine() {
@@ -47,13 +129,76 @@ function useEngine() {
   return engine;
 }
 
+function PhysicsCollisionsListeners(engine: Matter.Engine) {
+  useType(PhysicsCollisionsListeners);
+  const collisionListeners = new WeakMap<Entity, CollisionListener>();
+
+  function addCollisionListener(callback: CollisionListener) {
+    const entity = useEntity();
+    collisionListeners.set(entity, useCallbackAsCurrent(callback));
+  }
+
+  let toProcess: Array<Matter.IPair> = [];
+
+  Matter.Events.on(engine, "collisionStart", (event) => {
+    for (const pair of event.pairs) {
+      toProcess.push(pair);
+    }
+  });
+
+  useUpdate(() => {
+    for (const pair of toProcess) {
+      const { bodyA, bodyB } = pair;
+      // @ts-ignore
+      const entA: Entity | undefined = bodyA.entity;
+      // @ts-ignore
+      const entB: Entity | undefined = bodyB.entity;
+
+      if (entA && collisionListeners.has(entA)) {
+        const listener = collisionListeners.get(entA);
+        if (listener) {
+          listener({ body: bodyB, entity: entB || null });
+        }
+      }
+      if (entB && collisionListeners.has(entB)) {
+        const listener = collisionListeners.get(entB);
+        if (listener) {
+          listener({ body: bodyA, entity: entA || null });
+        }
+      }
+    }
+    toProcess = [];
+  });
+
+  return { addCollisionListener };
+}
+
+function useCollisionListener() {
+  const addCollisionListener = useRootEntity().getComponent(PhysicsEngine)
+    ?.addCollisionListener;
+  if (!addCollisionListener) {
+    throw new Error(
+      "Attempted to get Physics.Engine component from the root entity, but there wasn't one there.  "
+    );
+  }
+  return addCollisionListener;
+}
+
+const CollisionCategories = {
+  NONE: 0,
+  DEFAULT: 1,
+  MOUSE_CONSTRAINT: 2,
+};
+
 function PhysicsBody(
   geometry: ReturnType<typeof Geometry>,
   {
-    respondsToMouseConstraint = false,
+    collisionCategory = CollisionCategories.DEFAULT,
+    collisionMask = CollisionCategories.DEFAULT,
+    label = useEntity().name || undefined,
     ...otherOpts
   }: Partial<{
-    respondsToMouseConstraint: boolean;
+    label: string;
     isStatic: boolean;
     density: number;
     friction: number;
@@ -62,61 +207,65 @@ function PhysicsBody(
     restitution: number;
     timeScale: number;
     frictionStatic: number;
+    collisionCategory: number;
+    collisionMask: number;
   }> = {}
 ) {
   useType(PhysicsBody);
 
   const engine = useEngine();
+  const addCollisionListener = useCollisionListener();
 
   const opts = {
     collisionFilter: {
-      category: respondsToMouseConstraint ? 3 : 1,
-      mask: respondsToMouseConstraint ? 3 : 1,
+      category: collisionCategory,
+      mask: collisionMask,
     },
     angle: geometry.rotation.radians,
+    label,
     ...otherOpts,
   };
 
   let body: Matter.Body;
+  const worldPos = geometry.worldPosition();
+
   if ((geometry.shape as Polygon).points) {
     const shape = geometry.shape as Polygon;
 
     body = Matter.Bodies.fromVertices(
-      geometry.position.x,
-      geometry.position.y,
+      worldPos.x,
+      worldPos.y,
       [shape.points],
       opts
     );
   } else if ((geometry.shape as Circle).radius != null) {
     const shape = geometry.shape as Circle;
 
-    body = Matter.Bodies.circle(
-      geometry.position.x,
-      geometry.position.y,
-      shape.radius,
-      opts
-    );
+    body = Matter.Bodies.circle(worldPos.x, worldPos.y, shape.radius, opts);
   } else {
     throw new Error("Unknown shape type; cannot construct physics body");
   }
 
-  Matter.World.addBody(engine.world, body);
+  // @ts-ignore
+  body.entity = useEntity();
+
+  Matter.Composite.add(engine.world, body);
 
   useDestroy().onDestroy(() => {
+    // @ts-ignore
+    body.entity = null;
     Matter.World.remove(engine.world, body, true);
   });
 
-  if (opts.isStatic) {
-    useUpdate(() => {
+  useUpdate(() => {
+    if (body.isStatic) {
       Matter.Body.setPosition(body, geometry.position);
       Matter.Body.setAngle(body, geometry.rotation.radians);
-    });
-  } else {
-    useUpdate(() => {
+    } else {
       geometry.position.mutateInto(body.position);
       geometry.rotation.radians = body.angle;
-    });
-  }
+    }
+  });
 
   return {
     body,
@@ -150,6 +299,7 @@ function PhysicsBody(
     setVelocity(velocity: Point) {
       Matter.Body.setVelocity(body, velocity);
     },
+    onCollision: addCollisionListener,
   };
 }
 
@@ -161,6 +311,8 @@ function PhysicsConstraint(
     bodyB: Matter.Body;
     pointA: Point;
     pointB: Point;
+    length: number;
+    label: string;
   }>
 ) {
   useType(PhysicsConstraint);
@@ -189,8 +341,8 @@ function PhysicsMouseConstraint() {
   const constraint = Matter.MouseConstraint.create(engine, {
     mouse: Matter.Mouse.create(canvas),
     collisionFilter: {
-      category: 2,
-      mask: 2,
+      category: CollisionCategories.MOUSE_CONSTRAINT,
+      mask: CollisionCategories.MOUSE_CONSTRAINT | CollisionCategories.DEFAULT,
     },
   });
 
@@ -202,6 +354,7 @@ const Physics = {
   Body: name("Physics.Body", PhysicsBody),
   Constraint: name("Physics.Constraint", PhysicsConstraint),
   MouseConstraint: name("Physics.MouseConstraint", PhysicsMouseConstraint),
+  CollisionCategories,
 };
 
 export default Physics;

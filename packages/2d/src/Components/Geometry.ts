@@ -1,14 +1,18 @@
 import { useType } from "@hex-engine/core";
-import { Angle, Point, Polygon, Shape } from "../Models";
-import { useInspectorHoverOutline, useEntityTransforms } from "../Hooks";
+import { Angle, Point, Shape } from "../Models";
+import {
+  useInspectorHoverOutline,
+  useEntityTransforms,
+  useDebugOverlayDrawTime,
+} from "../Hooks";
 
-function Geometry({
-  shape = new Polygon([new Point(0, 0)]),
+function Geometry<S extends Shape>({
+  shape,
   position = new Point(0, 0),
   rotation = new Angle(0),
   scale = new Point(1, 1),
 }: {
-  shape?: Shape | undefined;
+  shape: S;
   position?: Point | undefined;
   rotation?: Angle | undefined;
   scale?: Point | undefined;
@@ -28,6 +32,7 @@ function Geometry({
     },
   };
 
+  useDebugOverlayDrawTime();
   useInspectorHoverOutline(() => geometry.shape);
 
   return geometry;

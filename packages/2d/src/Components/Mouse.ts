@@ -12,6 +12,19 @@ const MOUSE_MOVE = Symbol("MOUSE_MOVE");
 const MOUSE_DOWN = Symbol("MOUSE_DOWN");
 const MOUSE_UP = Symbol("MOUSE_UP");
 
+let firstClickHasHappened = false;
+let pendingFirstClickHandlers: Array<() => void> = [];
+
+export function useFirstClick(handler: () => void) {
+  pendingFirstClickHandlers.push(useCallbackAsCurrent(handler));
+
+  return {
+    get firstClickHasHappened() {
+      return firstClickHasHappened;
+    },
+  };
+}
+
 export default function Mouse() {
   useType(Mouse);
 
@@ -57,6 +70,14 @@ export default function Mouse() {
     };
   };
   const handleMouseDown = ({ clientX, clientY }: MouseEvent) => {
+    if (!firstClickHasHappened) {
+      firstClickHasHappened = true;
+      pendingFirstClickHandlers.forEach((handler) => {
+        handler();
+      });
+      pendingFirstClickHandlers = [];
+    }
+
     pendingDown = () => {
       pendingDown = null;
       const pos = translatePos(clientX, clientY);

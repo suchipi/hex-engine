@@ -6,7 +6,7 @@ import {
   Component,
   useType,
 } from "@hex-engine/core";
-import DrawOrder from "./DrawOrder";
+import { useCanvasDrawOrderSort } from "./DrawOrder";
 
 const DRAW_CALLBACKS = Symbol("DRAW_CALLBACKS");
 
@@ -49,8 +49,7 @@ export function DrawChildren({ context, backstage, backgroundColor }: Props) {
     context.fillStyle = backgroundColor;
     context.fillRect(0, 0, context.canvas.width, context.canvas.height);
 
-    const drawOrder = useEntity().getComponent(DrawOrder);
-    const sort = drawOrder ? drawOrder.sort : DrawOrder.defaultSort;
+    const sort = useCanvasDrawOrderSort();
 
     const ent = useEntity();
     const ents = [ent, ...ent.descendants()];
