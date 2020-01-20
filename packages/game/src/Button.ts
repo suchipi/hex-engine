@@ -5,7 +5,7 @@ import {
   Polygon,
   useDraw,
   useUpdate,
-  Pointer,
+  Mouse,
   Label,
   useType,
   Geometry,
@@ -41,9 +41,9 @@ export default function Button({
     Geometry({ shape: Polygon.rectangle(currentSize) })
   );
 
-  const pointer = useNewComponent(Pointer);
+  const mouse = useNewComponent(Mouse);
 
-  pointer.onClick(onClick);
+  mouse.onClick(onClick);
 
   useUpdate(() => {
     const previousSize = currentSize;
@@ -57,9 +57,9 @@ export default function Button({
   useDraw(
     (context) => {
       context.fillStyle =
-        pointer.isPressing && pointer.isInsideBounds
+        mouse.isPressing && mouse.isInsideBounds
           ? "#aaa"
-          : pointer.isInsideBounds
+          : mouse.isInsideBounds
           ? "#ddd"
           : "#eee";
       const rect = currentSize.round();

@@ -1,10 +1,10 @@
 import { useType, useNewComponent, useRootEntity } from "@hex-engine/core";
-import Mouse, { useFirstClick } from "./Mouse";
+import LowLevelMouse, { useFirstClick } from "./LowLevelMouse";
 import Keyboard, { useFirstKey } from "./Keyboard";
 
 export default function AudioContextComponent() {
   useType(AudioContextComponent);
-  useNewComponent(Mouse);
+  useNewComponent(LowLevelMouse);
   useNewComponent(Keyboard);
 
   let audioContext: null | AudioContext;

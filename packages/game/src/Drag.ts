@@ -2,7 +2,7 @@ import {
   useNewComponent,
   useDraw,
   useType,
-  Mouse,
+  LowLevelMouse,
   useEntitiesAtPoint,
   Physics,
   Entity,
@@ -31,7 +31,7 @@ export default function Drag() {
   };
   let isDown = false;
 
-  const mouse = useNewComponent(Mouse);
+  const mouse = useNewComponent(LowLevelMouse);
   mouse.onMouseDown(({ pos }) => {
     isDown = true;
 

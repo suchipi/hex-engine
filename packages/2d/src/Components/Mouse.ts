@@ -1,185 +1,156 @@
 import {
   useType,
-  useEnableDisable,
+  useNewComponent,
   useStateAccumulator,
   useCallbackAsCurrent,
+  useEntity,
+  Entity,
 } from "@hex-engine/core";
 import { useUpdate } from "../Canvas";
+import { useEntitiesAtPoint } from "../Hooks";
+import LowLevelMouse from "./LowLevelMouse";
+import Geometry from "./Geometry";
 import { Point } from "../Models";
-import { useContext, useEntityTransforms } from "../Hooks";
 
-const MOUSE_MOVE = Symbol("MOUSE_MOVE");
-const MOUSE_DOWN = Symbol("MOUSE_DOWN");
-const MOUSE_UP = Symbol("MOUSE_UP");
+const ON_ENTER = Symbol("ON_ENTER");
+const ON_MOVE = Symbol("ON_MOVE");
+const ON_LEAVE = Symbol("ON_LEAVE");
+const ON_DOWN = Symbol("ON_DOWN");
+const ON_UP = Symbol("ON_UP");
+const ON_CLICK = Symbol("ON_CLICK");
+type Callback = (pos: Point) => void;
 
-type HexMouseEvent = {
-  pos: Point;
-  delta: Point;
-  buttons: {
-    left: boolean;
-    right: boolean;
-    middle: boolean;
-    mouse4: boolean;
-    mouse5: boolean;
-  };
-};
-
-let firstClickHasHappened = false;
-let pendingFirstClickHandlers: Array<() => void> = [];
-
-export function useFirstClick(handler: () => void) {
-  pendingFirstClickHandlers.push(useCallbackAsCurrent(handler));
-
-  return {
-    get firstClickHasHappened() {
-      return firstClickHasHappened;
-    },
-  };
-}
-
-export default function Mouse() {
+export default function Mouse({
+  entity = useEntity(),
+  geometry = entity.getComponent(Geometry),
+}: {
+  entity?: Entity | undefined;
+  geometry?: ReturnType<typeof Geometry> | null;
+} = {}) {
   useType(Mouse);
 
-  const context = useContext();
-  const canvas: HTMLCanvasElement = context.canvas;
+  function pointIsWithinBounds(localPoint: Point) {
+    if (!geometry) return false;
 
-  const transforms = useEntityTransforms();
-
-  function translatePos(clientX: number, clientY: number): Point {
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = rect.width / canvas.width;
-    const scaleY = rect.height / canvas.height;
-
-    const x = (clientX - rect.left) / scaleX;
-    const y = (clientY - rect.top) / scaleY;
-
-    const untransformedPoint = new Point(x, y);
-
-    return transforms
-      .matrixForWorldPosition()
-      .inverse()
-      .transformPoint(untransformedPoint);
+    const worldPoint = geometry.worldPosition().addMutate(localPoint);
+    return useEntitiesAtPoint(worldPoint)[0] === entity;
   }
 
-  let lastPos = new Point(0, 0);
-  const event: HexMouseEvent = {
-    pos: new Point(0, 0),
-    delta: new Point(0, 0),
-    buttons: {
-      left: false,
-      right: false,
-      middle: false,
-      mouse4: false,
-      mouse5: false,
+  const onEnterState = useStateAccumulator<Callback>(ON_ENTER);
+  const onMoveState = useStateAccumulator<Callback>(ON_MOVE);
+  const onLeaveState = useStateAccumulator<Callback>(ON_LEAVE);
+  const onDownState = useStateAccumulator<Callback>(ON_DOWN);
+  const onUpState = useStateAccumulator<Callback>(ON_UP);
+  const onClickState = useStateAccumulator<Callback>(ON_CLICK);
+
+  const { onMouseMove, onMouseDown, onMouseUp } = useNewComponent(
+    LowLevelMouse
+  );
+
+  let isInsideBounds = false;
+  let pressingStack = 0;
+  const position = new Point(Infinity, Infinity);
+
+  onMouseMove(({ pos }) => {
+    position.mutateInto(pos);
+
+    if (pointIsWithinBounds(pos)) {
+      if (!isInsideBounds) {
+        onEnterState.all().forEach((callback) => callback(pos));
+      }
+      isInsideBounds = true;
+
+      onMoveState.all().forEach((callback) => callback(pos));
+    } else if (isInsideBounds) {
+      onLeaveState.all().forEach((callback) => callback(pos));
+      isInsideBounds = false;
+    }
+  });
+
+  onMouseDown(({ pos }) => {
+    if (pointIsWithinBounds(pos)) {
+      pressingStack++;
+      onDownState.all().forEach((callback) => callback(pos));
+    }
+  });
+
+  onMouseUp(({ pos }) => {
+    if (pointIsWithinBounds(pos)) {
+      onUpState.all().forEach((callback) => callback(pos));
+      if (pressingStack > 0) {
+        onClickState.all().forEach((callback) => callback(pos));
+      }
+    }
+    pressingStack--;
+  });
+
+  const callbackSetters = {
+    onEnter(callback: Callback) {
+      onEnterState.add(useCallbackAsCurrent(callback));
+    },
+    onMove(callback: Callback) {
+      onMoveState.add(useCallbackAsCurrent(callback));
+    },
+    onLeave(callback: Callback) {
+      onLeaveState.add(useCallbackAsCurrent(callback));
+    },
+    onDown(callback: Callback) {
+      onDownState.add(useCallbackAsCurrent(callback));
+    },
+    onUp(callback: Callback) {
+      onUpState.add(useCallbackAsCurrent(callback));
+    },
+    onClick(callback: Callback) {
+      onClickState.add(useCallbackAsCurrent(callback));
     },
   };
-  function updateEvent({
-    clientX,
-    clientY,
-    buttons,
-  }: {
-    clientX: number;
-    clientY: number;
-    buttons: number;
-  }) {
-    event.pos = translatePos(clientX, clientY);
-    event.delta.mutateInto(event.pos);
-    event.delta.subtractMutate(lastPos);
-    lastPos.mutateInto(event.pos);
 
-    event.buttons.left = Boolean(buttons & 1);
-    event.buttons.right = Boolean(buttons & 2);
-    event.buttons.middle = Boolean(buttons & 4);
-    event.buttons.mouse4 = Boolean(buttons & 8);
-    event.buttons.mouse5 = Boolean(buttons & 16);
+  if (geometry) {
+    // Handle the fact that isInsideBounds could change due to the entity moving
+    // underneath the cursor.
+    let lastEntPosition = geometry.position.clone();
+    useUpdate(() => {
+      const thisEntPosition = geometry.position;
+
+      if (!thisEntPosition.equals(lastEntPosition)) {
+        const diff = thisEntPosition.subtract(lastEntPosition);
+        position.addMutate(diff);
+
+        isInsideBounds = pointIsWithinBounds(position);
+
+        lastEntPosition.mutateInto(thisEntPosition);
+      }
+    });
   }
-
-  const moveState = useStateAccumulator<(event: HexMouseEvent) => void>(
-    MOUSE_MOVE
-  );
-  const downState = useStateAccumulator<(event: HexMouseEvent) => void>(
-    MOUSE_DOWN
-  );
-  const upState = useStateAccumulator<(event: HexMouseEvent) => void>(MOUSE_UP);
-
-  let pendingMove: null | (() => void) = null;
-  let pendingDown: null | (() => void) = null;
-  let pendingUp: null | (() => void) = null;
-
-  const handleMouseMove = ({ clientX, clientY, buttons }: MouseEvent) => {
-    pendingMove = () => {
-      pendingMove = null;
-      updateEvent({ clientX, clientY, buttons });
-      moveState.all().forEach((callback) => callback(event));
-    };
-  };
-  const handleMouseDown = ({ clientX, clientY, buttons }: MouseEvent) => {
-    if (!firstClickHasHappened) {
-      firstClickHasHappened = true;
-      pendingFirstClickHandlers.forEach((handler) => {
-        handler();
-      });
-      pendingFirstClickHandlers = [];
-    }
-
-    pendingDown = () => {
-      pendingDown = null;
-      updateEvent({ clientX, clientY, buttons });
-      downState.all().forEach((callback) => callback(event));
-    };
-  };
-  const handleMouseUp = ({ clientX, clientY, buttons }: MouseEvent) => {
-    pendingUp = () => {
-      pendingUp = null;
-      updateEvent({ clientX, clientY, buttons });
-      upState.all().forEach((callback) => callback(event));
-    };
-  };
-
-  useUpdate(() => {
-    // Very important that we process move before down/up, so that touch screens work
-    if (pendingMove) pendingMove();
-    if (pendingDown) pendingDown();
-    if (pendingUp) pendingUp();
-  });
-
-  let bound = false;
-
-  function bindListeners(canvas: HTMLCanvasElement) {
-    if (bound) return;
-    canvas.addEventListener("mousemove", handleMouseMove);
-    canvas.addEventListener("mousedown", handleMouseDown);
-    canvas.addEventListener("mouseup", handleMouseUp);
-    bound = true;
-  }
-
-  function unbindListeners(canvas: HTMLCanvasElement) {
-    if (!bound) return;
-    canvas.removeEventListener("mousemove", handleMouseMove);
-    canvas.removeEventListener("mousedown", handleMouseDown);
-    canvas.removeEventListener("mouseup", handleMouseUp);
-    bound = false;
-  }
-
-  const { onEnabled, onDisabled } = useEnableDisable();
-
-  onEnabled(() => {
-    if (canvas) bindListeners(canvas);
-  });
-
-  onDisabled(() => {
-    if (canvas) unbindListeners(canvas);
-  });
 
   return {
-    onMouseMove: (callback: (event: HexMouseEvent) => void) => {
-      moveState.add(useCallbackAsCurrent(callback));
+    get isInsideBounds() {
+      return isInsideBounds;
     },
-    onMouseDown: (callback: (event: HexMouseEvent) => void) => {
-      downState.add(useCallbackAsCurrent(callback));
+    get isPressing() {
+      return pressingStack > 0;
     },
-    onMouseUp: (callback: (event: HexMouseEvent) => void) => {
-      upState.add(useCallbackAsCurrent(callback));
+    get position() {
+      return position;
+    },
+
+    get onEnter() {
+      return callbackSetters.onEnter;
+    },
+    get onMove() {
+      return callbackSetters.onMove;
+    },
+    get onLeave() {
+      return callbackSetters.onLeave;
+    },
+    get onDown() {
+      return callbackSetters.onDown;
+    },
+    get onUp() {
+      return callbackSetters.onUp;
+    },
+    get onClick() {
+      return callbackSetters.onClick;
     },
   };
 }

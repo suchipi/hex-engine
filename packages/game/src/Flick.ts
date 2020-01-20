@@ -2,7 +2,7 @@ import {
   useNewComponent,
   useDraw,
   useType,
-  Mouse,
+  LowLevelMouse,
   useEntitiesAtPoint,
   Point,
   Physics,
@@ -20,7 +20,7 @@ export default function Flick() {
   const holdPoint = new Point(0, 0);
   let target: Entity | null = null;
 
-  const mouse = useNewComponent(Mouse);
+  const mouse = useNewComponent(LowLevelMouse);
 
   let isDown = false;
   mouse.onMouseDown(({ pos }) => {
