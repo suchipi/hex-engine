@@ -18,13 +18,17 @@ export function useFirstKey(handler: () => void) {
   };
 }
 
-export default function Keyboard() {
+export default function Keyboard({
+  preventDefault = false,
+}: { preventDefault?: undefined | boolean } = {}) {
   useType(Keyboard);
 
   const pressed: Set<string> = new Set();
 
   const processKeydown = (event: KeyboardEvent) => {
-    event.preventDefault();
+    if (preventDefault) {
+      event.preventDefault();
+    }
 
     if (!firstKeyHasHappened) {
       firstKeyHasHappened = true;
