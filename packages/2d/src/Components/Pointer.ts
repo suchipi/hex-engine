@@ -6,6 +6,7 @@ import {
   useEntity,
 } from "@hex-engine/core";
 import { useUpdate } from "../Canvas";
+import { useEntitiesAtPoint } from "../Hooks";
 import Mouse from "./Mouse";
 import Geometry from "./Geometry";
 import { Point } from "../Models";
@@ -21,13 +22,14 @@ type Callback = (pos: Point) => void;
 export default function Pointer() {
   useType(Pointer);
 
-  const geometry = useEntity().getComponent(Geometry);
+  const entity = useEntity();
+  const geometry = entity.getComponent(Geometry);
 
-  function pointIsWithinBounds(point: Point) {
-    const shape = geometry?.shape;
-    if (!shape) return false;
+  function pointIsWithinBounds(localPoint: Point) {
+    if (!geometry) return false;
 
-    return shape.containsPoint(point);
+    const worldPoint = geometry.worldPosition().addMutate(localPoint);
+    return useEntitiesAtPoint(worldPoint)[0] === entity;
   }
 
   const onEnterState = useStateAccumulator<Callback>(ON_ENTER);
@@ -98,6 +100,8 @@ export default function Pointer() {
   };
 
   if (geometry) {
+    // Handle the fact that isInsideBounds could change due to the entity moving
+    // underneath the cursor.
     let lastEntPosition = geometry.position.clone();
     useUpdate(() => {
       const thisEntPosition = geometry.position;
