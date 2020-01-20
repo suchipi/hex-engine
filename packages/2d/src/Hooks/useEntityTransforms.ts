@@ -71,8 +71,6 @@ export default function useEntityTransforms(entity = useEntity()) {
     asMatrix: asMatrix.bind(null, getEntityTransformMatrix),
     applyToContext: useCallbackAsCurrent(
       (context: CanvasRenderingContext2D, roundToNearestPixel: boolean) => {
-        context.save();
-
         const geometry = entity.getComponent(Geometry);
         if (!geometry) {
           return;
@@ -92,8 +90,5 @@ export default function useEntityTransforms(entity = useEntity()) {
         );
       }
     ),
-    resetContext: useCallbackAsCurrent((context: CanvasRenderingContext2D) => {
-      context.restore();
-    }),
   };
 }

@@ -15,10 +15,11 @@ export default function useDraw(
   const transforms = useEntityTransforms();
 
   useRawDraw((context, backstage) => {
-    transforms.applyToContext(context, roundToNearestPixel);
+    context.save();
 
+    transforms.applyToContext(context, roundToNearestPixel);
     onDraw(context, backstage);
 
-    transforms.resetContext(context);
+    context.restore();
   });
 }

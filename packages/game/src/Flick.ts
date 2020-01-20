@@ -45,6 +45,7 @@ export default function Flick() {
     if (isDown) {
       context.lineWidth = 1;
       context.strokeStyle = "black";
+      context.beginPath();
       context.moveTo(downPoint.x, downPoint.y);
       context.lineTo(holdPoint.x, holdPoint.y);
       context.stroke();

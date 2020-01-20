@@ -9,7 +9,7 @@ import {
 } from "@hex-engine/core";
 import Matter from "matter-js";
 import Geometry from "./Geometry";
-import { Angle, Point, Polygon, Circle } from "../Models";
+import { Angle, Point, Polygon, Circle, Vector } from "../Models";
 import {
   useUpdate,
   useContext,
@@ -79,13 +79,16 @@ function PhysicsEngine({
   }
 
   function drawBody(context: CanvasRenderingContext2D, body: Matter.Body) {
-    body.vertices.reduce((prev, curr) => {
-      context.moveTo(prev.x, prev.y);
-      context.lineTo(curr.x, curr.y);
-      context.stroke();
-
-      return curr;
-    }, body.vertices[body.vertices.length - 1]);
+    context.beginPath();
+    body.vertices.forEach((vert, index) => {
+      if (index === 0) {
+        context.moveTo(vert.x, vert.y);
+      } else {
+        context.lineTo(vert.x, vert.y);
+      }
+    });
+    context.closePath();
+    context.stroke();
   }
 
   function drawConstraint(
@@ -102,6 +105,7 @@ function PhysicsEngine({
       constraint.bodyB.position,
       constraint.pointB
     );
+    context.beginPath();
     context.moveTo(pos1.x, pos1.y);
     context.lineTo(pos2.x, pos2.y);
     context.stroke();

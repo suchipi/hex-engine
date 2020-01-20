@@ -171,7 +171,7 @@ export default class Polygon {
     for (const point of this.points.slice(1)) {
       context.lineTo(point.x, point.y);
     }
-    context.lineTo(this.points[0].x, this.points[0].y);
+    context.closePath();
 
     if (strokeOrFill === "stroke") {
       context.stroke();
