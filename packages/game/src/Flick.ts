@@ -7,6 +7,10 @@ import {
   Point,
   Physics,
   Vector,
+  Entity,
+  Geometry,
+  useEntityTransforms,
+  useEnableDisable,
 } from "@hex-engine/2d";
 
 export default function Flick() {
@@ -14,6 +18,7 @@ export default function Flick() {
 
   const downPoint = new Point(0, 0);
   const holdPoint = new Point(0, 0);
+  let target: Entity | null = null;
 
   const mouse = useNewComponent(Mouse);
 
@@ -22,6 +27,17 @@ export default function Flick() {
     isDown = true;
     downPoint.mutateInto(pos);
     holdPoint.mutateInto(pos);
+
+    const entAtCursor = useEntitiesAtPoint(downPoint)[0];
+    if (!entAtCursor) return;
+
+    const physics = entAtCursor.getComponent(Physics.Body);
+    if (!physics) return;
+
+    if (physics.body.isStatic) return;
+
+    target = entAtCursor;
+    physics.setStatic(true);
   });
   mouse.onMouseMove((pos) => {
     if (isDown) {
@@ -30,25 +46,57 @@ export default function Flick() {
   });
   mouse.onMouseUp(() => {
     isDown = false;
-    const entAtCursor = useEntitiesAtPoint(downPoint)[0];
-    if (!entAtCursor) return;
-    const physics = entAtCursor.getComponent(Physics.Body);
+    if (!target) return;
+    const physics = target.getComponent(Physics.Body);
     if (!physics) return;
+    physics.setStatic(false);
+
     const vector = Vector.fromPoints(downPoint, holdPoint)
       .multiplyMutate(physics.body.mass)
       .divideMutate(1000);
     vector.angle.addMutate(Math.PI); // Invert direction
     physics.applyForce(downPoint, vector);
+
+    target = null;
   });
 
   useDraw((context) => {
     if (isDown) {
       context.lineWidth = 1;
-      context.strokeStyle = "black";
+      context.strokeStyle = "cyan";
       context.beginPath();
       context.moveTo(downPoint.x, downPoint.y);
       context.lineTo(holdPoint.x, holdPoint.y);
       context.stroke();
     }
+
+    if (target) {
+      const geometry = target.getComponent(Geometry);
+      if (geometry) {
+        context.strokeStyle = "cyan";
+        context.lineWidth = 1;
+
+        const matrix = useEntityTransforms(target).matrixForDrawPosition(false);
+        context.transform(
+          matrix.a,
+          matrix.b,
+          matrix.c,
+          matrix.d,
+          matrix.e,
+          matrix.f
+        );
+
+        geometry.shape.draw(context, "stroke");
+      }
+    }
+  });
+
+  useEnableDisable().onDisabled(() => {
+    if (target) {
+      const physics = target.getComponent(Physics.Body);
+      if (physics) physics.setStatic(false);
+    }
+    target = null;
+    isDown = false;
   });
 }

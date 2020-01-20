@@ -17,7 +17,15 @@ export default function useDraw(
   useRawDraw((context, backstage) => {
     context.save();
 
-    transforms.applyToContext(context, roundToNearestPixel);
+    const matrix = transforms.matrixForDrawPosition(roundToNearestPixel);
+    context.transform(
+      matrix.a,
+      matrix.b,
+      matrix.c,
+      matrix.d,
+      matrix.e,
+      matrix.f
+    );
     onDraw(context, backstage);
 
     context.restore();

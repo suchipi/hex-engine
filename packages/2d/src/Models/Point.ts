@@ -44,6 +44,24 @@ export default class Point {
     return this;
   }
 
+  addX(amount: number): Point {
+    return new Point(this.x + amount, this.y);
+  }
+
+  addXMutate(amount: number): this {
+    this.x += amount;
+    return this;
+  }
+
+  addY(amount: number): Point {
+    return new Point(this.x, this.y + amount);
+  }
+
+  addYMutate(amount: number): this {
+    this.y += amount;
+    return this;
+  }
+
   subtract(other: Point | number): Point {
     if (typeof other === "number") {
       return new Point(this.x - other, this.y - other);
@@ -60,6 +78,24 @@ export default class Point {
       this.x -= other.x;
       this.y -= other.y;
     }
+    return this;
+  }
+
+  subtractX(amount: number): Point {
+    return new Point(this.x - amount, this.y);
+  }
+
+  subtractXMutate(amount: number): this {
+    this.x -= amount;
+    return this;
+  }
+
+  subtractY(amount: number): Point {
+    return new Point(this.x, this.y - amount);
+  }
+
+  subtractYMutate(amount: number): this {
+    this.y -= amount;
     return this;
   }
 
@@ -82,6 +118,24 @@ export default class Point {
     return this;
   }
 
+  multiplyX(amount: number): Point {
+    return new Point(this.x * amount, this.y);
+  }
+
+  multiplyXMutate(amount: number): this {
+    this.x *= amount;
+    return this;
+  }
+
+  multiplyY(amount: number): Point {
+    return new Point(this.x, this.y * amount);
+  }
+
+  multiplyYMutate(amount: number): this {
+    this.y *= amount;
+    return this;
+  }
+
   divide(other: Point | number): Point {
     if (typeof other === "number") {
       return new Point(this.x / other, this.y / other);
@@ -98,6 +152,24 @@ export default class Point {
       this.x /= other.x;
       this.y /= other.y;
     }
+    return this;
+  }
+
+  divideX(amount: number): Point {
+    return new Point(this.x / amount, this.y);
+  }
+
+  divideXMutate(amount: number): this {
+    this.x /= amount;
+    return this;
+  }
+
+  divideY(amount: number): Point {
+    return new Point(this.x, this.y / amount);
+  }
+
+  divideYMutate(amount: number): this {
+    this.y /= amount;
     return this;
   }
 

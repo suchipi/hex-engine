@@ -53,7 +53,7 @@ function getEntityTransformMatrixForContext(
 }
 
 export default function useEntityTransforms(entity = useEntity()) {
-  const asMatrix = useCallbackAsCurrent(
+  const matrixForWorldPosition = useCallbackAsCurrent(
     (getTransform: typeof getEntityTransformMatrix) => {
       const ancestors = entity.ancestors();
 
@@ -68,25 +68,14 @@ export default function useEntityTransforms(entity = useEntity()) {
   );
 
   return {
-    asMatrix: asMatrix.bind(null, getEntityTransformMatrix),
-    applyToContext: useCallbackAsCurrent(
-      (context: CanvasRenderingContext2D, roundToNearestPixel: boolean) => {
-        const geometry = entity.getComponent(Geometry);
-        if (!geometry) {
-          return;
-        }
-
-        const matrix = asMatrix((context) =>
-          getEntityTransformMatrixForContext(context, roundToNearestPixel)
-        );
-
-        context.transform(
-          matrix.a,
-          matrix.b,
-          matrix.c,
-          matrix.d,
-          matrix.e,
-          matrix.f
+    matrixForWorldPosition: matrixForWorldPosition.bind(
+      null,
+      getEntityTransformMatrix
+    ),
+    matrixForDrawPosition: useCallbackAsCurrent(
+      (roundToNearestPixel: boolean) => {
+        return matrixForWorldPosition((entity) =>
+          getEntityTransformMatrixForContext(entity, roundToNearestPixel)
         );
       }
     ),

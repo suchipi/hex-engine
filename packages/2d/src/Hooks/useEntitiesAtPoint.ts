@@ -19,7 +19,7 @@ export default function useEntitiesAtPoint(worldPos: Point): Array<Entity> {
     if (!geometry) return false;
 
     const transformedPos = useEntityTransforms(ent)
-      .asMatrix()
+      .matrixForWorldPosition()
       .inverseMutate()
       .transformPoint(worldPos);
     return geometry.shape.containsPoint(transformedPos);

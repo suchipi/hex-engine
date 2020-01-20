@@ -14,7 +14,7 @@ export default function Floor() {
 
   const context = useContext();
   const canvasSize = new Point(context.canvas.width, context.canvas.height);
-  const rectangleSize = new Point(canvasSize.x, 48);
+  const rectangleSize = new Point(canvasSize.x * 2, 48);
 
   const geometry = useNewComponent(() =>
     Geometry({

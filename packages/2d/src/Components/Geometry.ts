@@ -27,7 +27,7 @@ function Geometry<S extends Shape>({
     rotation,
     scale,
     worldPosition() {
-      const matrix = transforms.asMatrix();
+      const matrix = transforms.matrixForWorldPosition();
       return new Point(matrix.e, matrix.f);
     },
   };

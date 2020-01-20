@@ -11,7 +11,6 @@ import {
   useDestroy,
   useEntityName,
   useContext,
-  Pointer,
   Angle,
   ProceduralSfx,
 } from "@hex-engine/2d";
@@ -80,18 +79,7 @@ export default function Hex({ position }: { position: Point }) {
     }
   });
 
-  const pointer = useNewComponent(Pointer);
   useDraw((context) => {
     aseprite.draw(context, { x: -5 });
-
-    if (pointer.isInsideBounds) {
-      context.lineWidth = 2;
-      if (pointer.isPressing) {
-        context.strokeStyle = "red";
-      } else {
-        context.strokeStyle = "cyan";
-      }
-      geometry.shape.draw(context, "stroke");
-    }
   });
 }

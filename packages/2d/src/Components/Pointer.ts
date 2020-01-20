@@ -4,6 +4,7 @@ import {
   useStateAccumulator,
   useCallbackAsCurrent,
   useEntity,
+  Entity,
 } from "@hex-engine/core";
 import { useUpdate } from "../Canvas";
 import { useEntitiesAtPoint } from "../Hooks";
@@ -19,11 +20,14 @@ const ON_UP = Symbol("ON_UP");
 const ON_CLICK = Symbol("ON_CLICK");
 type Callback = (pos: Point) => void;
 
-export default function Pointer() {
+export default function Pointer({
+  entity = useEntity(),
+  geometry = entity.getComponent(Geometry),
+}: {
+  entity?: Entity | undefined;
+  geometry?: ReturnType<typeof Geometry> | null;
+} = {}) {
   useType(Pointer);
-
-  const entity = useEntity();
-  const geometry = entity.getComponent(Geometry);
 
   function pointIsWithinBounds(localPoint: Point) {
     if (!geometry) return false;

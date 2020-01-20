@@ -44,7 +44,7 @@ export default function Mouse() {
     const untransformedPoint = new Point(x, y);
 
     return transforms
-      .asMatrix()
+      .matrixForWorldPosition()
       .inverse()
       .transformPoint(untransformedPoint);
   }

@@ -3,21 +3,16 @@ import {
   useNewComponent,
   useChild,
   useType,
-  useCallbackAsCurrent,
   Point,
   Physics,
-  useDraw,
-  useDestroy,
-  useUpdate,
-  useEntityName,
   AudioContext,
 } from "@hex-engine/2d";
 import Button from "./Button";
 import FPS from "./FPS";
 import Hex from "./Hex";
-import Floor from "./Floor";
-import Box from "./Box";
-import Flick from "./Flick";
+import Scene from "./Scene";
+import Controls from "./Controls";
+import CustomDrawOrder from "./CustomDrawOrder";
 
 export default function Root() {
   useType(Root);
@@ -26,77 +21,30 @@ export default function Root() {
   canvas.setPixelated(true);
   canvas.fullscreen({ pixelZoom: 2 });
 
+  useNewComponent(CustomDrawOrder);
+
   useNewComponent(AudioContext);
   useNewComponent(Physics.Engine);
   useNewComponent(FPS);
+  useNewComponent(Controls);
 
-  const useRootChild = useCallbackAsCurrent(useChild);
-  useChild(() => {
-    useNewComponent(() =>
-      Button({
-        calcPosition: () =>
-          new Point(
-            canvas.element.width / 2,
-            canvas.element.height / 2
-          ).roundMutate(),
-        text: "Create Hex",
-        onClick: () => {
-          const randomX = Math.random() * canvas.element.width;
-
-          useRootChild(() => Hex({ position: new Point(randomX, 0) }));
-        },
-      })
-    );
-  });
-
-  useChild(Floor);
+  const scene = useChild(Scene).rootComponent;
 
   useChild(() => {
     useNewComponent(() =>
       Button({
         calcPosition: (size) =>
-          new Point(canvas.element.width, canvas.element.height)
-            .subtractMutate(size.divide(2))
+          new Point(0, canvas.element.height)
+            .subtractYMutate(size.y / 2)
+            .addXMutate(size.x / 2)
             .roundMutate(),
-        text: "Font: Silver by Poppy Works",
+        text: "Create Hex",
         onClick: () => {
-          window.open("https://poppyworks.itch.io/silver", "_blank");
+          const randomX = Math.random() * canvas.element.width;
+
+          scene.useChild(() => Hex({ position: new Point(randomX, 0) }));
         },
       })
     );
-  });
-
-  // useNewComponent(Physics.MouseConstraint);
-  useChild(Flick);
-
-  const box1 = useChild(() => Box({ position: new Point(50, 50) }));
-  const box2 = useChild(() => Box({ position: new Point(100, 50) }));
-
-  useChild(() => {
-    useEntityName("Constraint");
-
-    useUpdate(() => {
-      if (box1.parent == null || box2.parent == null) {
-        useDestroy().destroy();
-      }
-    });
-
-    useNewComponent(() =>
-      Physics.Constraint({
-        bodyA: box1.rootComponent.physics.body,
-        bodyB: box2.rootComponent.physics.body,
-        stiffness: 0.01,
-      })
-    );
-
-    useDraw((context) => {
-      const box1Pos = box1.rootComponent.geometry.worldPosition();
-      const box2Pos = box2.rootComponent.geometry.worldPosition();
-      context.lineWidth = 1;
-      context.strokeStyle = "#666";
-      context.moveTo(box1Pos.x, box1Pos.y);
-      context.lineTo(box2Pos.x, box2Pos.y);
-      context.stroke();
-    });
   });
 }

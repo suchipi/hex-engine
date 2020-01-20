@@ -10,7 +10,6 @@ import {
   useDestroy,
   useEntityName,
   useContext,
-  Pointer,
   ProceduralSfx,
 } from "@hex-engine/2d";
 import samples from "modal-synthesis/samples";
@@ -57,8 +56,6 @@ export default function Box({ position }: { position: Point }) {
     });
   });
 
-  const pointer = useNewComponent(Pointer);
-
   const { canvas } = useContext();
 
   useUpdate(() => {
@@ -68,16 +65,6 @@ export default function Box({ position }: { position: Point }) {
   });
 
   useDraw((context) => {
-    if (pointer.isPressing) {
-      context.lineWidth = 2;
-      context.strokeStyle = "red";
-    } else if (pointer.isInsideBounds) {
-      context.lineWidth = 2;
-      context.strokeStyle = "cyan";
-    } else {
-      context.lineWidth = 1;
-      context.strokeStyle = "black";
-    }
     geometry.shape.draw(context, "stroke");
   });
 
