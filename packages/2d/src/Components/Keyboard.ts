@@ -24,6 +24,8 @@ export default function Keyboard() {
   const pressed: Set<string> = new Set();
 
   const processKeydown = (event: KeyboardEvent) => {
+    event.preventDefault();
+
     if (!firstKeyHasHappened) {
       firstKeyHasHappened = true;
       pendingFirstKeyHandlers.forEach((cb) => cb());
@@ -37,6 +39,8 @@ export default function Keyboard() {
   };
 
   const processKeyup = (event: KeyboardEvent) => {
+    event.preventDefault();
+
     if (event.repeat) {
       return;
     }

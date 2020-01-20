@@ -23,7 +23,7 @@ export default function Flick() {
   const mouse = useNewComponent(Mouse);
 
   let isDown = false;
-  mouse.onMouseDown((pos) => {
+  mouse.onMouseDown(({ pos }) => {
     isDown = true;
     downPoint.mutateInto(pos);
     holdPoint.mutateInto(pos);
@@ -39,7 +39,7 @@ export default function Flick() {
     target = entAtCursor;
     physics.setStatic(true);
   });
-  mouse.onMouseMove((pos) => {
+  mouse.onMouseMove(({ pos }) => {
     if (isDown) {
       holdPoint.mutateInto(pos);
     }
@@ -62,7 +62,7 @@ export default function Flick() {
 
   useDraw((context) => {
     if (isDown) {
-      context.lineWidth = 1;
+      context.lineWidth = 2;
       context.strokeStyle = "cyan";
       context.beginPath();
       context.moveTo(downPoint.x, downPoint.y);
@@ -74,7 +74,7 @@ export default function Flick() {
       const geometry = target.getComponent(Geometry);
       if (geometry) {
         context.strokeStyle = "cyan";
-        context.lineWidth = 1;
+        context.lineWidth = 2;
 
         const matrix = useEntityTransforms(target).matrixForDrawPosition(false);
         context.transform(

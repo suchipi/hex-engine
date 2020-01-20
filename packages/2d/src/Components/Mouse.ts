@@ -12,6 +12,18 @@ const MOUSE_MOVE = Symbol("MOUSE_MOVE");
 const MOUSE_DOWN = Symbol("MOUSE_DOWN");
 const MOUSE_UP = Symbol("MOUSE_UP");
 
+type HexMouseEvent = {
+  pos: Point;
+  delta: Point;
+  buttons: {
+    left: boolean;
+    right: boolean;
+    middle: boolean;
+    mouse4: boolean;
+    mouse5: boolean;
+  };
+};
+
 let firstClickHasHappened = false;
 let pendingFirstClickHandlers: Array<() => void> = [];
 
@@ -49,27 +61,59 @@ export default function Mouse() {
       .transformPoint(untransformedPoint);
   }
 
-  const moveState = useStateAccumulator<(pos: Point, delta: Point) => void>(
+  let lastPos = new Point(0, 0);
+  const event: HexMouseEvent = {
+    pos: new Point(0, 0),
+    delta: new Point(0, 0),
+    buttons: {
+      left: false,
+      right: false,
+      middle: false,
+      mouse4: false,
+      mouse5: false,
+    },
+  };
+  function updateEvent({
+    clientX,
+    clientY,
+    buttons,
+  }: {
+    clientX: number;
+    clientY: number;
+    buttons: number;
+  }) {
+    event.pos = translatePos(clientX, clientY);
+    event.delta.mutateInto(event.pos);
+    event.delta.subtractMutate(lastPos);
+    lastPos.mutateInto(event.pos);
+
+    event.buttons.left = Boolean(buttons & 1);
+    event.buttons.right = Boolean(buttons & 2);
+    event.buttons.middle = Boolean(buttons & 4);
+    event.buttons.mouse4 = Boolean(buttons & 8);
+    event.buttons.mouse5 = Boolean(buttons & 16);
+  }
+
+  const moveState = useStateAccumulator<(event: HexMouseEvent) => void>(
     MOUSE_MOVE
   );
-  const downState = useStateAccumulator<(pos: Point) => void>(MOUSE_DOWN);
-  const upState = useStateAccumulator<(pos: Point) => void>(MOUSE_UP);
+  const downState = useStateAccumulator<(event: HexMouseEvent) => void>(
+    MOUSE_DOWN
+  );
+  const upState = useStateAccumulator<(event: HexMouseEvent) => void>(MOUSE_UP);
 
   let pendingMove: null | (() => void) = null;
   let pendingDown: null | (() => void) = null;
   let pendingUp: null | (() => void) = null;
 
-  let lastPos = new Point(0, 0);
-  const handleMouseMove = ({ clientX, clientY }: MouseEvent) => {
+  const handleMouseMove = ({ clientX, clientY, buttons }: MouseEvent) => {
     pendingMove = () => {
       pendingMove = null;
-      const pos = translatePos(clientX, clientY);
-      const delta = pos.subtract(lastPos);
-      moveState.all().forEach((callback) => callback(pos, delta));
-      lastPos = pos;
+      updateEvent({ clientX, clientY, buttons });
+      moveState.all().forEach((callback) => callback(event));
     };
   };
-  const handleMouseDown = ({ clientX, clientY }: MouseEvent) => {
+  const handleMouseDown = ({ clientX, clientY, buttons }: MouseEvent) => {
     if (!firstClickHasHappened) {
       firstClickHasHappened = true;
       pendingFirstClickHandlers.forEach((handler) => {
@@ -80,15 +124,15 @@ export default function Mouse() {
 
     pendingDown = () => {
       pendingDown = null;
-      const pos = translatePos(clientX, clientY);
-      downState.all().forEach((callback) => callback(pos));
+      updateEvent({ clientX, clientY, buttons });
+      downState.all().forEach((callback) => callback(event));
     };
   };
-  const handleMouseUp = ({ clientX, clientY }: MouseEvent) => {
+  const handleMouseUp = ({ clientX, clientY, buttons }: MouseEvent) => {
     pendingUp = () => {
       pendingUp = null;
-      const pos = translatePos(clientX, clientY);
-      upState.all().forEach((callback) => callback(pos));
+      updateEvent({ clientX, clientY, buttons });
+      upState.all().forEach((callback) => callback(event));
     };
   };
 
@@ -128,13 +172,13 @@ export default function Mouse() {
   });
 
   return {
-    onMouseMove: (callback: (pos: Point, delta: Point) => void) => {
+    onMouseMove: (callback: (event: HexMouseEvent) => void) => {
       moveState.add(useCallbackAsCurrent(callback));
     },
-    onMouseDown: (callback: (pos: Point) => void) => {
+    onMouseDown: (callback: (event: HexMouseEvent) => void) => {
       downState.add(useCallbackAsCurrent(callback));
     },
-    onMouseUp: (callback: (pos: Point) => void) => {
+    onMouseUp: (callback: (event: HexMouseEvent) => void) => {
       upState.add(useCallbackAsCurrent(callback));
     },
   };

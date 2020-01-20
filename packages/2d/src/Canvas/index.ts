@@ -25,7 +25,11 @@ export default Object.assign(
     } else {
       canvas = document.createElement("canvas");
       document.body.appendChild(canvas);
+      canvas.style.userSelect = "none";
+      canvas.style.msUserSelect = "none";
+      canvas.style.webkitUserSelect = "none";
     }
+    canvas.addEventListener("contextmenu", (event) => event.preventDefault());
 
     const context = canvas.getContext("2d");
     if (context == null) {

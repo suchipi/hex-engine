@@ -46,10 +46,10 @@ export default function Pointer({
   const { onMouseMove, onMouseDown, onMouseUp } = useNewComponent(Mouse);
 
   let isInsideBounds = false;
-  let isPressing = false;
+  let pressingStack = 0;
   const position = new Point(Infinity, Infinity);
 
-  onMouseMove((pos) => {
+  onMouseMove(({ pos }) => {
     position.mutateInto(pos);
 
     if (pointIsWithinBounds(pos)) {
@@ -65,21 +65,21 @@ export default function Pointer({
     }
   });
 
-  onMouseDown((pos) => {
+  onMouseDown(({ pos }) => {
     if (pointIsWithinBounds(pos)) {
-      isPressing = true;
+      pressingStack++;
       onDownState.all().forEach((callback) => callback(pos));
     }
   });
 
-  onMouseUp((pos) => {
+  onMouseUp(({ pos }) => {
     if (pointIsWithinBounds(pos)) {
       onUpState.all().forEach((callback) => callback(pos));
-      if (isPressing) {
+      if (pressingStack > 0) {
         onClickState.all().forEach((callback) => callback(pos));
       }
     }
-    isPressing = false;
+    pressingStack--;
   });
 
   const callbackSetters = {
@@ -126,7 +126,7 @@ export default function Pointer({
       return isInsideBounds;
     },
     get isPressing() {
-      return isPressing;
+      return pressingStack > 0;
     },
     get position() {
       return position;

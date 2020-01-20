@@ -4,7 +4,6 @@ import {
   useType,
   Mouse,
   useEntitiesAtPoint,
-  Point,
   Physics,
   Entity,
   Geometry,
@@ -21,6 +20,7 @@ export default function Drag() {
         ent: Entity;
         geometry: ReturnType<typeof Geometry>;
         physics?: ReturnType<typeof Physics.Body>;
+        originalStatic: boolean;
       }
     | {
         present: false;
@@ -30,11 +30,9 @@ export default function Drag() {
     present: false,
   };
   let isDown = false;
-  const lastPos = new Point(0, 0);
 
   const mouse = useNewComponent(Mouse);
-  mouse.onMouseDown((pos) => {
-    lastPos.mutateInto(pos);
+  mouse.onMouseDown(({ pos }) => {
     isDown = true;
 
     const ent = useEntitiesAtPoint(pos)[0];
@@ -44,8 +42,9 @@ export default function Drag() {
     if (!geometry) return;
 
     const physics = ent.getComponent(Physics.Body);
+    let originalStatic = false;
     if (physics) {
-      if (physics.body.isStatic) return;
+      originalStatic = physics.body.isStatic;
       physics.setStatic(true);
     }
 
@@ -55,21 +54,19 @@ export default function Drag() {
       ent,
       geometry,
       physics,
+      originalStatic,
     };
   });
-  mouse.onMouseMove((pos) => {
+  mouse.onMouseMove(({ delta }) => {
     if (isDown && target.present) {
-      const delta = pos.subtract(lastPos);
       target.geometry.position.addMutate(delta);
     }
-
-    lastPos.mutateInto(pos);
   });
   function handleUp() {
     isDown = false;
     if (target.present) {
       if (target.physics) {
-        target.physics.setStatic(false);
+        target.physics.setStatic(target.originalStatic);
       }
       target = {
         present: false,
@@ -81,7 +78,7 @@ export default function Drag() {
   useDraw((context) => {
     if (target.present) {
       context.strokeStyle = "cyan";
-      context.lineWidth = 1;
+      context.lineWidth = 2;
 
       const matrix = useEntityTransforms(target.ent).matrixForDrawPosition(
         false
