@@ -10,6 +10,7 @@ export default function makeIt(targetDirectory: string) {
   cd(targetDirectory);
   exec("npm install --save @hex-engine/2d@latest");
   exec("npm install --save-dev hex-engine-scripts@latest");
+  exec("npm install --save-dev typescript@latest");
 
   console.log(`All done! To start working on your game, run:
 

@@ -1,9 +1,10 @@
 {
   "name": "@hex-engine/core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "src/index.ts",
+  "repository": "suchipi/hex-engine",
   "sideEffects": false,
   "dependencies": {
     "concubine": "^1.0.2"

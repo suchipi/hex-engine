@@ -19,6 +19,7 @@ Inside the directory, you'll see a structure like this:
 my-game
 ├── README.md
 ├── package.json
+├── tsconfig.json
 └── src
     ├── Box.ts
     ├── Draggable.ts
@@ -28,7 +29,7 @@ my-game
 ```
 
 You may notice those `.ts` files- these are [TypeScript](https://www.typescriptlang.org/) files.
-If you're not familiar with TypeScript, don't worry! TypeScript usage in Hex Engine is _entirely optional_. That said, it's also _highly recommended_. Hex Engine's API has been designed to make your TypeScript exposure **as little and as painless as possible**. However, if you prefer to use plain JavaScript instead of TypeScript, you can rename these files so they end with `.js`, and then remove the TypeScript-specific type annotations from them.
+If you're not familiar with TypeScript, don't worry! TypeScript usage in Hex Engine is _entirely optional_. That said, it's also _highly recommended_. Hex Engine's API has been designed to make your TypeScript exposure **as little and as painless as possible**. However, if you prefer to use plain JavaScript instead of TypeScript, you can rename those files so they end with `.js`.
 
 Before we dig into the code, let's start up a local development server and see what we have so far in the browser. To do so, use a terminal emulator or command prompt to `cd` to your project directory (`my-game`, unless you changed it), then run this command within:
 
