@@ -1,0 +1,12 @@
+{
+  "name": "my-hex-engine-game",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "start": "hex-engine-scripts dev",
+    "dev": "hex-engine-scripts dev",
+    "build": "hex-engine-scripts build"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "create-hex-engine-game",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "bin": "dist/cli.js",
+  "workspace-builder": "@workspace-builder/babel",
+  "dependencies": {
+    "@types/shelljs": "^0.8.6",
+    "chalk": "^3.0.0",
+    "core-js": "^3.6.4",
+    "regenerator-runtime": "^0.13.3",
+    "shelljs": "^0.8.3"
+  }
+}

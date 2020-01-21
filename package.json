@@ -3,6 +3,7 @@
   "workspaces": [
     "packages/2d",
     "packages/core",
+    "packages/create",
     "packages/game",
     "packages/inspector",
     "packages/scripts"

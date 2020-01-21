@@ -8,20 +8,18 @@ import DrawOrder, {
 } from "./DrawOrder";
 import polyfillContext from "./polyfillContext";
 
-type Props = {
-  element?: HTMLCanvasElement;
-  backgroundColor: string;
-};
-
 export default Object.assign(
-  function Canvas(props: Props) {
+  function Canvas(options: {
+    element?: HTMLCanvasElement;
+    backgroundColor: string;
+  }) {
     useType(Canvas);
 
-    const backgroundColor = props.backgroundColor;
+    const backgroundColor = options.backgroundColor;
 
     let canvas: HTMLCanvasElement;
-    if (props.element) {
-      canvas = props.element;
+    if (options.element) {
+      canvas = options.element;
     } else {
       canvas = document.createElement("canvas");
       document.body.appendChild(canvas);
