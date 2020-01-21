@@ -122,7 +122,7 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
       rootComponent: T extends {} ? T & ComponentInterface : ComponentInterface;
     } => {
       const ent = instance.entity;
-      return Entity._create(componentFunction, ent);
+      return Entity._create(componentFunction, ent as Entity);
     },
 });
 

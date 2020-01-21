@@ -1983,35 +1983,6 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@hex-engine/2d@0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@hex-engine/2d/-/2d-0.0.0.tgz#e39e07533a586e3faa0916aa135e233e33222f45"
-  integrity sha512-kwCdgUJySPwaTp0haopv8PJ/A1NkNsI1jYaxiARgbI9vKvEaLM6/f36AVeodq/Rj3jK0/g4f66fmsPqT8PgcUg==
-  dependencies:
-    "@hex-engine/core" "0.0.0"
-    "@hex-engine/inspector" "0.0.0"
-    layout-bmfont-text "^1.3.4"
-    mem "^6.0.1"
-
-"@hex-engine/core@0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@hex-engine/core/-/core-0.0.0.tgz#ec037ceb99f8d7953bd29a093fa9900fcd1dd02b"
-  integrity sha512-TpAeKsSzolgTJZR6pjS1sGxQZYqbNWHkxkVTooA9Rq7EMXdVMNhF1rUxcrgZU2ujgWZkb13V7dICIBU7LGvVbQ==
-  dependencies:
-    concubine "^1.0.2"
-
-"@hex-engine/inspector@0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@hex-engine/inspector/-/inspector-0.0.0.tgz#815d35249ca3f0b36abb8c23b1da2a7a6d299809"
-  integrity sha512-3oKrnCTHVUZs67iCRmf3hEM4VkwMD/I2SG1iYW5gAz37Uq6+l289mmZrzWwIOENNZG31aDKEkUXjLpOCOOu0TQ==
-  dependencies:
-    "@hex-engine/core" "0.0.0"
-    lodash.debounce "^4.0.8"
-    react "^16.12.0"
-    react-dom "^16.12.0"
-    react-state-tree "^0.1.1"
-    use-force-update "^1.0.7"
-
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/@jest/console/-/console-24.9.0.tgz#79b1bc06fb74a8cfb01cbdedf945584b1b9707f0"
@@ -6343,36 +6314,6 @@ hex-color-regex@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/hex-color-regex/-/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
   integrity sha512-l9sfDFsuqtOqKDsQdqrMRk0U85RZc0RtOR9yPI7mRVOa4FsR/BVnZ0shmQRM96Ji99kYZP/7hn1cedc1+ApsTQ==
-
-hex-engine-scripts@0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/hex-engine-scripts/-/hex-engine-scripts-0.0.3.tgz#62d243eb1e47c43ab7a3ac244acfee323d8e6a77"
-  integrity sha512-d8bmCX7IyNr28FYgTJ2HiGeQa7egE9wClau6iXelFGTZB5Tp2BnTiS3JcrUY2LFxguio0inTEyhC4sDl7qfe7g==
-  dependencies:
-    "@babel/core" "^7.8.3"
-    "@babel/plugin-proposal-class-properties" "^7.8.3"
-    "@babel/plugin-proposal-nullish-coalescing-operator" "^7.8.3"
-    "@babel/plugin-proposal-optional-chaining" "^7.8.3"
-    "@babel/preset-env" "^7.8.3"
-    "@babel/preset-react" "^7.8.3"
-    "@babel/preset-typescript" "^7.8.3"
-    "@types/lodash.debounce" "^4.0.6"
-    "@types/react-dev-utils" "^9.0.2"
-    "@types/webpack" "^4.41.2"
-    aseprite-loader "^0.1.2"
-    babel-loader "^8.0.6"
-    bmfont-loader "^0.1.0"
-    chalk "^3.0.0"
-    core-js "^3.6.4"
-    file-loader "^5.0.2"
-    html-webpack-plugin "^3.2.0"
-    react-dev-utils "^10.0.0"
-    regenerator-runtime "^0.13.3"
-    resolve "^1.14.2"
-    typescript "^3.7.4"
-    webpack "^4.41.5"
-    webpack-dev-server "^3.10.1"
-    xml-source-loader "^0.1.2"
 
 highlight.js@^9.16.2:
   version "9.18.0"
