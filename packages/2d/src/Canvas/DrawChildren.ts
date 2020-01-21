@@ -15,19 +15,33 @@ type DrawCallback = (
   backstage: CanvasRenderingContext2D
 ) => void;
 
+/**
+ * Registers a function to be called once a frame, after all `useUpdate` functions have been called.
+ *
+ * Unlike `useDraw`, `useRawDraw` does *not* transform the context by the current Entity's matrix transform.
+ *
+ * In most cases, you should use `useDraw` instead of `useRawDraw`.
+ */
 export function useRawDraw(callback: DrawCallback) {
   useStateAccumulator<DrawCallback>(DRAW_CALLBACKS).add(
     useCallbackAsCurrent(callback)
   );
 }
 
-type Props = {
+/**
+ * Iterates over all the descendant Entities, and calls their registered
+ * draw callbacks, in the order specified by the Canvas.DrawOrder component
+ * on the root Entity, or a default order if there is no such component.
+ */
+export function DrawChildren({
+  context,
+  backstage,
+  backgroundColor,
+}: {
   context: CanvasRenderingContext2D;
   backstage: CanvasRenderingContext2D;
   backgroundColor: string;
-};
-
-export function DrawChildren({ context, backstage, backgroundColor }: Props) {
+}) {
   useType(DrawChildren);
 
   function drawComponent(component: Component) {

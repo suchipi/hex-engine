@@ -8,9 +8,13 @@ import DrawOrder, {
 } from "./DrawOrder";
 import polyfillContext from "./polyfillContext";
 
+/** The built-in Canvas component that should be placed on your root Entity in order to render everything in your game. */
 export default Object.assign(
   function Canvas(options: {
+    /** You can specify an existing Canvas element to render into, if desired. If you do not, one will be created. */
     element?: HTMLCanvasElement;
+
+    /** The background color to set the canvas to prior to drawing each frame. */
     backgroundColor: string;
   }) {
     useType(Canvas);

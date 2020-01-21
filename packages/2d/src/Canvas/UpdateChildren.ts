@@ -10,12 +10,22 @@ const UPDATE_CALLBACKS = Symbol("UPDATE_CALLBACKS");
 
 type UpdateCallback = (delta: number) => void;
 
+/**
+ * Registers a function to be called once every frame, prior to drawing.
+ *
+ * The function will receive a single argument, `delta`, which is the number of milliseconds
+ * that have passed since the last frame was rendered.
+ */
 export function useUpdate(callback: UpdateCallback) {
   useStateAccumulator<UpdateCallback>(UPDATE_CALLBACKS).add(
     useCallbackAsCurrent(callback)
   );
 }
 
+/**
+ * Once a frame, iterates over all of the current Entity's descendant Entities, calling
+ * any update functions registered by their Components.
+ */
 export function UpdateChildren() {
   useType(UpdateChildren);
 
