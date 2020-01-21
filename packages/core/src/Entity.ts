@@ -50,7 +50,7 @@ export default class Entity implements EntityInterface {
 
   static _create<T>(
     componentFactory: () => T,
-    parent?: EntityInterface
+    parent?: Entity
   ): Entity & {
     rootComponent: T extends {} ? ComponentInterface & T : ComponentInterface;
   } {
@@ -59,7 +59,7 @@ export default class Entity implements EntityInterface {
     id++;
 
     if (parent) {
-      parent.addChild(ent);
+      parent._addChild(ent);
     }
 
     ent.name = componentFactory.name || null;
@@ -77,14 +77,12 @@ export default class Entity implements EntityInterface {
     );
   }
 
-  hasChild(child: Entity): boolean {
-    return this.children.has(child);
-  }
-  addChild(child: Entity): void {
+  _addChild(child: Entity): void {
     this.children.add(child);
     child.parent = this;
   }
-  removeChild(child: Entity): void {
+  _removeChild(child: Entity): void {
+    child.disable();
     this.children.delete(child);
     child.parent = null;
   }

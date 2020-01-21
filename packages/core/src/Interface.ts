@@ -18,11 +18,8 @@ export interface Entity {
   id: number;
 
   /**
-   * This Entity's children entities. These usually get here from components on
-   * this Entity calling `useChild`, but you can also add child entities manually
-   * using `entity.addChild(otherEntity)`. It's recommended to prefer `useChild`,
-   * though, because many components try to find things on the root entity when
-   * they are created.
+   * This Entity's children entities. These get here from components on
+   * this Entity calling `useChild`.
    */
   children: Set<Entity>;
 
@@ -31,24 +28,6 @@ export interface Entity {
    * Generally, this will only ever be null if it's the root Entity.
    */
   parent: Entity | null;
-
-  /**
-   * Check if the provided Entity is a child of the current Entity.
-   * @param child The Entity to check.
-   */
-  hasChild(child: Entity): boolean;
-
-  /**
-   * Add the provided Entity to this Entity's children.
-   * @param child The Entity to add.
-   */
-  addChild(child: Entity): void;
-
-  /**
-   * Remove the provided Entity from this Entity's children.
-   * @param child The Entity to remove.
-   */
-  removeChild(child: Entity): void;
 
   /**
    * Search this Entity's children recursively for their children,

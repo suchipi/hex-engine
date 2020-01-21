@@ -1,4 +1,5 @@
 import HooksSystem from "../HooksSystem";
+import Entity from "../Entity";
 
 const {
   useCallbackAsCurrent,
@@ -25,7 +26,7 @@ export default function useDestroy() {
       const ent = useEntity();
       if (ent.parent) {
         onDestroyState.all().forEach((callback) => callback());
-        ent.parent.removeChild(ent);
+        (ent.parent as Entity)._removeChild(ent as Entity);
       } else {
         throw new Error("Cannot destroy the root entity");
       }
