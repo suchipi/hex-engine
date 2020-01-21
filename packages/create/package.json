@@ -1,6 +1,7 @@
 {
   "name": "create-hex-engine-game",
   "version": "0.0.1",
+  "license": "MIT",
   "main": "dist/index.js",
   "bin": "dist/cli.js",
   "workspace-builder": "@workspace-builder/babel",

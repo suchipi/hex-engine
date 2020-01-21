@@ -1,4 +1,4 @@
-import { useType, useDestroy } from "@hex-engine/core";
+import { useType } from "@hex-engine/core";
 import { useUpdate } from "../Hooks";
 import { useAudioContext } from "./AudioContext";
 import { makeModalSynthesis } from "modal-synthesis";

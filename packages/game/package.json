@@ -2,6 +2,7 @@
   "name": "game",
   "version": "0.0.0",
   "private": true,
+  "license": "MIT",
   "main": "dist/index.html",
   "dependencies": {
     "@hex-engine/2d": "0.0.0",
