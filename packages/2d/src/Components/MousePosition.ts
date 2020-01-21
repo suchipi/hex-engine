@@ -37,9 +37,7 @@ export default function MousePosition({
   const onMoveState = useStateAccumulator<Callback>(ON_MOVE);
   const onLeaveState = useStateAccumulator<Callback>(ON_LEAVE);
 
-  const { onMouseMove, onMouseDown, onMouseUp } = useNewComponent(
-    LowLevelMouse
-  );
+  const { onMouseMove } = useNewComponent(LowLevelMouse);
 
   let isInsideBounds = false;
   const position = new Point(Infinity, Infinity);
@@ -47,13 +45,13 @@ export default function MousePosition({
   function handleEvent(event: HexMouseEvent) {
     position.mutateInto(event.pos);
 
+    onMoveState.all().forEach((callback) => callback(event));
+
     if (pointIsWithinBounds(event.pos)) {
       if (!isInsideBounds) {
         onEnterState.all().forEach((callback) => callback(event));
       }
       isInsideBounds = true;
-
-      onMoveState.all().forEach((callback) => callback(event));
     } else if (isInsideBounds) {
       onLeaveState.all().forEach((callback) => callback(event));
       isInsideBounds = false;
@@ -61,8 +59,6 @@ export default function MousePosition({
   }
 
   onMouseMove(handleEvent);
-  onMouseDown(handleEvent);
-  onMouseUp(handleEvent);
 
   const callbackSetters = {
     onEnter(callback: Callback) {
