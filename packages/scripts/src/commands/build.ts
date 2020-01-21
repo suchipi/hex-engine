@@ -22,9 +22,10 @@ export default async function build() {
   console.log("Creating an optimized production build...");
 
   const webpackConfig = makeWebpackConfig("production");
+  // @ts-ignore
   const compiler = webpack(webpackConfig);
   return new Promise<void>((resolve, reject) => {
-    compiler.run((err, stats) => {
+    compiler.run((err: any, stats: any) => {
       let messages;
       if (err) {
         if (!err.message) {
@@ -67,6 +68,9 @@ export default async function build() {
 
       console.log(chalk.yellow(messages.warnings.join("\n\n")));
 
+      console.log(
+        "Build complete! To deploy your game, upload the contents of the 'dist' folder to a web server."
+      );
       resolve();
     });
   });

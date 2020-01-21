@@ -35,6 +35,7 @@ export default async function dev() {
   // @ts-ignore
   const compiler = createCompiler({
     appName: "hex-engine game",
+    // @ts-ignore
     config: webpackConfig,
     devSocket,
     urls,
