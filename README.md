@@ -2,6 +2,8 @@
 
 ---
 
+⚠️ **WORK IN PROGRESS** ⚠️
+
 Hex Engine is a 2D Game Engine for the browser, written in TypeScript. It is designed to feel similar to [React](https://reactjs.org/).
 
 Hex Engine implements a variant of the popular [Entity-Component-System model](https://en.wikipedia.org/wiki/Entity_component_system), adapting it to make Components radically composable. In Hex Engine, every Component is a function, and Components can call special Hook functions to define their behavior in the game engine.
