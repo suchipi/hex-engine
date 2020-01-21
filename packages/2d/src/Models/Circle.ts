@@ -55,8 +55,8 @@ export default class Circle {
   }
 
   /**
-   * Returns whether a given point is within the circle, or on the circle's edge.
-   * @param point The point for which we want to check whether it's inside the circle.
+   * Returns a value indicating if a given point is either within the circle or on the its edge.
+   * @param point The point to check.
    */
   containsPoint(point: Point): boolean {
     const distance = point.distanceTo(origin);
@@ -72,8 +72,9 @@ export default class Circle {
   }
 
   /**
-   * Draws this polygon onto a canvas context, using the current stroke style.
+   * Draws this circle onto a canvas context, using the current stroke or fill style.
    * @param context The canvas context to draw onto.
+   * @param strokeOrFill Whether to use `context.stroke` or `context.fill` to draw the circle.
    */
   draw(
     context: CanvasRenderingContext2D,

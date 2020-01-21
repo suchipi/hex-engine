@@ -14,9 +14,11 @@ export function createSVGMatrix(): DOMMatrix {
   return matrix;
 }
 
+/** Represents a 2-dimensional transformation matrix. */
 export default class TransformMatrix {
   _matrix: DOMMatrix;
 
+  /** Create a TransformMatrix from a DOMMatrix of SVGMatrix. */
   static fromDOMMatrix(domMatrix: DOMMatrix): TransformMatrix {
     const { a, b, c, d, e, f } = domMatrix;
     return new TransformMatrix(a, b, c, d, e, f);
@@ -39,6 +41,7 @@ export default class TransformMatrix {
     }
   }
 
+  /** Creates a new TransformMatrix with the same values as this one, but with a scale operation applied. */
   scale(size: Point, origin: Point): TransformMatrix;
   scale(
     sizeX: number,
@@ -65,6 +68,7 @@ export default class TransformMatrix {
     );
   }
 
+  /** Mutates this TransformMatrix by applying a scale operation. */
   scaleMutate(size: Point, origin: Point): this;
   scaleMutate(
     sizeX: number,
@@ -109,6 +113,7 @@ export default class TransformMatrix {
     return this;
   }
 
+  /** Creates a new TransformMatrix with the same values as this one, but with a translation applied. */
   translate(pos: Point): TransformMatrix;
   translate(x: number, y: number): TransformMatrix;
   translate(posOrX: Point | number, maybeY?: number): TransformMatrix {
@@ -124,6 +129,7 @@ export default class TransformMatrix {
     return TransformMatrix.fromDOMMatrix(this._matrix.translate(x, y));
   }
 
+  /** Mutates this TransformMatrix by applying a translation. */
   translateMutate(pos: Point): this;
   translateMutate(x: number, y: number): this;
   translateMutate(posOrX: Point | number, maybeY?: number): this {
@@ -145,6 +151,7 @@ export default class TransformMatrix {
     return this;
   }
 
+  /** Creates a new TransformMatrix with the same values as this one, but with a rotation applied. */
   rotate(radians: Angle | number): TransformMatrix {
     const rotation = typeof radians === "number" ? radians : radians.radians;
     // canvas `rotate` uses radians, DOMMatrix uses degrees.
@@ -153,6 +160,7 @@ export default class TransformMatrix {
     return TransformMatrix.fromDOMMatrix(this._matrix.rotate(degrees));
   }
 
+  /** Mutates this TransformMatrix by applying a rotation. */
   rotateMutate(radians: Angle | number): this {
     const rotation = typeof radians === "number" ? radians : radians.radians;
     // canvas `rotate` uses radians, DOMMatrix uses degrees.
@@ -167,6 +175,7 @@ export default class TransformMatrix {
     return this;
   }
 
+  /** Creates a new TransformMatrix by multiplying this one with another. */
   multiply(other: TransformMatrix | DOMMatrix): TransformMatrix {
     const otherDomMatrix =
       other instanceof TransformMatrix ? other._matrix : other;
@@ -174,6 +183,7 @@ export default class TransformMatrix {
     return TransformMatrix.fromDOMMatrix(this._matrix.multiply(otherDomMatrix));
   }
 
+  /** Mutates this TransformMatrix by multiplying it with another. */
   multiplyMutate(other: TransformMatrix | DOMMatrix): this {
     const otherDomMatrix =
       other instanceof TransformMatrix ? other._matrix : other;
@@ -187,15 +197,22 @@ export default class TransformMatrix {
     return this;
   }
 
+  /**
+   * Applies this TransformMatrix's transform to the provided Point values, and returns a new Point.
+   *
+   * This does *not* mutate the provided Point.
+   */
   transformPoint(point: Point): Point {
     const domPoint = point.asDOMPoint().matrixTransform(this._matrix);
     return new Point(domPoint.x, domPoint.y);
   }
 
+  /** Return a new TransformMatrix that applies the inverse transformation as this one. */
   inverse(): TransformMatrix {
     return TransformMatrix.fromDOMMatrix(this._matrix.inverse());
   }
 
+  /** Mutate this TransformMatrix by inverting its transformation. */
   inverseMutate(): this {
     if (typeof this._matrix.invertSelf === "function") {
       this._matrix.invertSelf();
@@ -206,21 +223,92 @@ export default class TransformMatrix {
     return this;
   }
 
+  /**
+   * Returns the `a` component of this TransformMatrix, where this TransformMatrix's components can be represented as follows:
+   *
+   * ```
+   * [ a c e
+   *   b d f
+   *   0 0 1 ]
+   * ```
+   *
+   * The `a` component affects horizontal scaling. A value of 1 results in no scaling.
+   */
   get a() {
     return this._matrix.a;
   }
+
+  /**
+   * Returns the `b` component of this TransformMatrix, where this TransformMatrix's components can be represented as follows:
+   *
+   * ```
+   * [ a c e
+   *   b d f
+   *   0 0 1 ]
+   * ```
+   *
+   * The `b` component affects vertical skewing.
+   */
   get b() {
     return this._matrix.b;
   }
+
+  /**
+   * Returns the `c` component of this TransformMatrix, where this TransformMatrix's components can be represented as follows:
+   *
+   * ```
+   * [ a c e
+   *   b d f
+   *   0 0 1 ]
+   * ```
+   *
+   * The `c` component affects horizontal skewing.
+   */
   get c() {
     return this._matrix.c;
   }
+
+  /**
+   * Returns the `d` component of this TransformMatrix, where this TransformMatrix's components can be represented as follows:
+   *
+   * ```
+   * [ a c e
+   *   b d f
+   *   0 0 1 ]
+   * ```
+   *
+   * The `d` component affects vertical scaling. A value of 1 results in no scaling.
+   */
   get d() {
     return this._matrix.d;
   }
+
+  /**
+   * Returns the `e` component of this TransformMatrix, where this TransformMatrix's components can be represented as follows:
+   *
+   * ```
+   * [ a c e
+   *   b d f
+   *   0 0 1 ]
+   * ```
+   *
+   * The `e` component affects horizontal translation (movement).
+   */
   get e() {
     return this._matrix.e;
   }
+
+  /**
+   * Returns the `f` component of this TransformMatrix, where this TransformMatrix's components can be represented as follows:
+   *
+   * ```
+   * [ a c e
+   *   b d f
+   *   0 0 1 ]
+   * ```
+   *
+   * The `f` component affects vertical translation (movement).
+   */
   get f() {
     return this._matrix.f;
   }

@@ -150,8 +150,9 @@ export default class Polygon {
   }
 
   /**
-   * Draws this polygon onto a canvas context, using the current stroke style.
+   * Draws this polygon onto a canvas context, using the current stroke or fill style.
    * @param context The canvas context to draw onto.
+   * @param strokeOrFill Whether to use `context.stroke` or `context.fill` to draw the polygon.
    */
   draw(
     context: CanvasRenderingContext2D,
