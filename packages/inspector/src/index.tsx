@@ -59,6 +59,20 @@ function Root({
   );
 }
 
+/**
+ * A Component function that render an Inspector overlay onto the page,
+ * that shows you information about the current Entity tree, and allows you
+ * to tweak values and pause/resume/step frame execution.
+ *
+ * It stores its state (which things are opened, whether you are paused, etc)
+ * in localStorage, so that state persists across page refreshes.
+ *
+ * Note that the Inspector is pretty performance-heavy while open.
+ *
+ * Since the Inspector lowers the framerate while open, and allows you to
+ * tweak Component and Entity values arbitrarily, you probably don't want
+ * to include it in your final game release.
+ */
 export default function Inspector() {
   useType(Inspector);
 
