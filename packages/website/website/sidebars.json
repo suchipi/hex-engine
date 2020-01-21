@@ -1,6 +1,13 @@
 {
   "docs": {
-    "Getting Started": ["getting-started", "first-time-setup"],
+    "Getting Started": [
+      "getting-started",
+      "first-time-setup",
+      "understanding-the-templates-code",
+      "looking-at-the-floor",
+      "whats-in-the-box",
+      "are-you-trying-to-pick-up-the-ground"
+    ],
     "Guides": ["guides"],
     "API Reference": ["api-reference", "api-2d", "api-core", "api-inspector"]
   }
