@@ -12,7 +12,7 @@ const MOUSE_MOVE = Symbol("MOUSE_MOVE");
 const MOUSE_DOWN = Symbol("MOUSE_DOWN");
 const MOUSE_UP = Symbol("MOUSE_UP");
 
-export type HexMouseEvent = {
+export class HexMouseEvent {
   pos: Point;
   delta: Point;
   buttons: {
@@ -22,7 +22,23 @@ export type HexMouseEvent = {
     mouse4: boolean;
     mouse5: boolean;
   };
-};
+
+  constructor(
+    pos: Point,
+    delta: Point,
+    buttons: {
+      left: boolean;
+      right: boolean;
+      middle: boolean;
+      mouse4: boolean;
+      mouse5: boolean;
+    }
+  ) {
+    this.pos = pos;
+    this.delta = delta;
+    this.buttons = buttons;
+  }
+}
 
 let firstClickHasHappened = false;
 let pendingFirstClickHandlers: Array<() => void> = [];
@@ -62,17 +78,13 @@ export default function LowLevelMouse() {
   }
 
   let lastPos = new Point(0, 0);
-  const event: HexMouseEvent = {
-    pos: new Point(0, 0),
-    delta: new Point(0, 0),
-    buttons: {
-      left: false,
-      right: false,
-      middle: false,
-      mouse4: false,
-      mouse5: false,
-    },
-  };
+  const event = new HexMouseEvent(new Point(0, 0), new Point(0, 0), {
+    left: false,
+    right: false,
+    middle: false,
+    mouse4: false,
+    mouse5: false,
+  });
   function updateEvent({
     clientX,
     clientY,
