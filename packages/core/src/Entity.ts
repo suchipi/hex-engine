@@ -90,13 +90,13 @@ export default class Entity implements EntityInterface {
   }
 
   getComponent<Func extends (...args: any[]) => any>(
-    componentClass: Func
+    componentType: Func
   ):
     | null
     | (ReturnType<Func> extends {}
         ? ReturnType<Func> & ComponentInterface
         : ComponentInterface) {
-    const maybeComponent = this._componentsByType().get(componentClass);
+    const maybeComponent = this._componentsByType().get(componentType);
     // @ts-ignore
     return maybeComponent ?? null;
   }
