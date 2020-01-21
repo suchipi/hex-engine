@@ -496,7 +496,7 @@ function MyComponent() {
 import { useFrame } from "@hex-engine/core";
 ```
 
-Register a function to be called once every animation frame, via the root Entity's [`RunLoop`]. If you are using [`@hex-engine/2d`], you probably don't want to use this; use [`useUpdate`] or [`useDraw`] instead.
+Register a function to be called once every animation frame, via the root Entity's [`RunLoop`] Component. If you are using [`@hex-engine/2d`], you probably don't want to use this; use [`useUpdate`] or [`useDraw`] instead.
 
 #### Usage
 
@@ -537,7 +537,60 @@ function MyComponent() {
 }
 ```
 
+## Components
+
+### `RunLoop()`
+
+An internal [`requestAnimationFrame`](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame)-based RunLoop to be placed on the root [`Entity`].
+
+It lets you register callbacks that should be run every frame, and also has controls to pause, step, and resume frames.
+
+In [`@hex-engine/2d`], this Component is included as part of the root [`Canvas`] component.
+
+The `pause`, `step`, `resume`, `isPaused`, and `frameNumber` functions on the API object for this Component are used by [`@hex-engine/inspector`].
+
+If you are using [`@hex-engine/2d`], you do not need to use this Component directly; use [`Canvas`] instead.
+
+#### Usage
+
+```ts
+import { useType, useNewComponent, RunLoop } from "@hex-engine/core";
+
+function MyComponent() {
+  useType(MyComponent);
+
+  const runLoop = useNewComponent(RunLoop);
+}
+```
+
+### `ErrorBoundary(onError: (error: Error) => void)`
+
+Define what should happen if an Error occurs in this Entity or its descendants.
+When an Error occurs, it propagates upwards through all ancestor Entities until one of them has an `ErrorBoundary` component that can catch it.
+
+If `onError` throws, then the Error it threw will be passed up to the next
+parent error handler.
+
+If no `ErrorBoundary` can be found, the error will be logged via `console.error`.
+
+#### Usage
+
+```ts
+import { useType, useNewComponent, ErrorBoundary } from "@hex-engine/core";
+
+function MyComponent() {
+  useType(MyComponent);
+
+  useNewComponent(() =>
+    ErrorBoundary((err) => {
+      console.error("Something bad happened:", err);
+    })
+  );
+}
+```
+
 [`@hex-engine/2d`]: api-2d
+[`@hex-engine/inspector`]: api-inspector
 [`entity`]: #entity
 [`entity.name`]: #name-string--null
 [`entity.id`]: #id-number
@@ -569,3 +622,5 @@ function MyComponent() {
 [`useentityname`]: #useentitynamename-string-string--null
 [`useframe`]: #useframeframecallback-delta-number--void-void
 [`userootentity`]: #userootentity-entity
+[`runloop`]: #runloop
+[`errorboundary`]: #errorboundaryonerror-error-error--void
