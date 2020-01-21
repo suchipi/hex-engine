@@ -50,7 +50,6 @@ export default async function dev() {
     hot: true,
     publicPath: "/",
     quiet: true,
-    host: "localhost",
     overlay: true,
 
     historyApiFallback: {
@@ -61,7 +60,7 @@ export default async function dev() {
   });
 
   return new Promise((resolve, reject) => {
-    devServer.listen(port, "localhost", (err) => {
+    devServer.listen(port, (err) => {
       if (err) {
         reject(err);
       }
