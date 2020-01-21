@@ -1,3 +1,9 @@
+/**
+ * Searches through the provided canvas context for non-transparent pixels
+ * and identifies a bounding box that contains them.
+ *
+ * Warning: This function is expensive. Avoid using it on every frame.
+ */
 export default function useFilledPixelBounds(
   context: CanvasRenderingContext2D
 ) {

@@ -5,10 +5,9 @@ import { Geometry } from "../Components";
 import useEntityTransforms from "./useEntityTransforms";
 
 /**
- * Get all the entities at a given world position,
+ * Get all the entities at the given world position,
  * sorted by reverse draw order, such that one that
- * gets drawn last is the first in the array.
- * @param worldPos
+ * gets drawn last (and is therefore on top) is the first in the array.
  */
 export default function useEntitiesAtPoint(worldPos: Point): Array<Entity> {
   const rootEnt = useRootEntity();

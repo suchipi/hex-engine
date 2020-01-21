@@ -52,6 +52,10 @@ function getEntityTransformMatrixForContext(
   return matrix;
 }
 
+/**
+ * Get the matrix transforms for the specified Entity.
+ * @param entity The entity to get the transforms for. If unspecified, this function will use the result of `useEntity()`.
+ */
 export default function useEntityTransforms(entity = useEntity()) {
   const matrixForWorldPosition = useCallbackAsCurrent(
     (getTransform: typeof getEntityTransformMatrix) => {
@@ -68,10 +72,12 @@ export default function useEntityTransforms(entity = useEntity()) {
   );
 
   return {
+    /** Returns a transformation matrix that will turn a world position into a position relative to the Entity. */
     matrixForWorldPosition: matrixForWorldPosition.bind(
       null,
       getEntityTransformMatrix
     ),
+    /** Returns a transformation matrix that will turn a world position into a position relative to the Entity's top-left corner. */
     matrixForDrawPosition: useCallbackAsCurrent(
       (roundToNearestPixel: boolean) => {
         return matrixForWorldPosition((entity) =>
