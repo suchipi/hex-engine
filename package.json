@@ -6,7 +6,8 @@
     "packages/create",
     "packages/game",
     "packages/inspector",
-    "packages/scripts"
+    "packages/scripts",
+    "packages/website/website"
   ],
   "devDependencies": {
     "@babel/cli": "^7.7.7",

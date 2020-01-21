@@ -59,3 +59,7 @@ I built Hex Engine because I felt that the browser game engine space could benef
 It is the culmination of years of research, and probably the fifth or sixth game engine I have written for the browser (but the first that I've been proud enough of to share).
 
 Interested? Check out [Hex Engine's homepage](http://TODO!!) for installation and usage instructions.
+
+---
+
+Logo Font is [Silver by Poppy Works](https://poppyworks.itch.io/silver).

@@ -6,7 +6,11 @@
     "node_modules/bmfont-loader/index.d.ts",
     "./ts-webpack.ts"
   ],
-  "exclude": ["./packages/**/*.test.ts", "./packages/scripts/**/*"],
+  "exclude": [
+    "./packages/**/*.test.ts",
+    "./packages/scripts/**/*",
+    "./packages/create/template/**/*"
+  ],
 
   "compilerOptions": {
     "lib": ["es2019", "dom"],
