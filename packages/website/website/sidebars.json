@@ -1,7 +1,7 @@
 {
   "docs": {
-    "Getting Started": ["getting-started"],
-    "API Reference": ["api-reference", "api-2d", "api-core", "api-inspector"],
-    "Guides": ["guides"]
+    "Getting Started": ["getting-started", "first-time-setup"],
+    "Guides": ["guides"],
+    "API Reference": ["api-reference", "api-2d", "api-core", "api-inspector"]
   }
 }

@@ -15,3 +15,5 @@ To build a production version of your game for redistribution:
 ```sh
 npm run build
 ```
+
+For more info, head on over to [Hex Engine's website](https://hex-engine.dev).
