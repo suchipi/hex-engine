@@ -23,6 +23,11 @@ export default function Gamepad(
      * will be used, even if the connected controller is not a PlayStation controller.
      */
     buttonNames: Array<string>;
+
+    /**
+     * Which gamepad connected to the computer this Gamepad component represents, starting from 0.
+     */
+    gamepadIndex: number;
   }>
 ) {
   useType(Gamepad);
@@ -94,7 +99,7 @@ export default function Gamepad(
   }
 
   useUpdate(() => {
-    const gamepad = navigator.getGamepads()[0];
+    const gamepad = navigator.getGamepads()[options.gamepadIndex ?? 0];
     if (gamepad == null) {
       state.present = false;
       return;
