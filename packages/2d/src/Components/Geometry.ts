@@ -6,6 +6,12 @@ import {
   useDebugOverlayDrawTime,
 } from "../Hooks";
 
+/**
+ * This Component provides information about the shape, position, rotation, and scale
+ * of the current Entity. It is used by `useDraw` and `Physics.Body`, among other things.
+ *
+ * You should only have one `Geometry` component per `Entity`.
+ */
 function Geometry<S extends Shape>({
   shape,
   position = new Point(0, 0),

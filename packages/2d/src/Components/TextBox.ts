@@ -17,13 +17,25 @@ const tokensToText = (tokens: Array<string>): string => {
     .replace(/ _-_TAB_-_ /g, "\t");
 };
 
+/**
+ * This Component lays out text in lines, fitting as many words as it can on
+ * one line before continue onto the next. When you use it, it tells you which
+ * lines it rendered, and which parts of the text you provided didn't fit into
+ * the text box (if any). You can use this information to re-render the text
+ * box with new content, once the user has read the text.
+ */
 export default function TextBox({
   font,
   size,
   lineHeight: receivedLineHeight,
 }: {
+  /** A Font to use to render the text. You can use a Font, SystemFont, or BMFont. */
   font: FontImplementation;
+
+  /** The size of the text box. This determines how much content can fit inside. */
   size: Point;
+
+  /** How much height to provide for each line of text. */
   lineHeight?: number;
 }) {
   useType(TextBox);
@@ -32,6 +44,10 @@ export default function TextBox({
   useInspectorHoverOutline(() => shape);
 
   return {
+    /**
+     * Draws as much of the provided text as will fit into the textbox,
+     * then returns information about how much text was drawn.
+     */
     drawText(
       context: CanvasRenderingContext2D,
       text: string,
@@ -100,8 +116,13 @@ export default function TextBox({
       });
 
       return {
+        /** A boolean indicating whether all the text that was provided fit into the textbox. */
         didTextFit,
+
+        /** A string containing any remaining text that didn't fit into the box. */
         remainingText,
+
+        /** An Array containing all the lines that were printed. */
         printedLines: lines,
       };
     },

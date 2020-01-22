@@ -2,20 +2,22 @@ import { useNewComponent, useType } from "@hex-engine/core";
 import SpriteSheet from "./SpriteSheet";
 import { AnimationAPI } from "./Animation";
 
-type Props = {
-  url: string;
-  tileWidth: number;
-  tileHeight: number;
-  // You should call useNewComponent on these animations before passing them in
-  animations: { [name: string]: AnimationAPI<number> };
-};
-
+/**
+ * A Component representing an AnimationSheet image; that is, a filmstrip-style image
+ * of sprites which should be rendered in a particular sequence as part of an animation.
+ */
 export default function AnimationSheet({
   url,
   tileWidth,
   tileHeight,
   animations,
-}: Props) {
+}: {
+  url: string;
+  tileWidth: number;
+  tileHeight: number;
+  /** You should call useNewComponent on these animations before passing them in */
+  animations: { [name: string]: AnimationAPI<number> };
+}) {
   useType(AnimationSheet);
 
   const spriteSheet = useNewComponent(() =>
@@ -29,12 +31,15 @@ export default function AnimationSheet({
   let currentAnim = animations.default;
 
   return {
+    /** The current animation, that frames will be drawn from. */
     get currentAnim() {
       return currentAnim;
     },
+    /** Sets which animation is the current animation. */
     set currentAnim(nextValue) {
       currentAnim = nextValue;
     },
+    /** Draws the current animation's current frame into the provided canvas context. */
     draw(
       context: CanvasRenderingContext2D,
       {

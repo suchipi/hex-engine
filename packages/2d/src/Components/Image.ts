@@ -19,6 +19,11 @@ class Image {
     Preloader.addTask(() => this.load());
   }
 
+  /**
+   * Load this Image file. Note that Image files automatically start loading when they are created,
+   * and no errors are thrown if you attempt to draw an Image file that hasn't loaded yet, so
+   * in most cases, you do not need to call this function.
+   */
   load(): Promise<void> {
     if (this.loaded) return Promise.resolve();
     if (this._loadingPromise) return this._loadingPromise;
@@ -46,6 +51,7 @@ class Image {
     return this._loadingPromise;
   }
 
+  /** Draw the Image into the provided canvas context, if it has been loaded. */
   draw(
     context: CanvasRenderingContext2D,
     {
@@ -94,7 +100,23 @@ class Image {
   }
 }
 
-export default function ImageComponent(props: { url: string }) {
+/**
+ * A function that loads and draws an image from a URL.
+ *
+ * You can get a URL for an image on disk by `import`ing it, as if it was code:
+ *
+ * ```ts
+ * import myImage from "./my-image.png";
+ *
+ * console.log(typeof myImage); // "string"
+ *
+ * useNewComponent(() => Image({ url: myImage }));
+ * ```
+ *
+ * When you import an image in this way, it will be automatically
+ * added to the build and included in the final build output.
+ */
+export default function ImageComponent(options: { url: string }) {
   useType(ImageComponent);
-  return new Image(props);
+  return new Image(options);
 }

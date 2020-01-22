@@ -3,11 +3,14 @@ import { useUpdate } from "../Canvas";
 import { FontImplementation } from "./Font";
 import { Point } from "../Models";
 
+/** This Component renders some text using the provided Font Component (either A Font, BMFont, or SystemFont). */
 export default function Label({
   text = "",
   font,
 }: {
+  /** The text to render. */
   text?: string;
+  /** The font to use. */
   font: FontImplementation;
 }) {
   useType(Label);
@@ -28,7 +31,10 @@ export default function Label({
   useUpdate(updateSize);
 
   return {
+    /** The amount of space that the text will take up, when drawn. */
     size,
+
+    /** Draws the text into the context. */
     draw(
       context: CanvasRenderingContext2D,
       {
@@ -42,6 +48,8 @@ export default function Label({
       if (!font.readyToDraw()) return;
       font.drawText(context, state.text, { x, y });
     },
+
+    /** The text to render. You can change this to change what to render. */
     get text() {
       return state.text;
     },

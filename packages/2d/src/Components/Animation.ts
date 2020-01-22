@@ -2,6 +2,11 @@ import { useNewComponent, useType } from "@hex-engine/core";
 import { useUpdate } from "../Canvas";
 import Timer from "./Timer";
 
+/**
+ * A class that represents a single frame in an animation.
+ *
+ * The data that is in this frame can be anything.
+ */
 export class AnimationFrame<T> {
   data: T;
   duration: number; // in ms
@@ -17,19 +22,28 @@ export class AnimationFrame<T> {
   }
 }
 
-type Props<T> = Array<AnimationFrame<T>>;
-
 export type AnimationAPI<T> = {
+  /** The current animation frame; ie, current in time. */
   currentFrame: AnimationFrame<T>;
+
+  /** Pause playback of this animation. */
   pause(): void;
+
+  /** Begin or resume playback of this animation. */
   play(): void;
+
+  /** Restart playback of this animation from the first frame. */
   restart(): void;
 };
 
-export default function Animation<T>(props: Props<T>): AnimationAPI<T> {
+/**
+ * A Component that represents an Animation, where each frame has a duration and contains arbitrary data.
+ */
+export default function Animation<T>(
+  frames: Array<AnimationFrame<T>>
+): AnimationAPI<T> {
   useType(Animation);
 
-  const frames = props;
   const timer = useNewComponent(Timer);
   timer.disable();
   let currentFrameIndex = 0;

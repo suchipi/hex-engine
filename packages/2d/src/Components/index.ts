@@ -4,7 +4,6 @@ import Aseprite from "./Aseprite";
 import Audio from "./Audio";
 import AudioContext from "./AudioContext";
 import BMFont from "./BMFont";
-import BoundingBox from "./BoundingBox";
 import Font from "./Font";
 import FontMetrics from "./FontMetrics";
 import Gamepad from "./Gamepad";
@@ -32,7 +31,6 @@ export {
   Audio,
   AudioContext,
   BMFont,
-  BoundingBox,
   Font,
   FontMetrics,
   Gamepad,

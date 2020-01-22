@@ -10,12 +10,7 @@ import {
 import Matter from "matter-js";
 import Geometry from "./Geometry";
 import { Angle, Point, Polygon, Circle, Vector } from "../Models";
-import {
-  useUpdate,
-  useContext,
-  useDraw,
-  useDebugOverlayDrawTime,
-} from "../Hooks";
+import { useUpdate, useDraw, useDebugOverlayDrawTime } from "../Hooks";
 
 // Matter needs this
 // @ts-ignore
@@ -31,13 +26,34 @@ type CollisionListener = (other: {
   entity: null | Entity;
 }) => void;
 
+/**
+ * A Component that should be placed on the root Entity if you want to use physics in your game.
+ *
+ * Hex Engine's Physics are provided by [Matter.js](https://brm.io/matter-js/).
+ */
 function PhysicsEngine({
   debugDraw = false,
   gravity = new Point(0, 1),
   enableSleeping = true,
 }: {
+  /**
+   * Whether to render red wireframes of all physics bodies and constraints
+   * into the canvas, for debugging purposes.
+   */
   debugDraw?: boolean;
+
+  /**
+   * The gravity of the world, as a Point with x and y Components.
+   * An x or y value of 1 means "normal Earth gravity in this direction".
+   */
   gravity?: Point;
+
+  /**
+   * Whether to enable sleeping in the physics simulation.
+   * This puts bodies that have not moved in a while to "sleep", and does
+   * not update them until another body collides with them. This helps with framerate,
+   * but at the expense of simulation accuracy.
+   */
   enableSleeping?: boolean;
 } = {}) {
   useType(PhysicsEngine);
@@ -67,7 +83,23 @@ function PhysicsEngine({
     }
   });
 
-  const state = { engine, addCollisionListener, debugDraw };
+  const state = {
+    /** The Matter.js Engine object. */
+    engine,
+
+    /**
+     * Adds a collision listener for the current Entity.
+     *
+     * It will be called when another Entity's Physics.Body collides with this Entity's.
+     */
+    addCollisionListener,
+
+    /**
+     * Whether to render red wireframes of all physics bodies and constraints
+     * into the canvas, for debugging purposes.
+     */
+    debugDraw,
+  };
 
   function drawComposite(
     context: CanvasRenderingContext2D,
@@ -123,11 +155,12 @@ function PhysicsEngine({
   return state;
 }
 
+/** Get the Physics Engine from the root Entity. If it is not present, throw an Error. */
 function useEngine() {
   const engine = useRootEntity().getComponent(PhysicsEngine)?.engine;
   if (!engine) {
     throw new Error(
-      "Attempted to get Physics.Engine component from the root entity, but there wasn't one there.  "
+      "Attempted to get Physics.Engine component from the root entity, but there wasn't one there."
     );
   }
   return engine;
@@ -188,31 +221,89 @@ function useCollisionListener() {
   return addCollisionListener;
 }
 
-const CollisionCategories = {
-  NONE: 0,
-  DEFAULT: 1,
-  MOUSE_CONSTRAINT: 2,
-};
-
+/**
+ * A Component that should be added to any Entity that will participate in the physics simulation.
+ *
+ * Hex Engine's Physics are provided by [Matter.js](https://brm.io/matter-js/).
+ */
 function PhysicsBody(
   geometry: ReturnType<typeof Geometry>,
   {
-    collisionCategory = CollisionCategories.DEFAULT,
-    collisionMask = CollisionCategories.DEFAULT,
     label = useEntity().name || undefined,
     ...otherOpts
   }: Partial<{
+    /**
+     * A label for this body, for debugging purposes. If unspecified, defaults to the current Entity's name.
+     */
     label: string;
+
+    /**
+     * Whether the body should *not* move around. If this is set, things will still collide with it, but it'll be "frozen" in the sky.
+     */
     isStatic: boolean;
+
+    /**
+     * The density of this body.
+     *
+     * For more information, check the [Matter.js documentation](https://brm.io/matter-js/docs/classes/Body.html).
+     */
     density: number;
+
+    /**
+     * The friction of this body.
+     *
+     * For more information, check the [Matter.js documentation](https://brm.io/matter-js/docs/classes/Body.html).
+     */
     friction: number;
+
+    /**
+     * The friction this body feel in the air, due to air resistance.
+     *
+     * For more information, check the [Matter.js documentation](https://brm.io/matter-js/docs/classes/Body.html).
+     */
     frictionAir: number;
+
+    /**
+     * Whether this body is a "Sensor"; if it is, then it will emit collision
+     * events, but it will be frozen in space and objects will go right through it.
+     *
+     * In some engines, these are called "Brushes" or "Volumes".
+     *
+     * For more information, check the [Matter.js documentation](https://brm.io/matter-js/docs/classes/Body.html).
+     */
     isSensor: boolean;
+
+    /**
+     * How bouncy this body is.
+     *
+     * For more information, check the [Matter.js documentation](https://brm.io/matter-js/docs/classes/Body.html).
+     */
     restitution: number;
+
+    /**
+     * The time scale that this body runs through the simulation at.
+     *
+     * For more information, check the [Matter.js documentation](https://brm.io/matter-js/docs/classes/Body.html).
+     */
     timeScale: number;
+
+    /**
+     * The static friction of the body (in the Coulomb friction model).
+     *
+     * For more information, check the [Matter.js documentation](https://brm.io/matter-js/docs/classes/Body.html).
+     */
     frictionStatic: number;
-    collisionCategory: number;
-    collisionMask: number;
+
+    /**
+     * Properties that define whether this body collides with other bodies.
+     *
+     * For more information, check the [Matter.js documentation](https://brm.io/matter-js/docs/classes/Body.html).
+     */
+    collisionFilter: {
+      group: number;
+      category: number;
+      mask: number;
+    };
   }> = {}
 ) {
   useType(PhysicsBody);
@@ -221,10 +312,6 @@ function PhysicsBody(
   const addCollisionListener = useCollisionListener();
 
   const opts = {
-    collisionFilter: {
-      category: collisionCategory,
-      mask: collisionMask,
-    },
     angle: geometry.rotation.radians,
     label,
     ...otherOpts,
@@ -307,15 +394,73 @@ function PhysicsBody(
   };
 }
 
+/**
+ * A Component that can be used to bind two physics bodies together with a rope,
+ * spring, nail, or other real or imaginary constraint.
+ *
+ * Hex Engine's Physics are provided by [Matter.js](https://brm.io/matter-js/).
+ */
 function PhysicsConstraint(
   options: Partial<{
+    /**
+     * A value from 0 to 1 that determines how quickly the constraint returns
+     * to its resting length. 1 means very stiff, and 0.2 means a soft spring.
+     *
+     * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
+     */
     stiffness: number;
+
+    /**
+     * A value from 0 to 1 that determines the damping, which limits oscillation.
+     *
+     * 0 means no damping, and 0.1 means no damping.
+     *
+     * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
+     */
     damping: number;
+
+    /**
+     * The first body that this constraint is attached to.
+     *
+     * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
+     */
     bodyA: Matter.Body;
+
+    /**
+     * The second body that this constraint is attached to.
+     *
+     * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
+     */
     bodyB: Matter.Body;
+
+    /**
+     * The position where the constraint is attached to `bodyA`, or a world-space position
+     * that the constraint is attached to if `bodyA` is not defined..
+     *
+     * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
+     */
     pointA: Point;
+
+    /**
+     * The position where the constraint is attached to `bodyB`, or a world-space position
+     * that the constraint is attached to if `bodyB` is not defined..
+     *
+     * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
+     */
     pointB: Point;
+
+    /**
+     * The resting length of the constraint.
+     *
+     * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
+     */
     length: number;
+
+    /**
+     * A label, for debugging purposes.
+     *
+     * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
+     */
     label: string;
   }>
 ) {
@@ -336,29 +481,30 @@ function PhysicsConstraint(
   };
 }
 
-function PhysicsMouseConstraint() {
-  useType(PhysicsMouseConstraint);
-
-  const engine = useEngine();
-  const { canvas } = useContext();
-
-  const constraint = Matter.MouseConstraint.create(engine, {
-    mouse: Matter.Mouse.create(canvas),
-    collisionFilter: {
-      category: CollisionCategories.MOUSE_CONSTRAINT,
-      mask: CollisionCategories.MOUSE_CONSTRAINT | CollisionCategories.DEFAULT,
-    },
-  });
-
-  Matter.World.add(engine.world, constraint);
-}
-
+/**
+ * An assortment of Components that you can use to add simulated 2D physics to your game.
+ */
 const Physics = {
+  /**
+   * A Component that should be placed on the root Entity if you want to use physics in your game.
+   *
+   * Hex Engine's Physics are provided by [Matter.js](https://brm.io/matter-js/).
+   */
   Engine: name("Physics.Engine", PhysicsEngine),
+
+  /**
+   * A Component that should be added to any Entity that will participate in the physics simulation.
+   *
+   * Hex Engine's Physics are provided by [Matter.js](https://brm.io/matter-js/).
+   */
   Body: name("Physics.Body", PhysicsBody),
+
+  /**
+   * A Component that connects two Physics.Body Components together using a rope, spring, nail, etc.
+   *
+   * Hex Engine's Physics are provided by [Matter.js](https://brm.io/matter-js/).
+   */
   Constraint: name("Physics.Constraint", PhysicsConstraint),
-  MouseConstraint: name("Physics.MouseConstraint", PhysicsMouseConstraint),
-  CollisionCategories,
 };
 
 export default Physics;

@@ -2,16 +2,15 @@ import { useType, useNewComponent } from "@hex-engine/core";
 import Font, { FontImplementation } from "./Font";
 import FontMetrics, { DrawableFont } from "./FontMetrics";
 
+/** This Component uses an installed font on the system to render text into the canvas. */
 export default function SystemFont({
   name,
   size,
   color = "black",
-  align = "left",
 }: {
   name: string;
   size: number;
   color?: void | string;
-  align?: void | "start" | "end" | "left" | "right" | "center";
 }) {
   useType(SystemFont);
 
@@ -22,14 +21,12 @@ export default function SystemFont({
     name,
     size,
     color,
-    align,
   };
   state.size = size;
 
   function prepareContext(context: CanvasRenderingContext2D) {
     context.font = `${state.size}px ${state.name}`;
     context.fillStyle = state.color;
-    context.textAlign = state.align;
   }
 
   const baseApi: DrawableFont = {
@@ -85,12 +82,6 @@ export default function SystemFont({
     },
     set color(nextValue) {
       state.color = nextValue;
-    },
-    get align() {
-      return state.align;
-    },
-    set align(nextValue) {
-      state.align = nextValue;
     },
   };
 }

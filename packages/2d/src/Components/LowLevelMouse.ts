@@ -12,9 +12,15 @@ const MOUSE_MOVE = Symbol("MOUSE_MOVE");
 const MOUSE_DOWN = Symbol("MOUSE_DOWN");
 const MOUSE_UP = Symbol("MOUSE_UP");
 
+/** A Mouse event in Hex Engine. */
 export class HexMouseEvent {
+  /** The position of the cursor, relative to the current Entity's origin. */
   pos: Point;
+
+  /** The amount that the cursor has moved since the last frame. */
   delta: Point;
+
+  /** Which buttons were pressed during this event, or, in the case of a MouseUp event, which buttons were released. */
   buttons: {
     left: boolean;
     right: boolean;
@@ -43,16 +49,28 @@ export class HexMouseEvent {
 let firstClickHasHappened = false;
 let pendingFirstClickHandlers: Array<() => void> = [];
 
+/**
+ * This function will run the provided function the first time a mouse click occurs.
+ * Note that it only works if there is at least one `Mouse` or `LowLevelMouse` Component
+ * loaded in your game when the first click occurs. To be on the safe side, you should
+ * probably also add a LowLevelMouse or Mouse Component to the Component that calls useFirstClick.
+ */
 export function useFirstClick(handler: () => void) {
   pendingFirstClickHandlers.push(useCallbackAsCurrent(handler));
 
   return {
+    /** Whether the first click has occurred. */
     get firstClickHasHappened() {
       return firstClickHasHappened;
     },
   };
 }
 
+/**
+ * A low-level Mouse Component. It supports mousemove, mousedown, and mouseup events.
+ * For click events, information about whether the cursor is within an Entity's geometry,
+ * and clean separation between left-click, right-click, and middle-click events, use `Mouse` instead.
+ */
 export default function LowLevelMouse() {
   useType(LowLevelMouse);
 
@@ -186,12 +204,15 @@ export default function LowLevelMouse() {
   });
 
   return {
+    /** Registers the provided function to be called when the mouse cursor moves. */
     onMouseMove: (callback: (event: HexMouseEvent) => void) => {
       moveState.add(useCallbackAsCurrent(callback));
     },
+    /** Registers the provided function to be called when any button on the mouse is pressed down. */
     onMouseDown: (callback: (event: HexMouseEvent) => void) => {
       downState.add(useCallbackAsCurrent(callback));
     },
+    /** Registers the provided function to be called when any button on the mouse is released. */
     onMouseUp: (callback: (event: HexMouseEvent) => void) => {
       upState.add(useCallbackAsCurrent(callback));
     },

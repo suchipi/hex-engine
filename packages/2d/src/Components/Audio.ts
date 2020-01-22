@@ -17,6 +17,11 @@ class Audio {
     Preloader.addTask(() => this.load());
   }
 
+  /**
+   * Load this Audio file. Note that Audio files automatically start loading when they are created,
+   * and no errors are thrown if you attempt to play an Audio file that hasn't loaded yet, so
+   * in most cases, you do not need to call this function.
+   */
   load(): Promise<void> {
     if (this.loaded) return Promise.resolve();
     if (this._loadingPromise) return this._loadingPromise;
@@ -43,7 +48,13 @@ class Audio {
     return this._loadingPromise;
   }
 
-  play({ volume }: { volume?: number } = {}): Promise<void> {
+  /** Play this audio clip, if it's loaded. If it isn't loaded yet, nothing will happen. */
+  play({
+    volume,
+  }: {
+    /** Specify the playback volume, from 0 to 1. */
+    volume?: number;
+  } = {}): Promise<void> {
     const data = this.data;
     if (!data) return Promise.resolve();
 
@@ -54,6 +65,22 @@ class Audio {
   }
 }
 
+/**
+ * A function that loads and plays a sound clip from a URL.
+ *
+ * You can get a URL for a sound clip by `import`ing it, as if it was code:
+ *
+ * ```ts
+ * import mySound from "./my-sound.ogg";
+ *
+ * console.log(typeof mySound); // "string"
+ *
+ * useNewComponent(() => Audio({ url: mySound }));
+ * ```
+ *
+ * When you import an audio clip in this way, it will be automatically
+ * added to the build and included in the final build output.
+ */
 export default function AudioComponent({ url }: Props) {
   useType(AudioComponent);
 

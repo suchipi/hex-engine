@@ -17,11 +17,24 @@ const ON_RIGHT_CLICK = Symbol("ON_RIGHT_CLICK");
 const ON_MIDDLE_CLICK = Symbol("ON_MIDDLE_CLICK");
 type Callback = (event: HexMouseEvent) => void;
 
+/**
+ * A Component that gives you information about where the Mouse is, relative to the current Entity,
+ * and lets you register functions to be called when the mouse cursor interacts with the current Entity.
+ */
 export default function Mouse({
   entity = useEntity(),
   geometry = entity.getComponent(Geometry),
 }: {
+  /**
+   * The entity that this Mouse Component should give information about and relative to.
+   * If not provided, it will use the current Entity.
+   */
   entity?: Entity | undefined;
+  /**
+   * The Geometry Component that this Mouse should use to identify whether the cursor
+   * is inside the Entity or not. If not provided, it will attempt to get a Geometry
+   * component off of the Entity.
+   */
   geometry?: ReturnType<typeof Geometry> | null;
 } = {}) {
   useType(Mouse);
@@ -103,43 +116,121 @@ export default function Mouse({
   };
 
   return {
+    /**
+     * A boolean indicating whether the mouse cursor is currently within the Entity, according
+     * to the Shape on the Geometry this Component has been configured to use.
+     */
     get isInsideBounds() {
       return mousePosition.isInsideBounds;
     },
+
+    /**
+     * A boolean indicating whether the left mouse button is currently being pressed.
+     */
     get isPressingLeft() {
       return pressingLeft;
     },
+    /**
+     * A boolean indicating whether the right mouse button is currently being pressed.
+     */
     get isPressingRight() {
       return pressingRight;
     },
+    /**
+     * A boolean indicating whether the middle mouse button is currently being pressed.
+     */
     get isPressingMiddle() {
       return pressingMiddle;
     },
+
+    /**
+     * The current position of the mouse cursor, relative to the Entity this Component has been
+     * configured to use.
+     */
     get position() {
       return mousePosition.position;
     },
 
+    /**
+     * Registers a function to be called when the mouse cursor enters the configured Entity's bounds.
+     *
+     * The function will be called with a `HexMouseEvent`.
+     */
     get onEnter() {
       return mousePosition.onEnter;
     },
+
+    /**
+     * Registers a function to be called whenever the mouse cursor moves,
+     * *even if it is not within the Entity's bounds*.
+     *
+     * The function will be called with a `HexMouseEvent`.
+     */
     get onMove() {
       return mousePosition.onMove;
     },
+
+    /**
+     * Registers a function to be called whenever the mouse cursor exits the configured Entity's bounds.
+     *
+     * The function will be called with a `HexMouseEvent`.
+     */
     get onLeave() {
       return mousePosition.onLeave;
     },
+
+    /**
+     * Registers a function to be called whenever the _LEFT_ mouse button is pressed down
+     * within the configured Entity's bounds.
+     *
+     * If you need an onDown event for a mouse button other than the left button, you will
+     * have to use the `LowLevelMouse` Component instead.
+     *
+     * The function will be called with a `HexMouseEvent`.
+     */
     get onDown() {
       return callbackSetters.onDown;
     },
+
+    /**
+     * Registers a function to be called whenever the _LEFT_ mouse button is released
+     * within the configured Entity's bounds.
+     *
+     * If you need an onDown onUp for a mouse button other than the left button, you will
+     * have to use the `LowLevelMouse` Component instead.
+     *
+     * The function will be called with a `HexMouseEvent`.
+     */
     get onUp() {
       return callbackSetters.onUp;
     },
+
+    /**
+     * Registers a function to be called whenever the left mouse button is pressed
+     * and then released within the configured Entity's bounds.
+     *
+     * The function will be called with a `HexMouseEvent`.
+     */
     get onClick() {
       return callbackSetters.onClick;
     },
+
+    /**
+     * Registers a function to be called whenever the right mouse button is pressed
+     * and then released within the configured Entity's bounds.
+     *
+     * The function will be called with a `HexMouseEvent`.
+     */
     get onRightClick() {
       return callbackSetters.onRightClick;
     },
+
+    /**
+     * Registers a function to be called whenever the middle mouse button is pressed
+     * and then released within the configured Entity's bounds.
+     *
+     * The function will be called with a `HexMouseEvent`.
+     */
     get onMiddleClick() {
       return callbackSetters.onMiddleClick;
     },

@@ -16,6 +16,12 @@ export type DrawableFont = {
   measureWidth(text: string): number;
 };
 
+/**
+ * This Component measures various characters using the specified font in order to
+ * provide a function which can accurately predict the render size of text on the page.
+ *
+ * It is rarely used directly; instead, use `BMFont` or `SystemFont`.
+ */
 export default function FontMetrics(impl: DrawableFont) {
   useType(FontMetrics);
 

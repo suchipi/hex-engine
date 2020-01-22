@@ -5,6 +5,7 @@ import Image from "./Image";
 import Font from "./Font";
 import FontMetrics from "./FontMetrics";
 
+/** This Component uses an AngelCode BMFont-format file to render text into the canvas. */
 export default function BMFont(data: BMFontLoader.Font) {
   useType(BMFont);
 
@@ -15,16 +16,20 @@ export default function BMFont(data: BMFontLoader.Font) {
   const layout = createLayout({ font: data, text: "" });
 
   const api = {
+    /** Whether all the images the font references have been loaded yet. */
     readyToDraw() {
       return images.every((image) => image.loaded);
     },
+    /** Measures how many pixels wide the specified text would be, if it was rendered using this font. */
     measureWidth(text: string) {
       layout.update({ font: data, text, mode: "pre" });
       return layout.width;
     },
+    /** Returns this font's size. */
     getFontSize() {
       return data.info.size;
     },
+    /** Draws some text into the canvas, using this font. */
     drawText(
       context: CanvasRenderingContext2D,
       text: string,
@@ -63,6 +68,7 @@ export default function BMFont(data: BMFontLoader.Font) {
 
   const fontApi = {
     ...api,
+    /** Draws some text into the canvas, using this font. */
     drawText(
       context: CanvasRenderingContext2D,
       text: string,
@@ -84,9 +90,10 @@ export default function BMFont(data: BMFontLoader.Font) {
   useNewComponent(() => Font(fontApi));
 
   return {
+    /** The BMFont file data passed into this Component. */
     data,
+    /** All the Image Components that this Component created in order to load the font. */
     images,
-    layout,
     ...fontApi,
   };
 }

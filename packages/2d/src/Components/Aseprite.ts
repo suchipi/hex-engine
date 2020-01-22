@@ -56,6 +56,7 @@ const CANVAS_COMPOSITE_OPERATIONS_BY_BLEND_MODE: { [mode: number]: string } = {
 
 const frameCache = new WeakMap();
 
+/** A Component which loads and draws Aseprites sprites and animations. */
 export default function Aseprite(data: AsepriteLoader.Data) {
   useType(Aseprite);
 
@@ -239,6 +240,7 @@ export default function Aseprite(data: AsepriteLoader.Data) {
     Object.values(animations).forEach((animation) => animation.disable());
   });
 
+  /** Draw the current animation frame into the provided canvas context. */
   function draw(
     context: CanvasRenderingContext2D,
     {
@@ -255,16 +257,28 @@ export default function Aseprite(data: AsepriteLoader.Data) {
   }
 
   return {
+    /** The current animation, that frames will be drawn from. */
     get currentAnim() {
       return currentAnim;
     },
     set currentAnim(nextValue) {
       currentAnim = nextValue;
     },
+
+    /** The aseprite-loader data that was passed into this function. */
     data,
+
+    /**
+     * All the animations that were found in the Aseprite file.
+     *
+     * We use Tags to find these, and also include an animation called "default" which
+     * is the animation containing every frame in the file, in order.
+     */
     animations,
 
     draw,
+
+    /** The maximum size of the frames in this Aseprite file. */
     size,
   };
 }
