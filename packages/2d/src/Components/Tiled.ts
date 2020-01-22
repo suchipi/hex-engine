@@ -38,6 +38,11 @@ function getElementsByTagName(
   return els;
 }
 
+/**
+ * This Component loads data from a Tiled XML tileset file
+ * and creates a `SpriteSheet` Component out of it.
+ * @param data The tileset XML file
+ */
 function Tileset(data: XMLSourceLoader.Element) {
   useType(Tileset);
 
@@ -90,6 +95,13 @@ function Tileset(data: XMLSourceLoader.Element) {
   };
 }
 
+/**
+ * This Component represents the data for a single layer within a Tiled map XML file.
+ *
+ * You'll rarely create it directly; instead, you'll get it from a Tiled.Map.
+ *
+ * @param layer The layer XML element
+ */
 function Layer(layer: XMLSourceLoader.Element) {
   useType(Layer);
 
@@ -259,6 +271,13 @@ function makeTiledObject(object: XMLSourceLoader.Element): TiledObjectApi {
   };
 }
 
+/**
+ * This Component loads data from a Tiled map XML file and creates
+ * SpriteSheet and TileMap Components that you can use to draw the
+ * map into the canvas.
+ *
+ * @param data The Tiled map XML file
+ */
 function TiledMap(data: XMLSourceLoader.Element) {
   useType(TiledMap);
 
@@ -320,11 +339,25 @@ function TiledMap(data: XMLSourceLoader.Element) {
   }
 
   return {
+    /** The tileset used by the map */
     tileset,
+
+    /** An Array of Tiled.Layer Compponents, each corresponding to a layer in the Tiled map */
+    layers,
+
+    /** An Array of TileMap Components, each corresponding to a *visible* layer in the Tiled map */
     tileMaps,
+
+    /** The size of the map in tiles */
     sizeInTiles,
+
+    /** The size of the map in pixels */
     sizeInPixels,
+
+    /** The size of a single tile in the map */
     tileSize: tileset.spriteSheet.tileSize,
+
+    /** All the objects that were present in the map, for you to use however you like */
     objects: objects.map((obj) => makeTiledObject(obj)),
   };
 }
@@ -333,6 +366,7 @@ Object.defineProperty(Tileset, "name", { value: "Tiled.Tileset" });
 Object.defineProperty(Layer, "name", { value: "Tiled.Layer" });
 Object.defineProperty(TiledMap, "name", { value: "Tiled.Map" });
 
+/** This Object has Components on it that help you work with maps and tilesets from Tiled. */
 const Tiled = {
   Tileset,
   Layer,

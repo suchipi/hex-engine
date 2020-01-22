@@ -2,6 +2,7 @@ import { useType } from "@hex-engine/core";
 import SpriteSheet from "./SpriteSheet";
 import { Grid } from "../Models";
 
+/** This Component uses a Grid of tile indices and a SpriteSheet Component to draw a large map of tiles to the canvas. */
 export default function TileMap(
   sheet: ReturnType<typeof SpriteSheet>,
   grid: Grid<number>
