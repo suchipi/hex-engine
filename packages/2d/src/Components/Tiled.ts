@@ -368,8 +368,24 @@ Object.defineProperty(TiledMap, "name", { value: "Tiled.Map" });
 
 /** This Object has Components on it that help you work with maps and tilesets from Tiled. */
 const Tiled = {
+  /**
+   * This Component loads data from a Tiled XML tileset file
+   * and creates a `SpriteSheet` Component out of it.
+   */
   Tileset,
+
+  /**
+   * This Component represents the data for a single layer within a Tiled map XML file.
+   *
+   * You'll rarely create it directly; instead, you'll get it from a Tiled.Map.
+   */
   Layer,
+
+  /**
+   * This Component loads data from a Tiled map XML file and creates
+   * SpriteSheet and TileMap Components that you can use to draw the
+   * map into the canvas.
+   */
   Map: TiledMap,
 };
 

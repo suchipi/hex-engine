@@ -20,28 +20,28 @@ component by using [`useEntity`].
 
 #### Properties
 
-##### `name`: `string | null`
+##### `name: string | null`
 
 A name that will be shown in the inspector, for debugging purposes.
 You can set this using [`useEntityName`]. If you don't set one, we will
 try to infer one, based on the name of the root [`Component`].
 
-##### `id`: `number`
+##### `id: number`
 
 A unique id for this Entity. These start at zero and go up by one
 whenever you create an Entity.
 
-##### `children`: `Set<Entity>`
+##### `children: Set<Entity>`
 
 This Entity's child [entities][`entity`]. These get here from components on
 this Entity calling [`useChild`].
 
-##### `parent`: `Entity`
+##### `parent: Entity`
 
 The parent [`Entity`] for this Entity, or null if there isn't one.
 Generally, this will only ever be null if you're dealing with the root Entity.
 
-##### `components`: [`Set<Component>`][`component`]
+##### `components: Set<`[`Component`]`>`
 
 All the [`Component`] instances that belong to this Entity.
 
@@ -92,7 +92,7 @@ A Component instance. Every Component created via [`useNewComponent`], [`useChil
 
 #### Properties
 
-##### `type`: `Function | null`
+##### `type: Function | null`
 
 The Component function that this Component instance cooresponds to.
 This gets set when you call [`useType`], and it _must_ be set in order
@@ -103,7 +103,7 @@ for this Component instance to be returned from [`Entity.getComponent`].
 The Entity this Component belongs to. Inside of a Component function,
 you can call [`useEntity`] to get this.
 
-##### `isEnabled`: `boolean`
+##### `isEnabled: boolean`
 
 Whether this Component is currently "enabled". To define what should
 happen when your Component is enabled or disabled, use [`useEnableDisable`].
