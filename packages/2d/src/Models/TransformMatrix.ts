@@ -207,6 +207,15 @@ export default class TransformMatrix {
     return new Point(domPoint.x, domPoint.y);
   }
 
+  /**
+   * Applies this TransformMatrix's transform to the provided Point values, and mutates the provided Point to contain the transformed values.
+   */
+  transformPointMutate(point: Point): Point {
+    const domPoint = point.asDOMPoint().matrixTransform(this._matrix);
+    point.mutateInto(domPoint);
+    return point;
+  }
+
   /** Return a new TransformMatrix that applies the inverse transformation as this one. */
   inverse(): TransformMatrix {
     return TransformMatrix.fromDOMMatrix(this._matrix.inverse());

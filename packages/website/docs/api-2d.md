@@ -92,6 +92,10 @@ This rotates the Angle counter-clockwise.
 
 ### Circle
 
+```ts
+import { Circle } from "@hex-engine/2d";
+```
+
 Represents a circle; a shape with infinite points along its edge that are all
 equidistant from its center.
 
@@ -473,11 +477,255 @@ Mutate this Point by transforming its x and y values using the provided DOMMatri
 
 ### Polygon
 
-TODO
+```ts
+import { Polygon } from "@hex-engine/2d";
+```
+
+Represents a closed shape consisting of a set of connected straight line segments.
+
+#### Static Methods
+
+##### rectangle
+
+`static rectangle(size: Point): Polygon` <br />
+`static rectangle(width: number, height: number): Polygon`
+
+Creates a rectangular polygon; a 4-sided polygon where the angles between all sides are all π/2 radians (90 degrees).
+
+#### Properties
+
+##### points
+
+`points: Array<Point>`
+
+Points representing the corners where the polygon's line segments meet.
+Their `x` and `y` properties refer to their position relative to the
+polygon's [centroid](https://en.wikipedia.org/wiki/Centroid).
+
+The points are ordered such that one could draw the polygon by
+placing a pen down at the first point, then dragging the pen in a straight line
+to the second point, then the third, and so on until the last point,
+which is connected to the first point.
+
+##### width
+
+`width: number`
+
+The horizontal distance between the leftmost point in the polygon and the rightmost point on the polygon.
+
+##### height
+
+`height: number`
+
+The vertical distance between the highest point in the polygon and the lowest point on the polygon.
+
+#### Methods
+
+##### boundingRectangle
+
+`boundingRectangle(): Polygon`
+
+Creates a rectangular polygon whose width and height match that of this polygon;
+said in other words, returns the rectangle that this polygon could be perfectly
+[inscribed](https://www.mathopenref.com/inscribed.html) in.
+
+##### containsPoint
+
+`containsPoint(point: Point): boolean`
+
+Returns whether the given point falls inside the polygon.
+
+##### equals
+
+`equals(other: Polygon): boolean`
+
+Returns whether this polygon has the same point values as another.
+
+##### draw
+
+`draw(context: CanvasRenderingContext2D, strokeOrFill: "stroke" | "fill", { x = 0, y = 0 }: { x?: number | undefined; y?: number | undefined } = {}): void`
+
+Draws this polygon onto a canvas context, using the current stroke or fill style.
 
 ### TransformMatrix
 
-TODO
+```ts
+import { TransformMatrix } from "@hex-engine/2d";
+```
+
+#### Static Methods
+
+##### fromDOMMatrix
+
+`static fromDOMMatrix(domMatrix: DOMMatrix): TransformMatrix`
+
+Create a TransformMatrix from a DOMMatrix of SVGMatrix.
+
+#### Properties
+
+##### a
+
+`readonly a: number`
+
+Returns the `a` component of this TransformMatrix, where this TransformMatrix's components can be represented as follows:
+
+```
+[ a c e
+  b d f
+  0 0 1 ]
+```
+
+The `a` component affects horizontal scaling. A value of 1 results in no scaling.
+
+##### b
+
+`readonly b: number`
+
+Returns the `b` component of this TransformMatrix, where this TransformMatrix's components can be represented as follows:
+
+```
+[ a c e
+  b d f
+  0 0 1 ]
+```
+
+The `b` component affects vertical skewing.
+
+##### c
+
+`readonly c: number`
+
+Returns the `c` component of this TransformMatrix, where this TransformMatrix's components can be represented as follows:
+
+```
+[ a c e
+  b d f
+  0 0 1 ]
+```
+
+The `c` component affects horizontal skewing.
+
+##### d
+
+`readonly d: number`
+
+Returns the `d` component of this TransformMatrix, where this TransformMatrix's components can be represented as follows:
+
+```
+[ a c e
+  b d f
+  0 0 1 ]
+```
+
+The `d` component affects vertical scaling. A value of 1 results in no scaling.
+
+##### e
+
+`readonly e: number`
+
+Returns the `e` component of this TransformMatrix, where this TransformMatrix's components can be represented as follows:
+
+```
+[ a c e
+  b d f
+  0 0 1 ]
+```
+
+The `e` component affects horizontal translation (movement).
+
+##### f
+
+`readonly f: number`
+
+Returns the `f` component of this TransformMatrix, where this TransformMatrix's components can be represented as follows:
+
+```
+[ a c e
+  b d f
+  0 0 1 ]
+```
+
+The `f` component affects vertical translation (movement).
+
+#### Methods
+
+##### scale
+
+`scale(size: Point, origin: Point): TransformMatrix` <br />
+`scale(sizeX: number, sizeY: number, originX: number, originY: number): TransformMatrix`
+
+Creates a new TransformMatrix with the same values as this one, but with a scale operation applied.
+
+##### scaleMutate
+
+`scaleMutate(size: Point, origin: Point): this` <br />
+`scaleMutate(sizeX: number, sizeY: number, originX: number, originY: number): this`
+
+Mutates this TransformMatrix by applying a scale operation.
+
+##### translate
+
+`translate(pos: Point): TransformMatrix` <br />
+`translate(x: number, y: number): TransformMatrix`
+
+Creates a new TransformMatrix with the same values as this one, but with a translation applied.
+
+##### translateMutate
+
+`translateMutate(pos: Point): this` <br />
+`translateMutate(x: number, y: number): this`
+
+Mutates this TransformMatrix by applying a translation.
+
+##### rotate
+
+`rotate(radians: Angle | number): TransformMatrix`
+
+Creates a new TransformMatrix with the same values as this one, but with a rotation applied.
+
+##### rotateMutate
+
+`rotateMutate(radians: Angle | number): this`
+
+Mutates this TransformMatrix by applying a rotation.
+
+##### multiply
+
+`multiply(other: TransformMatrix | DOMMatrix): TransformMatrix`
+
+Creates a new TransformMatrix by multiplying this one with another.
+
+##### multiplyMutate
+
+`multiplyMutate(other: TransformMatrix | DOMMatrix): this`
+
+Mutates this TransformMatrix by multiplying it with another.
+
+##### transformPoint
+
+`transformPoint(point: Point): Point`
+
+Applies this TransformMatrix's transform to the provided Point values, and returns a new Point.
+
+This does _not_ mutate the provided Point.
+
+##### transformPointMutate
+
+`transformPointMutate(point: Point): Point`
+
+Applies this TransformMatrix's transform to the provided Point values, and mutates the provided Point to contain the transformed values.
+
+##### inverse
+
+`inverse(): TransformMatrix`
+
+Return a new TransformMatrix that applies the inverse transformation as this one.
+
+##### inverseMutate
+
+`inverseMutate(): this`
+
+Mutate this TransformMatrix by inverting its transformation.
 
 ### Vector
 

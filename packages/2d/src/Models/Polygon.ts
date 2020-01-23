@@ -170,7 +170,7 @@ export default class Polygon {
    * Returns whether this polygon has the same point values as another.
    * @param other The other polygon to compare to.
    */
-  equals(other: Polygon) {
+  equals(other: Polygon): boolean {
     return this.points.every((point, index) => {
       const otherPoint = other.points[index];
       return otherPoint && point.equals(otherPoint);
