@@ -2218,7 +2218,7 @@ function Timer(): {
 
 ## Hooks
 
-TODO
+`@hex-engine/2d` comes with several hook functions you can use within your own Component functions.
 
 ### useBackstage
 
@@ -2226,7 +2226,11 @@ TODO
 import { useBackstage } from "@hex-engine/2d";
 ```
 
-TODO
+`useBackstage(): CanvasRenderingContext2D`
+
+Returns a "backstage" canvas context that gets cleared between every component draw.
+The canvas associated with this backstage context is never shown to the user.
+You can use this backstage context as a working space to render into, if needed.
 
 ### useContext
 
@@ -2234,7 +2238,11 @@ TODO
 import { useContext } from "@hex-engine/2d";
 ```
 
-TODO
+`useContext(): CanvasRenderingContext2D`
+
+Returns the 2d rendering context of the root component's Canvas.
+
+This is the same context that gets passed into `useDraw`'s callback.
 
 ### useDraw
 
@@ -2242,7 +2250,13 @@ TODO
 import { useDraw } from "@hex-engine/2d";
 ```
 
-TODO
+`export default function useDraw(onDraw: (context: CanvasRenderingContext2D, backstage: CanvasRenderingContext2D) => void, { roundToNearestPixel: boolean }?): void`
+
+Register a function to be called once per frame, after all `useUpdate` functions have been called.
+
+The function will receive a 2d canvas context it can draw into.
+
+The context you receive will already be rotated and translated such that position 0, 0 is the upper-left corner of the current Entity, so in most cases, you will not need to worry about x/y positioning.
 
 ### useUpdate
 
@@ -2250,7 +2264,12 @@ TODO
 import { useUpdate } from "@hex-engine/2d";
 ```
 
-TODO
+`useUpdate(callback: (delta: number) => void): void`
+
+Registers a function to be called once every frame, prior to drawing.
+
+The function will receive a single argument, `delta`, which is the number of milliseconds
+that have passed since the last frame was rendered.
 
 ### useEntitiesAtPoint
 
@@ -2258,7 +2277,11 @@ TODO
 import { useEntitiesAtPoint } from "@hex-engine/2d";
 ```
 
-TODO
+`useEntitiesAtPoint(worldPos: Point): Array<Entity>`
+
+Get all the entities at the given world position,
+sorted by reverse draw order, such that one that
+gets drawn last (and is therefore on top) is the first in the array.
 
 ### useEntityTransforms
 
@@ -2266,7 +2289,9 @@ TODO
 import { useEntityTransforms } from "@hex-engine/2d";
 ```
 
-TODO
+`useEntityTransforms(entity?: Entity): { matrixForWorldPosition: () => TransformMatrix, matrixForDrawPosition: () => TransformMatrix }`
+
+Get the matrix transforms for the specified Entity, or the current Entity if no entity is provided.
 
 ### useFilledPixelBounds
 
@@ -2274,7 +2299,12 @@ TODO
 import { useFilledPixelBounds } from "@hex-engine/2d";
 ```
 
-TODO
+`useFilledPixelBounds(context: CanvasRenderingContext2D): { minX: number; maxX: number; minY: number; maxY: number; }`
+
+Searches through the provided canvas context for non-transparent pixels
+and identifies a bounding box that contains them.
+
+> Warning: This function is expensive. Avoid using it on every frame.
 
 ### useInspectorHoverOutline
 
@@ -2282,7 +2312,12 @@ TODO
 import { useInspectorHoverOutline } from "@hex-engine/2d";
 ```
 
-TODO
+`useInspectorHoverOutline(getShape: () => Polygon | Circle)`
+
+Sets up the Inspector so that when the current Entity or Component is hovered over,
+the provided function will be called to get a shape that should be drawn onto the screen.
+
+This function does nothing in release builds.
 
 ### useRawDraw
 
@@ -2290,7 +2325,13 @@ TODO
 import { useRawDraw } from "@hex-engine/2d";
 ```
 
-TODO
+`useRawDraw(callback: (context: CanvasRenderingContext2D, backstage: CanvasRenderingContext2D) => void): void`
+
+Registers a function to be called once a frame, after all `useUpdate` functions have been called.
+
+Unlike `useDraw`, `useRawDraw` does _not_ transform the context by the current Entity's matrix transform.
+
+In most cases, you should use `useDraw` instead of `useRawDraw`.
 
 ### useDebugOverlayDrawTime
 
@@ -2298,7 +2339,16 @@ TODO
 import { useDebugOverlayDrawTime } from "@hex-engine/2d";
 ```
 
-TODO
+`useDebugOverlayDrawTime(): void`
+
+This hook specifies to the default draw order sort function
+that this Component's draw callbacks should be drawn last,
+after everything else, because this component renders debug overlay(s)
+that should be drawn on top of everything else.
+
+If you are using a custom draw order sort and want to preserve this functionality,
+you can use the `Canvas.DrawOrder.isDebugOverlay` function to identify Components
+that have called this hook.
 
 ### useCanvasDrawOrderSort
 
@@ -2306,7 +2356,7 @@ TODO
 import { useCanvasDrawOrderSort } from "@hex-engine/2d";
 ```
 
-TODO
+This component will check the root Entity for a Canvas.DrawOrder component, and if it is present, it will return its `sort` function. Otherwise, it returns `Canvas.DrawOrder.defaultSort`.
 
 ### useFirstClick
 
@@ -2352,7 +2402,25 @@ Retrieve the current AudioContext from the root Entity's `AudioContext` componen
 import { Preloader } from "@hex-engine/2d";
 ```
 
-TODO
+A class that helps ensure used resources are loaded before they are used.
+
+When resources that must be fetched over the network are created (such as Images and Audio),
+they register themselves with thie Preloader. To wait until all registered resources have been
+loaded, use `Preloader.load().then(() => {})`.
+
+#### Methods
+
+##### addTask
+
+`addTask(task: () => Promise<any>): void`
+
+Adds a new task to the Preloader. It will start running immediately.
+
+##### load
+
+`load(): Promise<void>`
+
+Returns a Promise which does not resolve until all tasks that have been added to the Preloader have resolved.
 
 [`@hex-engine/core`]: api-core
 [`angle`]: #angle

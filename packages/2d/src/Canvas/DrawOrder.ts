@@ -64,6 +64,10 @@ function DrawOrder(sort: (entities: Array<Entity>) => Array<Component>) {
   return { sort };
 }
 
+/**
+ * This component will check the root Entity for a Canvas.DrawOrder component, and
+ * if it is present, it will return its `sort` function. Otherwise, it returns `Canvas.DrawOrder.defaultSort`.
+ */
 export function useCanvasDrawOrderSort() {
   const drawOrder = useRootEntity().getComponent(DrawOrder);
   return drawOrder?.sort || defaultSort;
