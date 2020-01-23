@@ -24,6 +24,12 @@ Angles are expressed as the _clockwise_ distance from the x-axis. This is differ
 
 #### Static Methods
 
+#### constructor
+
+`constructor(radians: number)`
+
+Creates a new Angle.
+
 ##### fromPoints
 
 `static fromPoints(first: Point, second: Point): Angle`
@@ -102,6 +108,14 @@ equidistant from its center.
 The distance between the center and the edge points is known as the circle's
 radius.
 
+#### Static Methods
+
+##### constructor
+
+`constructor(radius: number)`
+
+Creates a new Circle.
+
 #### Properties
 
 ##### radius
@@ -169,6 +183,15 @@ import { Grid } from "@hex-engine/2d";
 
 Represents a two-dimensional Grid with arbitrary contents in each cell.
 
+#### Static Methods
+
+##### constructor
+
+`constructor(rows: number, columns: number, defaultValue: T)` <br />
+`constructor(rowsAndCols: Point, defaultValue: T)`
+
+Creates a new Grid.
+
 #### Properties
 
 ##### size
@@ -222,6 +245,12 @@ A generic object with an `x` and `y` property.
 Although it is named `Point`, it is not only used to represent points in space- it's also often used to represent two-dimensional sizes.
 
 #### Static Methods
+
+##### constructor
+
+`constructor(x: number, y: number)`
+
+Creates a new Point.
 
 ##### from
 
@@ -485,6 +514,22 @@ Represents a closed shape consisting of a set of connected straight line segment
 
 #### Static Methods
 
+##### constructor
+
+`constructor(points: Array<Point>)`
+
+Creates a new Polygon.
+
+The points are ordered such that one could draw the polygon by
+placing a pen down at the first point, then dragging the pen in a straight line
+to the second point, then the third, and so on until the last point,
+which is connected to the first point.
+
+Note that the x and y values on the points on the created Polygon
+may not be the same as the x and y values on the points you give here,
+because the constructor calculates the centroid of the polygon and then
+recenters all points around it.
+
 ##### rectangle
 
 `static rectangle(size: Point): Polygon` <br />
@@ -554,6 +599,13 @@ import { TransformMatrix } from "@hex-engine/2d";
 ```
 
 #### Static Methods
+
+##### constructor
+
+`constructor()` <br />
+`constructor(a: number, b: number, c: number, d: number, e: number, f: number)`
+
+Creats a new TransformMatrix. If no a-f values are provided, they will default to the identity matrix.
 
 ##### fromDOMMatrix
 
@@ -729,7 +781,73 @@ Mutate this TransformMatrix by inverting its transformation.
 
 ### Vector
 
-TODO
+A representation of a 2D Vector, with an angle and magnitude.
+
+#### Static Methods
+
+##### constructor
+
+`constructor(angle: Angle, magnitude: number)`
+
+Creates a new Vector.
+
+##### fromPoints
+
+`static fromPoints(first: Point, second: Point): Vector`
+
+Creates a vector with tail at `first` and head at `second`.
+
+#### Properties
+
+##### angle
+
+`angle: Angle`
+
+The angle that the Vector is pointing in, clockwise relative to the X-axis.
+
+##### magnitude
+
+`magnitude: number`
+
+The length of the Vector.
+
+#### Methods
+
+##### clone
+
+`clone(): Vector`
+
+Creates a new Vector instance with the same values as this one.
+
+##### toPoint
+
+`toPoint(): Point`
+
+Places this vector's tail at the origin and returns the location of its head.
+
+##### multiply
+
+`multiply(amount: number): Vector`
+
+Returns a new Vector whose angle is the same as this Vector and whose magnitude is multiplied by the specified amount.
+
+##### multiplyMutate
+
+`multiplyMutate(amount: number): this`
+
+Mutates the current vector by multiplying its magnitude by the specified amount.
+
+##### divide
+
+`divide(amount: number): Vector`
+
+Returns a new Vector whose angle is the same as this Vector and whose magnitude is divided by the specified amount.
+
+##### divideMutate
+
+`divideMutate(amount: number): this`
+
+Mutates the current vector by dividing its magnitude by the specified amount.
 
 ## Components
 

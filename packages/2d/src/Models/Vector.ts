@@ -17,7 +17,7 @@ export default class Vector {
   }
 
   /** Creates a new Vector instance with the same values as this one. */
-  clone() {
+  clone(): Vector {
     return new Vector(this.angle.clone(), this.magnitude);
   }
 
@@ -28,7 +28,7 @@ export default class Vector {
     return new Vector(angle, magnitude);
   }
 
-  /** Places this vector at the origin, and return the location of its head. */
+  /** Places this vector's tail at the origin and returns the location of its head. */
   toPoint(): Point {
     const x = this.magnitude * Math.cos(this.angle.radians);
     const y = -(this.magnitude * Math.sin(this.angle.radians)); // Inverted because of canvas coordinate space
