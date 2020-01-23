@@ -15,7 +15,7 @@ export default function AudioContextComponent() {
   useNewComponent(LowLevelMouse);
   useNewComponent(Keyboard);
 
-  let audioContext: null | AudioContext;
+  let audioContext: null | AudioContext = null;
 
   useFirstClick(() => {
     if (!audioContext) {

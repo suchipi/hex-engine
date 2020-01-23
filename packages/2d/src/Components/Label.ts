@@ -3,7 +3,7 @@ import { useUpdate } from "../Canvas";
 import { FontImplementation } from "./Font";
 import { Point } from "../Models";
 
-/** This Component renders some text using the provided Font Component (either A Font, BMFont, or SystemFont). */
+/** This Component renders some text using the provided Font Component (either a Font, BMFont, or SystemFont). */
 export default function Label({
   text = "",
   font,

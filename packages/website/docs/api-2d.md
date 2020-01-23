@@ -781,6 +781,10 @@ Mutate this TransformMatrix by inverting its transformation.
 
 ### Vector
 
+```ts
+import { Vector } from "@hex-engine/2d";
+```
+
 A representation of a 2D Vector, with an angle and magnitude.
 
 #### Static Methods
@@ -849,125 +853,1368 @@ Returns a new Vector whose angle is the same as this Vector and whose magnitude 
 
 Mutates the current vector by dividing its magnitude by the specified amount.
 
+### AnimationFrame
+
+`class AnimationFrame<T>`
+
+```ts
+import { AnimationFrame } from "@hex-engine/2d";
+```
+
+A class that represents a single frame in an animation.
+
+The data that is in this frame can be anything.
+
+#### Static Methods
+
+##### constructor
+
+`constructor(data: T, { duration, onFrame }: { duration: number; onFrame?: null | (() => void) })`
+
+Creates a new AnimationFrame.
+
+#### Properites
+
+##### data
+
+`data: T`
+
+The data contained in this frame.
+
+##### duration
+
+`duration: number // in ms`
+
+The duration of this frame, in milliseconds.
+
+##### onFrame
+
+`onFrame: (() => void) | null`
+
+A function to call when this frame is reached; can be used, for example, to play sound effects.
+
+### HexMouseEvent
+
+```ts
+import { HexMouseEvent } from "@hex-engine/2d";
+```
+
+A Mouse event in Hex Engine.
+
+You will almost never construct this class manually; instead, an instance of it will be passed to listener functions you set up using the `Mouse` or `LowLevelMouse` components.
+
+#### Properties
+
+##### pos
+
+`pos: Point`
+
+The position of the cursor, relative to the current Entity's origin.
+
+##### delta
+
+`delta: Point`
+
+The amount that the cursor has moved since the last frame.
+
+##### buttons
+
+`buttons: { left: boolean, right: boolean, middle: boolean, mouse4: boolean, mouse5: boolean }`
+
+Which buttons were pressed during this event, or, in the case of a MouseUp event, which buttons were released.
+
 ## Components
 
-TODO
+`@hex-engine/2d` includes several [Component](/docs/api-core#component) functions that you can use in your [Entities](/docs/api-core#entity).
 
 ### Canvas
 
-TODO
+```ts
+import { Canvas } from "@hex-engine/2d";
+```
+
+The built-in Canvas component that should be placed on your root Entity in order to render everything in your game.
+
+```ts
+function Canvas(options: {
+  /**
+   * You can specify an existing Canvas element to render into, if desired.
+   * If you do not, one will be created.
+   */
+  element?: HTMLCanvasElement;
+
+  /** The background color to set the canvas to prior to drawing each frame. */
+  backgroundColor: string;
+}): {
+  element: HTMLCanvasElement;
+  context: CanvasRenderingContext2D;
+  backstage: CanvasRenderingContext2D;
+  setPixelated: (on: boolean) => void;
+
+  resize(opts: {
+    realWidth: number;
+    realHeight: number;
+    pixelWidth: number;
+    pixelHeight: number;
+  }): void;
+
+  fullscreen({ pixelZoom?: number } = {}): void;
+};
+```
 
 ### Canvas.DrawOrder
 
-TODO
+```ts
+import { Canvas } from "@hex-engine/2d";
+
+Canvas.DrawOrder;
+```
+
+This Component can be placed on the root Entity to specify the draw order that the
+`Canvas` Component will use. If no `Canvas.DrawOrder` Component is present on the
+root Entity, then `Canvas.DrawOrder.defaultSort` will be used as the sort order.
+
+```ts
+function DrawOrder(
+  sort: (entities: Array<Entity>) => Array<Component>
+): {
+  sort: (entities: Array<Entity>) => Array<Component>;
+};
+```
 
 ### Animation
 
-TODO
+```ts
+import { Animation, AnimationAPI } from "@hex-engine/2d";
+```
+
+A Component that represents an Animation, where each frame has a duration and contains arbitrary data.
+
+```ts
+function Animation<T>(frames: Array<AnimationFrame<T>>): AnimationAPI<T>;
+```
+
+This Component function returns a type called `AnimationAPI` which is defined as follows:
+
+```ts
+type AnimationAPI<T> = {
+  /** The current animation frame; ie, current in time. */
+  currentFrame: AnimationFrame<T>;
+
+  /** Pause playback of this animation. */
+  pause(): void;
+
+  /** Begin or resume playback of this animation. */
+  play(): void;
+
+  /** Restart playback of this animation from the first frame. */
+  restart(): void;
+};
+```
 
 ### AnimationSheet
 
-TODO
+```ts
+import { AnimationSheet } from "@hex-engine/2d";
+```
+
+A Component representing an AnimationSheet image; that is, a filmstrip-style image
+of sprites which should be rendered in a particular sequence as part of an animation.
+
+```ts
+function AnimationSheet(options: {
+  url: string;
+  tileWidth: number;
+  tileHeight: number;
+  animations: {
+    [name: string]: AnimationAPI<number>;
+  };
+}): {
+  /** The current animation, that frames will be drawn from. */
+  currentAnim: AnimationAPI<number>;
+
+  draw(
+    context: CanvasRenderingContext2D,
+    options: {
+      x?: number | undefined;
+      y?: number | undefined;
+      width?: number | undefined;
+      height?: number | undefined;
+    } = {}
+  ): void;
+};
+```
 
 ### Aseprite
 
-TODO
+```ts
+import { Aseprite } from "@hex-engine/2d";
+import blueSlime from "./blueSlime.aseprite";
+
+Aseprite(blueSlime);
+```
+
+A Component which loads and draws Aseprites sprites and animations.
+
+```ts
+function Aseprite(
+  data: AsepriteLoader.Data
+): {
+  /** The current animation, that frames will be drawn from. */
+  currentAnim: AnimationAPI<HTMLCanvasElement>;
+
+  /** The aseprite-loader data that was passed into this function. */
+  data: AsepriteLoader.Data;
+
+  /**
+   * All the animations that were found in the Aseprite file.
+   *
+   * We use Tags to find these, and also include an animation called "default" which
+   * is the animation containing every frame in the file, in order.
+   */
+  animations: {
+    [name: string]: AnimationAPI<HTMLCanvasElement>;
+  };
+
+  /** Draw the current animation frame into the provided canvas context. */
+  draw: (
+    context: CanvasRenderingContext2D,
+    options?: {
+      x?: number | undefined;
+      y?: number | undefined;
+    }
+  ) => void;
+
+  /** The maximum size of the frames in this Aseprite file. */
+  size: Point;
+};
+```
 
 ### Audio
 
-TODO
+```ts
+import { Audio } from "@hex-engine/2d";
+```
+
+A function that loads and plays a sound clip from a URL.
+
+You can get a URL for a sound clip by `import`ing it, as if it was code:
+
+```ts
+import mySound from "./my-sound.ogg";
+
+console.log(typeof mySound); // "string"
+
+useNewComponent(() => Audio({ url: mySound }));
+```
+
+When you import an audio clip in this way, it will be automatically
+added to the build and included in the final build output.
+
+```ts
+function Audio({
+  url,
+}: Props): {
+  /** Play this audio clip, if it's loaded. If it isn't loaded yet, nothing will happen. */
+  play(options?: {
+    /** Specify the playback volume, from 0 to 1. */
+    volume?: number;
+  }): Promise<void>;
+};
+```
 
 ### AudioContext
 
-TODO
+```ts
+import { AudioContext } from "@hex-engine/2d";
+```
+
+A Component to be placed on the root Entity, which creates a Web Audio API
+`AudioContext` upon first user interaction with the page.
+
+Web browsers disallow playback of audio prior to user interaction, which is
+why this Component waits until the first click or keypress to come from the user
+before creating an AudioContext.
+
+```ts
+function AudioContextComponent(): {
+  audioContext: AudioContext | null;
+};
+```
 
 ### BMFont
 
-TODO
+```ts
+import { BMFont } from "@hex-engine/2d";
+import silver from "./silver.fnt";
+
+BMFont(silver);
+```
+
+This Component uses an AngelCode BMFont-format file to render text into the canvas.
+
+```ts
+function BMFont(
+  data: BMFontLoader.Font
+): {
+  /** The BMFont file data passed into this Component. */
+  data: BMFontLoader.Font;
+
+  /** All the Image Components that this Component created in order to load the font. */
+  images: Array<Image>;
+
+  /** Whether all the images the font references have been loaded yet. */
+  readyToDraw(): void;
+
+  /** Measures how many pixels wide the specified text would be, if it was rendered using this font. */
+  measureWidth(text: string): number;
+
+  /** Returns this font's size. */
+  getFontSize(): number;
+
+  /** Draws some text into the canvas, using this font. */
+  drawText(
+    context: CanvasRenderingContext2D,
+    text: string,
+    options?: {
+      x?: number | undefined;
+      y?: number | undefined;
+    }
+  ): void;
+
+  /** Measure the sizes of various aspects of this font. */
+  measureText: (
+    text: string
+  ) => {
+    baseline: number;
+    median: number;
+    descender: number;
+    ascender: number;
+    capHeight: number;
+    ascent: number;
+    height: number;
+    width: number;
+  };
+};
+```
+
+### Font
+
+```ts
+import { Font } from "@hex-engine/2d";
+```
+
+This Component defines a baseline interface for Font Components,
+so that other Components can consume fonts without concern for their
+implementation details.
+
+It is rarely used directly; instead, use `BMFont` or `SystemFont`.
 
 ### FontMetrics
 
-TODO
+```ts
+import { FontMetrics } from "@hex-engine/2d";
+```
+
+This Component measures various characters using the specified font in order to
+provide a function which can accurately predict the render size of text on the page.
+
+It is rarely used directly; instead, use `BMFont` or `SystemFont`.
 
 ### Gamepad
 
-TODO
+```ts
+import { Gamepad } from "@hex-engine/2d";
+```
+
+This Component provides the current state of a connected Gamepad, if present.
+
+```ts
+function Gamepad(
+  options: Partial<{
+    /**
+     * A minimum amount that analog sticks on the gamepad must be pushed from
+     * the center position before they register as having moved from the center position.
+     *
+     * This value can be from 0 to 1, but should usually be a small value, like 0.1.
+     */
+    deadzone: number;
+
+    /**
+     * An array of button names for the gamepad, cooresponding to the button indices in the
+     * `gamepad.buttons` array, where `gamepad` is a gamepad returned from `navigator.getGamepads()`.
+     *
+     * If you do not provide a list of button names, then names for the buttons on a PlayStation controller
+     * will be used, even if the connected controller is not a PlayStation controller.
+     */
+    buttonNames: Array<string>;
+
+    /**
+     * Which gamepad connected to the computer this Gamepad component represents, starting from 0.
+     */
+    gamepadIndex: number;
+  }>
+): {
+  /** A `Vector` indicating which direction the left stick is being pressed in, and how far it's being pressed. */
+  leftStick: Vector;
+
+  /** A `Vector` indicating which direction the right stick is being pressed in, and how far it's being pressed. */
+  rightStick: Vector;
+
+  /** A Set containing all the names of the currently pressed buttons. */
+  pressed: Set<string>;
+
+  /**
+   * A boolean indicating whether a gamepad is connected.
+   *
+   * Note that the way the Web Gamepad API works, controllers do not show as connected
+   * until the user first presses a button.
+   */
+  present: false;
+
+  /**
+   * The configured deadzone for the gamepad; that is, a number
+   * used as a minimum value that the analog sticks must be moved
+   * from their center position before their effective position is
+   * considered different from the center position.
+   */
+  deadzone: number;
+
+  /**
+   * The configured button names for the gamepad. These names coorespond to button indices
+   * in the Web Gamepad API, and will be used in the `pressed` Set.
+   */
+  buttonNames: Array<string>;
+};
+```
 
 ### Geometry
 
-TODO
+```ts
+import { Geometry } from "@hex-engine/2d";
+```
+
+This Component provides information about the shape, position, rotation, and scale
+of the current Entity. It is used by `useDraw` and `Physics.Body`, among other things.
+
+You should only have one `Geometry` component per `Entity`.
+
+```ts
+function Geometry<S extends Polygon | Circle>(init: {
+  shape: S;
+  position?: Point | undefined;
+  rotation?: Angle | undefined;
+  scale?: Point | undefined;
+}): {
+  shape: S;
+  position: Point;
+  rotation: Angle;
+  scale: Point;
+  worldPosition(): Point;
+};
+```
 
 ### Image
 
-TODO
+```ts
+import { Image } from "@hex-engine/2d";
+```
+
+A function that loads and draws an image from a URL.
+
+You can get a URL for an image on disk by `import`ing it, as if it was code:
+
+```ts
+import myImage from "./my-image.png";
+
+console.log(typeof myImage); // "string"
+
+useNewComponent(() => Image({ url: myImage }));
+```
+
+When you import an image in this way, it will be automatically
+added to the build and included in the final build output.
+
+```ts
+function Image(options: {
+  url: string;
+}): {
+  /** Draw the Image into the provided canvas context, if it has been loaded. */
+  draw(
+    context: CanvasRenderingContext2D,
+    options: {
+      x: number;
+      y: number;
+      sourceX?: undefined | number;
+      sourceY?: undefined | number;
+      sourceWidth?: undefined | number;
+      sourceHeight?: undefined | number;
+      targetWidth?: undefined | number;
+      targetHeight?: undefined | number;
+    }
+  ): void;
+};
+```
 
 ### ImageFilter
 
-TODO
+```ts
+import { ImageFilter } from "@hex-engine/2d";
+```
+
+This Component uses the canvas `getImageData` and `putImageData` APIs
+to filter the contents of a Canvas by passing it through a filter function.
+
+Note: `getImageData` and `putImageData` are very slow, so if you can,
+try not to call this every frame.
+
+```ts
+function ImageFilter(
+  filter: (data: ImageData) => void
+): {
+  /**
+   * Reads the pixels in `input` into an ImageData object, passes that `ImageData`
+   * object into the filter this ImageFilter Component was constructed with,
+   * and then writes the pixels in the ImageData object into `output`.
+   */
+  apply(
+    input: CanvasRenderingContext2D,
+    output: CanvasRenderingContext2D
+  ): void;
+};
+```
 
 ### Keyboard
 
-TODO
+```ts
+import { Keyboard } from "@hex-engine/2d";
+```
+
+This Component provides information about which keys on the user's keyboard are currently pressed.
+
+```ts
+function Keyboard(
+  options: {
+    /**
+     * If this is set to true, then `event.preventDefault()`
+     * will be called on every keyboard event that goes through this Component.
+     */
+    preventDefault?: undefined | boolean;
+  } = {}
+): {
+  /**
+   * A Set containing the names of all the keys
+   * that are currently pressed.
+   *
+   * For a list of which Strings will be used, check [This page on MDN](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values),
+   * or press some keys and look at the values present
+   * in this Set using Hex Engine's inspector.
+   */
+  pressed: Set<string>;
+
+  /**
+   * A helper function that creates a `Vector` pointing in the direction indicated by
+   * the combined state of the four specified direction keys. This is mainly useful
+   * in that it allows you to treat Gamepad and Keyboard inputs the same.
+   *
+   * @param upKey The key that represents "up", eg "w".
+   * @param downKey The key that represents "down", eg "s".
+   * @param leftKey The key that represents "left", eg "a".
+   * @param rightKey The key that represents "right", eg "d".
+   */
+  vectorFromKeys(
+    upKey: string,
+    downKey: string,
+    leftKey: string,
+    rightKey: string
+  ): Vector;
+};
+```
 
 ### Label
 
-TODO
+```ts
+import { Label } from "@hex-engine/2d";
+```
+
+This Component renders some text using the provided Font Component (either a Font, BMFont, or SystemFont).
+
+```ts
+function Label(options: {
+  /** The text to render. */
+  text?: string;
+  /** The font to use. */
+  font: FontImplementation;
+}): {
+  /** The amount of space that the text will take up, when drawn. */
+  size: Point;
+
+  /** Draws the text into the context. */
+  draw(
+    context: CanvasRenderingContext2D,
+    options?: {
+      x?: number | undefined;
+      y?: number | undefined;
+    }
+  ): void;
+
+  /** The text to render. You can change this to change what to render. */
+  text: string;
+};
+```
 
 ### LowLevelMouse
 
-TODO
+```ts
+import { LowLevelMouse } from "@hex-engine/2d";
+```
+
+A low-level Mouse Component. It supports mousemove, mousedown, and mouseup events.
+For click events, information about whether the cursor is within an Entity's geometry,
+and clean separation between left-click, right-click, and middle-click events, use `Mouse` instead.
+
+```ts
+function LowLevelMouse(): {
+  /** Registers the provided function to be called when the mouse cursor moves. */
+  onMouseMove: (callback: (event: HexMouseEvent) => void) => void;
+
+  /** Registers the provided function to be called when any button on the mouse is pressed down. */
+  onMouseDown: (callback: (event: HexMouseEvent) => void) => void;
+
+  /** Registers the provided function to be called when any button on the mouse is released. */
+  onMouseUp: (callback: (event: HexMouseEvent) => void) => void;
+};
+```
 
 ### Mouse
 
-TODO
+```ts
+import { Mouse } from "@hex-engine/2d";
+```
+
+A Component that gives you information about where the Mouse is, relative to the current Entity,
+and lets you register functions to be called when the mouse cursor interacts with the current Entity.
+
+```ts
+function Mouse(options?: {
+  /**
+   * The entity that this Mouse Component should give information about and relative to.
+   * If not provided, it will use the current Entity.
+   */
+  entity?: Entity | undefined;
+  /**
+   * The Geometry Component that this Mouse should use to identify whether the cursor
+   * is inside the Entity or not. If not provided, it will attempt to get a Geometry
+   * component off of the Entity.
+   */
+  geometry?: ReturnType<typeof Geometry> | null;
+}): {
+  /**
+   * A boolean indicating whether the mouse cursor is currently within the Entity, according
+   * to the Shape on the Geometry this Component has been configured to use.
+   */
+  isInsideBounds: boolean;
+
+  /**
+   * A boolean indicating whether the left mouse button is currently being pressed.
+   */
+  isPressingLeft: boolean;
+
+  /**
+   * A boolean indicating whether the right mouse button is currently being pressed.
+   */
+  isPressingRight: boolean;
+
+  /**
+   * A boolean indicating whether the middle mouse button is currently being pressed.
+   */
+  isPressingMiddle: boolean;
+
+  /**
+   * The current position of the mouse cursor, relative to the Entity this Component has been
+   * configured to use.
+   */
+  position: Point;
+
+  /**
+   * Registers a function to be called when the mouse cursor enters the configured Entity's bounds.
+   *
+   * The function will be called with a `HexMouseEvent`.
+   */
+  onEnter: (callback: (event: HexMouseEvent) => void) => void;
+
+  /**
+   * Registers a function to be called whenever the mouse cursor moves,
+   * *even if it is not within the Entity's bounds*.
+   *
+   * The function will be called with a `HexMouseEvent`.
+   */
+  onMove: (callback: (event: HexMouseEvent) => void) => void;
+
+  /**
+   * Registers a function to be called whenever the mouse cursor exits the configured Entity's bounds.
+   *
+   * The function will be called with a `HexMouseEvent`.
+   */
+  onLeave: (callback: (event: HexMouseEvent) => void) => void;
+
+  /**
+   * Registers a function to be called whenever the _LEFT_ mouse button is pressed down
+   * within the configured Entity's bounds.
+   *
+   * If you need an onDown event for a mouse button other than the left button, you will
+   * have to use the `LowLevelMouse` Component instead.
+   *
+   * The function will be called with a `HexMouseEvent`.
+   */
+  onDown: (callback: (event: HexMouseEvent) => void) => void;
+
+  /**
+   * Registers a function to be called whenever the _LEFT_ mouse button is released
+   * within the configured Entity's bounds.
+   *
+   * If you need an onDown onUp for a mouse button other than the left button, you will
+   * have to use the `LowLevelMouse` Component instead.
+   *
+   * The function will be called with a `HexMouseEvent`.
+   */
+  onUp: (callback: (event: HexMouseEvent) => void) => void;
+
+  /**
+   * Registers a function to be called whenever the left mouse button is pressed
+   * and then released within the configured Entity's bounds.
+   *
+   * The function will be called with a `HexMouseEvent`.
+   */
+  onClick: (callback: (event: HexMouseEvent) => void) => void;
+
+  /**
+   * Registers a function to be called whenever the right mouse button is pressed
+   * and then released within the configured Entity's bounds.
+   *
+   * The function will be called with a `HexMouseEvent`.
+   */
+  onRightClick: (callback: (event: HexMouseEvent) => void) => void;
+
+  /**
+   * Registers a function to be called whenever the middle mouse button is pressed
+   * and then released within the configured Entity's bounds.
+   *
+   * The function will be called with a `HexMouseEvent`.
+   */
+  onMiddleClick: (callback: (event: HexMouseEvent) => void) => void;
+};
+```
 
 ### Physics.Engine
 
-TODO
+```ts
+import { Physics } from "@hex-engine/2d";
+Physics.Engine;
+```
+
+A Component that should be placed on the root Entity if you want to use physics in your game.
+
+Hex Engine's Physics are provided by [Matter.js](https://brm.io/matter-js/).
+
+```ts
+function PhysicsEngine(options?: {
+  /**
+   * Whether to render red wireframes of all physics bodies and constraints
+   * into the canvas, for debugging purposes.
+   */
+  debugDraw?: boolean;
+
+  /**
+   * The gravity of the world, as a Point with x and y Components.
+   * An x or y value of 1 means "normal Earth gravity in this direction".
+   */
+  gravity?: Point;
+
+  /**
+   * Whether to enable sleeping in the physics simulation.
+   * This puts bodies that have not moved in a while to "sleep", and does
+   * not update them until another body collides with them. This helps with framerate,
+   * but at the expense of simulation accuracy.
+   */
+  enableSleeping?: boolean;
+}): {
+  /** The Matter.js Engine object. */
+  engine: Matter.Engine;
+
+  /**
+   * Adds a collision listener for the current Entity.
+   *
+   * It will be called when another Entity's Physics.Body collides with this Entity's.
+   */
+  addCollisionListener: (
+    callback: (other: { body: Matter.Body; entity: null | Entity }) => void
+  ) => void;
+
+  /**
+   * Whether to render red wireframes of all physics bodies and constraints
+   * into the canvas, for debugging purposes.
+   */
+  debugDraw: boolean;
+};
+```
 
 ### Physics.Body
 
-TODO
+```ts
+import { Physics } from "@hex-engine/2d";
+Physics.Body;
+```
+
+A Component that should be added to any Entity that will participate in the physics simulation.
+
+Hex Engine's Physics are provided by [Matter.js](https://brm.io/matter-js/).
+
+```ts
+function PhysicsBody(
+  geometry: ReturnType<typeof Geometry>,
+  options?: Partial<{
+    /**
+     * A label for this body, for debugging purposes. If unspecified, defaults to the current Entity's name.
+     */
+    label: string;
+
+    /**
+     * Whether the body should *not* move around. If this is set, things will still collide with it, but it'll be "frozen" in the sky.
+     */
+    isStatic: boolean;
+
+    /**
+     * The density of this body.
+     *
+     * For more information, check the [Matter.js documentation](https://brm.io/matter-js/docs/classes/Body.html).
+     */
+    density: number;
+
+    /**
+     * The friction of this body.
+     *
+     * For more information, check the [Matter.js documentation](https://brm.io/matter-js/docs/classes/Body.html).
+     */
+    friction: number;
+
+    /**
+     * The friction this body feel in the air, due to air resistance.
+     *
+     * For more information, check the [Matter.js documentation](https://brm.io/matter-js/docs/classes/Body.html).
+     */
+    frictionAir: number;
+
+    /**
+     * Whether this body is a "Sensor"; if it is, then it will emit collision
+     * events, but it will be frozen in space and objects will go right through it.
+     *
+     * In some engines, these are called "Brushes" or "Volumes".
+     *
+     * For more information, check the [Matter.js documentation](https://brm.io/matter-js/docs/classes/Body.html).
+     */
+    isSensor: boolean;
+
+    /**
+     * How bouncy this body is.
+     *
+     * For more information, check the [Matter.js documentation](https://brm.io/matter-js/docs/classes/Body.html).
+     */
+    restitution: number;
+
+    /**
+     * The time scale that this body runs through the simulation at.
+     *
+     * For more information, check the [Matter.js documentation](https://brm.io/matter-js/docs/classes/Body.html).
+     */
+    timeScale: number;
+
+    /**
+     * The static friction of the body (in the Coulomb friction model).
+     *
+     * For more information, check the [Matter.js documentation](https://brm.io/matter-js/docs/classes/Body.html).
+     */
+    frictionStatic: number;
+
+    /**
+     * Properties that define whether this body collides with other bodies.
+     *
+     * For more information, check the [Matter.js documentation](https://brm.io/matter-js/docs/classes/Body.html).
+     */
+    collisionFilter: {
+      group: number;
+      category: number;
+      mask: number;
+    };
+  }>
+): {
+  body: Matter.Body;
+  applyForce(position: Point, force: Vector): void;
+  setAngle(angle: Angle | number): void;
+  setAngularVelocity(velocity: number): void;
+  setDensity(density: number): void;
+  setInertia(inertia: number): void;
+  setMass(mass: number): void;
+  setPosition(position: Point): void;
+  setStatic(isStatic: boolean): void;
+  setVelocity(velocity: Point): void;
+  onCollision: (
+    callback: (other: { body: Matter.Body; entity: null | Entity }) => void
+  ) => void;
+};
+```
 
 ### Physics.Constraint
 
-TODO
+```ts
+import { Physics } from "@hex-engine/2d";
+Physics.Constraint;
+```
+
+A Component that can be used to bind two physics bodies together with a rope,
+spring, nail, or other real or imaginary constraint.
+
+Hex Engine's Physics are provided by [Matter.js](https://brm.io/matter-js/).
+
+```ts
+function PhysicsConstraint(
+  options: Partial<{
+    /**
+     * A value from 0 to 1 that determines how quickly the constraint returns
+     * to its resting length. 1 means very stiff, and 0.2 means a soft spring.
+     *
+     * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
+     */
+    stiffness: number;
+
+    /**
+     * A value from 0 to 1 that determines the damping, which limits oscillation.
+     *
+     * 0 means no damping, and 0.1 means no damping.
+     *
+     * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
+     */
+    damping: number;
+
+    /**
+     * The first body that this constraint is attached to.
+     *
+     * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
+     */
+    bodyA: Matter.Body;
+
+    /**
+     * The second body that this constraint is attached to.
+     *
+     * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
+     */
+    bodyB: Matter.Body;
+
+    /**
+     * The position where the constraint is attached to `bodyA`, or a world-space position
+     * that the constraint is attached to if `bodyA` is not defined..
+     *
+     * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
+     */
+    pointA: Point;
+
+    /**
+     * The position where the constraint is attached to `bodyB`, or a world-space position
+     * that the constraint is attached to if `bodyB` is not defined..
+     *
+     * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
+     */
+    pointB: Point;
+
+    /**
+     * The resting length of the constraint.
+     *
+     * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
+     */
+    length: number;
+
+    /**
+     * A label, for debugging purposes.
+     *
+     * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
+     */
+    label: string;
+  }>
+): {
+  constraint: Matter.Constraint;
+};
+```
 
 ### ProcceduralSfx
 
-TODO
+```ts
+import { ProcceduralSfx } from "@hex-engine/2d";
+```
+
+A Component that can be used to generate procedural sound effects,
+by synthesizing modal sounds. A modal sound is a resonating, ringing
+sound that is composed out of several different sine waves, such as
+the sound that is emitted when you strike a wine glass or metal rod.
+
+If you use a spectrogram to identify the frequency, amplitude, and decay rate
+of the sine waves that the sound is made out of, then you can provide them
+to this function, and it will create a model that synthesizes that sound.
+
+If you then vary the frequency, amplitude, or decay rate slightly each time
+the sound is played, you can get a rich bank of sound effects all from one sound.
+
+```ts
+function ProceduralSfx(
+  modes: Array<{
+    frequency: number;
+    amplitude: number;
+    decay: number;
+  }>
+): {
+  /**
+   * Returns the synthesis model, if it is available.
+   *
+   * To work around browsers disallowing sound to be played without the user interacting with
+   * the page first, the synthesis model will not be created until the first time the user
+   * clicks on the page, or presses a key. Until then, this will be `null`.
+   */
+  synthesis: Object; // return type of makeModalSynthesis from the "modal-synthesis" package
+
+  play(options?: {
+    amplitudeMultiplier?: number | ((modeIndex: number) => number) | undefined;
+    frequencyMultiplier?: number | ((modeIndex: number) => number) | undefined;
+    decayMultiplier?: number | ((modeIndex: number) => number) | undefined;
+    whiteNoiseDuration?: number | undefined;
+  }): void;
+};
+```
 
 ### SpriteSheet
 
-TODO
+```ts
+import { SpriteSheet } from "@hex-engine/2d";
+```
+
+A Component that helps you draw individual sprites from a sprite sheet.
+
+It is designed to be used with an image that is laid out like a film strip,
+with many sprites on it. Each sprite will be assigned an index from left-to-right,
+top-to-bottom (if there are multiple rows in the sheet), and you can specify which
+index should be drawn to the canvas.
+
+````ts
+function SpriteSheet(options: {
+  /**
+   * The image URL.
+   *
+   * You can get a URL for an image on disk by `import`ing it, as if it was code:
+   *
+   * ```ts
+   * import myImage from "./my-image.png";
+   *
+   * console.log(typeof myImage); // "string"
+   * ```
+   *
+   * When you import an image in this way, it will be automatically
+   * added to the build and included in the final build output.
+   */
+  url: string;
+
+  /**
+   * The width of each "tile" in the sheet, in pixels.
+   */
+  tileWidth: number;
+
+  /**
+   * The height of each "tile" in the sheet, in pixels.
+   */
+  tileHeight: number;
+}): {
+  /** The size of each tile in the sheet. */
+  tileSize: Point;
+
+  /** Draw the tile at the specified index into the canvas. */
+  draw(
+    context: CanvasRenderingContext2D,
+    options: {
+      x?: number | void;
+      y?: number | void;
+      tileIndex: number;
+      width?: void | number;
+      height?: void | number;
+    }
+  ): void;
+};
+````
 
 ### SystemFont
 
-TODO
+```ts
+import { SystemFont } from "@hex-engine/2d";
+```
+
+This Component uses an installed font on the system to render text into the canvas.
+
+```ts
+function SystemFont(options: {
+  name: string;
+  size: number;
+  color?: void | string;
+}): {
+  name: string;
+  size: number;
+  color: string;
+
+  readyToDraw(): boolean;
+  drawText(
+    context: CanvasRenderingContext2D,
+    text: string,
+    options?: { x?: number | undefined; y?: number | undefined }
+  ): void;
+  getFontSize(): number;
+  measureWidth(text: string): number;
+  measureText(
+    text: string
+  ): {
+    baseline: number;
+    median: number;
+    descender: number;
+    ascender: number;
+    capHeight: number;
+    ascent: number;
+    height: number;
+    width: number;
+  };
+};
+```
 
 ### TextBox
 
-TODO
+```ts
+import { TextBox } from "@hex-engine/2d";
+```
+
+This Component lays out text in lines, fitting as many words as it can on
+one line before continue onto the next. When you use it, it tells you which
+lines it rendered, and which parts of the text you provided didn't fit into
+the text box (if any). You can use this information to re-render the text
+box with new content, once the user has read the text.
+
+```ts
+export default function TextBox(options: {
+  font: ReturnType<typeof Font | typeof BMFont | typeof SystemFont>,
+  size: Point,
+  lineHeight: number,
+}: {
+  drawText(
+      context: CanvasRenderingContext2D,
+      text: string,
+      location?: {
+        x?: number;
+        y?: number;
+      }
+    ): {
+        /** A boolean indicating whether all the text that was provided fit into the textbox. */
+        didTextFit: boolean;
+
+        /** A string containing any remaining text that didn't fit into the box. */
+        remainingText: string;
+
+        /** An Array containing all the lines that were printed. */
+        printedLines: Array<string>,
+      }
+}
+```
 
 ### Tiled.Tileset
 
-TODO
+```ts
+import { Tiled } from "@hex-engine/2d";
+import someTileset from "./someTileset.xml";
+
+Tiled.Tileset(someTileset);
+```
+
+This Component loads data from a Tiled XML tileset file and creates a `SpriteSheet` Component out of it.
+
+```ts
+function Tileset(
+  data: XMLSourceLoader.Element
+): {
+  spriteSheet: ReturnType<typeof SpriteSheet>;
+};
+```
 
 ### Tiled.Layer
 
-TODO
+```ts
+import { Tiled } from "@hex-engine/2d";
+
+Tiled.Layer;
+```
+
+This Component represents the data for a single layer within a Tiled map XML file.
+
+You'll rarely create it directly; instead, you'll get it from a Tiled.Map.
+
+```ts
+function Layer(
+  layer: XMLSourceLoader.Element
+): {
+  grid: Grid<number>;
+  visible: boolean;
+};
+```
 
 ### Tiled.Map
 
-TODO
+```ts
+import { Tiled } from "@hex-engine/2d";
+import someMap from "./someMap.xml";
+
+Tiled.Map(someMap);
+```
+
+This Component loads data from a Tiled map XML file and creates
+SpriteSheet and TileMap Components that you can use to draw the
+map into the canvas.
+
+```ts
+function TiledMap(
+  data: XMLSourceLoader.Element
+): {
+  /** The tileset used by the map */
+  tileset: ReturnType<typeof Tiled.Tileset>;
+
+  /** An Array of Tiled.Layer Compponents, each corresponding to a layer in the Tiled map */
+  layers: Array<ReturnType<typeof Tiled.Layer>>;
+
+  /** An Array of TileMap Components, each corresponding to a *visible* layer in the Tiled map */
+  tileMaps: Array<ReturnType<typeof TileMap>>;
+
+  /** The size of the map in tiles */
+  sizeInTiles: Point;
+
+  /** The size of the map in pixels */
+  sizeInPixels: Point;
+
+  /** The size of a single tile in the map */
+  tileSize: Point;
+
+  /** All the objects that were present in the map, for you to use however you like */
+  objects: Array<
+    | {
+        kind: "string";
+        object: string;
+      }
+    | {
+        kind: "unknown";
+        object: XMLSourceLoader.Element;
+        id: string;
+        name: string;
+        location: Point;
+        size?: Point;
+        properties: Array<{
+          name: string;
+          value: string;
+          type: "bool" | "color" | "float" | "file" | "int" | "string";
+        }>;
+      }
+    | {
+        kind: "point";
+        object: XMLSourceLoader.Element;
+        id: string;
+        name: string;
+        location: Point;
+        size?: Point;
+        properties: Array<{
+          name: string;
+          value: string;
+          type: "bool" | "color" | "float" | "file" | "int" | "string";
+        }>;
+      }
+    | {
+        kind: "ellipse";
+        object: XMLSourceLoader.Element;
+        id: string;
+        name: string;
+        location: Point;
+        size?: Point;
+        properties: Array<{
+          name: string;
+          value: string;
+          type: "bool" | "color" | "float" | "file" | "int" | "string";
+        }>;
+      }
+    | {
+        kind: "text";
+        object: XMLSourceLoader.Element;
+        id: string;
+        name: string;
+        location: Point;
+        size?: Point;
+        properties: Array<{
+          name: string;
+          value: string;
+          type: "bool" | "color" | "float" | "file" | "int" | "string";
+        }>;
+      }
+    | {
+        kind: "polygon";
+        points: Array<Point>;
+        object: XMLSourceLoader.Element;
+        id: string;
+        name: string;
+        location: Point;
+        size?: Point;
+        properties: Array<{
+          name: string;
+          value: string;
+          type: "bool" | "color" | "float" | "file" | "int" | "string";
+        }>;
+      }
+  >;
+};
+```
 
 ### TileMap
 
-TODO
+```ts
+import { TileMap } from "@hex-engine/2d";
+```
+
+This Component uses a Grid of tile indices and a SpriteSheet Component to draw a large map of tiles to the canvas.
+
+```ts
+function TileMap(
+  sheet: ReturnType<typeof SpriteSheet>,
+  grid: Grid<number>
+): {
+  draw(
+    context: CanvasRenderingContext2D,
+    position?: {
+      x?: number | void;
+      y?: number | void;
+    } = {}
+  ): void;
+};
+```
 
 ### Timer
 
-TODO
+```ts
+import { Timer } from "@hex-engine/2d";
+```
+
+This Component can be used to check how far the current time is from some desired time in the future.
+
+```ts
+function Timer(): {
+  setToTimeFromNow(msFromNow: number): void;
+  distanceFromSetTime(): void;
+  hasReachedSetTime(): void;
+};
+```
 
 ## Hooks
 
@@ -975,63 +2222,135 @@ TODO
 
 ### useBackstage
 
+```ts
+import { useBackstage } from "@hex-engine/2d";
+```
+
 TODO
 
 ### useContext
+
+```ts
+import { useContext } from "@hex-engine/2d";
+```
 
 TODO
 
 ### useDraw
 
+```ts
+import { useDraw } from "@hex-engine/2d";
+```
+
 TODO
 
 ### useUpdate
+
+```ts
+import { useUpdate } from "@hex-engine/2d";
+```
 
 TODO
 
 ### useEntitiesAtPoint
 
+```ts
+import { useEntitiesAtPoint } from "@hex-engine/2d";
+```
+
 TODO
 
 ### useEntityTransforms
+
+```ts
+import { useEntityTransforms } from "@hex-engine/2d";
+```
 
 TODO
 
 ### useFilledPixelBounds
 
+```ts
+import { useFilledPixelBounds } from "@hex-engine/2d";
+```
+
 TODO
 
 ### useInspectorHoverOutline
+
+```ts
+import { useInspectorHoverOutline } from "@hex-engine/2d";
+```
 
 TODO
 
 ### useRawDraw
 
+```ts
+import { useRawDraw } from "@hex-engine/2d";
+```
+
 TODO
 
 ### useDebugOverlayDrawTime
+
+```ts
+import { useDebugOverlayDrawTime } from "@hex-engine/2d";
+```
 
 TODO
 
 ### useCanvasDrawOrderSort
 
+```ts
+import { useCanvasDrawOrderSort } from "@hex-engine/2d";
+```
+
 TODO
 
 ### useFirstClick
 
-TODO
+```ts
+import { useFirstClick } from "@hex-engine/2d";
+```
+
+`useFirstClick(handler: () => void): void`
+
+This function will run the provided function the first time a mouse click occurs.
+Note that it only works if there is at least one `Mouse` or `LowLevelMouse` Component
+loaded in your game when the first click occurs. To be on the safe side, you should
+probably also add a LowLevelMouse or Mouse Component to the Component that calls useFirstClick.
 
 ### useFirstKey
 
-TODO
+```ts
+import { useFirstKey } from "@hex-engine/2d";
+```
+
+`useFirstKey(handler: () => void): void`
+
+This function will run the provided function the first time a key is pressed.
+Note that it only works if there is at least one `Keyboard` Component loaded in
+your game when the first keypress occurs. To be on the safe side, you should
+probably also add a Keyboard Component to the Component that calls useFirstKey.
 
 ### useAudioContext
 
-TODO
+```ts
+import { useAudioContext } from "@hex-engine/2d";
+```
+
+`useAudioContext(): AudioContext | null`
+
+Retrieve the current AudioContext from the root Entity's `AudioContext` component, if any.
 
 ## Other
 
 ### Preloader
+
+```ts
+import { Preloader } from "@hex-engine/2d";
+```
 
 TODO
 
