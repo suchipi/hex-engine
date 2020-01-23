@@ -14,10 +14,12 @@
 }
 
 html body {
+  --ifm-button-border-color: black;
   --ifm-button-color: black;
 }
 
 html[data-theme="dark"] body {
+  --ifm-button-border-color: white;
   --ifm-button-color: white;
 }
 

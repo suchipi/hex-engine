@@ -11,7 +11,7 @@ module.exports = {
   organizationName: "suchipi",
   projectName: "hex-engine",
 
-  scripts: ["https://buttons.github.io/buttons.js"],
+  scripts: [],
   stylesheets: [],
 
   themeConfig: {

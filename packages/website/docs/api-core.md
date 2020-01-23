@@ -122,7 +122,7 @@ for this Component instance to be returned from [`Entity.getComponent`].
 
 ##### entity
 
-`entity`: [`Entity`]
+`entity: Entity`
 
 The Entity this Component belongs to. Inside of a Component function,
 you can call [`useEntity`] to get this.
@@ -581,7 +581,7 @@ Entity without a parent; namely, the root entity.
 
 This will always be the Entity you created via [`createRoot`].
 
-Note: This hook is equivalent to running `useEntity().ancestors()[0]`.;
+Note: This hook is equivalent to running `useEntity().ancestors()[0]`.
 
 #### Usage
 
