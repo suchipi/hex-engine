@@ -152,7 +152,7 @@ function Index() {
 
 export default function Page() {
   return (
-    <Layout title="Test Title">
+    <Layout title="Hex Engine - A Modern 2D Game Engine for the Browser">
       <Index />
     </Layout>
   );
