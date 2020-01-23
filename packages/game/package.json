@@ -14,7 +14,7 @@
     "hex-engine-scripts": "0.0.5",
     "typescript": "^3.7.4"
   },
-  "no-workspace-builder": "@workspace-builder/shell-command",
+  "workspace-builder": "@workspace-builder/shell-command",
   "@workspace-builder/shell-command": {
     "build": "hex-engine-scripts build",
     "watch": "hex-engine-scripts dev"

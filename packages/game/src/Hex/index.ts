@@ -48,13 +48,7 @@ export default function Hex({ position }: { position: Point }) {
     )
   );
 
-  const physics = useNewComponent(() =>
-    Physics.Body(geometry, {
-      collisionMask:
-        Physics.CollisionCategories.DEFAULT |
-        Physics.CollisionCategories.MOUSE_CONSTRAINT,
-    })
-  );
+  const physics = useNewComponent(() => Physics.Body(geometry));
 
   function playSound(speed: number) {
     sound.play({

@@ -25,13 +25,7 @@ export default function Box({ position }: { position: Point }) {
     })
   );
 
-  const physics = useNewComponent(() =>
-    Physics.Body(geometry, {
-      collisionMask:
-        Physics.CollisionCategories.DEFAULT |
-        Physics.CollisionCategories.MOUSE_CONSTRAINT,
-    })
-  );
+  const physics = useNewComponent(() => Physics.Body(geometry));
 
   const sound = useNewComponent(() =>
     ProceduralSfx(
