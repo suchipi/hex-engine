@@ -15,34 +15,42 @@ export default class Circle {
    * The radius of this circle; the length of a line segment that starts at the
    * circle's center and goes to its edge.
    */
-  readonly radius: number;
+  radius: number;
 
   /**
    * The diameter of this circle; the length of a line segment that starts at
    * the circle's edge, crosses through the circle's center, and continues to
    * the opposite edge.
    */
-  readonly diameter: number;
+  get diameter() {
+    return this.radius * 2;
+  }
+  set diameter(newValue: number) {
+    this.radius = newValue * 2;
+  }
 
   /**
    * The width of this circle; same as the diameter.
    */
-  readonly width: number;
+  get width() {
+    return this.radius * 2;
+  }
+  set width(newValue: number) {
+    this.radius = newValue * 2;
+  }
 
   /**
    * The height of this circle; same as the diameter.
    */
-  readonly height: number;
-
-  /**
-   * The size of the bounding rectangle around this circle.
-   */
-  readonly bounds: Point;
+  get height() {
+    return this.radius * 2;
+  }
+  set height(newValue: number) {
+    this.radius = newValue * 2;
+  }
 
   constructor(radius: number) {
     this.radius = radius;
-    this.diameter = this.width = this.height = radius * 2;
-    this.bounds = new Point(this.width, this.height);
   }
 
   /**
@@ -84,11 +92,13 @@ export default class Circle {
     const xOffset = this.width / 2 + x;
     const yOffset = this.height / 2 + y;
 
+    context.beginPath();
     context.arc(xOffset, yOffset, this.radius, 0, 2 * Math.PI);
     if (strokeOrFill === "stroke") {
       context.stroke();
     } else {
       context.fill();
     }
+    context.closePath();
   }
 }

@@ -348,7 +348,43 @@ function PhysicsBody(
     Matter.World.remove(engine.world, body, true);
   });
 
+  let lastPoints = (geometry.shape as Polygon).points;
+  let lastRadius = (geometry.shape as Circle).radius;
   useUpdate(() => {
+    if ((geometry.shape as Polygon).points !== lastPoints) {
+      const shape = geometry.shape as Polygon;
+
+      const worldPos = geometry.worldPosition();
+
+      const nextBody = Matter.Bodies.fromVertices(
+        worldPos.x,
+        worldPos.y,
+        [shape.points],
+        {
+          ...opts,
+          angle: geometry.rotation.radians,
+        }
+      );
+      if (nextBody) {
+        Matter.Body.setVertices(body, nextBody.vertices);
+      }
+    } else if ((geometry.shape as Circle).radius != lastRadius) {
+      const shape = geometry.shape as Circle;
+
+      const worldPos = geometry.worldPosition();
+
+      const nextBody = Matter.Bodies.circle(
+        worldPos.x,
+        worldPos.y,
+        shape.radius,
+        opts
+      );
+
+      if (nextBody) {
+        Matter.Body.setVertices(body, nextBody.vertices);
+      }
+    }
+
     if (body.isStatic) {
       Matter.Body.setPosition(body, geometry.position);
       Matter.Body.setAngle(body, geometry.rotation.radians);
@@ -356,10 +392,15 @@ function PhysicsBody(
       geometry.position.mutateInto(body.position);
       geometry.rotation.radians = body.angle;
     }
+
+    lastPoints = (geometry.shape as Polygon).points;
+    lastRadius = (geometry.shape as Circle).radius;
   });
 
   return {
-    body,
+    get body() {
+      return body;
+    },
     applyForce(position: Point, force: Vector) {
       Matter.Body.applyForce(body, position, force.toPoint());
     },

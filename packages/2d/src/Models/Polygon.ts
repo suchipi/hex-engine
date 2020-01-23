@@ -14,22 +14,45 @@ export default class Polygon {
    * to the second point, then the third, and so on until the last point,
    * which is connected to the first point.
    * */
-  readonly points: Array<Point>;
+  private _points!: Array<Point>;
+  get points() {
+    return this._points;
+  }
+  set points(newPoints: Array<Point>) {
+    Polygon._init(this, newPoints);
+  }
 
   /**
-   * The distance between the leftmost point in the polygon and the rightmost point on the polygon.
+   * The horizontal distance between the leftmost point in the polygon and the rightmost point on the polygon.
    */
-  readonly width: number;
+  private _width!: number;
+  get width() {
+    return this._width;
+  }
+  set width(newWidth: number) {
+    if (Number.isNaN(newWidth)) return;
+
+    const newPoints = this.points.map((point) =>
+      point.multiplyX(newWidth / this.width)
+    );
+    Polygon._init(this, newPoints);
+  }
 
   /**
-   * The distance between the highest point in the polygon and the lowest point on the polygon.
+   * The vertical distance between the highest point in the polygon and the lowest point on the polygon.
    */
-  readonly height: number;
+  private _height!: number;
+  get height() {
+    return this._height;
+  }
+  set height(newHeight: number) {
+    if (Number.isNaN(newHeight)) return;
 
-  /**
-   * The size of the bounding rectangle around this polygon.
-   */
-  readonly bounds: Point;
+    const newPoints = this.points.map((point) =>
+      point.multiplyY(newHeight / this.height)
+    );
+    Polygon._init(this, newPoints);
+  }
 
   /**
    * @param points Points representing the corners where the polygon's line segments meet.
@@ -45,35 +68,37 @@ export default class Polygon {
    * recenters all points around it.
    */
   constructor(points: Array<Point>) {
+    Polygon._init(this, points);
+  }
+
+  private static _init(target: Polygon, points: Array<Point>) {
     const centroid = points
       .reduce((prev, curr) => prev.addMutate(curr), new Point(0, 0))
       .divideMutate(points.length);
 
-    this.points = points.map((point) => centroid.subtract(point));
+    target._points = points.map((point) => centroid.subtract(point));
 
-    const minX = this.points.reduce(
+    const minX = target.points.reduce(
       (prev, point) => Math.min(point.x, prev),
       0
     );
-    const maxX = this.points.reduce(
+    const maxX = target.points.reduce(
       (prev, point) => Math.max(point.x, prev),
       0
     );
 
-    this.width = maxX - minX;
+    target._width = maxX - minX;
 
-    const minY = this.points.reduce(
+    const minY = target.points.reduce(
       (prev, point) => Math.min(point.y, prev),
       0
     );
-    const maxY = this.points.reduce(
+    const maxY = target.points.reduce(
       (prev, point) => Math.max(point.y, prev),
       0
     );
 
-    this.height = maxY - minY;
-
-    this.bounds = new Point(this.width, this.height);
+    target._height = maxY - minY;
   }
 
   /**

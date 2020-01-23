@@ -127,12 +127,6 @@ The width of this circle; same as the diameter.
 
 The height of this circle; same as the diameter.
 
-##### bounds
-
-`bounds: Point`
-
-The size of the bounding rectangle around this circle.
-
 #### Methods
 
 ##### boundingRectangle
