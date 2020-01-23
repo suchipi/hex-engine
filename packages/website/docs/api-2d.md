@@ -1645,10 +1645,14 @@ function PhysicsEngine(options?: {
   /**
    * Adds a collision listener for the current Entity.
    *
-   * It will be called when another Entity's Physics.Body collides with this Entity's.
+   * It will be called when another Entity's Physics.Body starts and stops colliding with this Entity's.
    */
   addCollisionListener: (
-    callback: (other: { body: Matter.Body; entity: null | Entity }) => void
+    callback: (other: {
+      kind: "start" | "end";
+      body: Matter.Body;
+      entity: null | Entity;
+    }) => void
   ) => void;
 
   /**

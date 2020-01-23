@@ -61,7 +61,9 @@ export default function Hex({ position }: { position: Point }) {
     });
   }
 
-  physics.onCollision(() => {
+  physics.onCollision((other) => {
+    if (other.kind === "end") return;
+
     playSound(physics.body.speed);
   });
 

@@ -5,7 +5,6 @@ import {
   useEntity,
   Entity,
   useCallbackAsCurrent,
-  useNewComponent,
 } from "@hex-engine/core";
 import Matter from "matter-js";
 import Geometry from "./Geometry";
@@ -22,6 +21,7 @@ function name<T>(name: string, fn: T): T {
 }
 
 type CollisionListener = (other: {
+  kind: "start" | "end";
   body: Matter.Body;
   entity: null | Entity;
 }) => void;
@@ -64,9 +64,50 @@ function PhysicsEngine({
   engine.world.gravity.x = gravity.x;
   engine.world.gravity.y = gravity.y;
 
-  const { addCollisionListener } = useNewComponent(() =>
-    PhysicsCollisionsListeners(engine)
-  );
+  const collisionListeners = new WeakMap<Entity, CollisionListener>();
+
+  function addCollisionListener(callback: CollisionListener) {
+    const entity = useEntity();
+    collisionListeners.set(entity, useCallbackAsCurrent(callback));
+  }
+
+  let toProcess: Array<{ kind: "start" | "end"; pair: Matter.IPair }> = [];
+
+  Matter.Events.on(engine, "collisionStart", (event) => {
+    for (const pair of event.pairs) {
+      toProcess.push({ kind: "start", pair });
+    }
+  });
+
+  Matter.Events.on(engine, "collisionEnd", (event) => {
+    for (const pair of event.pairs) {
+      toProcess.push({ kind: "end", pair });
+    }
+  });
+
+  useUpdate(() => {
+    for (const { kind, pair } of toProcess) {
+      const { bodyA, bodyB } = pair;
+      // @ts-ignore
+      const entA: Entity | undefined = bodyA.entity;
+      // @ts-ignore
+      const entB: Entity | undefined = bodyB.entity;
+
+      if (entA && collisionListeners.has(entA)) {
+        const listener = collisionListeners.get(entA);
+        if (listener) {
+          listener({ kind, body: bodyB, entity: entB || null });
+        }
+      }
+      if (entB && collisionListeners.has(entB)) {
+        const listener = collisionListeners.get(entB);
+        if (listener) {
+          listener({ kind, body: bodyA, entity: entA || null });
+        }
+      }
+    }
+    toProcess = [];
+  });
 
   let lastDelta: number | null = null;
   useUpdate((delta) => {
@@ -90,7 +131,7 @@ function PhysicsEngine({
     /**
      * Adds a collision listener for the current Entity.
      *
-     * It will be called when another Entity's Physics.Body collides with this Entity's.
+     * It will be called when another Entity's Physics.Body starts and stops colliding with this Entity's.
      */
     addCollisionListener,
 
@@ -164,50 +205,6 @@ function useEngine() {
     );
   }
   return engine;
-}
-
-function PhysicsCollisionsListeners(engine: Matter.Engine) {
-  useType(PhysicsCollisionsListeners);
-  const collisionListeners = new WeakMap<Entity, CollisionListener>();
-
-  function addCollisionListener(callback: CollisionListener) {
-    const entity = useEntity();
-    collisionListeners.set(entity, useCallbackAsCurrent(callback));
-  }
-
-  let toProcess: Array<Matter.IPair> = [];
-
-  Matter.Events.on(engine, "collisionStart", (event) => {
-    for (const pair of event.pairs) {
-      toProcess.push(pair);
-    }
-  });
-
-  useUpdate(() => {
-    for (const pair of toProcess) {
-      const { bodyA, bodyB } = pair;
-      // @ts-ignore
-      const entA: Entity | undefined = bodyA.entity;
-      // @ts-ignore
-      const entB: Entity | undefined = bodyB.entity;
-
-      if (entA && collisionListeners.has(entA)) {
-        const listener = collisionListeners.get(entA);
-        if (listener) {
-          listener({ body: bodyB, entity: entB || null });
-        }
-      }
-      if (entB && collisionListeners.has(entB)) {
-        const listener = collisionListeners.get(entB);
-        if (listener) {
-          listener({ body: bodyA, entity: entA || null });
-        }
-      }
-    }
-    toProcess = [];
-  });
-
-  return { addCollisionListener };
 }
 
 function useCollisionListener() {

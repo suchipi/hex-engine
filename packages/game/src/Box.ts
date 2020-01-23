@@ -37,6 +37,8 @@ export default function Box({ position }: { position: Point }) {
   );
 
   physics.onCollision((other) => {
+    if (other.kind === "end") return;
+
     sound.play({
       amplitudeMultiplier() {
         return Math.min(
