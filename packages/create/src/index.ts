@@ -12,9 +12,10 @@ export default function makeIt(targetDirectory: string) {
   exec("npm install --save-dev hex-engine-scripts@latest");
   exec("npm install --save-dev typescript@latest");
 
+  console.log("");
   console.log(`All done! To start working on your game, run:
 
-cd '${targetDirectory}'
+cd "${targetDirectory}"
 npm start
 `);
 }
