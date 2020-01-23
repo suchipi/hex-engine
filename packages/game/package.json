@@ -5,13 +5,13 @@
   "license": "MIT",
   "main": "dist/index.html",
   "dependencies": {
-    "@hex-engine/2d": "0.0.3",
+    "@hex-engine/2d": "0.1.0",
     "@types/lodash": "^4.14.149",
     "lodash": "^4.17.15",
     "safety-match": "^0.1.1"
   },
   "devDependencies": {
-    "hex-engine-scripts": "0.0.5",
+    "hex-engine-scripts": "0.1.0",
     "typescript": "^3.7.4"
   },
   "workspace-builder": "@workspace-builder/shell-command",
