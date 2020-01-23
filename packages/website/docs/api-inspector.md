@@ -1,5 +1,5 @@
 ---
-title: @hex-engine/inspector
+title: "@hex-engine/inspector"
 ---
 
 TODO

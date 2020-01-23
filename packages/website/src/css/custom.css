@@ -1,0 +1,36 @@
+/**
+ * /src/css/custom.css
+ * You can override the default Infima variables here.
+ * Note: this is not a complete list of --ifm- variables.
+ */
+:root {
+  --ifm-color-primary: #b076c7;
+  --ifm-color-primary-dark: #a35fbe;
+  --ifm-color-primary-darker: #9d54b9;
+  --ifm-color-primary-darkest: #83409e;
+  --ifm-color-primary-light: #bd8dd0;
+  --ifm-color-primary-lighter: #c398d5;
+  --ifm-color-primary-lightest: #d7bae3;
+}
+
+html body {
+  --ifm-button-color: black;
+}
+
+html[data-theme="dark"] body {
+  --ifm-button-color: white;
+}
+
+nav strong {
+  white-space: nowrap;
+}
+
+.prism-code {
+  font-size: 12px;
+}
+
+@media only screen and (max-width: 960px) {
+  .layout-wrapper {
+    flex-direction: column;
+  }
+}

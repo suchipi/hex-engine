@@ -1,5 +1,5 @@
 ---
-title: @hex-engine/core
+title: "@hex-engine/core"
 ---
 
 `@hex-engine/core` is the package that provides the core Entity and Component logic in Hex Engine. Although you likely won't use it directly, it's good to know it exists- many of the hooks and Component functions exported from [`@hex-engine/2d`] are just being re-exported from `@hex-engine/core`.
@@ -8,7 +8,7 @@ The `@hex-engine/core` package has several named exports, which are each documen
 
 ## Types
 
-### `Entity`
+### Entity
 
 ```ts
 import { Entity } from "@hex-engine/core";
@@ -20,40 +20,54 @@ component by using [`useEntity`].
 
 #### Properties
 
-##### `name: string | null`
+##### name
+
+`name: string | null`
 
 A name that will be shown in the inspector, for debugging purposes.
 You can set this using [`useEntityName`]. If you don't set one, we will
 try to infer one, based on the name of the root [`Component`].
 
-##### `id: number`
+##### id
+
+`id: number`
 
 A unique id for this Entity. These start at zero and go up by one
 whenever you create an Entity.
 
-##### `children: Set<Entity>`
+##### children
+
+`children: Set<Entity>`
 
 This Entity's child [entities][`entity`]. These get here from components on
 this Entity calling [`useChild`].
 
-##### `parent: Entity`
+##### parent
+
+`parent: Entity`
 
 The parent [`Entity`] for this Entity, or null if there isn't one.
 Generally, this will only ever be null if you're dealing with the root Entity.
 
-##### `components: Set<`[`Component`]`>`
+##### components
+
+`components: Set<Component>`
 
 All the [`Component`] instances that belong to this Entity.
 
 #### Methods
 
-##### `descendants(): Array<Entity>`
+##### descendants
+
+`descendants(): Array<Entity>`
 
 Search this Entity's children recursively for their children,
 and return an Array containing every Entity that is a descendant
 of this one.
 
-##### `ancestors(): Array<Entity>`
+##### ancestors
+
+`ancestors(): Array<Entity>`
 
 Find this Entity's parent, then this Entity's parent's parent, and so on,
 until there aren't any parents left. Then return the list as an Array.
@@ -62,7 +76,9 @@ The Array will be ordered such that the earliest ancestor (the root
 entity) is first in the Array, and the most-recent ancestor (this Entity's
 parent) will be last in the Array.
 
-##### `getComponent(componentFunc: Function): Component | null`
+##### getComponent
+
+`getComponent(componentFunc: Function): Component | null`
 
 Searches the entity for a [`Component`] with the type specified by `componentFunc`,
 and returns the first one found. If none are found, it returns null.
@@ -70,19 +86,23 @@ and returns the first one found. If none are found, it returns null.
 Note that in order to be found by this function, the Component _must_
 have registered its type using [`useType`].
 
-##### `enable(): void`
+##### enable
+
+`enable(): void`
 
 Enable all [`Component`]s on this Entity and its [descendants][`entity.descendants`].
 
 Use the [`useEnableDisable`] hook to specify what happens when a [`Component`] is enabled or disabled.
 
-##### `disable(): void`
+##### disable
+
+`disable(): void`
 
 Disable all [`Component`]s on this Entity and its [descendants][`entity.descendants`].
 
 Use the [`useEnableDisable`] hook to specify what happens when a [`Component`] is enabled or disabled.
 
-### `Component`
+### Component
 
 ```ts
 import { Component } from "@hex-engine/core";
@@ -92,37 +112,49 @@ A Component instance. Every Component created via [`useNewComponent`], [`useChil
 
 #### Properties
 
-##### `type: Function | null`
+##### type
+
+`type: Function | null`
 
 The Component function that this Component instance cooresponds to.
 This gets set when you call [`useType`], and it _must_ be set in order
 for this Component instance to be returned from [`Entity.getComponent`].
 
-##### `entity`: [`Entity`]
+##### entity
+
+`entity`: [`Entity`]
 
 The Entity this Component belongs to. Inside of a Component function,
 you can call [`useEntity`] to get this.
 
-##### `isEnabled: boolean`
+##### isEnabled
+
+`isEnabled: boolean`
 
 Whether this Component is currently "enabled". To define what should
 happen when your Component is enabled or disabled, use [`useEnableDisable`].
 
 #### Methods
 
-##### `enable(): void`
+##### enable
+
+`enable(): void`
 
 Enable this Component.
 
 Use the [`useEnableDisable`] hook to specify what happens when a [`Component`] is enabled or disabled.
 
-##### `disable(): void`
+##### disable
+
+`disable(): void`
 
 Disable this Component.
 
 Use the [`useEnableDisable`] hook to specify what happens when a [`Component`] is enabled or disabled.
 
-##### `stateAccumulator<T>(key: Symbol): { add<T>(value: T), all(): Array<T> }`
+##### stateAccumulator
+
+`stateAccumulator<T>(key: Symbol): { add<T>(value: T), all(): Array<T> }`
 
 Gets a State Accumulator associated with this Component instance,
 as returned by [`useStateAccumulator`].
@@ -133,13 +165,15 @@ and retrieve it later.
 
 ## Functions
 
-### `createRoot(componentFunction: Function)`
+### createRoot
+
+`createRoot(componentFunction: Function)`
 
 ```ts
 import { createRoot } from "@hex-engine/core";
 ```
 
-Creates the root Entity for your game. Pass it a Component function; it will use it to make a new Component and add it to a new Entity, which it then returns.
+Creates the root [`Entity`] for your game. Pass it a Component function; it will use it to make a new [`Component`] and add it to a new Entity, which it then returns.
 
 #### Usage
 
@@ -157,7 +191,9 @@ const rootEntity = createRoot(() => {
 
 Hooks are special functions that interact with the "current" Component. The current Component gets set by Hex Engine when it instantiates a Component for you. The most common ways to instantiate Components are through [`createRoot`], [`useChild`], and [`useNewComponent`]
 
-### `useType(componentFunction: Function): void`
+### useType
+
+`useType(componentFunction: Function): void`
 
 ```ts
 import { useType } from "@hex-engine/core";
@@ -182,7 +218,9 @@ function MyComponent() {
 }
 ```
 
-### `useNewComponent(componentFunction: Function): Component`
+### useNewComponent
+
+`useNewComponent(componentFunction: Function): Component`
 
 ```ts
 import { useNewComponent } from "@hex-engine/core";
@@ -209,7 +247,9 @@ function MyOtherComponent(color: string) {
 }
 ```
 
-### `useEntity(): Entity`
+### useEntity
+
+`useEntity(): Entity`
 
 ```ts
 import { useEntity } from "@hex-engine/core";
@@ -229,7 +269,9 @@ function MyComponent() {
 }
 ```
 
-### `useChild(componentFunction: Function): Entity`
+### useChild
+
+`useChild(componentFunction: Function): Entity`
 
 ```ts
 import { useChild } from "@hex-engine/core";
@@ -253,7 +295,9 @@ function MyOtherComponent() {
 }
 ```
 
-### `useIsEnabled(): boolean`
+### useIsEnabled
+
+`useIsEnabled(): boolean`
 
 ```ts
 import { useIsEnabled } from "@hex-engine/core";
@@ -276,7 +320,9 @@ function MyComponent() {
 }
 ```
 
-### `useCallbackAsCurrent(callback: Function): Function`
+### useCallbackAsCurrent
+
+`useCallbackAsCurrent(callback: Function): Function`
 
 ```ts
 import { useCallbackAsCurrent } from "@hex-engine/core";
@@ -323,7 +369,9 @@ function MyChildComponent(useSibling: (componentFunction: Function) => Entity) {
 }
 ```
 
-### `useStateAccumulator<T>(key: symbol): { add(value: T): void, all(): Array<T> }`
+### useStateAccumulator
+
+`useStateAccumulator<T>(key: symbol): { add(value: T): void, all(): Array<T> }`
 
 ```ts
 import { useStateAccumulator } from "@hex-engine/core";
@@ -348,7 +396,7 @@ iterate over them with `.all()` and call them, when it's time.
 
 #### Parameters
 
-##### `key`
+##### key
 
 A unique Symbol that will be used to store this State
 Accumulator on the Component instance. To get back the same State
@@ -388,7 +436,9 @@ function MyOtherComponent() {
 }
 ```
 
-### `useDestroy(): { onDestroy(callback: Function), destroy(): void }`
+### useDestroy
+
+`useDestroy(): { onDestroy(callback: Function), destroy(): void }`
 
 ```ts
 import { useDestroy } from "@hex-engine/core";
@@ -423,7 +473,9 @@ function MyComponent() {
 }
 ```
 
-### `useEnableDisable(): { onEnabled(callback: Function), onDisabled(callback: Function) }`
+### useEnableDisable
+
+`useEnableDisable(): { onEnabled(callback: Function), onDisabled(callback: Function) }`
 
 ```ts
 import { useEnableDisable } from "@hex-engine/core";
@@ -464,7 +516,9 @@ function MyComponent() {
 }
 ```
 
-### `useEntityName(name?: string): string | null`
+### useEntityName
+
+`useEntityName(name?: string): string | null`
 
 ```ts
 import { useEntityName } from "@hex-engine/core";
@@ -490,7 +544,9 @@ function MyComponent() {
 }
 ```
 
-### `useFrame(frameCallback: (delta: number) => void): void`
+### useFrame
+
+`useFrame(frameCallback: (delta: number) => void): void`
 
 ```ts
 import { useFrame } from "@hex-engine/core";
@@ -512,7 +568,9 @@ function MyComponent() {
 }
 ```
 
-### `useRootEntity(): Entity`
+### useRootEntity
+
+`useRootEntity(): Entity`
 
 ```ts
 import { useRootEntity } from "@hex-engine/core";
@@ -539,7 +597,9 @@ function MyComponent() {
 
 ## Components
 
-### `RunLoop()`
+### RunLoop
+
+`RunLoop()`
 
 An internal [`requestAnimationFrame`](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame)-based RunLoop to be placed on the root [`Entity`].
 
@@ -563,7 +623,9 @@ function MyComponent() {
 }
 ```
 
-### `ErrorBoundary(onError: (error: Error) => void)`
+### ErrorBoundary
+
+`ErrorBoundary(onError: (error: Error) => void)`
 
 Define what should happen if an Error occurs in this Entity or its descendants.
 When an Error occurs, it propagates upwards through all ancestor Entities until one of them has an `ErrorBoundary` component that can catch it.
@@ -592,35 +654,38 @@ function MyComponent() {
 [`@hex-engine/2d`]: api-2d
 [`@hex-engine/inspector`]: api-inspector
 [`entity`]: #entity
-[`entity.name`]: #name-string--null
-[`entity.id`]: #id-number
-[`entity.children`]: #children-setentity
-[`entity.parent`]: #parent-entity
-[`entity.components`]: #components-setcomponentcomponent
-[`entity.descendants`]: #descendants-arrayentity
-[`entity.ancestors`]: #ancestors-arrayentity
-[`entity.getcomponent`]: #getcomponentcomponentfunc-function-component--null
-[`entity.enable`]: #enable-void
-[`entity.disable`]: #disable-void
+[`entity.name`]: #name
+[`entity.id`]: #id
+[`entity.children`]: #children
+[`entity.parent`]: #parent
+[`entity.components`]: #components
+[`entity.descendants`]: #descendants
+[`entity.ancestors`]: #ancestors
+[`entity.getcomponent`]: #getcomponent
+[`entity.enable`]: #enable
+[`entity.disable`]: #disable
 [`component`]: #component
-[`component.type`]: #type-function--null
-[`component.entity`]: #entity-entity
-[`component.isenabled`]: #isenabled-boolean
-[`component.enable`]: #enable-void-1
-[`component.disable`]: #disable-void-1
-[`component.stateaccumulator`]: #stateaccumulatortkey-symbol--addtvalue-t-all-arrayt-
-[`createroot`]: #createrootcomponentfunction
-[`usetype`]: #usetypecomponentfunction-function-void
-[`usenewcomponent`]: #usenewcomponentcomponentfunction-function-component
-[`useentity`]: #useentity-entity
-[`usechild`]: #usechildcomponentfunction-function-entity
-[`useisenabled`]: #useisenabled-boolean
-[`usecallbackascurrent`]: #usecallbackascurrentcallback-function-function
-[`usestateaccumulator`]: #usestateaccumulatortkey-symbol--addvalue-t-void-all-arrayt-
-[`usedestroy`]: #usedestroy--ondestroycallback-function-destroy-void-
-[`useenabledisable`]: #useenabledisable--onenabledcallback-function-ondisabledcallback-function-
-[`useentityname`]: #useentitynamename-string-string--null
-[`useframe`]: #useframeframecallback-delta-number--void-void
-[`userootentity`]: #userootentity-entity
+[`component.type`]: #type
+[`component.entity`]: #entity-1
+[`component.isenabled`]: #isenabled
+[`component.enable`]: #enable-1
+[`component.disable`]: #disable-1
+[`component.stateaccumulator`]: #stateaccumulator
+[`createroot`]: #createroot
+[`usetype`]: #usetype
+[`usenewcomponent`]: #usenewcomponent
+[`useentity`]: #useentity
+[`usechild`]: #usechild
+[`useisenabled`]: #useisenabled
+[`usecallbackascurrent`]: #usecallbackascurrent
+[`usestateaccumulator`]: #usestateaccumulator
+[`usedestroy`]: #usedestroy
+[`useenabledisable`]: #useenabledisable
+[`useentityname`]: #useentityname
+[`useframe`]: #useframe
+[`userootentity`]: #userootentity
 [`runloop`]: #runloop
-[`errorboundary`]: #errorboundaryonerror-error-error--void
+[`errorboundary`]: #errorboundary
+[`canvas`]: #TODO
+[`useupdate`]: #TODO
+[`usedraw`]: #TODO
