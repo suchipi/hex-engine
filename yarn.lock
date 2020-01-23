@@ -3278,18 +3278,6 @@ as-number@^1.0.0:
   resolved "https://registry.yarnpkg.com/as-number/-/as-number-1.0.0.tgz#acb27e34f8f9d8ab0da9e376f3b8959860f80a66"
   integrity sha1-rLJ+NPj52KsNqeN287iVmGD4CmY=
 
-ase-parser@^0.0.10:
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/ase-parser/-/ase-parser-0.0.10.tgz#e0a7cd4565e2d4ee807bee3dee2b5958b42e7ecf"
-  integrity sha512-QbYdSA//wufaT4LMSjLKimxs6EoYO8m2xFR1VjMLQQwx8cknl2NAmC0XA7DbURQ+mpMb9fjL3xKYzbOEvB7TSg==
-
-aseprite-loader@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/aseprite-loader/-/aseprite-loader-0.1.2.tgz#dff555f17a7b5ff62a9213fe11665b10ccabddd0"
-  integrity sha512-1FqsZ/EG1t2zFnU71Ih/CxIu23lLExflRx9HL8PwbSjoVG7+6eAar4dgVW+v2LKAvkMtumu87qHHChSbQSf2Qw==
-  dependencies:
-    ase-parser "^0.0.10"
-
 aseprite-loader@^0.1.3:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/aseprite-loader/-/aseprite-loader-0.1.3.tgz#689fc2f87c734466485ed07728beeb770b764480"
@@ -3500,6 +3488,13 @@ babel-plugin-macros@2.4.2:
   dependencies:
     cosmiconfig "^5.0.5"
     resolve "^1.8.1"
+
+babel-plugin-remove-prev-node@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-remove-prev-node/-/babel-plugin-remove-prev-node-1.0.0.tgz#faa5bfebd63ff0c27895208d15f8f13edb386d8d"
+  integrity sha512-KofO0TcoOTNUqRgTHIsVI57RveM+lGSzLcy/who3ZfuOtSe4tU3a/W2jJShCztUQEJCwcEtb6wzLuFWlQA4uXA==
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.8.3"
 
 babel-plugin-transform-react-remove-prop-types@0.4.20:
   version "0.4.20"
@@ -6536,38 +6531,6 @@ hex-color-regex@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/hex-color-regex/-/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
   integrity sha512-l9sfDFsuqtOqKDsQdqrMRk0U85RZc0RtOR9yPI7mRVOa4FsR/BVnZ0shmQRM96Ji99kYZP/7hn1cedc1+ApsTQ==
-
-hex-engine-scripts@0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/hex-engine-scripts/-/hex-engine-scripts-0.0.5.tgz#6cbd02756b9b06f0139a929e546e6b154500e90c"
-  integrity sha512-vxvzEjQd1EyWyEz1/Qx7QD1OWwhajUwT8bVhLmvSIGBpOrhOM3MQRHsCLRtDvDtGduP/GEgS1m2W4v7NkQzGIw==
-  dependencies:
-    "@babel/core" "^7.8.3"
-    "@babel/plugin-proposal-class-properties" "^7.8.3"
-    "@babel/plugin-proposal-nullish-coalescing-operator" "^7.8.3"
-    "@babel/plugin-proposal-optional-chaining" "^7.8.3"
-    "@babel/preset-env" "^7.8.3"
-    "@babel/preset-react" "^7.8.3"
-    "@babel/preset-typescript" "^7.8.3"
-    "@types/lodash.debounce" "^4.0.6"
-    "@types/react-dev-utils" "^9.0.2"
-    "@types/webpack" "^4.41.2"
-    aseprite-loader "^0.1.2"
-    babel-loader "^8.0.6"
-    bmfont-loader "^0.1.0"
-    chalk "^3.0.0"
-    core-js "^3.6.4"
-    css-loader "^3.4.2"
-    file-loader "^5.0.2"
-    html-webpack-plugin "^3.2.0"
-    react-dev-utils "^10.0.0"
-    regenerator-runtime "^0.13.3"
-    resolve "^1.14.2"
-    style-loader "^1.1.3"
-    typescript "^3.7.4"
-    webpack "^4.41.5"
-    webpack-dev-server "^3.10.1"
-    xml-source-loader "^0.1.2"
 
 history@^4.9.0:
   version "4.10.1"

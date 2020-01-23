@@ -1,4 +1,7 @@
-import Animation, { AnimationFrame, AnimationAPI } from "./Animation";
+import Animation, {
+  AnimationFrame,
+  AnimationAPI /* @babel-remove-prev-node */,
+} from "./Animation";
 import AnimationSheet from "./AnimationSheet";
 import Aseprite from "./Aseprite";
 import Audio from "./Audio";
@@ -26,7 +29,7 @@ import Timer from "./Timer";
 export {
   Animation,
   AnimationFrame,
-  AnimationAPI,
+  AnimationAPI /* @babel-remove-prev-node */,
   AnimationSheet,
   Aseprite,
   Audio,
