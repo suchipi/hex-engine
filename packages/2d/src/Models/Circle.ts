@@ -67,7 +67,7 @@ export default class Circle {
    * Returns whether this circle has the same radius as another.
    * @param other The other circle to compare to.
    */
-  equals(other: Circle) {
+  equals(other: Circle): boolean {
     return this.radius === other.radius;
   }
 

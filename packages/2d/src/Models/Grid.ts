@@ -44,8 +44,8 @@ export default class Grid<T> {
     this.size = new Point(rows, columns);
   }
 
-  /** Fill in the grid with the following data, represented as a 2D array. */
-  setData(data: Array<T>) {
+  /** Fill in the grid with the provided data, represented as a 2D array. */
+  setData(data: Array<T>): void {
     let currentX = 0;
     let currentY = 0;
     for (const item of data) {

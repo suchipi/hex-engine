@@ -224,7 +224,7 @@ export default class Point {
     return new Point(Math.round(this.x), Math.round(this.y));
   }
 
-  /** Mutate this Point by rounding its x and y values to the nearest integer */
+  /** Mutate this Point by rounding its x and y values to the nearest integer. */
   roundMutate(): this {
     this.x = Math.round(this.x);
     this.y = Math.round(this.y);
@@ -236,7 +236,7 @@ export default class Point {
     return new Point(Math.floor(this.x), Math.floor(this.y));
   }
 
-  /** Mutate this Point by rounding its x and y values down to the nearest integer */
+  /** Mutate this Point by rounding its x and y values down to the nearest integer. */
   roundDownMutate(): this {
     this.x = Math.floor(this.x);
     this.y = Math.floor(this.y);
@@ -248,7 +248,7 @@ export default class Point {
     return new Point(Math.ceil(this.x), Math.ceil(this.y));
   }
 
-  /** Mutate this Point by rounding its x and y values up to the nearest integer */
+  /** Mutate this Point by rounding its x and y values up to the nearest integer. */
   roundUpMutate(): this {
     this.x = Math.ceil(this.x);
     this.y = Math.ceil(this.y);
