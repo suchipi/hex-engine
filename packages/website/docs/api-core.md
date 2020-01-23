@@ -438,7 +438,7 @@ function MyOtherComponent() {
 
 ### useDestroy
 
-`useDestroy(): { onDestroy(callback: Function), destroy(): void }`
+`useDestroy(): { onDestroy(callback: () => void), destroy(): void }`
 
 ```ts
 import { useDestroy } from "@hex-engine/core";
@@ -475,7 +475,7 @@ function MyComponent() {
 
 ### useEnableDisable
 
-`useEnableDisable(): { onEnabled(callback: Function), onDisabled(callback: Function) }`
+`useEnableDisable(): { onEnabled(callback: () => void), onDisabled(callback: () => void) }`
 
 ```ts
 import { useEnableDisable } from "@hex-engine/core";
