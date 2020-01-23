@@ -489,61 +489,119 @@ TODO
 
 ### Canvas
 
+TODO
+
 ### Canvas.DrawOrder
+
+TODO
 
 ### Animation
 
+TODO
+
 ### AnimationSheet
+
+TODO
 
 ### Aseprite
 
+TODO
+
 ### Audio
+
+TODO
 
 ### AudioContext
 
+TODO
+
 ### BMFont
+
+TODO
 
 ### FontMetrics
 
+TODO
+
 ### Gamepad
+
+TODO
 
 ### Geometry
 
+TODO
+
 ### Image
+
+TODO
 
 ### ImageFilter
 
+TODO
+
 ### Keyboard
+
+TODO
 
 ### Label
 
+TODO
+
 ### LowLevelMouse
+
+TODO
 
 ### Mouse
 
+TODO
+
 ### Physics.Engine
+
+TODO
 
 ### Physics.Body
 
+TODO
+
 ### Physics.Constraint
+
+TODO
 
 ### ProcceduralSfx
 
+TODO
+
 ### SpriteSheet
+
+TODO
 
 ### SystemFont
 
+TODO
+
 ### TextBox
+
+TODO
 
 ### Tiled.Tileset
 
+TODO
+
 ### Tiled.Layer
+
+TODO
 
 ### Tiled.Map
 
+TODO
+
 ### TileMap
 
+TODO
+
 ### Timer
+
+TODO
 
 ## Hooks
 
@@ -551,35 +609,65 @@ TODO
 
 ### useBackstage
 
+TODO
+
 ### useContext
+
+TODO
 
 ### useDraw
 
+TODO
+
 ### useUpdate
+
+TODO
 
 ### useEntitiesAtPoint
 
+TODO
+
 ### useEntityTransforms
+
+TODO
 
 ### useFilledPixelBounds
 
+TODO
+
 ### useInspectorHoverOutline
+
+TODO
 
 ### useRawDraw
 
+TODO
+
 ### useDebugOverlayDrawTime
+
+TODO
 
 ### useCanvasDrawOrderSort
 
+TODO
+
 ### useFirstClick
+
+TODO
 
 ### useFirstKey
 
+TODO
+
 ### useAudioContext
+
+TODO
 
 ## Other
 
 ### Preloader
+
+TODO
 
 [`@hex-engine/core`]: api-core
 [`angle`]: #angle

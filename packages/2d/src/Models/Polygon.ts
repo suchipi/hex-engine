@@ -4,6 +4,8 @@ import Point from "./Point";
  * Represents a closed shape consisting of a set of connected straight line segments.
  */
 export default class Polygon {
+  private _points!: Array<Point>;
+
   /**
    * Points representing the corners where the polygon's line segments meet.
    * Their `x` and `y` properties refer to their position relative to the
@@ -14,7 +16,6 @@ export default class Polygon {
    * to the second point, then the third, and so on until the last point,
    * which is connected to the first point.
    * */
-  private _points!: Array<Point>;
   get points() {
     return this._points;
   }
@@ -22,10 +23,11 @@ export default class Polygon {
     Polygon._init(this, newPoints);
   }
 
+  private _width!: number;
+
   /**
    * The horizontal distance between the leftmost point in the polygon and the rightmost point on the polygon.
    */
-  private _width!: number;
   get width() {
     return this._width;
   }
@@ -38,10 +40,11 @@ export default class Polygon {
     Polygon._init(this, newPoints);
   }
 
+  private _height!: number;
+
   /**
    * The vertical distance between the highest point in the polygon and the lowest point on the polygon.
    */
-  private _height!: number;
   get height() {
     return this._height;
   }
