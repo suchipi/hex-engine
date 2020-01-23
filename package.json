@@ -38,7 +38,7 @@
     "watch": "workspace-builder watch",
     "start": "yarn watch",
     "test": "yarn clean && tsc --noEmit && jest",
-    "build-website": "cd packages/website/website && yarn build"
+    "build-website": "cd packages/website && yarn build"
   },
   "dependencies": {
     "core-js": "^3.6.1",
