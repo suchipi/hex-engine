@@ -991,13 +991,25 @@ import { Animation, AnimationAPI } from "@hex-engine/2d";
 A Component that represents an Animation, where each frame has a duration and contains arbitrary data.
 
 ```ts
-function Animation<T>(frames: Array<AnimationFrame<T>>, options: { loop?: boolean | undefined }): AnimationAPI<T>;
+function Animation<T>(
+  frames: Array<AnimationFrame<T>>,
+  options: { loop?: boolean | undefined }
+): AnimationAPI<T>;
 ```
 
 This Component function returns a type called `AnimationAPI` which is defined as follows:
 
 ```ts
 type AnimationAPI<T> = {
+  /** The frames in the animation (as passed in). */
+  readonly frames: Array<AnimationFrame<T>>;
+
+  /** Whether to loop the animation. */
+  loop: boolean;
+
+  /** The index of the current frame within the frame array. */
+  readonly currentFrameIndex: number;
+
   /** The current animation frame; ie, current in time. */
   readonly currentFrame: AnimationFrame<T>;
 
@@ -1007,7 +1019,10 @@ type AnimationAPI<T> = {
   /** Pause playback of this animation. */
   pause(): void;
 
-  /** Begin or resume playback of this animation. */
+  /** Resume playback of this animation. */
+  resume(): void;
+
+  /** Begin playback of this animation. */
   play(): void;
 
   /** Restart playback of this animation from the first frame. */

@@ -23,6 +23,15 @@ export class AnimationFrame<T> {
 }
 
 export type AnimationAPI<T> = {
+  /** The frames in the animation (as passed in). */
+  readonly frames: Array<AnimationFrame<T>>;
+
+  /** Whether to loop the animation. */
+  loop: boolean;
+
+  /** The index of the current frame within the frame array. */
+  readonly currentFrameIndex: number;
+
   /** The current animation frame; ie, current in time. */
   readonly currentFrame: AnimationFrame<T>;
 
@@ -32,7 +41,10 @@ export type AnimationAPI<T> = {
   /** Pause playback of this animation. */
   pause(): void;
 
-  /** Begin or resume playback of this animation. */
+  /** Resume playback of this animation. */
+  resume(): void;
+
+  /** Begin playback of this animation. */
   play(): void;
 
   /** Restart playback of this animation from the first frame. */
@@ -56,10 +68,14 @@ export default function Animation<T>(
     return frames[currentFrameIndex];
   }
 
+  const state = {
+    loop,
+  };
+
   useUpdate(() => {
     if (timer.hasReachedSetTime()) {
       if (currentFrameIndex === frames.length - 1) {
-        if (loop) {
+        if (state.loop) {
           currentFrameIndex = 0;
         } else {
           // Do nothing (stay on the last frame)
@@ -79,6 +95,20 @@ export default function Animation<T>(
   });
 
   return {
+    frames,
+
+    get loop() {
+      return state.loop;
+    },
+
+    set loop(nextValue: boolean) {
+      state.loop = nextValue;
+    },
+
+    get currentFrameIndex() {
+      return currentFrameIndex;
+    },
+
     get currentFrame() {
       return getCurrentFrame();
     },
@@ -96,13 +126,29 @@ export default function Animation<T>(
       timer.disable();
     },
 
+    resume() {
+      timer.enable();
+    },
+
     play() {
       timer.enable();
-      timer.setToTimeFromNow(getCurrentFrame().duration);
+      const currentFrame = getCurrentFrame();
+      timer.setToTimeFromNow(currentFrame.duration);
+
+      if (currentFrame.onFrame) {
+        currentFrame.onFrame();
+      }
     },
 
     restart() {
+      timer.enable();
       currentFrameIndex = 0;
+      const currentFrame = getCurrentFrame();
+      timer.setToTimeFromNow(currentFrame.duration);
+
+      if (currentFrame.onFrame) {
+        currentFrame.onFrame();
+      }
     },
   };
 }
