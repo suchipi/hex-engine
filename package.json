@@ -35,7 +35,7 @@
   },
   "scripts": {
     "clean": "workspace-builder clean",
-    "build": "workspace-builder",
+    "build": "tsc --noEmit && workspace-builder",
     "watch": "workspace-builder watch",
     "start": "yarn watch",
     "test": "yarn clean && tsc --noEmit && jest",
