@@ -12,6 +12,10 @@ function Timer() {
   });
 
   return {
+    get target() {
+      return target;
+    },
+
     setToTimeFromNow(msFromNow: number) {
       target = msFromNow;
     },
@@ -19,7 +23,7 @@ function Timer() {
       return target;
     },
     hasReachedSetTime() {
-      return target > 0;
+      return target < 0;
     },
   };
 }
