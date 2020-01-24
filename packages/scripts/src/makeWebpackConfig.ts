@@ -14,6 +14,14 @@ const packageDir = (...parts: Array<string>) =>
 const localDir = (...parts: Array<string>) =>
   path.resolve(process.cwd(), ...parts);
 
+const htmlWebpackPluginOptions: { [key: string]: any } = {
+  title: process.env.HEX_ENGINE_GAME_NAME || "hex-engine game",
+};
+
+if (fs.existsSync(localDir("src/index.html"))) {
+  htmlWebpackPluginOptions.template = localDir("src/index.html");
+}
+
 export default (mode: "production" | "development") => {
   return {
     context: localDir(),
@@ -83,9 +91,7 @@ export default (mode: "production" | "development") => {
       new webpack.DefinePlugin({
         "process.env.NODE_ENV": JSON.stringify(mode),
       }),
-      new HtmlWebpackPlugin({
-        title: process.env.HEX_ENGINE_GAME_NAME || "hex-engine game",
-      }),
+      new HtmlWebpackPlugin(htmlWebpackPluginOptions),
 
       new ForkTsCheckerWebpackPlugin({
         typescript: resolve.sync("typescript", {
