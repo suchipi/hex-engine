@@ -69,7 +69,7 @@ export default function TextBox({
       }
 
       const tokens = textToTokens(text);
-      const seenTokens = [];
+      const seenTokens: Array<string> = [];
 
       const lines: Array<string> = [];
 
