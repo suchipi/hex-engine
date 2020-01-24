@@ -6532,6 +6532,38 @@ hex-color-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/hex-color-regex/-/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
   integrity sha512-l9sfDFsuqtOqKDsQdqrMRk0U85RZc0RtOR9yPI7mRVOa4FsR/BVnZ0shmQRM96Ji99kYZP/7hn1cedc1+ApsTQ==
 
+hex-engine-scripts@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/hex-engine-scripts/-/hex-engine-scripts-0.1.0.tgz#39acf77aa10d8d909b2e3447ccbde79ecb82f2f6"
+  integrity sha512-uKhjy+TKLT5C8hSUcu9wl3ojeAU1k879j0WJTz1VC/tHavuowGg4VvbweWpWDoGGuX8JRrUtzlD4qpQd3GZauA==
+  dependencies:
+    "@babel/core" "^7.8.3"
+    "@babel/plugin-proposal-class-properties" "^7.8.3"
+    "@babel/plugin-proposal-nullish-coalescing-operator" "^7.8.3"
+    "@babel/plugin-proposal-optional-chaining" "^7.8.3"
+    "@babel/preset-env" "^7.8.3"
+    "@babel/preset-react" "^7.8.3"
+    "@babel/preset-typescript" "^7.8.3"
+    "@types/lodash.debounce" "^4.0.6"
+    "@types/react-dev-utils" "^9.0.2"
+    "@types/webpack" "^4.41.2"
+    aseprite-loader "^0.1.3"
+    babel-loader "^8.0.6"
+    bmfont-loader "^0.1.0"
+    chalk "^3.0.0"
+    core-js "^3.6.4"
+    css-loader "^3.4.2"
+    file-loader "^5.0.2"
+    html-webpack-plugin "^3.2.0"
+    react-dev-utils "^10.0.0"
+    regenerator-runtime "^0.13.3"
+    resolve "^1.14.2"
+    style-loader "^1.1.3"
+    typescript "^3.7.4"
+    webpack "^4.41.5"
+    webpack-dev-server "^3.10.1"
+    xml-source-loader "^0.1.2"
+
 history@^4.9.0:
   version "4.10.1"
   resolved "https://registry.yarnpkg.com/history/-/history-4.10.1.tgz#33371a65e3a83b267434e2b3f3b1b4c58aad4cf3"
@@ -10549,10 +10581,10 @@ react-side-effect@^1.1.0:
   dependencies:
     shallowequal "^1.0.1"
 
-react-state-tree@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/react-state-tree/-/react-state-tree-0.1.1.tgz#840397a0de8f41c7db267ff0e8fc983dade1cf74"
-  integrity sha512-7o0l8Ly1eBO2MQewI1AmBbXyGZLYhJCOfadnfifFAO5atLehmAhyR/YW+tyhiC1KhWGyZxIAzAkIZUjRY7///w==
+react-state-tree@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/react-state-tree/-/react-state-tree-0.1.2.tgz#32e494f1de8fd411be9a4e361a3e7c36798c8aea"
+  integrity sha512-iELapjaPLQoIqSkePZgk/O+3MOz0iCKuGCuWf0tTvYBpp2eb2a6Bnp1SrotZNczW2P47yn64HVdNtcpLJRqM3Q==
   dependencies:
     "@types/lodash" "^4.14.149"
     "@types/react" "^16.8.8"

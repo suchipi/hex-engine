@@ -1,6 +1,6 @@
 {
   "name": "@hex-engine/inspector",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "src/index.tsx",
@@ -10,7 +10,7 @@
     "lodash.debounce": "^4.0.8",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-state-tree": "^0.1.1",
+    "react-state-tree": "^0.1.2",
     "use-force-update": "^1.0.7"
   },
   "devDependencies": {

@@ -31,7 +31,7 @@ export default function useEntitiesAtPoint(worldPos: Point): Array<Entity> {
     .reverse();
 
   const entsSeenSoFar = new Set();
-  const sortedEnts = [];
+  const sortedEnts: Array<Entity> = [];
   for (const component of components) {
     const ent = component.entity;
 

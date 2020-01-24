@@ -326,7 +326,7 @@ function TiledMap(data: XMLSourceLoader.Element) {
       )
     : [];
 
-  const objects = [];
+  const objects: Array<XMLSourceLoader.Element> = [];
   for (const objectGroup of objectGroups) {
     if (typeof objectGroup === "string") continue;
 

@@ -112,7 +112,7 @@ export default class Entity implements EntityInterface {
   }
 
   ancestors() {
-    const ancestors = [];
+    const ancestors: Array<Entity> = [];
 
     let currentEnt = this.parent;
     while (currentEnt) {
