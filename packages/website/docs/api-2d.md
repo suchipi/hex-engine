@@ -991,7 +991,7 @@ import { Animation, AnimationAPI } from "@hex-engine/2d";
 A Component that represents an Animation, where each frame has a duration and contains arbitrary data.
 
 ```ts
-function Animation<T>(frames: Array<AnimationFrame<T>>): AnimationAPI<T>;
+function Animation<T>(frames: Array<AnimationFrame<T>>, options: { loop?: boolean | undefined }): AnimationAPI<T>;
 ```
 
 This Component function returns a type called `AnimationAPI` which is defined as follows:

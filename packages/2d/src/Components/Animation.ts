@@ -40,7 +40,8 @@ export type AnimationAPI<T> = {
  * A Component that represents an Animation, where each frame has a duration and contains arbitrary data.
  */
 export default function Animation<T>(
-  frames: Array<AnimationFrame<T>>
+  frames: Array<AnimationFrame<T>>,
+  { loop = true }: { loop?: boolean | undefined } = {}
 ): AnimationAPI<T> {
   useType(Animation);
 
@@ -55,7 +56,11 @@ export default function Animation<T>(
   useUpdate(() => {
     if (timer.hasReachedSetTime()) {
       if (currentFrameIndex === frames.length - 1) {
-        currentFrameIndex = 0;
+        if (loop) {
+          currentFrameIndex = 0;
+        } else {
+          // Do nothing (stay on the last frame)
+        }
       } else {
         currentFrameIndex++;
       }
