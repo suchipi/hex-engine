@@ -999,7 +999,10 @@ This Component function returns a type called `AnimationAPI` which is defined as
 ```ts
 type AnimationAPI<T> = {
   /** The current animation frame; ie, current in time. */
-  currentFrame: AnimationFrame<T>;
+  readonly currentFrame: AnimationFrame<T>;
+
+  /** A number from 0 to 1 indicating how far we have gotten through the current frame. */
+  readonly currentFrameCompletion: number;
 
   /** Pause playback of this animation. */
   pause(): void;

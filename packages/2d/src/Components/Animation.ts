@@ -24,7 +24,10 @@ export class AnimationFrame<T> {
 
 export type AnimationAPI<T> = {
   /** The current animation frame; ie, current in time. */
-  currentFrame: AnimationFrame<T>;
+  readonly currentFrame: AnimationFrame<T>;
+
+  /** A number from 0 to 1 indicating how far we have gotten through the current frame. */
+  readonly currentFrameCompletion: number;
 
   /** Pause playback of this animation. */
   pause(): void;
@@ -60,6 +63,7 @@ export default function Animation<T>(
           currentFrameIndex = 0;
         } else {
           // Do nothing (stay on the last frame)
+          return;
         }
       } else {
         currentFrameIndex++;
@@ -77,6 +81,10 @@ export default function Animation<T>(
   return {
     get currentFrame() {
       return getCurrentFrame();
+    },
+
+    get currentFrameCompletion() {
+      return 1 - timer.distanceFromSetTime() / getCurrentFrame().duration;
     },
 
     pause() {
