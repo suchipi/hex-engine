@@ -84,6 +84,11 @@ export default function Animation<T>(
     },
 
     get currentFrameCompletion() {
+      const currentFrame = getCurrentFrame();
+      if (currentFrame.duration === 0) {
+        return 1;
+      }
+
       return 1 - timer.distanceFromSetTime() / getCurrentFrame().duration;
     },
 
