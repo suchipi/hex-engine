@@ -83,8 +83,6 @@ export default class Entity implements EntityInterface {
       parent._addChild(ent);
     }
 
-    ent.name = componentFactory.name || null;
-
     const component = instantiate(componentFactory, ent);
     ent.rootComponent = component;
     ent.components.add(component);

@@ -34,6 +34,10 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
      */
     (type: (...args: any[]) => any) => {
       instance.type = type;
+
+      if (type.name && instance.entity.name == null) {
+        instance.entity.name = type.name;
+      }
     },
 
   useEntity: (instance) =>
