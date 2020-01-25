@@ -9,7 +9,7 @@ const { useEntity } = HooksSystem.hooks;
  * a name based on its root Component.
  * @param name The name for the Entity.
  */
-export default function useEntityName(name: string): string | null {
+export default function useEntityName(name?: string): string | null {
   const ent = useEntity();
   if (name) {
     ent.name = name;
