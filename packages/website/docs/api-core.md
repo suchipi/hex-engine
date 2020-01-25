@@ -102,6 +102,27 @@ Disable all [`Component`]s on this Entity and its [descendants][`entity.descenda
 
 Use the [`useEnableDisable`] hook to specify what happens when a [`Component`] is enabled or disabled.
 
+##### destroy
+
+`destroy(): void`
+
+Destroy this entity and remove it from the tree.
+
+This runs all onDestroy callbacks registered via [`useDestroy`],
+on this Entity and all of its children.
+
+Additionally, all entities are [disabled][`entity.disable`] prior to being destroyed.
+
+##### stateAccumulator
+
+`stateAccumulator<T>(key: symbol): { add(newValue: T): void; all(): Array<T> }`
+
+Get a State Accumulator associated with this Entity instance.
+
+You probably won't ever need to use this directly, but some hooks in
+[`@hex-engine/2d`] use it to persist state to an Entity instance and
+retrieve it later.
+
 ### Component
 
 ```ts
@@ -664,13 +685,15 @@ function MyComponent() {
 [`entity.getcomponent`]: #getcomponent
 [`entity.enable`]: #enable
 [`entity.disable`]: #disable
+[`entity.destroy`]: #destroy
+[`entity.stateaccumulator`]: #stateaccumulator
 [`component`]: #component
 [`component.type`]: #type
 [`component.entity`]: #entity-1
 [`component.isenabled`]: #isenabled
 [`component.enable`]: #enable-1
 [`component.disable`]: #disable-1
-[`component.stateaccumulator`]: #stateaccumulator
+[`component.stateaccumulator`]: #stateaccumulator-1
 [`createroot`]: #createroot
 [`usetype`]: #usetype
 [`usenewcomponent`]: #usenewcomponent

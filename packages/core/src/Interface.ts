@@ -74,6 +74,26 @@ export interface Entity {
    * Disable all components on this Entity and its children
    */
   disable(): void;
+
+  /**
+   * Destroy this entity and remove it from the tree.
+   *
+   * This runs all onDestroy callbacks registered via useDestroy,
+   * on this Entity and all of its children.
+   *
+   * Additionally, all entities are disabled prior to being destroyed.
+   */
+  destroy(): void;
+
+  /**
+   * Get a State Accumulator associated with this Entity instance.
+   *
+   * You probably won't ever need to use this directly, but some hooks in
+   * `@hex-engine/2d` use it to persist state to an Entity instance and
+   * retrieve it later.
+   * @param key Which State Accumulator to get.
+   */
+  stateAccumulator<T>(key: symbol): { add(newValue: T): void; all(): Array<T> };
 }
 
 /**

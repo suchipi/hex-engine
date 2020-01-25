@@ -252,6 +252,7 @@ export default function Tree({
         "enable",
         "disable",
         "id",
+        "destroy",
       ]);
 
       const hoverables: Array<Component> = [];

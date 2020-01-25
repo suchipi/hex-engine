@@ -13,6 +13,7 @@ import Hex from "./Hex";
 import Scene from "./Scene";
 import Controls from "./Controls";
 import CustomDrawOrder from "./CustomDrawOrder";
+import Test from "./Test";
 
 export default function Root() {
   useType(Root);
@@ -45,4 +46,6 @@ export default function Root() {
       },
     });
   });
+
+  useChild(Test);
 }

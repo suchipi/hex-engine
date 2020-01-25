@@ -1,13 +1,7 @@
 import HooksSystem from "../HooksSystem";
-import Entity from "../Entity";
+import { ON_DESTROY } from "../Entity";
 
-const {
-  useCallbackAsCurrent,
-  useStateAccumulator,
-  useEntity,
-} = HooksSystem.hooks;
-
-const ON_DESTROY = Symbol("ON_DESTROY");
+const { useCallbackAsCurrent, useEntity } = HooksSystem.hooks;
 
 /**
  * Return an object with two functions on it: `onDestroy` and `destroy`.
@@ -16,20 +10,14 @@ const ON_DESTROY = Symbol("ON_DESTROY");
  * - `destroy` destroys the current Entity.
  */
 export default function useDestroy() {
-  const onDestroyState = useStateAccumulator<() => void>(ON_DESTROY);
+  const onDestroyState = useEntity().stateAccumulator<() => void>(ON_DESTROY);
 
   return {
     /**
      * Destroy the current Entity and remove it from its parent.
      */
     destroy: useCallbackAsCurrent(() => {
-      const ent = useEntity();
-      if (ent.parent) {
-        onDestroyState.all().forEach((callback) => callback());
-        (ent.parent as Entity)._removeChild(ent as Entity);
-      } else {
-        throw new Error("Cannot destroy the root entity");
-      }
+      useEntity().destroy();
     }),
 
     /**
