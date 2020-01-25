@@ -1027,6 +1027,9 @@ type AnimationAPI<T> = {
 
   /** Restart playback of this animation from the first frame. */
   restart(): void;
+
+  /** Go to a specific frame. */
+  goToFrame(frameNumber: number): void;
 };
 ```
 

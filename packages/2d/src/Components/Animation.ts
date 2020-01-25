@@ -49,6 +49,9 @@ export type AnimationAPI<T> = {
 
   /** Restart playback of this animation from the first frame. */
   restart(): void;
+
+  /** Go to a specific frame. */
+  goToFrame(frameNumber: number): void;
 };
 
 /**
@@ -93,6 +96,16 @@ export default function Animation<T>(
       }
     }
   });
+
+  function goToFrame(frameNumber: number) {
+    currentFrameIndex = frameNumber;
+    const currentFrame = getCurrentFrame();
+    timer.setToTimeFromNow(currentFrame.duration);
+
+    if (currentFrame.onFrame) {
+      currentFrame.onFrame();
+    }
+  }
 
   return {
     frames,
@@ -142,13 +155,9 @@ export default function Animation<T>(
 
     restart() {
       timer.enable();
-      currentFrameIndex = 0;
-      const currentFrame = getCurrentFrame();
-      timer.setToTimeFromNow(currentFrame.duration);
-
-      if (currentFrame.onFrame) {
-        currentFrame.onFrame();
-      }
+      goToFrame(0);
     },
+
+    goToFrame,
   };
 }
