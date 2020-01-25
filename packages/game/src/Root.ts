@@ -31,20 +31,18 @@ export default function Root() {
   const scene = useChild(Scene).rootComponent;
 
   useChild(() => {
-    useNewComponent(() =>
-      Button({
-        calcPosition: (size) =>
-          new Point(0, canvas.element.height)
-            .subtractYMutate(size.y / 2)
-            .addXMutate(size.x / 2)
-            .roundMutate(),
-        text: "Create Hex",
-        onClick: () => {
-          const randomX = Math.random() * canvas.element.width;
+    Button({
+      calcPosition: (size) =>
+        new Point(0, canvas.element.height)
+          .subtractYMutate(size.y / 2)
+          .addXMutate(size.x / 2)
+          .roundMutate(),
+      text: "Create Hex",
+      onClick: () => {
+        const randomX = Math.random() * canvas.element.width;
 
-          scene.useChild(() => Hex({ position: new Point(randomX, 0) }));
-        },
-      })
-    );
+        scene.useChild(() => Hex({ position: new Point(randomX, 0) }));
+      },
+    });
   });
 }
