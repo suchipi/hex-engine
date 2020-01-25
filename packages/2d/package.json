@@ -6,7 +6,7 @@
   "sideEffects": false,
   "repository": "suchipi/hex-engine",
   "dependencies": {
-    "@hex-engine/core": "^0.1.1",
+    "@hex-engine/core": "^0.1.2",
     "@hex-engine/inspector": "^0.1.3",
     "@types/matter-js": "^0.10.7",
     "layout-bmfont-text": "^1.3.4",

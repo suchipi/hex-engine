@@ -6,7 +6,7 @@
   "types": "src/index.tsx",
   "sideEffects": false,
   "dependencies": {
-    "@hex-engine/core": "^0.1.1",
+    "@hex-engine/core": "^0.1.2",
     "lodash.debounce": "^4.0.8",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
