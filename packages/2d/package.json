@@ -1,13 +1,13 @@
 {
   "name": "@hex-engine/2d",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "main": "dist/index.js",
   "types": "src/index.ts",
   "sideEffects": false,
   "repository": "suchipi/hex-engine",
   "dependencies": {
-    "@hex-engine/core": "^0.1.2",
-    "@hex-engine/inspector": "^0.1.4",
+    "@hex-engine/core": "^0.1.3",
+    "@hex-engine/inspector": "^0.1.5",
     "@types/matter-js": "^0.10.7",
     "layout-bmfont-text": "^1.3.4",
     "matter-js": "^0.14.2",

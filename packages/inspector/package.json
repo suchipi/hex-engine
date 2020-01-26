@@ -1,12 +1,12 @@
 {
   "name": "@hex-engine/inspector",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "src/index.tsx",
   "sideEffects": false,
   "dependencies": {
-    "@hex-engine/core": "^0.1.2",
+    "@hex-engine/core": "^0.1.3",
     "lodash.debounce": "^4.0.8",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
