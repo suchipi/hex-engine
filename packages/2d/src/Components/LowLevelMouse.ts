@@ -168,6 +168,66 @@ export default function LowLevelMouse() {
     };
   };
 
+  let isTouching = false;
+  const handleTouchStart = (ev: TouchEvent) => {
+    ev.preventDefault();
+
+    if (isTouching) return;
+
+    if (!firstClickHasHappened) {
+      firstClickHasHappened = true;
+      pendingFirstClickHandlers.forEach((handler) => {
+        handler();
+      });
+      pendingFirstClickHandlers = [];
+    }
+
+    const touches = ev.touches;
+    if (touches.length < 1) return;
+    const { clientX, clientY } = touches[0];
+    const button = 0;
+
+    pendingDown = () => {
+      pendingDown = null;
+      updateEvent({ clientX, clientY, button });
+      downState.all().forEach((callback) => callback(event));
+    };
+
+    isTouching = true;
+  };
+  const handleTouchMove = (ev: TouchEvent) => {
+    ev.preventDefault();
+
+    const touches = ev.touches;
+    if (touches.length < 1) return;
+    const { clientX, clientY } = touches[0];
+    const button = 0;
+
+    pendingMove = () => {
+      pendingMove = null;
+      updateEvent({ clientX, clientY, button });
+      moveState.all().forEach((callback) => callback(event));
+    };
+  };
+  const handleTouchEnd = (ev: TouchEvent) => {
+    ev.preventDefault();
+
+    if (!isTouching) return;
+
+    const touches = ev.changedTouches;
+    if (touches.length < 1) return;
+    const { clientX, clientY } = touches[0];
+    const button = 0;
+
+    pendingUp = () => {
+      pendingUp = null;
+      updateEvent({ clientX, clientY, button });
+      upState.all().forEach((callback) => callback(event));
+    };
+
+    isTouching = false;
+  };
+
   useUpdate(() => {
     // Very important that we process move before down/up, so that touch screens work
     if (pendingMove) pendingMove();
@@ -182,6 +242,10 @@ export default function LowLevelMouse() {
     canvas.addEventListener("mousemove", handleMouseMove);
     canvas.addEventListener("mousedown", handleMouseDown);
     canvas.addEventListener("mouseup", handleMouseUp);
+
+    canvas.addEventListener("touchstart", handleTouchStart);
+    canvas.addEventListener("touchmove", handleTouchMove);
+    canvas.addEventListener("touchend", handleTouchEnd);
     bound = true;
   }
 
@@ -190,6 +254,10 @@ export default function LowLevelMouse() {
     canvas.removeEventListener("mousemove", handleMouseMove);
     canvas.removeEventListener("mousedown", handleMouseDown);
     canvas.removeEventListener("mouseup", handleMouseUp);
+
+    canvas.removeEventListener("touchstart", handleTouchStart);
+    canvas.removeEventListener("touchmove", handleTouchMove);
+    canvas.removeEventListener("touchend", handleTouchEnd);
     bound = false;
   }
 
