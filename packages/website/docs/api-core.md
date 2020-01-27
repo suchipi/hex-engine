@@ -709,6 +709,6 @@ function MyComponent() {
 [`userootentity`]: #userootentity
 [`runloop`]: #runloop
 [`errorboundary`]: #errorboundary
-[`canvas`]: #TODO
-[`useupdate`]: #TODO
-[`usedraw`]: #TODO
+[`canvas`]: api-2d#canvas
+[`useupdate`]: api-2d#useupdate
+[`usedraw`]: api-2d#usedraw

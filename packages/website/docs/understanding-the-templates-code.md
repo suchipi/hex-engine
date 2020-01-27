@@ -86,9 +86,9 @@ First, we import a lot of stuff from [`@hex-engine/2d`](/docs/api-2d) that we're
 - [`useType`](/docs/api-core#usetypecomponentfunction-function-void) is a function we have to call inside every Component function we make.
 - [`useNewComponent`](/docs/api-core#usenewcomponentcomponentfunction-function-component) is a function we can call to add a new Component to the current Entity.
 - [`useChild`](/docs/api-core#usechildcomponentfunction-function-entity) is a function we can call to create a new Entity as a child of the current Entity.
-- [`Canvas`](#TODO) is a Component function exported by [`@hex-engine/2d`](/docs/api-2d) that renders children onto a HTML5 [Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) element.
-- [`Physics`](#TODO) is an Object with Component functions on it that make Entities behave like real physical objects.
-- [`Point`](#TODO) is a class that represents a 2D point in space; it has an `x` property and a `y` property.
+- [`Canvas`](/docs/api-2d#canvas) is a Component function exported by [`@hex-engine/2d`](/docs/api-2d) that renders children onto a HTML5 [Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) element.
+- [`Physics`](/docs/api-2d#physicsbody) is an Object with Component functions on it that make Entities behave like real physical objects.
+- [`Point`](/docs/api-2d#point) is a class that represents a 2D point in space; it has an `x` property and a `y` property.
 
 It's okay if you don't understand all of this right now; it'll make more sense with time.
 

@@ -53,11 +53,11 @@ First we import a bunch of stuff we're going to use:
 
 - [`useType`](/docs/api-core#usetypecomponentfunction-function-void) is a function we have to call inside every Component function we make.
 - [`useNewComponent`](/docs/api-core#usenewcomponentcomponentfunction-function-component) is a function we can call to add a new Component to the current Entity.
-- [`Geometry`](#TODO) is a Component function that defines an Entity's shape and position in the world.
-- [`Polygon`](#TODO) is a class that can be used to represent a [polygon](https://en.wikipedia.org/wiki/Polygon).
-- [`Point`](#TODO) is a class that represents a 2D point in space; it has an `x` property and a `y` property.
-- [`Physics`](#TODO) is an Object with Component functions on it that make Entities behave like real physical objects.
-- [`useDraw`](#TODO) is a function we can call that interacts with the [`Canvas`](#TODO) on the root Entity, and tells it how to draw the current Entity onto the screen.
+- [`Geometry`](/docs/api-2d#geometry) is a Component function that defines an Entity's shape and position in the world.
+- [`Polygon`](/docs/api-2d#polygon) is a class that can be used to represent a [polygon](https://en.wikipedia.org/wiki/Polygon).
+- [`Point`](/docs/api-2d#point) is a class that represents a 2D point in space; it has an `x` property and a `y` property.
+- [`Physics`](/docs/api-2d#physicsbody) is an Object with Component functions on it that make Entities behave like real physical objects.
+- [`useDraw`](/docs/api-2d#usedraw) is a function we can call that interacts with the [`Canvas`](/docs/api-2d#canvas) on the root Entity, and tells it how to draw the current Entity onto the screen.
 
 Next, we define the `Floor` Component function. As you may have expected, this is the Component function that defines the appearance and behaviour of the gray platform you see in the game.
 
