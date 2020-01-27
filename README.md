@@ -58,6 +58,8 @@ I built Hex Engine because I felt that the browser game engine space could benef
 
 It is the culmination of years of research, and probably the fifth or sixth game engine I have written for the browser (but the first that I've been proud enough of to share).
 
+All that said, it's far from done- I'm hoping that we can form a community together and make something we can all be proud of.
+
 Interested? Check out [Hex Engine's homepage](https://hex-engine.dev) for installation and usage instructions.
 
 ---
