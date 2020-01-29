@@ -33,7 +33,7 @@ import {
   Label
 } from "@hex-engine/2d";
 
-export default MyComponent() {
+export default function MyComponent() {
   const font = useNewComponent(() =>
     SystemFont({ name: "Arial", size: 12 })
   );
