@@ -3,6 +3,7 @@ import { Entity, RunLoop } from "@hex-engine/core";
 import { StateKey, useStateTree } from "react-state-tree";
 import Tree from "./Tree";
 import Controls from "./Controls";
+import PausedOverlay from "./PausedOverlay";
 
 type RunLoopAPI = ReturnType<typeof RunLoop>;
 
@@ -55,6 +56,9 @@ export default function App({
           ) : null}
         </StateKey>
       </div>
+      {runLoop && runLoop.isPaused() && runLoop.frameNumber === 0 ? (
+        <PausedOverlay runLoop={runLoop} />
+      ) : null}
       {open ? (
         <div
           style={{

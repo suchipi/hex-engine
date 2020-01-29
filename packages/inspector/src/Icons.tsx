@@ -1,11 +1,17 @@
 import React from "react";
 
-export function PaneRightIcon() {
+export function PaneRightIcon({
+  width = 16,
+  height = 16,
+}: {
+  width?: number | string | undefined;
+  height?: number | string | undefined;
+} = {}) {
   /* This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
   return (
-    <svg viewBox="0 0 16 16" width="16" height="16">
+    <svg viewBox="0 0 16 16" width={width} height={height}>
       <path
         fill="currentColor"
         d="M4 3H2v10h2V3zM8 6v4l3-2-3-2z"
@@ -19,12 +25,18 @@ export function PaneRightIcon() {
   );
 }
 
-export function PaneLeftIcon() {
+export function PaneLeftIcon({
+  width = 16,
+  height = 16,
+}: {
+  width?: number | string | undefined;
+  height?: number | string | undefined;
+} = {}) {
   /* This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
   return (
-    <svg viewBox="0 0 16 16" width="16" height="16">
+    <svg viewBox="0 0 16 16" width={width} height={height}>
       <path
         fill="currentColor"
         d="M4 3H2v10h2V3zm7 7V6L8 8l3 2z"
@@ -38,12 +50,18 @@ export function PaneLeftIcon() {
   );
 }
 
-export function PauseIcon() {
+export function PauseIcon({
+  width = 16,
+  height = 16,
+}: {
+  width?: number | string | undefined;
+  height?: number | string | undefined;
+} = {}) {
   /* This Source Code Form is subject to the terms of the Mozilla Public
  - License, v. 2.0. If a copy of the MPL was not distributed with this
  - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
   return (
-    <svg viewBox="0 0 16 16" width="16px" height="16px">
+    <svg viewBox="0 0 16 16" width={width} height={height}>
       <path
         fill="currentColor"
         d="M5,13.5C5,13.8,4.7,14,4.5,14C4.2,14,4,13.8,4,13.5V2.6c0-0.3,0.2-0.5,0.5-0.5C4.7,2.1,5,2.3,5,2.6V13.5z"
@@ -56,12 +74,18 @@ export function PauseIcon() {
   );
 }
 
-export function ResumeIcon() {
+export function ResumeIcon({
+  width = 16,
+  height = 16,
+}: {
+  width?: number | string | undefined;
+  height?: number | string | undefined;
+} = {}) {
   /* This Source Code Form is subject to the terms of the Mozilla Public
  - License, v. 2.0. If a copy of the MPL was not distributed with this
  - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
   return (
-    <svg viewBox="0 0 16 16" width="16px" height="16px">
+    <svg viewBox="0 0 16 16" width={width} height={height}>
       <path
         fill="currentColor"
         d="M5 3v10l7-5-7-5zM4 3c0-.81.92-1.31 1.58-.84l7 5.03a1 1 0 0 1 0 1.62l-7 5.03C4.92 14.31 4 13.81 4 13V3z"
@@ -70,12 +94,18 @@ export function ResumeIcon() {
   );
 }
 
-export function StepIcon() {
+export function StepIcon({
+  width = 16,
+  height = 16,
+}: {
+  width?: number | string | undefined;
+  height?: number | string | undefined;
+} = {}) {
   /* This Source Code Form is subject to the terms of the Mozilla Public
  - License, v. 2.0. If a copy of the MPL was not distributed with this
  - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
   return (
-    <svg viewBox="0 0 16 16" width="16px" height="16px">
+    <svg viewBox="0 0 16 16" width={width} height={height}>
       <g fillRule="evenodd">
         <path
           fill="currentColor"
