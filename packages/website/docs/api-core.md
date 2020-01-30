@@ -10,6 +10,8 @@ The `@hex-engine/core` package has several named exports, which are each documen
 
 ### Entity
 
+> Available since version: 0.0.0
+
 ```ts
 import { Entity } from "@hex-engine/core";
 ```
@@ -22,6 +24,8 @@ component by using [`useEntity`].
 
 ##### name
 
+> Available since version: 0.0.0
+
 `name: string | null`
 
 A name that will be shown in the inspector, for debugging purposes.
@@ -30,12 +34,16 @@ try to infer one, based on the name of the root [`Component`].
 
 ##### id
 
+> Available since version: 0.0.0
+
 `id: number`
 
 A unique id for this Entity. These start at zero and go up by one
 whenever you create an Entity.
 
 ##### children
+
+> Available since version: 0.0.0
 
 `children: Set<Entity>`
 
@@ -44,12 +52,16 @@ this Entity calling [`useChild`].
 
 ##### parent
 
+> Available since version: 0.0.0
+
 `parent: Entity`
 
 The parent [`Entity`] for this Entity, or null if there isn't one.
 Generally, this will only ever be null if you're dealing with the root Entity.
 
 ##### components
+
+> Available since version: 0.0.0
 
 `components: Set<Component>`
 
@@ -59,6 +71,8 @@ All the [`Component`] instances that belong to this Entity.
 
 ##### descendants
 
+> Available since version: 0.0.0
+
 `descendants(): Array<Entity>`
 
 Search this Entity's children recursively for their children,
@@ -66,6 +80,8 @@ and return an Array containing every Entity that is a descendant
 of this one.
 
 ##### ancestors
+
+> Available since version: 0.0.0
 
 `ancestors(): Array<Entity>`
 
@@ -78,6 +94,8 @@ parent) will be last in the Array.
 
 ##### getComponent
 
+> Available since version: 0.0.0
+
 `getComponent(componentFunc: Function): Component | null`
 
 Searches the entity for a [`Component`] with the type specified by `componentFunc`,
@@ -88,6 +106,8 @@ have registered its type using [`useType`].
 
 ##### enable
 
+> Available since version: 0.0.0
+
 `enable(): void`
 
 Enable all [`Component`]s on this Entity and its [descendants][`entity.descendants`].
@@ -96,6 +116,8 @@ Use the [`useEnableDisable`] hook to specify what happens when a [`Component`] i
 
 ##### disable
 
+> Available since version: 0.0.0
+
 `disable(): void`
 
 Disable all [`Component`]s on this Entity and its [descendants][`entity.descendants`].
@@ -103,6 +125,8 @@ Disable all [`Component`]s on this Entity and its [descendants][`entity.descenda
 Use the [`useEnableDisable`] hook to specify what happens when a [`Component`] is enabled or disabled.
 
 ##### destroy
+
+> Available since version: 0.1.2
 
 `destroy(): void`
 
@@ -115,6 +139,8 @@ Additionally, all entities are [disabled][`entity.disable`] prior to being destr
 
 ##### stateAccumulator
 
+> Available since version: 0.1.2
+
 `stateAccumulator<T>(key: symbol): { add(newValue: T): void; all(): Array<T> }`
 
 Get a State Accumulator associated with this Entity instance.
@@ -124,6 +150,8 @@ You probably won't ever need to use this directly, but some hooks in
 retrieve it later.
 
 ### Component
+
+> Available since version: 0.0.0
 
 ```ts
 import { Component } from "@hex-engine/core";
@@ -135,6 +163,8 @@ A Component instance. Every Component created via [`useNewComponent`], [`useChil
 
 ##### type
 
+> Available since version: 0.0.0
+
 `type: Function | null`
 
 The Component function that this Component instance cooresponds to.
@@ -143,12 +173,16 @@ for this Component instance to be returned from [`Entity.getComponent`].
 
 ##### entity
 
+> Available since version: 0.0.0
+
 `entity: Entity`
 
 The Entity this Component belongs to. Inside of a Component function,
 you can call [`useEntity`] to get this.
 
 ##### isEnabled
+
+> Available since version: 0.0.0
 
 `isEnabled: boolean`
 
@@ -159,6 +193,8 @@ happen when your Component is enabled or disabled, use [`useEnableDisable`].
 
 ##### enable
 
+> Available since version: 0.0.0
+
 `enable(): void`
 
 Enable this Component.
@@ -167,6 +203,8 @@ Use the [`useEnableDisable`] hook to specify what happens when a [`Component`] i
 
 ##### disable
 
+> Available since version: 0.0.0
+
 `disable(): void`
 
 Disable this Component.
@@ -174,6 +212,8 @@ Disable this Component.
 Use the [`useEnableDisable`] hook to specify what happens when a [`Component`] is enabled or disabled.
 
 ##### stateAccumulator
+
+> Available since version: 0.0.0
 
 `stateAccumulator<T>(key: Symbol): { add<T>(value: T), all(): Array<T> }`
 
@@ -187,6 +227,8 @@ and retrieve it later.
 ## Functions
 
 ### createRoot
+
+> Available since version: 0.0.0
 
 `createRoot(componentFunction: Function)`
 
@@ -214,6 +256,8 @@ Hooks are special functions that interact with the "current" Component. The curr
 
 ### useType
 
+> Available since version: 0.0.0
+
 `useType(componentFunction: Function): void`
 
 ```ts
@@ -240,6 +284,8 @@ function MyComponent() {
 ```
 
 ### useNewComponent
+
+> Available since version: 0.0.0
 
 `useNewComponent(componentFunction: Function): Component`
 
@@ -270,6 +316,8 @@ function MyOtherComponent(color: string) {
 
 ### useEntity
 
+> Available since version: 0.0.0
+
 `useEntity(): Entity`
 
 ```ts
@@ -291,6 +339,8 @@ function MyComponent() {
 ```
 
 ### useChild
+
+> Available since version: 0.0.0
 
 `useChild(componentFunction: Function): Entity`
 
@@ -318,6 +368,8 @@ function MyOtherComponent() {
 
 ### useIsEnabled
 
+> Available since version: 0.0.0
+
 `useIsEnabled(): boolean`
 
 ```ts
@@ -342,6 +394,8 @@ function MyComponent() {
 ```
 
 ### useCallbackAsCurrent
+
+> Available since version: 0.0.0
 
 `useCallbackAsCurrent(callback: Function): Function`
 
@@ -391,6 +445,8 @@ function MyChildComponent(useSibling: (componentFunction: Function) => Entity) {
 ```
 
 ### useStateAccumulator
+
+> Available since version: 0.0.0
 
 `useStateAccumulator<T>(key: symbol): { add(value: T): void, all(): Array<T> }`
 
@@ -459,6 +515,8 @@ function MyOtherComponent() {
 
 ### useDestroy
 
+> Available since version: 0.0.1
+
 `useDestroy(): { onDestroy(callback: () => void), destroy(): void }`
 
 ```ts
@@ -495,6 +553,8 @@ function MyComponent() {
 ```
 
 ### useEnableDisable
+
+> Available since version: 0.0.0
 
 `useEnableDisable(): { onEnabled(callback: () => void), onDisabled(callback: () => void) }`
 
@@ -539,6 +599,8 @@ function MyComponent() {
 
 ### useEntityName
 
+> Available since version: 0.0.0
+
 `useEntityName(name?: string): string | null`
 
 ```ts
@@ -548,6 +610,8 @@ import { useEntityName } from "@hex-engine/core";
 Sets or gets the name of the current Entity.
 
 This is just a nice-to-have for debugging purposes; if you don't do this, we will do our best to give the Entity a name based on its root Component.
+
+> In version 0.0.0, this hook could only set the entity name. The functionality to get the entity name was added in version 0.0.2, but the `name` parameter mistakenly remained required until version 0.1.3.
 
 #### Usage
 
@@ -566,6 +630,8 @@ function MyComponent() {
 ```
 
 ### useFrame
+
+> Available since version: 0.0.0
 
 `useFrame(frameCallback: (delta: number) => void): void`
 
@@ -590,6 +656,8 @@ function MyComponent() {
 ```
 
 ### useRootEntity
+
+> Available since version: 0.0.0
 
 `useRootEntity(): Entity`
 
@@ -620,6 +688,8 @@ function MyComponent() {
 
 ### RunLoop
 
+> Available since version: 0.0.0
+
 `RunLoop()`
 
 An internal [`requestAnimationFrame`](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame)-based RunLoop to be placed on the root [`Entity`].
@@ -645,6 +715,8 @@ function MyComponent() {
 ```
 
 ### ErrorBoundary
+
+> Available since version: 0.0.0
 
 `ErrorBoundary(onError: (error: Error) => void)`
 

@@ -14,6 +14,8 @@ Anyway, here's the API documentation for `@hex-engine/inspector`. Note that most
 
 ### Inspector
 
+> Available since version: 0.0.0
+
 ```ts
 import Inspector from "@hex-engine/inspector";
 ```
@@ -44,6 +46,8 @@ function MyComponent() {
 ## Hooks
 
 ### useInspectorHover
+
+> Available since version: 0.0.0
 
 ```ts
 import { useInspectorHover } from "@hex-engine/inspector";
