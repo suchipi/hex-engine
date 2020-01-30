@@ -2447,7 +2447,7 @@ Adds a new task to the Preloader. It will start running immediately.
 
 Returns a Promise which does not resolve until all tasks that have been added to the Preloader have resolved.
 
-[`@hex-engine/core`]: api-core
+[`@hex-engine/core`]: /docs/api-core
 [`angle`]: #angle
 [`circle`]: #circle
 [`grid`]: #grid

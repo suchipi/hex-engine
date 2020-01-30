@@ -672,8 +672,8 @@ function MyComponent() {
 }
 ```
 
-[`@hex-engine/2d`]: api-2d
-[`@hex-engine/inspector`]: api-inspector
+[`@hex-engine/2d`]: /docs/api-2d
+[`@hex-engine/inspector`]: /docs/api-inspector
 [`entity`]: #entity
 [`entity.name`]: #name
 [`entity.id`]: #id
@@ -709,6 +709,6 @@ function MyComponent() {
 [`userootentity`]: #userootentity
 [`runloop`]: #runloop
 [`errorboundary`]: #errorboundary
-[`canvas`]: api-2d#canvas
-[`useupdate`]: api-2d#useupdate
-[`usedraw`]: api-2d#usedraw
+[`canvas`]: /docs/api-2d#canvas
+[`useupdate`]: /docs/api-2d#useupdate
+[`usedraw`]: /docs/api-2d#usedraw

@@ -60,7 +60,7 @@ function Root({
 }
 
 /**
- * A Component function that render an Inspector overlay onto the page,
+ * A Component function that renders an Inspector overlay onto the page,
  * that shows you information about the current Entity tree, and allows you
  * to tweak values and pause/resume/step frame execution.
  *
