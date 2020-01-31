@@ -1,10 +1,12 @@
 import useBackstage from "./useBackstage";
 import useContext from "./useContext";
+import useCanvasSize from "./useCanvasSize";
 import useDraw from "./useDraw";
 import useEntitiesAtPoint from "./useEntitiesAtPoint";
 import useFilledPixelBounds from "./useFilledPixelBounds";
 import useInspectorHoverOutline from "./useInspectorHoverOutline";
 import useEntityTransforms from "./useEntityTransforms";
+import useWindowSize from "./useWindowSize";
 
 import {
   useUpdate,
@@ -19,6 +21,7 @@ import { useAudioContext } from "../Components/AudioContext";
 export {
   useBackstage,
   useContext,
+  useCanvasSize,
   useDraw,
   useEntitiesAtPoint,
   useFilledPixelBounds,
@@ -31,4 +34,5 @@ export {
   useFirstClick,
   useFirstKey,
   useAudioContext,
+  useWindowSize,
 };

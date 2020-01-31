@@ -2,6 +2,7 @@ import {
   Component as ComponentInterface,
   Entity as EntityInterface,
 } from "./Interface";
+import StateAccumulator from "./StateAccumulator";
 
 export const ON_ENABLED = Symbol("ON_ENABLED");
 export const ON_DISABLED = Symbol("ON_DISABLED");
@@ -21,22 +22,13 @@ export default class Component implements ComponentInterface {
     this.entity = entity;
   }
 
-  stateAccumulator<T>(
-    key: symbol
-  ): { add(newValue: T): void; all(): Array<T> } {
+  stateAccumulator<T>(key: symbol): StateAccumulator<T> {
     const state = this._accumulatedState;
     if (!state[key]) {
-      state[key] = [];
+      state[key] = new StateAccumulator<T>();
     }
 
-    return {
-      add(newValue) {
-        state[key].push(newValue);
-      },
-      all() {
-        return state[key];
-      },
-    };
+    return state[key];
   }
 
   _isEnabled: boolean = true;

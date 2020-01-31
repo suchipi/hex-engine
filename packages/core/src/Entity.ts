@@ -3,6 +3,7 @@ import {
   Component as ComponentInterface,
 } from "./Interface";
 import instantiate from "./instantiate";
+import StateAccumulator from "./StateAccumulator";
 
 export const ON_DESTROY = Symbol("ON_DESTROY");
 
@@ -146,21 +147,12 @@ export default class Entity implements EntityInterface {
     return ancestors;
   }
 
-  stateAccumulator<T>(
-    key: symbol
-  ): { add(newValue: T): void; all(): Array<T> } {
+  stateAccumulator<T>(key: symbol): StateAccumulator<T> {
     const state = this._accumulatedState;
     if (!state[key]) {
-      state[key] = [];
+      state[key] = new StateAccumulator<T>();
     }
 
-    return {
-      add(newValue) {
-        state[key].push(newValue);
-      },
-      all() {
-        return state[key];
-      },
-    };
+    return state[key];
   }
 }

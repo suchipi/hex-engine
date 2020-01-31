@@ -1,4 +1,9 @@
-import { useNewComponent, useType, RunLoop } from "@hex-engine/core";
+import {
+  useNewComponent,
+  useType,
+  RunLoop,
+  useCallbackAsCurrent,
+} from "@hex-engine/core";
 import Inspector from "@hex-engine/inspector";
 import { UpdateChildren, useUpdate } from "./UpdateChildren";
 import { DrawChildren, useRawDraw } from "./DrawChildren";
@@ -7,6 +12,8 @@ import DrawOrder, {
   useCanvasDrawOrderSort,
 } from "./DrawOrder";
 import polyfillContext from "./polyfillContext";
+import useCanvasSize from "../Hooks/useCanvasSize";
+import useWindowSize from "../Hooks/useWindowSize";
 
 /** The built-in Canvas component that should be placed on your root Entity in order to render everything in your game. */
 export default Object.assign(
@@ -96,6 +103,34 @@ export default Object.assign(
 
     setPixelated(true);
 
+    let canvasSizeHookResult: null | ReturnType<typeof useCanvasSize> = null;
+    let windowSizeHookResult: null | ReturnType<typeof useWindowSize> = null;
+
+    const resize = useCallbackAsCurrent(
+      ({
+        realWidth,
+        realHeight,
+        pixelWidth,
+        pixelHeight,
+      }: {
+        realWidth: number | string;
+        realHeight: number | string;
+        pixelWidth: number;
+        pixelHeight: number;
+      }) => {
+        if (!canvasSizeHookResult) {
+          canvasSizeHookResult = useCanvasSize();
+        }
+
+        canvasSizeHookResult.resizeCanvas({
+          realWidth,
+          realHeight,
+          pixelWidth,
+          pixelHeight,
+        });
+      }
+    );
+
     return {
       element: canvas,
       context,
@@ -103,44 +138,34 @@ export default Object.assign(
 
       setPixelated,
 
-      resize({
-        realWidth,
-        realHeight,
-        pixelWidth,
-        pixelHeight,
-      }: {
-        realWidth: number;
-        realHeight: number;
-        pixelWidth: number;
-        pixelHeight: number;
-      }): void {
-        canvas.width = pixelWidth;
-        canvas.height = pixelHeight;
-        canvas.style.width = realWidth + "px";
-        canvas.style.height = realHeight + "px";
+      resize,
 
-        backstageCanvas.width = pixelWidth;
-        backstageCanvas.height = pixelHeight;
-      },
+      fullscreen: useCallbackAsCurrent(
+        ({ pixelZoom = 1 }: { pixelZoom?: number } = {}) => {
+          if (!windowSizeHookResult) {
+            windowSizeHookResult = useWindowSize();
+          }
+          const { windowSize, onWindowResize } = windowSizeHookResult;
 
-      fullscreen({ pixelZoom = 1 }: { pixelZoom?: number } = {}) {
-        Object.assign(document.body.style, {
-          margin: 0,
-          padding: 0,
-          overflow: "hidden",
-        });
-
-        const fitToWindow = () => {
-          this.resize({
-            realWidth: window.innerWidth,
-            realHeight: window.innerHeight,
-            pixelWidth: window.innerWidth / pixelZoom,
-            pixelHeight: window.innerHeight / pixelZoom,
+          Object.assign(document.body.style, {
+            margin: 0,
+            padding: 0,
+            overflow: "hidden",
           });
-        };
-        window.addEventListener("resize", fitToWindow);
-        fitToWindow();
-      },
+
+          const matchWindowSize = () => {
+            resize({
+              realWidth: windowSize.x,
+              realHeight: windowSize.y,
+              pixelWidth: windowSize.x / pixelZoom,
+              pixelHeight: windowSize.y / pixelZoom,
+            });
+          };
+
+          onWindowResize(matchWindowSize);
+          matchWindowSize();
+        }
+      ),
     };
   },
   {

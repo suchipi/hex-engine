@@ -6,26 +6,37 @@ import {
   Geometry,
   Polygon,
   Point,
-  useContext,
+  useCanvasSize,
 } from "@hex-engine/2d";
 
 export default function Floor() {
   useType(Floor);
 
-  const context = useContext();
-  const canvasSize = new Point(context.canvas.width, context.canvas.height);
+  const { canvasSize, onCanvasResize } = useCanvasSize();
   const rectangleSize = new Point(canvasSize.x * 2, 48);
+  const rectanglePosition = canvasSize
+    .subtract(rectangleSize.divide(2))
+    .add(new Point(0, 20));
 
   const geometry = useNewComponent(() =>
     Geometry({
       shape: Polygon.rectangle(rectangleSize),
-      position: canvasSize
-        .subtract(rectangleSize.divide(2))
-        .add(new Point(0, 20)),
+      position: rectanglePosition,
     })
   );
 
   useNewComponent(() => Physics.Body(geometry, { isStatic: true }));
+
+  onCanvasResize(() => {
+    const rectangleSize = new Point(canvasSize.x * 2, 48);
+    const rectanglePosition = canvasSize
+      .subtract(rectangleSize.divide(2))
+      .add(new Point(0, 20));
+
+    geometry.shape.width = rectangleSize.x;
+    geometry.shape.height = rectangleSize.y;
+    geometry.position.mutateInto(rectanglePosition);
+  });
 
   useDraw((context) => {
     context.fillStyle = "#eee";

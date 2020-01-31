@@ -4,6 +4,7 @@ import {
   Component as ComponentInterface,
   Entity as EntityInterface,
 } from "./Interface";
+import StateAccumulator from "./StateAccumulator";
 import instantiate from "./instantiate";
 
 /**
@@ -80,7 +81,8 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
      * Create an object associated with the current Component instance that will
      * hold one or more values within. You can add values to this object using
      * the `add` method, and retrieve all the values that have been added
-     * using the `all` method.
+     * using the `all` method. You can also remove values from this object using
+     * the `remove` method.
      *
      * This object is called a "State Accumulator".
      *
@@ -100,7 +102,7 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
      * Accumulator later, pass in the same symbol to either
      * `useStateAccumulator` or `component.stateAccumulator`.
      */
-    <T>(key: symbol): { add(newValue: T): void; all(): Array<T> } => {
+    <T>(key: symbol): StateAccumulator<T> => {
       return instance.stateAccumulator<T>(key);
     },
 

@@ -1,3 +1,5 @@
+import StateAccumulator from "./StateAccumulator";
+
 /**
  * A Hex Engine Entity. The most common way to make one of these is via `useChild`,
  * but you also get one returned by `createRoot`. You can get the Entity for the current
@@ -93,7 +95,7 @@ export interface Entity {
    * retrieve it later.
    * @param key Which State Accumulator to get.
    */
-  stateAccumulator<T>(key: symbol): { add(newValue: T): void; all(): Array<T> };
+  stateAccumulator<T>(key: symbol): StateAccumulator<T>;
 }
 
 /**
@@ -146,5 +148,5 @@ export interface Component {
    * @param key Which State Accumulator to get. This matches the key passed
    * into `useStateAccumulator`.
    */
-  stateAccumulator<T>(key: symbol): { add(newValue: T): void; all(): Array<T> };
+  stateAccumulator<T>(key: symbol): StateAccumulator<T>;
 }
