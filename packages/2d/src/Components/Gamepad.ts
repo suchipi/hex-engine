@@ -82,9 +82,7 @@ export default function Gamepad(
 
   /** Convert an analog stick's x and y positions to a Vector in Canvas-space. */
   function stickToVector(x: number, y: number) {
-    // Invert y component because gamepad
-    // sticks are normal polar coordinate system
-    const target = new Point(x, -y);
+    const target = new Point(x, y);
 
     const vector = Vector.fromPoints(origin, target);
     if (Math.abs(vector.magnitude) < state.deadzone) {
