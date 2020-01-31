@@ -81,7 +81,7 @@ export default function MousePosition({
 
       if (!thisEntPosition.equals(lastEntPosition)) {
         const diff = thisEntPosition.subtract(lastEntPosition);
-        position.addMutate(diff);
+        position.subtractMutate(diff);
 
         isInsideBounds = pointIsWithinBounds(position);
 
