@@ -141,13 +141,15 @@ Additionally, all entities are [disabled][`entity.disable`] prior to being destr
 
 > Available since version: 0.1.2
 
-`stateAccumulator<T>(key: symbol): { add(newValue: T): void; all(): Array<T> }`
+`stateAccumulator<T>(key: symbol): StateAccumulator<T>`
 
-Get a State Accumulator associated with this Entity instance.
+Get a [`StateAccumulator`] associated with this Entity instance.
 
 You probably won't ever need to use this directly, but some hooks in
 [`@hex-engine/2d`] use it to persist state to an Entity instance and
 retrieve it later.
+
+> In versions prior to 0.1.4, the returned StateAccumulator didn't have a `remove` method.
 
 ### Component
 
@@ -215,14 +217,16 @@ Use the [`useEnableDisable`] hook to specify what happens when a [`Component`] i
 
 > Available since version: 0.0.0
 
-`stateAccumulator<T>(key: Symbol): { add<T>(value: T), all(): Array<T> }`
+`stateAccumulator<T>(key: Symbol): StateAccumulator<T>`
 
-Gets a State Accumulator associated with this Component instance,
+Gets a [`StateAccumulator`] associated with this Component instance,
 as returned by [`useStateAccumulator`].
 
 You probably won't ever need to use this directly, but some hooks in
 [`@hex-engine/2d`] use it to persist state to a Component instance
 and retrieve it later.
+
+> In versions prior to 0.1.4, the returned StateAccumulator didn't have a `remove` method.
 
 ## Functions
 
@@ -249,6 +253,17 @@ const rootEntity = createRoot(() => {
 
 // rootEntity is an Entity
 ```
+
+## Classes
+
+### StateAccumulator
+
+An object that will hold one or more values within. You can add values to this object using
+the `add` method, remove them with the `remove` method, and retrieve all the values that have been added using the `all` method.
+
+The most common use of a StateAccumulator is to persist one or more state values to either component or entity instances so that they can be shared between multiple component functions or hooks, since you can use [`useStateAccumulator`], [`Component.stateAccumulator`], or [`Entity.stateAccumulator`] to retrieve a StateAccumulator from the corresponding object, by using a unique Symbol as the key.
+
+You usually won't need to use StateAccumulators directly, but many hooks and Components in [`@hex-engine/2d`] are built using them.
 
 ## Hooks
 
@@ -448,36 +463,24 @@ function MyChildComponent(useSibling: (componentFunction: Function) => Entity) {
 
 > Available since version: 0.0.0
 
-`useStateAccumulator<T>(key: symbol): { add(value: T): void, all(): Array<T> }`
+`useStateAccumulator<T>(key: symbol): StateAccumulator`
 
 ```ts
 import { useStateAccumulator } from "@hex-engine/core";
 ```
 
-Create an object associated with the current Component instance that will
-hold one or more values within. You can add values to this object using
-the `add` method, and retrieve all the values that have been added
-using the `all` method.
-
-This object is called a "State Accumulator".
-
-Additionally, you can retrieve a State Accumulator from a [`Component`] instance
-by using its [`.stateAccumulator`][`component.stateaccumulator`] method.
+Create a [`StateAccumulator`] associated with the current Component instance.
 
 You probably won't need to use this directly, but it is used by several
 hooks and Components in [`@hex-engine/2d`].
 
-The most common usage of `useStateAccumulator` is to use it to collect
-functions that you'll call at some point in the future, and then
-iterate over them with `.all()` and call them, when it's time.
+> In versions prior to 0.1.4, the returned StateAccumulator didn't have a `remove` method.
 
 #### Parameters
 
 ##### key
 
-A unique Symbol that will be used to store this State
-Accumulator on the Component instance. To get back the same State
-Accumulator later, pass in the same symbol to either
+A unique Symbol that will be used to store this StateAccumulator on the Component instance. To get back the same StateAccumulator later, pass in the same symbol to either
 [`useStateAccumulator`] or [`component.stateAccumulator`].
 
 #### Usage
@@ -684,6 +687,60 @@ function MyComponent() {
 }
 ```
 
+### useListenerAccumulator
+
+> Available since version: 0.1.4
+
+`useListenerAccumulator<T>(stateAccumulator: StateAccumulator<T>): { addListener(callback: T): void, callListeners(...args: Parameters<T>): void }`
+
+```ts
+import { useListenerAccumulator } from "@hex-engine/core";
+```
+
+Stores listener callbacks in the received [`StateAccumulator`],
+and adds/removes them from the StateAccumulator when the current
+component is enabled/disabled.
+
+This lets you store all your listeners in one StateAccumulator
+(on the root entity, for example), but still handles enabling and
+disabling relative to the local component.
+
+#### Usage
+
+```ts
+import {
+  useNewComponent,
+  useRootEntity,
+  useListenerAccumulator,
+} from "@hex-engine/core";
+
+const ON_RESIZE = Symbol("ON_RESIZE");
+const RESIZE_LISTENER_SETUP = Symbol("RESIZE_LISTENER_SETUP");
+
+function useResize() {
+  const rootEntity = useRootEntity();
+
+  const resizeListeners = useListenerAccumulator<(event: FocusEvent) => void>(
+    rootEntity.stateAccumulator(ON_RESIZE)
+  );
+  const setupState = rootEntity.stateAccumulator<boolean>(
+    RESIZE_LISTENER_SETUP
+  );
+
+  if (setupState.length === 0) {
+    // Only create the window event listener once
+    window.addEventListener("resize", (event: FocusEvent) => {
+      resizeListeners.callListeners(event);
+    });
+    setupState.add(true);
+  }
+
+  return {
+    onResize: resizeListeners.addListener,
+  };
+}
+```
+
 ## Components
 
 ### RunLoop
@@ -767,6 +824,7 @@ function MyComponent() {
 [`component.disable`]: #disable-1
 [`component.stateaccumulator`]: #stateaccumulator-1
 [`createroot`]: #createroot
+[`stateaccumulator`]: #stateaccumulator-2
 [`usetype`]: #usetype
 [`usenewcomponent`]: #usenewcomponent
 [`useentity`]: #useentity
@@ -779,6 +837,7 @@ function MyComponent() {
 [`useentityname`]: #useentityname
 [`useframe`]: #useframe
 [`userootentity`]: #userootentity
+[`uselisteneraccumulator`]: #uselisteneraccumulator
 [`runloop`]: #runloop
 [`errorboundary`]: #errorboundary
 [`canvas`]: /docs/api-2d#canvas

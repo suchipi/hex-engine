@@ -1230,27 +1230,66 @@ function Canvas(options: {
    */
   backgroundColor: string;
 }): {
-  /* Available since version: 0.0.0 */
+  /**
+   * The canvas element; either the one you passed in,
+   * or one that was created, if you didn't pass one in.
+   *
+   * Available since version: 0.0.0
+   */
   element: HTMLCanvasElement;
 
-  /* Available since version: 0.0.0 */
+  /**
+   * The canvas rendering context, as returned by `useContext`.
+   *
+   * Available since version: 0.0.0
+   */
   context: CanvasRenderingContext2D;
 
-  /* Available since version: 0.0.0 */
+  /**
+   * The "backstage" canvas context, as returned by `useBackstage`.
+   *
+   * Available since version: 0.0.0
+   */
   backstage: CanvasRenderingContext2D;
 
-  /* Available since version: 0.0.0 */
+  /**
+   * Sets how the contents of the canvas should be scaled when
+   * the canvas width and height does not exactly match the screen
+   * output width and height. If you pass `true` to this function,
+   * nearest-neighbor scaling will be used (if supported by your browser).
+   * Otherwise, linear scaling will be used (or maybe bilinear or trilinear,
+   * depending on the browser).
+   *
+   * Available since version: 0.0.0
+   */
   setPixelated: (on: boolean) => void;
 
-  /* Available since version: 0.0.0 */
+  /**
+   * Resizes the canvas to the CSS sizes specified by `realWidth` and `realHeight`,
+   * and sets its internal render width and height to the amounts specified by
+   * `pixelWidth` and `pixelHeight`.
+   *
+   * Available since version: 0.0.0
+   */
   resize(opts: {
-    realWidth: number;
-    realHeight: number;
+    realWidth: number | string;
+    realHeight: number | string;
     pixelWidth: number;
     pixelHeight: number;
   }): void;
 
-  /* Available since version: 0.0.0 */
+  /**
+   * Resizes the canvas so that it takes up the entire window,
+   * and sets up a window resize listener that resize the canvas
+   * such that it is always a direct scale factor of the window size,
+   * based on the provided pixelZoom option.
+   *
+   * Note that the window resize listener created by this method cannot be removed;
+   * if you need more fine-grained control than what this method provides, use
+   * `useWindowSize` and the `resize` method on Canvas to set up your own listener.
+   *
+   * Available since version: 0.0.0
+   */
   fullscreen({ pixelZoom?: number } = {}): void;
 };
 ```
@@ -3577,6 +3616,39 @@ import { useAudioContext } from "@hex-engine/2d";
 
 Retrieve the current AudioContext from the root Entity's `AudioContext` component, if any.
 
+### useCanvasSize
+
+> Available since version: 0.1.15
+
+```ts
+import { useCanvasSize } from "@hex-engine/2d";
+```
+
+`useCanvasSize(): Object`
+
+Returns an object with three properties on it:
+
+- `canvasSize: Point`: A Point that will get mutated such that it always equals the current canvas size
+- `onCanvasResize(() => void): void`: A function that lets you register
+  a function to be run every time the canvas size changes.
+- `resizeCanvas: ({ realWidth: number | string, realHeight: number| string, pixelWidth: number, pixelHeight: number }) => void`: A function that resizes the canvas.
+
+### useWindowSize
+
+> Available since version: 0.1.15
+
+```ts
+import { useWindowSize } from "@hex-engine/2d";
+```
+
+`useWindowSize(): Object`
+
+Returns an object with two properties on it:
+
+- `windowSize: Point`: A Point that will get mutated such that it always equals the window size
+- `onWindowResize(() => void): void`: A function that lets you register
+  a function to be run every time the window size changes.
+
 ## Other
 
 ### Preloader
@@ -3587,7 +3659,7 @@ Retrieve the current AudioContext from the root Entity's `AudioContext` componen
 import { Preloader } from "@hex-engine/2d";
 ```
 
-A class that helps ensure used resources are loaded before they are used.
+An object that helps ensure used resources are loaded before they are used.
 
 When resources that must be fetched over the network are created (such as Images and Audio),
 they register themselves with thie Preloader. To wait until all registered resources have been
