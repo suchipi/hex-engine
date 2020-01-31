@@ -11,7 +11,7 @@ const { useCallbackAsCurrent, useIsEnabled } = HooksSystem.hooks;
  *
  * This lets you store all your listeners in one StateAccumulator
  * (on the root entity, for example), but still handles enabling and
- * disabling as if the listeners were on the local component.
+ * disabling relative to the local component.
  */
 export default function useListenerAccumulator<
   T extends (...args: any[]) => any
