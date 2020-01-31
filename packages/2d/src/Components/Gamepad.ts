@@ -28,7 +28,7 @@ export default function Gamepad(
      * Which gamepad connected to the computer this Gamepad component represents, starting from 0.
      */
     gamepadIndex: number;
-  }>
+  }> = {}
 ) {
   useType(Gamepad);
 
