@@ -1,37 +1,66 @@
-import { useType, useNewComponent, useChild, useDestroy } from "@hex-engine/2d";
+import {
+  useType,
+  useNewComponent,
+  useChild,
+  useDraw,
+  Circle,
+  Geometry,
+  Point,
+} from "@hex-engine/2d";
 
-export default function Test() {
+export default function Test(position: Point) {
   useType(Test);
 
-  useDestroy().onDestroy(() => {
-    console.log("Test onDestroy");
-  });
+  const geometry = useNewComponent(() =>
+    Geometry({
+      shape: new Circle(100),
+      position,
+    })
+  );
 
-  useNewComponent(() => {
-    useDestroy().onDestroy(() => {
-      console.log("Test sub-component onDestroy");
-    });
+  useDraw((context) => {
+    context.lineWidth = 1;
+    context.strokeStyle = "blue";
+    geometry.shape.draw(context, "stroke");
   });
 
   useChild(() => {
-    useDestroy().onDestroy(() => {
-      console.log("child onDestroy");
-    });
+    const geometry = useNewComponent(() =>
+      Geometry({
+        shape: new Circle(90),
+      })
+    );
 
-    useNewComponent(() => {
-      useDestroy().onDestroy(() => {
-        console.log("child sub-component onDestroy");
-      });
+    useDraw((context) => {
+      context.lineWidth = 1;
+      context.strokeStyle = "blue";
+      geometry.shape.draw(context, "stroke");
     });
 
     useChild(() => {
-      useDestroy().onDestroy(() => {
-        console.log("grandchild onDestroy");
+      const geometry = useNewComponent(() =>
+        Geometry({
+          shape: new Circle(80),
+        })
+      );
+
+      useDraw((context) => {
+        context.lineWidth = 1;
+        context.strokeStyle = "blue";
+        geometry.shape.draw(context, "stroke");
       });
 
-      useNewComponent(() => {
-        useDestroy().onDestroy(() => {
-          console.log("grandchild sub-component onDestroy");
+      useChild(() => {
+        const geometry = useNewComponent(() =>
+          Geometry({
+            shape: new Circle(50),
+          })
+        );
+
+        useDraw((context) => {
+          context.lineWidth = 1;
+          context.strokeStyle = "blue";
+          geometry.shape.draw(context, "stroke");
         });
       });
     });

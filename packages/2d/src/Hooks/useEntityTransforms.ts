@@ -72,17 +72,24 @@ export default function useEntityTransforms(entity = useEntity()) {
   );
 
   return {
-    /** Returns a transformation matrix that will turn a world position into a position relative to the Entity. */
+    /** Returns a transformation matrix that will turn a position relative to the Entity into a world position. */
     matrixForWorldPosition: matrixForWorldPosition.bind(
       null,
       getEntityTransformMatrix
     ),
-    /** Returns a transformation matrix that will turn a world position into a position relative to the Entity's top-left corner. */
+    /** Returns a transformation matrix that will turn a position relative to the Entity into a world position, relative to the Entity's top-left corner. */
     matrixForDrawPosition: useCallbackAsCurrent(
       (roundToNearestPixel: boolean) => {
-        return matrixForWorldPosition((entity) =>
-          getEntityTransformMatrixForContext(entity, roundToNearestPixel)
-        );
+        return matrixForWorldPosition((someEnt) => {
+          if (someEnt === entity) {
+            return getEntityTransformMatrixForContext(
+              someEnt,
+              roundToNearestPixel
+            );
+          } else {
+            return getEntityTransformMatrix(someEnt);
+          }
+        });
       }
     ),
   };

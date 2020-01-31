@@ -6,6 +6,7 @@ import {
   Point,
   Physics,
   AudioContext,
+  useCanvasSize,
 } from "@hex-engine/2d";
 import Button from "./Button";
 import FPS from "./FPS";
@@ -47,5 +48,7 @@ export default function Root() {
     });
   });
 
-  useChild(Test);
+  const { canvasSize } = useCanvasSize();
+
+  useChild(() => Test(canvasSize.divide(2)));
 }
