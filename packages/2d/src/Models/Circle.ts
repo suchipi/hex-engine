@@ -1,7 +1,7 @@
-import Point from "./Point";
+import Vector from "./Vector";
 import Polygon from "./Polygon";
 
-const origin = new Point(0, 0);
+const origin = new Vector(0, 0);
 
 /**
  * Represents a circle; a shape with infinite points along its edge that are all
@@ -66,7 +66,7 @@ export default class Circle {
    * Returns a value indicating if a given point is either within the circle or on the its edge.
    * @param point The point to check.
    */
-  containsPoint(point: Point): boolean {
+  containsPoint(point: Vector): boolean {
     const distance = point.distanceTo(origin);
     return distance <= this.radius;
   }

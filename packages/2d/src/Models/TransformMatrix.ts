@@ -1,4 +1,4 @@
-import Point from "./Point";
+import Vector from "./Vector";
 
 export function createSVGMatrix(): DOMMatrix {
   const matrix = window.DOMMatrix
@@ -41,7 +41,7 @@ export default class TransformMatrix {
   }
 
   /** Creates a new TransformMatrix with the same values as this one, but with a scale operation applied. */
-  scale(size: Point, origin: Point): TransformMatrix;
+  scale(size: Vector, origin: Vector): TransformMatrix;
   scale(
     sizeX: number,
     sizeY: number,
@@ -68,7 +68,7 @@ export default class TransformMatrix {
   }
 
   /** Mutates this TransformMatrix by applying a scale operation. */
-  scaleMutate(size: Point, origin: Point): this;
+  scaleMutate(size: Vector, origin: Vector): this;
   scaleMutate(
     sizeX: number,
     sizeY: number,
@@ -113,32 +113,32 @@ export default class TransformMatrix {
   }
 
   /** Creates a new TransformMatrix with the same values as this one, but with a translation applied. */
-  translate(pos: Point): TransformMatrix;
+  translate(pos: Vector): TransformMatrix;
   translate(x: number, y: number): TransformMatrix;
-  translate(posOrX: Point | number, maybeY?: number): TransformMatrix {
+  translate(posOrX: Vector | number, maybeY?: number): TransformMatrix {
     let x: number, y: number;
     if (typeof posOrX === "number") {
       x = posOrX;
       y = maybeY!;
     } else {
-      x = (posOrX as Point).x;
-      y = (posOrX as Point).y;
+      x = (posOrX as Vector).x;
+      y = (posOrX as Vector).y;
     }
 
     return TransformMatrix.fromDOMMatrix(this._matrix.translate(x, y));
   }
 
   /** Mutates this TransformMatrix by applying a translation. */
-  translateMutate(pos: Point): this;
+  translateMutate(pos: Vector): this;
   translateMutate(x: number, y: number): this;
-  translateMutate(posOrX: Point | number, maybeY?: number): this {
+  translateMutate(posOrX: Vector | number, maybeY?: number): this {
     let x: number, y: number;
     if (typeof posOrX === "number") {
       x = posOrX;
       y = maybeY!;
     } else {
-      x = (posOrX as Point).x;
-      y = (posOrX as Point).y;
+      x = (posOrX as Vector).x;
+      y = (posOrX as Vector).y;
     }
 
     if (typeof this._matrix.translateSelf === "function") {
@@ -195,19 +195,19 @@ export default class TransformMatrix {
   }
 
   /**
-   * Applies this TransformMatrix's transform to the provided Point values, and returns a new Point.
+   * Applies this TransformMatrix's transform to the provided Vector values, and returns a new Vector.
    *
-   * This does *not* mutate the provided Point.
+   * This does *not* mutate the provided Vector.
    */
-  transformPoint(point: Point): Point {
+  transformPoint(point: Vector): Vector {
     const domPoint = point.asDOMPoint().matrixTransform(this._matrix);
-    return new Point(domPoint.x, domPoint.y);
+    return new Vector(domPoint.x, domPoint.y);
   }
 
   /**
-   * Applies this TransformMatrix's transform to the provided Point values, and mutates the provided Point to contain the transformed values.
+   * Applies this TransformMatrix's transform to the provided Vector values, and mutates the provided Vector to contain the transformed values.
    */
-  transformPointMutate(point: Point): Point {
+  transformPointMutate(point: Vector): Vector {
     const domPoint = point.asDOMPoint().matrixTransform(this._matrix);
     point.mutateInto(domPoint);
     return point;

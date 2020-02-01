@@ -10,7 +10,7 @@ import { useUpdate } from "../Canvas";
 import { useEntitiesAtPoint } from "../Hooks";
 import LowLevelMouse, { HexMouseEvent } from "./LowLevelMouse";
 import Geometry from "./Geometry";
-import { Point } from "../Models";
+import { Vector } from "../Models";
 
 const ON_ENTER = Symbol("ON_ENTER");
 const ON_MOVE = Symbol("ON_MOVE");
@@ -26,7 +26,7 @@ export default function MousePosition({
 } = {}) {
   useType(MousePosition);
 
-  function pointIsWithinBounds(localPoint: Point) {
+  function pointIsWithinBounds(localPoint: Vector) {
     if (!geometry) return false;
 
     const worldPoint = geometry.worldPosition().addMutate(localPoint);
@@ -40,7 +40,7 @@ export default function MousePosition({
   const { onMouseMove } = useNewComponent(LowLevelMouse);
 
   let isInsideBounds = false;
-  const position = new Point(Infinity, Infinity);
+  const position = new Vector(Infinity, Infinity);
 
   function handleEvent(event: HexMouseEvent) {
     position.mutateInto(event.pos);

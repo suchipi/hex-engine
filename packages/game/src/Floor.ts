@@ -5,7 +5,7 @@ import {
   Physics,
   Geometry,
   Polygon,
-  Point,
+  Vector,
   useCanvasSize,
 } from "@hex-engine/2d";
 
@@ -13,10 +13,10 @@ export default function Floor() {
   useType(Floor);
 
   const { canvasSize, onCanvasResize } = useCanvasSize();
-  const rectangleSize = new Point(canvasSize.x * 2, 48);
+  const rectangleSize = new Vector(canvasSize.x * 2, 48);
   const rectanglePosition = canvasSize
     .subtract(rectangleSize.divide(2))
-    .add(new Point(0, 20));
+    .add(new Vector(0, 20));
 
   const geometry = useNewComponent(() =>
     Geometry({
@@ -28,10 +28,10 @@ export default function Floor() {
   useNewComponent(() => Physics.Body(geometry, { isStatic: true }));
 
   onCanvasResize(() => {
-    const rectangleSize = new Point(canvasSize.x * 2, 48);
+    const rectangleSize = new Vector(canvasSize.x * 2, 48);
     const rectanglePosition = canvasSize
       .subtract(rectangleSize.divide(2))
-      .add(new Point(0, 20));
+      .add(new Vector(0, 20));
 
     geometry.shape.width = rectangleSize.x;
     geometry.shape.height = rectangleSize.y;

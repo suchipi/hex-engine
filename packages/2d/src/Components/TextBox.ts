@@ -1,7 +1,7 @@
 import { useType } from "@hex-engine/core";
 import { useInspectorHoverOutline } from "../Hooks";
 import { FontImplementation } from "./Font";
-import { Point, Polygon } from "../Models";
+import { Vector, Polygon } from "../Models";
 
 const textToTokens = (text: string): Array<string> => {
   return text
@@ -33,7 +33,7 @@ export default function TextBox({
   font: FontImplementation;
 
   /** The size of the text box. This determines how much content can fit inside. */
-  size: Point;
+  size: Vector;
 
   /** How much height to provide for each line of text. */
   lineHeight?: number;

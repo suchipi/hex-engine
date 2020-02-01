@@ -1,4 +1,4 @@
-import Point from "./Point";
+import Vector from "./Vector";
 
 /**
  * Represents a two-dimensional Grid with arbitrary contents in
@@ -8,7 +8,7 @@ export default class Grid<T> {
   _kind = "grid";
 
   /** The size of the grid, in rows and columns. */
-  size: Point;
+  size: Vector;
 
   private data: Array<Array<T>>;
 
@@ -16,9 +16,9 @@ export default class Grid<T> {
   defaultValue: T;
 
   constructor(rows: number, columns: number, defaultValue: T);
-  constructor(rowsAndCols: Point, defaultValue: T);
+  constructor(rowsAndCols: Vector, defaultValue: T);
   constructor(
-    rowsOrRowsAndCols: number | Point,
+    rowsOrRowsAndCols: number | Vector,
     columnsOrDefaultValue: number | T,
     maybeDefaultValue?: T
   ) {
@@ -31,8 +31,8 @@ export default class Grid<T> {
       columns = columnsOrDefaultValue;
       defaultValue = maybeDefaultValue!;
     } else {
-      rows = (rowsOrRowsAndCols as Point).x;
-      columns = (rowsOrRowsAndCols as Point).y;
+      rows = (rowsOrRowsAndCols as Vector).x;
+      columns = (rowsOrRowsAndCols as Vector).y;
       defaultValue = maybeDefaultValue as T;
     }
 
@@ -41,7 +41,7 @@ export default class Grid<T> {
       .map(() => Array(rows).fill(defaultValue));
 
     this.defaultValue = defaultValue;
-    this.size = new Point(rows, columns);
+    this.size = new Vector(rows, columns);
   }
 
   /** Fill in the grid with the provided data, represented as a 2D array. */
@@ -60,15 +60,15 @@ export default class Grid<T> {
 
   /** Get the value in the cell at the given row and column index. */
   get(row: number, column: number): T;
-  get(pos: Point): T;
-  get(rowOrPos: number | Point, maybeColumn?: number) {
+  get(pos: Vector): T;
+  get(rowOrPos: number | Vector, maybeColumn?: number) {
     let row: number, column: number;
     if (typeof rowOrPos === "number" && typeof maybeColumn === "number") {
       row = rowOrPos;
       column = maybeColumn;
     } else {
-      row = (rowOrPos as Point).x;
-      column = (rowOrPos as Point).y;
+      row = (rowOrPos as Vector).x;
+      column = (rowOrPos as Vector).y;
     }
 
     if (
@@ -85,16 +85,16 @@ export default class Grid<T> {
 
   /** Set the value in the cell at the given row and column index. */
   set(row: number, column: number, value: T): void;
-  set(pos: Point, value: T): void;
-  set(rowOrPos: number | Point, columnOrValue: number | T, maybeValue?: T) {
+  set(pos: Vector, value: T): void;
+  set(rowOrPos: number | Vector, columnOrValue: number | T, maybeValue?: T) {
     let row: number, column: number, value: T;
     if (typeof rowOrPos === "number" && typeof columnOrValue === "number") {
       row = rowOrPos;
       column = columnOrValue;
       value = maybeValue!;
     } else {
-      row = (rowOrPos as Point).x;
-      column = (rowOrPos as Point).y;
+      row = (rowOrPos as Vector).x;
+      column = (rowOrPos as Vector).y;
       value = columnOrValue as T;
     }
 

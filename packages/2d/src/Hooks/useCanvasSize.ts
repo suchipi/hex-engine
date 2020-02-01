@@ -3,14 +3,14 @@ import { useUpdate } from ".";
 import useContext from "./useContext";
 import useBackstage from "./useBackstage";
 import useWindowSize from "./useWindowSize";
-import { Point } from "../Models";
+import { Vector } from "../Models";
 
 const ON_CANVAS_RESIZE = Symbol("ON_CANVAS_RESIZE");
 const CANVAS_SIZE = Symbol("CANVAS_SIZE");
 
 /**
  * Returns an object with three properties on it:
- * - `canvasSize: Point`: A Point that will get mutated such that it always equals the current canvas size
+ * - `canvasSize: Vector`: A Vector that will get mutated such that it always equals the current canvas size
  * - `onCanvasResize(() => void): void`: A function that lets you register
  * a function to be run every time the canvas size changes.
  * - `resizeCanvas: ({
@@ -27,13 +27,13 @@ export default function useCanvasSize() {
   const resizeListeners = useListenerAccumulator<() => void>(
     useRootEntity().stateAccumulator(ON_CANVAS_RESIZE)
   );
-  const sizeState = useRootEntity().stateAccumulator<Point>(CANVAS_SIZE);
+  const sizeState = useRootEntity().stateAccumulator<Vector>(CANVAS_SIZE);
 
-  let size: Point;
+  let size: Vector;
   if (sizeState.all().length > 0) {
     size = sizeState.all()[0];
   } else {
-    size = new Point(context.canvas.width, context.canvas.height);
+    size = new Vector(context.canvas.width, context.canvas.height);
     sizeState.add(size);
 
     let changePending = false;

@@ -4,7 +4,7 @@ import {
   useChild,
   Canvas,
   Physics,
-  Point,
+  Vector,
 } from "@hex-engine/2d";
 import Floor from "./Floor";
 import Box from "./Box";
@@ -17,7 +17,7 @@ export default function Root() {
 
   useNewComponent(Physics.Engine);
 
-  const canvasCenter = new Point(
+  const canvasCenter = new Vector(
     canvas.element.width / 2,
     canvas.element.height / 2
   );

@@ -1,6 +1,6 @@
 import { useType } from "@hex-engine/core";
 import { useUpdate } from "../Canvas";
-import { Point } from "../Models";
+import { Vector } from "../Models";
 
 /** This Component provides the current state of a connected Gamepad, if present. */
 export default function Gamepad(
@@ -31,10 +31,10 @@ export default function Gamepad(
   useType(Gamepad);
 
   const state = {
-    /** A `Point` indicating which direction the left stick is being pressed in, and how far it's being pressed. */
-    leftStick: new Point(0, 0),
-    /** A `Point` indicating which direction the right stick is being pressed in, and how far it's being pressed. */
-    rightStick: new Point(0, 0),
+    /** A `Vector` indicating which direction the left stick is being pressed in, and how far it's being pressed. */
+    leftStick: new Vector(0, 0),
+    /** A `Vector` indicating which direction the right stick is being pressed in, and how far it's being pressed. */
+    rightStick: new Vector(0, 0),
     /** A Set containing all the names of the currently pressed buttons. */
     pressed: new Set<string>(),
     /**

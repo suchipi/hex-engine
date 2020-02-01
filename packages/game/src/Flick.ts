@@ -4,7 +4,7 @@ import {
   useType,
   LowLevelMouse,
   useEntitiesAtPoint,
-  Point,
+  Vector,
   Physics,
   Entity,
   Geometry,
@@ -15,8 +15,8 @@ import {
 export default function Flick() {
   useType(Flick);
 
-  const downPoint = new Point(0, 0);
-  const holdPoint = new Point(0, 0);
+  const downPoint = new Vector(0, 0);
+  const holdPoint = new Vector(0, 0);
   let target: Entity | null = null;
 
   const mouse = useNewComponent(LowLevelMouse);

@@ -1,7 +1,7 @@
 import { useType } from "@hex-engine/core";
 import { useUpdate } from "../Canvas";
 import { FontImplementation } from "./Font";
-import { Point } from "../Models";
+import { Vector } from "../Models";
 
 /** This Component renders some text using the provided Font Component (either a Font, BMFont, or SystemFont). */
 export default function Label({
@@ -19,7 +19,7 @@ export default function Label({
     text,
   };
 
-  const size = new Point(0, 0);
+  const size = new Vector(0, 0);
 
   function updateSize() {
     const metrics = font.measureText(state.text);

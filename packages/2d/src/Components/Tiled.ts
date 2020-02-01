@@ -1,7 +1,7 @@
 import { useType, useNewComponent, Component } from "@hex-engine/core";
 import SpriteSheet from "./SpriteSheet";
 import TileMap from "./TileMap";
-import { Grid, Point } from "../Models";
+import { Grid, Vector } from "../Models";
 
 function getElementByTagName(
   parent: XMLSourceLoader.Element,
@@ -161,8 +161,8 @@ type BaseTiledObjectApi = {
   object: XMLSourceLoader.Element;
   id: string;
   name: string;
-  location: Point;
-  size?: Point;
+  location: Vector;
+  size?: Vector;
   properties: Array<TiledProperty>;
 };
 type TiledObjectApi =
@@ -184,7 +184,7 @@ type TiledObjectApi =
     } & BaseTiledObjectApi)
   | ({
       kind: "polygon";
-      points: Array<Point>;
+      points: Array<Vector>;
     } & BaseTiledObjectApi);
 function makeTiledObject(object: XMLSourceLoader.Element): TiledObjectApi {
   useType(TiledMap);
@@ -199,13 +199,13 @@ function makeTiledObject(object: XMLSourceLoader.Element): TiledObjectApi {
   const api: BaseTiledObjectApi = {
     id: object.attributes.id,
     name: object.attributes.name,
-    location: new Point(
+    location: new Vector(
       Number(object.attributes.x),
       Number(object.attributes.y)
     ),
     size:
       object.attributes.width && object.attributes.height
-        ? new Point(
+        ? new Vector(
             Number(object.attributes.width),
             Number(object.attributes.height)
           )
@@ -260,7 +260,7 @@ function makeTiledObject(object: XMLSourceLoader.Element): TiledObjectApi {
         .map((pairString: string) => pairString.split(","))
         .map(
           (pair: [string, string]) =>
-            new Point(Number(pair[0]), Number(pair[1]))
+            new Vector(Number(pair[0]), Number(pair[1]))
         ),
     };
   }
@@ -317,7 +317,7 @@ function TiledMap(data: XMLSourceLoader.Element) {
     (prev, layer) => Math.max(prev, layer.grid.size.y),
     0
   );
-  const sizeInTiles = new Point(maxX, maxY);
+  const sizeInTiles = new Vector(maxX, maxY);
   const sizeInPixels = sizeInTiles.multiply(tileset.spriteSheet.tileSize);
 
   const objectGroups = data.children

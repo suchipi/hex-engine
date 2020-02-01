@@ -1,6 +1,6 @@
 import { useNewComponent, useType } from "@hex-engine/core";
 import Image from "./Image";
-import { Point } from "../Models";
+import { Vector } from "../Models";
 
 /**
  * A Component that helps you draw individual sprites from a sprite sheet.
@@ -47,7 +47,7 @@ export default function SpriteSheet({
 
   return {
     /** The size of each tile in the sheet. */
-    tileSize: new Point(tileWidth, tileHeight),
+    tileSize: new Vector(tileWidth, tileHeight),
 
     /** Draw the tile at the specified index into the canvas. */
     draw(

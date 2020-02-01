@@ -5,7 +5,7 @@ import {
   Geometry,
   Physics,
   Mouse,
-  Point,
+  Vector,
 } from "@hex-engine/2d";
 
 export default function Draggable(geometry: ReturnType<typeof Geometry>) {
@@ -17,7 +17,7 @@ export default function Draggable(geometry: ReturnType<typeof Geometry>) {
 
   let originalStatic = false;
   let isDragging = false;
-  const startedDraggingAt = new Point(0, 0);
+  const startedDraggingAt = new Vector(0, 0);
 
   mouse.onDown((event) => {
     if (physics) {

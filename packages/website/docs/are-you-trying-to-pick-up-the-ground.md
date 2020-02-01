@@ -24,18 +24,18 @@ import {
   useNewComponent,
   Geometry,
   Polygon,
-  Point,
+  Vector,
   Physics,
   useDraw,
 } from "@hex-engine/2d";
 import Draggable from "./Draggable"; // Added this line
 
-export default function Floor(position: Point) {
+export default function Floor(position: Vector) {
   useType(Floor);
 
   const geometry = useNewComponent(() =>
     Geometry({
-      shape: Polygon.rectangle(new Point(200, 25)),
+      shape: Polygon.rectangle(new Vector(200, 25)),
       position: position.clone(),
     })
   );

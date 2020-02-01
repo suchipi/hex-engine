@@ -5,7 +5,7 @@ import {
   useCallbackAsCurrent,
 } from "@hex-engine/core";
 import { useUpdate } from "../Canvas";
-import { Point } from "../Models";
+import { Vector } from "../Models";
 import { useContext, useEntityTransforms } from "../Hooks";
 
 const MOUSE_MOVE = Symbol("MOUSE_MOVE");
@@ -15,10 +15,10 @@ const MOUSE_UP = Symbol("MOUSE_UP");
 /** A Mouse event in Hex Engine. */
 export class HexMouseEvent {
   /** The position of the cursor, relative to the current Entity's origin. */
-  pos: Point;
+  pos: Vector;
 
   /** The amount that the cursor has moved since the last frame. */
-  delta: Point;
+  delta: Vector;
 
   /** Which buttons were pressed during this event, or, in the case of a MouseUp event, which buttons were released. */
   buttons: {
@@ -30,8 +30,8 @@ export class HexMouseEvent {
   };
 
   constructor(
-    pos: Point,
-    delta: Point,
+    pos: Vector,
+    delta: Vector,
     buttons: {
       left: boolean;
       right: boolean;
@@ -79,7 +79,7 @@ export default function LowLevelMouse() {
 
   const transforms = useEntityTransforms();
 
-  function translatePos(clientX: number, clientY: number): Point {
+  function translatePos(clientX: number, clientY: number): Vector {
     const rect = canvas.getBoundingClientRect();
     const scaleX = rect.width / canvas.width;
     const scaleY = rect.height / canvas.height;
@@ -87,7 +87,7 @@ export default function LowLevelMouse() {
     const x = (clientX - rect.left) / scaleX;
     const y = (clientY - rect.top) / scaleY;
 
-    const untransformedPoint = new Point(x, y);
+    const untransformedPoint = new Vector(x, y);
 
     return transforms
       .matrixForWorldPosition()
@@ -95,8 +95,8 @@ export default function LowLevelMouse() {
       .transformPoint(untransformedPoint);
   }
 
-  let lastPos = new Point(0, 0);
-  const event = new HexMouseEvent(new Point(0, 0), new Point(0, 0), {
+  let lastPos = new Vector(0, 0);
+  const event = new HexMouseEvent(new Vector(0, 0), new Vector(0, 0), {
     left: false,
     right: false,
     middle: false,

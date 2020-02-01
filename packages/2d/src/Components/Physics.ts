@@ -8,7 +8,7 @@ import {
 } from "@hex-engine/core";
 import Matter from "matter-js";
 import Geometry from "./Geometry";
-import { Point, Polygon, Circle } from "../Models";
+import { Vector, Polygon, Circle } from "../Models";
 import { useUpdate, useDraw, useDebugOverlayDrawTime } from "../Hooks";
 
 // Matter needs this
@@ -33,7 +33,7 @@ type CollisionListener = (other: {
  */
 function PhysicsEngine({
   debugDraw = false,
-  gravity = new Point(0, 1),
+  gravity = new Vector(0, 1),
   enableSleeping = true,
 }: {
   /**
@@ -43,10 +43,10 @@ function PhysicsEngine({
   debugDraw?: boolean;
 
   /**
-   * The gravity of the world, as a Point with x and y Components.
+   * The gravity of the world, as a Vector.
    * An x or y value of 1 means "normal Earth gravity in this direction".
    */
-  gravity?: Point;
+  gravity?: Vector;
 
   /**
    * Whether to enable sleeping in the physics simulation.
@@ -398,7 +398,7 @@ function PhysicsBody(
     get body() {
       return body;
     },
-    applyForce(position: Point, force: Point) {
+    applyForce(position: Vector, force: Vector) {
       Matter.Body.applyForce(body, position, force);
     },
     setAngle(angle: number) {
@@ -416,13 +416,13 @@ function PhysicsBody(
     setMass(mass: number) {
       Matter.Body.setMass(body, mass);
     },
-    setPosition(position: Point) {
+    setPosition(position: Vector) {
       Matter.Body.setPosition(body, position);
     },
     setStatic(isStatic: boolean) {
       Matter.Body.setStatic(body, isStatic);
     },
-    setVelocity(velocity: Point) {
+    setVelocity(velocity: Vector) {
       Matter.Body.setVelocity(body, velocity);
     },
     onCollision: addCollisionListener,
@@ -474,7 +474,7 @@ function PhysicsConstraint(
      *
      * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
      */
-    pointA: Point;
+    pointA: Vector;
 
     /**
      * The position where the constraint is attached to `bodyB`, or a world-space position
@@ -482,7 +482,7 @@ function PhysicsConstraint(
      *
      * For more information, check the [Matter.js Documentation](https://brm.io/matter-js/docs/classes/Constraint.html)
      */
-    pointB: Point;
+    pointB: Vector;
 
     /**
      * The resting length of the constraint.

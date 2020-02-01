@@ -45,7 +45,7 @@ import {
   useChild,
   Canvas,
   Physics,
-  Point,
+  Vector,
 } from "@hex-engine/2d";
 import Floor from "./Floor";
 import Box from "./Box";
@@ -58,7 +58,7 @@ export default function Root() {
 
   useNewComponent(Physics.Engine);
 
-  const canvasCenter = new Point(
+  const canvasCenter = new Vector(
     canvas.element.width / 2,
     canvas.element.height / 2
   );
@@ -77,7 +77,7 @@ import {
   useChild,
   Canvas,
   Physics,
-  Point,
+  Vector,
 } from "@hex-engine/2d";
 ```
 
@@ -88,7 +88,7 @@ First, we import a lot of stuff from [`@hex-engine/2d`](/docs/api-2d) that we're
 - [`useChild`](/docs/api-core#usechildcomponentfunction-function-entity) is a function we can call to create a new Entity as a child of the current Entity.
 - [`Canvas`](/docs/api-2d#canvas) is a Component function exported by [`@hex-engine/2d`](/docs/api-2d) that renders children onto a HTML5 [Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) element.
 - [`Physics`](/docs/api-2d#physicsbody) is an Object with Component functions on it that make Entities behave like real physical objects.
-- [`Point`](/docs/api-2d#point) is a class that represents a 2D point in space; it has an `x` property and a `y` property.
+- [`Vector`](/docs/api-2d#vector) is a class that represents a 2D vector; either a point in space, a width and height, or a length and direction. It has an `x` property and a `y` property.
 
 It's okay if you don't understand all of this right now; it'll make more sense with time.
 
@@ -130,9 +130,9 @@ export default function Root() {
   // other Entities in the game to use physics.
   useNewComponent(Physics.Engine);
 
-  // Next, we make a new `Point`, setting its `x` and `y` values to the center of
+  // Next, we make a new `Vector`, setting its `x` and `y` values to the center of
   // the canvas.
-  const canvasCenter = new Point(
+  const canvasCenter = new Vector(
     canvas.element.width / 2,
     canvas.element.height / 2
   );

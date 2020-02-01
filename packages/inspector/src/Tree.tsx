@@ -339,7 +339,7 @@ export default function Tree({
 
       className =
         (data.constructor?.name || "") +
-        // Point
+        // Vector
         (data.x != null && data.y != null
           ? ` (${formatNumber(data.x)}, ${formatNumber(data.y)})`
           : "") +

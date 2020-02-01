@@ -3,7 +3,7 @@ import {
   useNewComponent,
   Geometry,
   Polygon,
-  Point,
+  Vector,
   useUpdate,
   useDraw,
   Physics,
@@ -14,13 +14,13 @@ import {
 } from "@hex-engine/2d";
 import samples from "modal-synthesis/samples";
 
-export default function Box({ position }: { position: Point }) {
+export default function Box({ position }: { position: Vector }) {
   useType(Box);
   useEntityName("Box");
 
   const geometry = useNewComponent(() =>
     Geometry({
-      shape: Polygon.rectangle(new Point(10, 10)),
+      shape: Polygon.rectangle(new Vector(10, 10)),
       position,
     })
   );

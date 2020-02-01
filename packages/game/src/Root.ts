@@ -3,7 +3,7 @@ import {
   useNewComponent,
   useChild,
   useType,
-  Point,
+  Vector,
   Physics,
   AudioContext,
   useCanvasSize,
@@ -35,7 +35,7 @@ export default function Root() {
   useChild(() => {
     Button({
       calcPosition: (size) =>
-        new Point(0, canvas.element.height)
+        new Vector(0, canvas.element.height)
           .subtractYMutate(size.y / 2)
           .addXMutate(size.x / 2)
           .roundMutate(),
@@ -43,7 +43,7 @@ export default function Root() {
       onClick: () => {
         const randomX = Math.random() * canvas.element.width;
 
-        scene.useChild(() => Hex({ position: new Point(randomX, 0) }));
+        scene.useChild(() => Hex({ position: new Vector(randomX, 0) }));
       },
     });
   });

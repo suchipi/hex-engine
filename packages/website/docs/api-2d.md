@@ -95,7 +95,7 @@ said in other words, returns the rectangle that this circle could be perfectly
 
 > Available since version: 0.0.1
 
-`containsPoint(point: Point): boolean`
+`containsPoint(point: Vector): boolean`
 
 Returns a value indicating if a given point is either within the circle or on the its edge.
 
@@ -134,7 +134,7 @@ Represents a two-dimensional Grid with arbitrary contents in each cell.
 > Available since version: 0.0.0
 
 `constructor(rows: number, columns: number, defaultValue: T)` <br />
-`constructor(rowsAndCols: Point, defaultValue: T)`
+`constructor(rowsAndCols: Vector, defaultValue: T)`
 
 Creates a new Grid.
 
@@ -144,7 +144,7 @@ Creates a new Grid.
 
 > Available since version: 0.0.0
 
-`size: Point`
+`size: Vector`
 
 The size of the grid, in rows and columns.
 
@@ -171,7 +171,7 @@ Fill in the grid with the provided data, represented as a 2D array.
 > Available since version: 0.0.0
 
 `get(row: number, column: number): T` <br />
-`get(pos: Point): T`
+`get(pos: Vector): T`
 
 Get the value in the cell at the given row and column index.
 
@@ -180,7 +180,7 @@ Get the value in the cell at the given row and column index.
 > Available since version: 0.0.0
 
 `set(row: number, column: number, value: T): void` <br />
-`set(pos: Point, value: T): void`
+`set(pos: Vector, value: T): void`
 
 Set the value in the cell at the given row and column index.
 
@@ -192,17 +192,17 @@ Set the value in the cell at the given row and column index.
 
 Returns an iterable of all the contents of this grid and their row and column indices.
 
-### Point
+### Vector
 
 > Available since version: 0.0.1
 
 ```ts
-import { Point } from "@hex-engine/2d";
+import { Vector } from "@hex-engine/2d";
 ```
 
 A generic object with an `x` and `y` property.
 
-Although it is named `Point`, it is not only used to represent points in space- it's also often used to represent two-dimensional sizes.
+Although it is named `Vector`, it is not only used to represent points in space- it's also often used to represent two-dimensional sizes.
 
 > In versions prior to 0.0.1, this class was called `Vec2`.
 
@@ -214,23 +214,23 @@ Although it is named `Point`, it is not only used to represent points in space- 
 
 `constructor(x: number, y: number)`
 
-Creates a new Point.
+Creates a new Vector.
 
 ##### from
 
 > Available since version: 0.0.1
 
-`static from({ x, y }: { x: number; y: number }): Point`
+`static from({ x, y }: { x: number; y: number }): Vector`
 
-Create a Point from any object with an x property and a y property.
+Create a Vector from any object with an x property and a y property.
 
 ##### fromAngleAndMagnitude
 
 > Available since version: 0.2.0
 
-`static fromAngleAndMagnitude(angle: number, magnitude: number): Point`
+`static fromAngleAndMagnitude(angle: number, magnitude: number): Vector`
 
-Create a Point from an angle and magnitude.
+Create a Vector from an angle and magnitude.
 
 #### Properties
 
@@ -270,17 +270,17 @@ The distance of the point (x, y) from the origin (0, 0).
 
 > Available since version: 0.0.1
 
-`clone(): Point`
+`clone(): Vector`
 
-Create a new Point with the same x and y values as this one.
+Create a new Vector with the same x and y values as this one.
 
 ##### opposite
 
 > Available since version: 0.0.1
 
-`opposite(): Point`
+`opposite(): Vector`
 
-Create a new Point whose x and y values have the opposite sign as this one's.
+Create a new Vector whose x and y values have the opposite sign as this one's.
 
 ##### oppositeMutate
 
@@ -288,31 +288,31 @@ Create a new Point whose x and y values have the opposite sign as this one's.
 
 `oppositeMutate(): this`
 
-Mutate this Point so that its x and y values have the opposite sign.
+Mutate this Vector so that its x and y values have the opposite sign.
 
 ##### add
 
 > Available since version: 0.0.0
 
-`add(other: Point | number): Point`
+`add(other: Vector | number): Vector`
 
-Create a new Point whose x and y values are equivalent to this one's, but with the specified value added.
+Create a new Vector whose x and y values are equivalent to this one's, but with the specified value added.
 
 ##### addMutate
 
 > Available since version: 0.0.0
 
-`addMutate(other: Point | number): this`
+`addMutate(other: Vector | number): this`
 
-Mutate this Point by adding the specified value to its x and y values.
+Mutate this Vector by adding the specified value to its x and y values.
 
 ##### addX
 
 > Available since version: 0.0.1
 
-`addX(amount: number): Point`
+`addX(amount: number): Vector`
 
-Create a new Point whose x and y values are equivalent to this one's, but with the specified value added to the x value.
+Create a new Vector whose x and y values are equivalent to this one's, but with the specified value added to the x value.
 
 ##### addXMutate
 
@@ -320,15 +320,15 @@ Create a new Point whose x and y values are equivalent to this one's, but with t
 
 `addXMutate(amount: number): this`
 
-Mutate this Point by adding the specified value to its x value.
+Mutate this Vector by adding the specified value to its x value.
 
 ##### addY
 
 > Available since version: 0.0.1
 
-`addY(amount: number): Point`
+`addY(amount: number): Vector`
 
-Create a new Point whose x and y values are equivalent to this one's, but with the specified value added to the y value.
+Create a new Vector whose x and y values are equivalent to this one's, but with the specified value added to the y value.
 
 ##### addYMutate
 
@@ -336,31 +336,31 @@ Create a new Point whose x and y values are equivalent to this one's, but with t
 
 `addYMutate(amount: number): this`
 
-Mutate this Point by adding the specified value to its y value.
+Mutate this Vector by adding the specified value to its y value.
 
 ##### subtract
 
 > Available since version: 0.0.0
 
-`subtract(other: Point | number): Point`
+`subtract(other: Vector | number): Vector`
 
-Create a new Point whose x and y values are equivalent to this one's, but with the specified value subtracted.
+Create a new Vector whose x and y values are equivalent to this one's, but with the specified value subtracted.
 
 ##### subtractMutate
 
 > Available since version: 0.0.0
 
-`subtractMutate(other: Point | number): this`
+`subtractMutate(other: Vector | number): this`
 
-Mutate this Point by subtracting the specified value from its x and y values.
+Mutate this Vector by subtracting the specified value from its x and y values.
 
 ##### subtractX
 
 > Available since version: 0.0.1
 
-`subtractX(amount: number): Point`
+`subtractX(amount: number): Vector`
 
-Create a new Point whose x and y values are equivalent to this one's, but with the specified value subtracted from the x value.
+Create a new Vector whose x and y values are equivalent to this one's, but with the specified value subtracted from the x value.
 
 ##### subtractXMutate
 
@@ -368,15 +368,15 @@ Create a new Point whose x and y values are equivalent to this one's, but with t
 
 `subtractXMutate(amount: number): this`
 
-Mutate this Point by subtracting the specified value from its x value.
+Mutate this Vector by subtracting the specified value from its x value.
 
 ##### subtractY
 
 > Available since version: 0.0.1
 
-`subtractY(amount: number): Point`
+`subtractY(amount: number): Vector`
 
-Create a new Point whose x and y values are equivalent to this one's, but with the specified value subtracted from the y value.
+Create a new Vector whose x and y values are equivalent to this one's, but with the specified value subtracted from the y value.
 
 ##### subtractYMutate
 
@@ -384,15 +384,15 @@ Create a new Point whose x and y values are equivalent to this one's, but with t
 
 `subtractYMutate(amount: number): this`
 
-Mutate this Point by subtracting the specified value from its y value.
+Mutate this Vector by subtracting the specified value from its y value.
 
 ##### multiply
 
 > Available since version: 0.0.0
 
-`multiply(other: Point | number): Point`
+`multiply(other: Vector | number): Vector`
 
-Create a new Point whose x and y values are equivalent to this one's, but with each multiplied by the specified value.
+Create a new Vector whose x and y values are equivalent to this one's, but with each multiplied by the specified value.
 
 > In versions prior to 0.0.1, this method was named `times`.
 
@@ -400,9 +400,9 @@ Create a new Point whose x and y values are equivalent to this one's, but with e
 
 > Available since version: 0.0.0
 
-`multiplyMutate(other: Point | number): this`
+`multiplyMutate(other: Vector | number): this`
 
-Mutate this Point by multiplying its x and y values with the specified value.
+Mutate this Vector by multiplying its x and y values with the specified value.
 
 > In versions prior to 0.0.1, this method was named `timesMutate`.
 
@@ -410,9 +410,9 @@ Mutate this Point by multiplying its x and y values with the specified value.
 
 > Available since version: 0.0.1
 
-`multiplyX(amount: number): Point`
+`multiplyX(amount: number): Vector`
 
-Create a new Point whose x and y values are equivalent to this one's, but with the x value multiplied by the specified value.
+Create a new Vector whose x and y values are equivalent to this one's, but with the x value multiplied by the specified value.
 
 ##### multiplyXMutate
 
@@ -420,15 +420,15 @@ Create a new Point whose x and y values are equivalent to this one's, but with t
 
 `multiplyXMutate(amount: number): this`
 
-Mutate this Point by multiplying its x value by the specified value.
+Mutate this Vector by multiplying its x value by the specified value.
 
 ##### multiplyY
 
 > Available since version: 0.0.1
 
-`multiplyY(amount: number): Point`
+`multiplyY(amount: number): Vector`
 
-Create a new Point whose x and y values are equivalent to this one's, but with the y value multiplied by the specified value.
+Create a new Vector whose x and y values are equivalent to this one's, but with the y value multiplied by the specified value.
 
 ##### multiplyYMutate
 
@@ -436,15 +436,15 @@ Create a new Point whose x and y values are equivalent to this one's, but with t
 
 `multiplyYMutate(amount: number): this`
 
-Mutate this Point by multiplying its y value by the specified value.
+Mutate this Vector by multiplying its y value by the specified value.
 
 ##### divide
 
 > Available since version: 0.0.0
 
-`divide(other: Point | number): Point`
+`divide(other: Vector | number): Vector`
 
-Create a new Point whose x and y values are equivalent to this one's, but with each divided by the specified value.
+Create a new Vector whose x and y values are equivalent to this one's, but with each divided by the specified value.
 
 > In versions prior to 0.0.1, this method was named `dividedBy`.
 
@@ -452,9 +452,9 @@ Create a new Point whose x and y values are equivalent to this one's, but with e
 
 > Available since version: 0.0.0
 
-`divideMutate(other: Point | number): this`
+`divideMutate(other: Vector | number): this`
 
-Mutate this Point by dividing its x and y values by the specified value.
+Mutate this Vector by dividing its x and y values by the specified value.
 
 > In versions prior to 0.0.1, this method was named `dividedByMutate`.
 
@@ -462,9 +462,9 @@ Mutate this Point by dividing its x and y values by the specified value.
 
 > Available since version: 0.0.1
 
-`divideX(amount: number): Point`
+`divideX(amount: number): Vector`
 
-Create a new Point whose x and y values are equivalent to this one's, but with its x value divided by the specified value.
+Create a new Vector whose x and y values are equivalent to this one's, but with its x value divided by the specified value.
 
 ##### divideXMutate
 
@@ -472,15 +472,15 @@ Create a new Point whose x and y values are equivalent to this one's, but with i
 
 `divideXMutate(amount: number): this`
 
-Mutate this Point by dividing its x value by the specified value.
+Mutate this Vector by dividing its x value by the specified value.
 
 ##### divideY
 
 > Available since version: 0.0.1
 
-`divideY(amount: number): Point`
+`divideY(amount: number): Vector`
 
-Create a new Point whose x and y values are equivalent to this one's, but with its y value divided by the specified value.
+Create a new Vector whose x and y values are equivalent to this one's, but with its y value divided by the specified value.
 
 ##### divideYMutate
 
@@ -488,31 +488,31 @@ Create a new Point whose x and y values are equivalent to this one's, but with i
 
 `divideYMutate(amount: number): this`
 
-Mutate this Point by dividing its y value by the specified value.
+Mutate this Vector by dividing its y value by the specified value.
 
 ##### equals
 
 > Available since version: 0.0.0
 
-`equals(other: Point): boolean`
+`equals(other: Vector): boolean`
 
-Check if this Point and another Point have the same x and y values.
+Check if this Vector and another Vector have the same x and y values.
 
 ##### distanceTo
 
 > Available since version: 0.0.0
 
-`distanceTo(other: Point): number`
+`distanceTo(other: Vector): number`
 
-Measure the distance between this Point and another Point.
+Measure the distance between this Vector and another Vector.
 
 ##### round
 
 > Available since version: 0.0.0
 
-`round(): Point`
+`round(): Vector`
 
-Return a new Point that is the same as this Point, but with its x and y values rounded to the nearest integer.
+Return a new Vector that is the same as this Vector, but with its x and y values rounded to the nearest integer.
 
 ##### roundMutate
 
@@ -520,15 +520,15 @@ Return a new Point that is the same as this Point, but with its x and y values r
 
 `roundMutate(): this`
 
-Mutate this Point by rounding its x and y values to the nearest integer.
+Mutate this Vector by rounding its x and y values to the nearest integer.
 
 ##### roundDown
 
 > Available since version: 0.0.0
 
-`roundDown(): Point`
+`roundDown(): Vector`
 
-Return a new Point that is the same as this Point, but with its x and y values rounded down to the nearest integer.
+Return a new Vector that is the same as this Vector, but with its x and y values rounded down to the nearest integer.
 
 ##### roundDownMutate
 
@@ -536,15 +536,15 @@ Return a new Point that is the same as this Point, but with its x and y values r
 
 `roundDownMutate(): this`
 
-Mutate this Point by rounding its x and y values down to the nearest integer.
+Mutate this Vector by rounding its x and y values down to the nearest integer.
 
 ##### roundUp
 
 > Available since version: 0.0.0
 
-`roundUp(): Point`
+`roundUp(): Vector`
 
-Return a new Point that is the same as this Point, but with its x and y values rounded up to the nearest integer.
+Return a new Vector that is the same as this Vector, but with its x and y values rounded up to the nearest integer.
 
 ##### roundUpMutate
 
@@ -552,7 +552,7 @@ Return a new Point that is the same as this Point, but with its x and y values r
 
 `roundUpMutate(): this`
 
-Mutate this Point by rounding its x and y values up to the nearest integer.
+Mutate this Vector by rounding its x and y values up to the nearest integer.
 
 ##### mutateInto
 
@@ -560,17 +560,17 @@ Mutate this Point by rounding its x and y values up to the nearest integer.
 
 `mutateInto(other: { x: number; y: number })`
 
-Mutate this Point by setting its x and y values to the values found on the provided object.
+Mutate this Vector by setting its x and y values to the values found on the provided object.
 
-> In versions prior to 0.0.1, this method only accepted other Point instances (though they were called Vec2 instances back then).
+> In versions prior to 0.0.1, this method only accepted other Vector instances (though they were called Vec2 instances back then).
 
 ##### normalize
 
 > Available since version: 0.2.0
 
-`normalize(): Point`
+`normalize(): Vector`
 
-Create a new Point by normalizing the magnitude of this one (setting it to 1).
+Create a new Vector by normalizing the magnitude of this one (setting it to 1).
 
 ##### normalizeMutate
 
@@ -584,9 +584,9 @@ Mutate this point by normalizing its magnitude (setting it to 1).
 
 > Available since version: 0.2.0
 
-`rotate(radians: number): Point`
+`rotate(radians: number): Vector`
 
-Create a new Point equivalent to this one but rotated by the specified amount (in radians), clockwise.
+Create a new Vector equivalent to this one but rotated by the specified amount (in radians), clockwise.
 
 ##### rotateMutate
 
@@ -594,7 +594,7 @@ Create a new Point equivalent to this one but rotated by the specified amount (i
 
 `rotateMutate(radians: number): this`
 
-Mutate this Point by rotating it the specified amount (in radians), clockwise.
+Mutate this Vector by rotating it the specified amount (in radians), clockwise.
 
 ##### asDOMPoint
 
@@ -602,15 +602,15 @@ Mutate this Point by rotating it the specified amount (in radians), clockwise.
 
 `asDOMPoint(): DOMPoint`
 
-Create a DOMPoint with the same x and y values as this Point.
+Create a DOMPoint with the same x and y values as this Vector.
 
 ##### transformUsingMatrix
 
 > Available since version: 0.0.0
 
-`transformUsingMatrix(matrix: DOMMatrix): Point`
+`transformUsingMatrix(matrix: DOMMatrix): Vector`
 
-Create a new Point by transforming this Point using the provided DOMMatrix.
+Create a new Vector by transforming this Vector using the provided DOMMatrix.
 
 ##### transformUsingMatrixMutate
 
@@ -618,7 +618,7 @@ Create a new Point by transforming this Point using the provided DOMMatrix.
 
 `transformUsingMatrixMutate(matrix: DOMMatrix): this`
 
-Mutate this Point by transforming its x and y values using the provided DOMMatrix.
+Mutate this Vector by transforming its x and y values using the provided DOMMatrix.
 
 ### Polygon
 
@@ -636,7 +636,7 @@ Represents a closed shape consisting of a set of connected straight line segment
 
 > Available since version: 0.0.1
 
-`constructor(points: Array<Point>)`
+`constructor(points: Array<Vector>)`
 
 Creates a new Polygon.
 
@@ -654,7 +654,7 @@ recenters all points around it.
 
 > Available since version: 0.0.1
 
-`static rectangle(size: Point): Polygon` <br />
+`static rectangle(size: Vector): Polygon` <br />
 `static rectangle(width: number, height: number): Polygon`
 
 Creates a rectangular polygon; a 4-sided polygon where the angles between all sides are all π/2 radians (90 degrees).
@@ -665,7 +665,7 @@ Creates a rectangular polygon; a 4-sided polygon where the angles between all si
 
 > Available since version: 0.0.1
 
-`points: Array<Point>`
+`points: Array<Vector>`
 
 Points representing the corners where the polygon's line segments meet.
 Their `x` and `y` properties refer to their position relative to the
@@ -714,7 +714,7 @@ said in other words, returns the rectangle that this polygon could be perfectly
 
 > Available since version: 0.0.1
 
-`containsPoint(point: Point): boolean`
+`containsPoint(point: Vector): boolean`
 
 Returns whether the given point falls inside the polygon.
 
@@ -865,7 +865,7 @@ The `f` component affects vertical translation (movement).
 
 > Available since version: 0.0.0
 
-`scale(size: Point, origin: Point): TransformMatrix` <br />
+`scale(size: Vector, origin: Vector): TransformMatrix` <br />
 `scale(sizeX: number, sizeY: number, originX: number, originY: number): TransformMatrix`
 
 Creates a new TransformMatrix with the same values as this one, but with a scale operation applied.
@@ -874,7 +874,7 @@ Creates a new TransformMatrix with the same values as this one, but with a scale
 
 > Available since version: 0.0.0
 
-`scaleMutate(size: Point, origin: Point): this` <br />
+`scaleMutate(size: Vector, origin: Vector): this` <br />
 `scaleMutate(sizeX: number, sizeY: number, originX: number, originY: number): this`
 
 Mutates this TransformMatrix by applying a scale operation.
@@ -883,7 +883,7 @@ Mutates this TransformMatrix by applying a scale operation.
 
 > Available since version: 0.0.0
 
-`translate(pos: Point): TransformMatrix` <br />
+`translate(pos: Vector): TransformMatrix` <br />
 `translate(x: number, y: number): TransformMatrix`
 
 Creates a new TransformMatrix with the same values as this one, but with a translation applied.
@@ -892,7 +892,7 @@ Creates a new TransformMatrix with the same values as this one, but with a trans
 
 > Available since version: 0.0.0
 
-`translateMutate(pos: Point): this` <br />
+`translateMutate(pos: Vector): this` <br />
 `translateMutate(x: number, y: number): this`
 
 Mutates this TransformMatrix by applying a translation.
@@ -937,19 +937,19 @@ Mutates this TransformMatrix by multiplying it with another.
 
 > Available since version: 0.0.0
 
-`transformPoint(point: Point): Point`
+`transformPoint(point: Vector): Vector`
 
-Applies this TransformMatrix's transform to the provided Point values, and returns a new Point.
+Applies this TransformMatrix's transform to the provided Vector values, and returns a new Vector.
 
-This does _not_ mutate the provided Point.
+This does _not_ mutate the provided Vector.
 
 ##### transformPointMutate
 
 > Available since version: 0.1.0
 
-`transformPointMutate(point: Point): Point`
+`transformPointMutate(point: Vector): Vector`
 
-Applies this TransformMatrix's transform to the provided Point values, and mutates the provided Point to contain the transformed values.
+Applies this TransformMatrix's transform to the provided Vector values, and mutates the provided Vector to contain the transformed values.
 
 ##### inverse
 
@@ -1035,7 +1035,7 @@ You will almost never construct this class manually; instead, an instance of it 
 
 > Available since version: 0.0.1
 
-`pos: Point`
+`pos: Vector`
 
 The position of the cursor, relative to the current Entity's origin.
 
@@ -1043,7 +1043,7 @@ The position of the cursor, relative to the current Entity's origin.
 
 > Available since version: 0.0.1
 
-`delta: Point`
+`delta: Vector`
 
 The amount that the cursor has moved since the last frame.
 
@@ -1378,7 +1378,7 @@ function Aseprite(
    *
    * Available since version: 0.0.1
    */
-  size: Point;
+  size: Vector;
 };
 ```
 
@@ -1664,20 +1664,20 @@ function Gamepad(
   }>
 ): {
   /**
-   * A `Point` indicating which direction the left stick is being pressed in,
+   * A `Vector` indicating which direction the left stick is being pressed in,
    * and how far it's being pressed.
    *
    * Available since version: 0.0.0
    */
-  leftStick: Point;
+  leftStick: Vector;
 
   /**
-   * A `Point` indicating which direction the right stick is being pressed in,
+   * A `Vector` indicating which direction the right stick is being pressed in,
    * and how far it's being pressed.
    *
    * Available since version: 0.0.0
    */
-  rightStick: Point;
+  rightStick: Vector;
 
   /**
    * A Set containing all the names of the currently pressed buttons.
@@ -1744,7 +1744,7 @@ function Geometry(init: {
    *
    * Available since version: 0.0.1
    */
-  position?: Point | undefined;
+  position?: Vector | undefined;
 
   /**
    * The current rotation of the current Entity,
@@ -1762,7 +1762,7 @@ function Geometry(init: {
    *
    * Available since version: 0.0.1
    */
-  scale?: Point | undefined;
+  scale?: Vector | undefined;
 }): {
   /**
    * The shape that the current Entity is.
@@ -1776,7 +1776,7 @@ function Geometry(init: {
    *
    * Available since version: 0.0.1
    */
-  position: Point;
+  position: Vector;
 
   /**
    * The current rotation of the current Entity,
@@ -1792,7 +1792,7 @@ function Geometry(init: {
    *
    * Available since version: 0.0.1
    */
-  scale: Point;
+  scale: Vector;
 
   /**
    * A helper function that calculates the position of the current Entity
@@ -1800,7 +1800,7 @@ function Geometry(init: {
    *
    * Available since version: 0.0.1
    */
-  worldPosition(): Point;
+  worldPosition(): Vector;
 };
 ```
 
@@ -1927,7 +1927,7 @@ function Keyboard(
   pressed: Set<string>;
 
   /**
-   * A helper function that creates a `Point` pointing in the direction indicated by
+   * A helper function that creates a `Vector` pointing in the direction indicated by
    * the combined state of the four specified direction keys. This is mainly useful
    * in that it allows you to treat Gamepad and Keyboard inputs the same.
    *
@@ -1943,7 +1943,7 @@ function Keyboard(
     downKey: string,
     leftKey: string,
     rightKey: string
-  ): Point;
+  ): Vector;
 };
 ```
 
@@ -1977,7 +1977,7 @@ function Label(options: {
    *
    * Available since version: 0.0.0
    */
-  size: Point;
+  size: Vector;
 
   /**
    * Draws the text into the context.
@@ -2107,7 +2107,7 @@ function Mouse(options?: {
    *
    * Available since version: 0.0.1
    */
-  position: Point;
+  position: Vector;
 
   /**
    * Registers a function to be called when the mouse cursor enters the configured Entity's bounds.
@@ -2221,14 +2221,14 @@ function PhysicsEngine(options?: {
   debugDraw?: boolean;
 
   /**
-   * The gravity of the world, as a Point with x and y Components.
+   * The gravity of the world, as a Vector with x and y Components.
    * An x or y value of 1 means "normal Earth gravity in this direction".
    *
-   * Defaults to new Point(0, 1).
+   * Defaults to new Vector(0, 1).
    *
    * Available since version: 0.0.1
    */
-  gravity?: Point;
+  gravity?: Vector;
 
   /**
    * Whether to enable sleeping in the physics simulation.
@@ -2422,7 +2422,7 @@ function PhysicsBody(
    *
    * Available since version: 0.0.1
    */
-  applyForce(position: Point, force: Point): void;
+  applyForce(position: Vector, force: Vector): void;
 
   /**
    * Sets the angle of the physics body.
@@ -2464,7 +2464,7 @@ function PhysicsBody(
    *
    * Available since version: 0.0.1
    */
-  setPosition(position: Point): void;
+  setPosition(position: Vector): void;
 
   /**
    * Sets whether the physics body is "static".
@@ -2481,7 +2481,7 @@ function PhysicsBody(
    *
    * Available since version: 0.0.1
    */
-  setVelocity(velocity: Point): void;
+  setVelocity(velocity: Vector): void;
 
   /**
    * Registers a function to be run when the physics body collides with
@@ -2586,7 +2586,7 @@ function PhysicsConstraint(
      *
      * Available since version: 0.0.1
      */
-    pointA: Point;
+    pointA: Vector;
 
     /**
      * The position where the constraint is attached to `bodyB`, or a world-space position
@@ -2596,7 +2596,7 @@ function PhysicsConstraint(
      *
      * Available since version: 0.0.1
      */
-    pointB: Point;
+    pointB: Vector;
 
     /**
      * The resting length of the constraint.
@@ -2737,7 +2737,7 @@ function SpriteSheet(options: {
    *
    * Available since version: 0.0.0
    */
-  tileSize: Point;
+  tileSize: Vector;
 
   /**
    * Draw the tile at the specified index into the canvas.
@@ -2940,7 +2940,7 @@ export default function TextBox(options: {
    *
    * Available since version: 0.0.0
    */
-  size: Point,
+  size: Vector,
 
   /**
    * The number of vertical pixels to allocate to each line of text.
@@ -3100,21 +3100,21 @@ function TiledMap(
    *
    * Available since version: 0.0.0
    */
-  sizeInTiles: Point;
+  sizeInTiles: Vector;
 
   /**
    * The size of the map, in pixels.
    *
    * Available since version: 0.0.0
    */
-  sizeInPixels: Point;
+  sizeInPixels: Vector;
 
   /**
    * The size of a single tile in the map.
    *
    * Available since version: 0.0.0
    */
-  tileSize: Point;
+  tileSize: Vector;
 
   /**
    * All the objects that were present in the map, for you to use however you like.
@@ -3131,8 +3131,8 @@ function TiledMap(
         object: XMLSourceLoader.Element;
         id: string;
         name: string;
-        location: Point;
-        size?: Point;
+        location: Vector;
+        size?: Vector;
         properties: Array<{
           name: string;
           value: string;
@@ -3144,8 +3144,8 @@ function TiledMap(
         object: XMLSourceLoader.Element;
         id: string;
         name: string;
-        location: Point;
-        size?: Point;
+        location: Vector;
+        size?: Vector;
         properties: Array<{
           name: string;
           value: string;
@@ -3157,8 +3157,8 @@ function TiledMap(
         object: XMLSourceLoader.Element;
         id: string;
         name: string;
-        location: Point;
-        size?: Point;
+        location: Vector;
+        size?: Vector;
         properties: Array<{
           name: string;
           value: string;
@@ -3170,8 +3170,8 @@ function TiledMap(
         object: XMLSourceLoader.Element;
         id: string;
         name: string;
-        location: Point;
-        size?: Point;
+        location: Vector;
+        size?: Vector;
         properties: Array<{
           name: string;
           value: string;
@@ -3180,12 +3180,12 @@ function TiledMap(
       }
     | {
         kind: "polygon";
-        points: Array<Point>;
+        points: Array<Vector>;
         object: XMLSourceLoader.Element;
         id: string;
         name: string;
-        location: Point;
-        size?: Point;
+        location: Vector;
+        size?: Vector;
         properties: Array<{
           name: string;
           value: string;
@@ -3340,7 +3340,7 @@ that have passed since the last frame was rendered.
 import { useEntitiesAtPoint } from "@hex-engine/2d";
 ```
 
-`useEntitiesAtPoint(worldPos: Point): Array<Entity>`
+`useEntitiesAtPoint(worldPos: Vector): Array<Entity>`
 
 Get all the entities at the given world position,
 sorted by reverse draw order, such that one that
@@ -3487,7 +3487,7 @@ import { useCanvasSize } from "@hex-engine/2d";
 
 Returns an object with three properties on it:
 
-- `canvasSize: Point`: A Point that will get mutated such that it always equals the current canvas size
+- `canvasSize: Vector`: A Vector that will get mutated such that it always equals the current canvas size
 - `onCanvasResize(() => void): void`: A function that lets you register
   a function to be run every time the canvas size changes.
 - `resizeCanvas: ({ realWidth: number | string, realHeight: number| string, pixelWidth: number, pixelHeight: number }) => void`: A function that resizes the canvas.
@@ -3504,7 +3504,7 @@ import { useWindowSize } from "@hex-engine/2d";
 
 Returns an object with two properties on it:
 
-- `windowSize: Point`: A Point that will get mutated such that it always equals the window size
+- `windowSize: Vector`: A Vector that will get mutated such that it always equals the window size
 - `onWindowResize(() => void): void`: A function that lets you register
   a function to be run every time the window size changes.
 

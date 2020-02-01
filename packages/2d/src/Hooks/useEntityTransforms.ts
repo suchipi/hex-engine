@@ -1,5 +1,5 @@
 import { useCallbackAsCurrent, useEntity, Entity } from "@hex-engine/core";
-import { Point, TransformMatrix } from "../Models";
+import { Vector, TransformMatrix } from "../Models";
 import { Geometry } from "../Components";
 
 function getEntityTransformMatrix(entity: Entity) {
@@ -12,7 +12,7 @@ function getEntityTransformMatrix(entity: Entity) {
 
   matrix.translateMutate(geometry.position);
   matrix.rotateMutate(geometry.rotation);
-  matrix.scaleMutate(geometry.scale, new Point(0, 0));
+  matrix.scaleMutate(geometry.scale, new Vector(0, 0));
 
   return matrix;
 }
@@ -37,7 +37,7 @@ function getEntityTransformMatrixForContext(
 
   // It's easier to draw things from the top-left, so move
   // the canvas there instead of to the center.
-  const topLeft = new Point(
+  const topLeft = new Vector(
     geometry.shape.width / 2,
     geometry.shape.height / 2
   ).oppositeMutate();

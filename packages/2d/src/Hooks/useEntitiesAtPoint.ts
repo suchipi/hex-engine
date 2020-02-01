@@ -1,5 +1,5 @@
 import { useRootEntity, Entity } from "@hex-engine/core";
-import { Point } from "../Models";
+import { Vector } from "../Models";
 import Canvas, { useCanvasDrawOrderSort } from "../Canvas";
 import { Geometry } from "../Components";
 import useEntityTransforms from "./useEntityTransforms";
@@ -9,7 +9,7 @@ import useEntityTransforms from "./useEntityTransforms";
  * sorted by reverse draw order, such that one that
  * gets drawn last (and is therefore on top) is the first in the array.
  */
-export default function useEntitiesAtPoint(worldPos: Point): Array<Entity> {
+export default function useEntitiesAtPoint(worldPos: Vector): Array<Entity> {
   const rootEnt = useRootEntity();
   const rootsDescendants = rootEnt.descendants();
   const allEnts = [rootEnt, ...rootsDescendants];

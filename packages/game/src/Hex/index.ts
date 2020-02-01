@@ -3,7 +3,7 @@ import {
   useNewComponent,
   Geometry,
   Polygon,
-  Point,
+  Vector,
   Aseprite,
   useUpdate,
   useDraw,
@@ -16,7 +16,7 @@ import {
 import samples from "modal-synthesis/samples";
 import hexSprite from "./hex.aseprite";
 
-export default function Hex({ position }: { position: Point }) {
+export default function Hex({ position }: { position: Vector }) {
   useType(Hex);
   useEntityName("Hex");
 
@@ -25,12 +25,12 @@ export default function Hex({ position }: { position: Point }) {
   const geometry = useNewComponent(() =>
     Geometry({
       shape: new Polygon([
-        new Point(31.5, 0),
-        new Point(58, 14),
-        new Point(58, 49),
-        new Point(31.5, 63),
-        new Point(5, 49),
-        new Point(5, 14),
+        new Vector(31.5, 0),
+        new Vector(58, 14),
+        new Vector(58, 49),
+        new Vector(31.5, 63),
+        new Vector(5, 49),
+        new Vector(5, 14),
       ]),
       position,
       rotation: Math.random() * 2 * Math.PI,

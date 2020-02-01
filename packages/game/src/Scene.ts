@@ -3,7 +3,7 @@ import {
   useChild,
   useType,
   useCallbackAsCurrent,
-  Point,
+  Vector,
   Physics,
   useDraw,
   useDestroy,
@@ -18,8 +18,8 @@ export default function Scene() {
 
   useChild(Floor);
 
-  const box1 = useChild(() => Box({ position: new Point(50, 50) }));
-  const box2 = useChild(() => Box({ position: new Point(100, 50) }));
+  const box1 = useChild(() => Box({ position: new Vector(50, 50) }));
+  const box2 = useChild(() => Box({ position: new Vector(100, 50) }));
 
   useChild(() => {
     useEntityName("Constraint");

@@ -1,5 +1,5 @@
 import { useType } from "@hex-engine/core";
-import { Point, Shape } from "../Models";
+import { Vector, Shape } from "../Models";
 import {
   useInspectorHoverOutline,
   useEntityTransforms,
@@ -14,14 +14,14 @@ import {
  */
 function Geometry<S extends Shape>({
   shape,
-  position = new Point(0, 0),
+  position = new Vector(0, 0),
   rotation = 0,
-  scale = new Point(1, 1),
+  scale = new Vector(1, 1),
 }: {
   shape: S;
-  position?: Point | undefined;
+  position?: Vector | undefined;
   rotation?: number | undefined;
-  scale?: Point | undefined;
+  scale?: Vector | undefined;
 }) {
   useType(Geometry);
 
@@ -34,7 +34,7 @@ function Geometry<S extends Shape>({
     scale,
     worldPosition() {
       const matrix = transforms.matrixForWorldPosition();
-      return new Point(matrix.e, matrix.f);
+      return new Vector(matrix.e, matrix.f);
     },
   };
 

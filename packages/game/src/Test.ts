@@ -5,10 +5,10 @@ import {
   useDraw,
   Circle,
   Geometry,
-  Point,
+  Vector,
 } from "@hex-engine/2d";
 
-export default function Test(position: Point) {
+export default function Test(position: Vector) {
   useType(Test);
 
   const geometry = useNewComponent(() =>

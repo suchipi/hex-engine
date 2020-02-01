@@ -3,7 +3,7 @@ import {
   useType,
   useCallbackAsCurrent,
 } from "@hex-engine/core";
-import { Point } from "../Models";
+import { Vector } from "../Models";
 
 let firstKeyHasHappened = false;
 let pendingFirstKeyHandlers: Array<() => void> = [];
@@ -92,7 +92,7 @@ export default function Keyboard({
     pressed,
 
     /**
-     * A helper function that creates a `Point` pointing in the direction indicated by
+     * A helper function that creates a `Vector` pointing in the direction indicated by
      * the combined state of the four specified direction keys. This is mainly useful
      * in that it allows you to treat Gamepad and Keyboard inputs the same.
      *
@@ -106,7 +106,10 @@ export default function Keyboard({
       downKey: string,
       leftKey: string,
       rightKey: string
-    ): Point {
+    ): Vector {
+      // TODO: revise this API so that you can re-use existing Vector instances,
+      // instead of making a new one (potentially) every frame.
+
       const pressedKeys = pressed;
 
       let x = 0;
@@ -127,7 +130,7 @@ export default function Keyboard({
         y += 1;
       }
 
-      return new Point(x, y);
+      return new Vector(x, y);
     },
   };
 }

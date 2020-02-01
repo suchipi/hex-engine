@@ -1,10 +1,10 @@
-import Point from "./Point";
+import Vector from "./Vector";
 
 /**
  * Represents a closed shape consisting of a set of connected straight line segments.
  */
 export default class Polygon {
-  private _points!: Array<Point>;
+  private _points!: Array<Vector>;
 
   /**
    * Points representing the corners where the polygon's line segments meet.
@@ -19,7 +19,7 @@ export default class Polygon {
   get points() {
     return this._points;
   }
-  set points(newPoints: Array<Point>) {
+  set points(newPoints: Array<Vector>) {
     Polygon._init(this, newPoints);
   }
 
@@ -70,13 +70,13 @@ export default class Polygon {
    * because the constructor calculates the centroid of the polygon and then
    * recenters all points around it.
    */
-  constructor(points: Array<Point>) {
+  constructor(points: Array<Vector>) {
     Polygon._init(this, points);
   }
 
-  private static _init(target: Polygon, points: Array<Point>) {
+  private static _init(target: Polygon, points: Array<Vector>) {
     const centroid = points
-      .reduce((prev, curr) => prev.addMutate(curr), new Point(0, 0))
+      .reduce((prev, curr) => prev.addMutate(curr), new Vector(0, 0))
       .divideMutate(points.length);
 
     target._points = points.map((point) => centroid.subtract(point));
@@ -106,30 +106,33 @@ export default class Polygon {
 
   /**
    * Creates a rectangular polygon; a 4-sided polygon where the angles between all sides are all π/2 radians (90 degrees).
-   * @param size A Point whose `x` and `y` properties refer to the desired width and height of the new rectangle.
+   * @param size A Vector whose `x` and `y` properties refer to the desired width and height of the new rectangle.
    */
-  static rectangle(size: Point): Polygon;
+  static rectangle(size: Vector): Polygon;
   /**
    * Creates a rectangular polygon; a 4-sided polygon where the angles between all sides are all π/2 radians (90 degrees).
    * @param width The desired width of the new rectangle.
    * @param height The desired height of the new rectangle.
    */
   static rectangle(width: number, height: number): Polygon;
-  static rectangle(widthOrSize: Point | number, maybeHeight?: number): Polygon {
+  static rectangle(
+    widthOrSize: Vector | number,
+    maybeHeight?: number
+  ): Polygon {
     let width: number, height: number;
     if (typeof widthOrSize === "number" && typeof maybeHeight === "number") {
       width = widthOrSize;
       height = maybeHeight;
     } else {
-      width = (widthOrSize as Point).x;
-      height = (widthOrSize as Point).y;
+      width = (widthOrSize as Vector).x;
+      height = (widthOrSize as Vector).y;
     }
 
     return new Polygon([
-      new Point(0, 0),
-      new Point(width, 0),
-      new Point(width, height),
-      new Point(0, height),
+      new Vector(0, 0),
+      new Vector(width, 0),
+      new Vector(width, height),
+      new Vector(0, height),
     ]);
   }
 
@@ -146,7 +149,7 @@ export default class Polygon {
    * Returns whether the given point falls inside the polygon.
    * @param point The point to check.
    */
-  containsPoint(point: Point): boolean {
+  containsPoint(point: Vector): boolean {
     const { x, y } = point;
     const points = this.points;
 

@@ -1,7 +1,7 @@
 import {
   useNewComponent,
   useEntityName,
-  Point,
+  Vector,
   Polygon,
   useDraw,
   useUpdate,
@@ -17,7 +17,7 @@ export default function Button({
   text,
   onClick,
 }: {
-  calcPosition: (bounds: Point) => Point;
+  calcPosition: (bounds: Vector) => Vector;
   text: string;
   onClick: () => void;
 }) {
@@ -30,7 +30,7 @@ export default function Button({
   const padding = 3;
   function calcSize() {
     const metrics = font.measureText(label.text);
-    return new Point(metrics.width, metrics.height)
+    return new Vector(metrics.width, metrics.height)
       .add(padding * 2)
       .roundMutate();
   }
