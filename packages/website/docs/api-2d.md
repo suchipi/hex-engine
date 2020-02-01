@@ -10,112 +10,6 @@ title: "@hex-engine/2d"
 
 `@hex-engine/2d` includes several "Models", which are classes representing common data structures that are used throughout the library.
 
-### Angle
-
-> Available since version: 0.0.0
-
-```ts
-import { Angle } from "@hex-engine/2d";
-```
-
-An object which represents an Angle, in radians.
-
-Angles are expressed as the _clockwise_ distance from the x-axis. This is different from how angles are expressed in normal coordinate space; the reason for this difference is because when drawing to a canvas, the positive y axis points _downwards_ instead of upwards.
-
-![Diagram showing that radians increase as you move around the circle clockwise, starting from the x-axis](/img/canvas-angle-diagram.png)
-
-#### Static Methods
-
-#### constructor
-
-> Available since version: 0.0.0
-
-`constructor(radians: number)`
-
-Creates a new Angle.
-
-##### fromPoints
-
-> Available since version: 0.0.0
-
-`static fromPoints(first: Point, second: Point): Angle`
-
-Calculates the angle of the vector whose tail is at the [`Point`] `first` and whose head
-is at the [`Point`] `second`.
-
-#### Properties
-
-##### radians
-
-> Available since version: 0.0.0
-
-`radians: number`
-
-The angle, in radians.
-
-#### Methods
-
-##### clone
-
-`clone(): Angle`
-
-Creates a copy of this `Angle`.
-
-##### toPoint
-
-> Available since version: 0.0.1
-
-`toPoint(): Point`
-
-Calculates the position of the head of a unit vector (a vector with magnitude `1`) with the given angle
-whose tail is at the origin.
-
-Returns a [`Point`].
-
-> In version 0.0.0, this method was called `toVec2()`.
-
-##### add
-
-> Available since version: 0.0.0
-
-`add(amount: number | Angle): Angle`
-
-Returns a new Angle whose value is equivalent to the value of the
-current Angle plus the specified amount.
-
-This rotates the Angle clockwise.
-
-##### addMutate
-
-> Available since version: 0.0.0
-
-`addMutate(amount: number | Angle): this`
-
-Mutates the current Angle, adding the specified amount to its current value.
-
-This rotates the Angle clockwise.
-
-##### subtract
-
-> Available since version: 0.0.0
-
-`subtract(amount: number | Angle): Angle`
-
-Returns a new Angle whose value is equivalent to the value of the
-current Angle minus the specified amount.
-
-This rotates the Angle counter-clockwise.
-
-##### subtractMutate
-
-> Available since version: 0.0.0
-
-`subtractMutate(amount: number | Angle): this`
-
-Mutates the current Angle, subtracting the specified amount from its current value.
-
-This rotates the Angle counter-clockwise.
-
 ### Circle
 
 > Available since version: 0.0.1
@@ -330,6 +224,14 @@ Creates a new Point.
 
 Create a Point from any object with an x property and a y property.
 
+##### fromAngleAndMagnitude
+
+> Available since version: 0.2.0
+
+`static fromAngleAndMagnitude(angle: number, magnitude: number): Point`
+
+Create a Point from an angle and magnitude.
+
 #### Properties
 
 ##### x
@@ -343,6 +245,24 @@ Create a Point from any object with an x property and a y property.
 > Available since version: 0.0.0
 
 `y: number`
+
+##### angle
+
+> Available since version: 0.2.0
+
+`angle: number`
+
+Angles are expressed as the _clockwise_ distance from the x-axis. This is different from how angles are expressed in normal coordinate space; the reason for this difference is because when drawing to a canvas, the positive y axis points _downwards_ instead of upwards.
+
+![Diagram showing that radians increase as you move around the circle clockwise, starting from the x-axis](/img/canvas-angle-diagram.png)
+
+##### magnitude
+
+> Available since version: 0.2.0
+
+`magnitude: number`
+
+The distance of the point (x, y) from the origin (0, 0).
 
 #### Methods
 
@@ -643,6 +563,38 @@ Mutate this Point by rounding its x and y values up to the nearest integer.
 Mutate this Point by setting its x and y values to the values found on the provided object.
 
 > In versions prior to 0.0.1, this method only accepted other Point instances (though they were called Vec2 instances back then).
+
+##### normalize
+
+> Available since version: 0.2.0
+
+`normalize(): Point`
+
+Create a new Point by normalizing the magnitude of this one (setting it to 1).
+
+##### normalizeMutate
+
+> Available since version: 0.2.0
+
+`normalizeMutate(): this`
+
+Mutate this point by normalizing its magnitude (setting it to 1).
+
+##### rotate
+
+> Available since version: 0.2.0
+
+`rotate(radians: number): Point`
+
+Create a new Point equivalent to this one but rotated by the specified amount (in radians), clockwise.
+
+##### rotateMutate
+
+> Available since version: 0.2.0
+
+`rotateMutate(radians: number): this`
+
+Mutate this Point by rotating it the specified amount (in radians), clockwise.
 
 ##### asDOMPoint
 
@@ -949,7 +901,7 @@ Mutates this TransformMatrix by applying a translation.
 
 > Available since version: 0.0.0
 
-`rotate(radians: Angle | number): TransformMatrix`
+`rotate(radians: number): TransformMatrix`
 
 Creates a new TransformMatrix with the same values as this one, but with a rotation applied.
 
@@ -957,7 +909,7 @@ Creates a new TransformMatrix with the same values as this one, but with a rotat
 
 > Available since version: 0.0.0
 
-`rotateMutate(radians: Angle | number): this`
+`rotateMutate(radians: number): this`
 
 Mutates this TransformMatrix by applying a rotation.
 
@@ -1014,102 +966,6 @@ Return a new TransformMatrix that applies the inverse transformation as this one
 `inverseMutate(): this`
 
 Mutate this TransformMatrix by inverting its transformation.
-
-### Vector
-
-> Available since version: 0.0.0
-
-```ts
-import { Vector } from "@hex-engine/2d";
-```
-
-A representation of a 2D Vector, with an angle and magnitude.
-
-#### Static Methods
-
-##### constructor
-
-> Available since version: 0.0.0
-
-`constructor(angle: Angle, magnitude: number)`
-
-Creates a new Vector.
-
-##### fromPoints
-
-> Available since version: 0.0.0
-
-`static fromPoints(first: Point, second: Point): Vector`
-
-Creates a vector with tail at `first` and head at `second`.
-
-#### Properties
-
-##### angle
-
-> Available since version: 0.0.0
-
-`angle: Angle`
-
-The angle that the Vector is pointing in, clockwise relative to the X-axis.
-
-##### magnitude
-
-> Available since version: 0.0.0
-
-`magnitude: number`
-
-The length of the Vector.
-
-#### Methods
-
-##### clone
-
-`clone(): Vector`
-
-Creates a new Vector instance with the same values as this one.
-
-##### toPoint
-
-> Available since version: 0.0.0
-
-`toPoint(): Point`
-
-Places this vector's tail at the origin and returns the location of its head.
-
-> In versions prior to 0.0.1, this method is named `toVec2()`.
-
-##### multiply
-
-> Available since version: 0.0.1
-
-`multiply(amount: number): Vector`
-
-Returns a new Vector whose angle is the same as this Vector and whose magnitude is multiplied by the specified amount.
-
-##### multiplyMutate
-
-> Available since version: 0.0.1
-
-`multiplyMutate(amount: number): this`
-
-Mutates the current vector by multiplying its magnitude by the specified amount.
-
-##### divide
-
-> Available since version: 0.0.1
-
-`divide(amount: number): Vector`
-
-Returns a new Vector whose angle is the same as this Vector and whose magnitude is divided by the specified amount.
-
-##### divideMutate
-
-> Available since version: 0.0.1
-
-`divideMutate(amount: number): this`
-
-Mutates the current vector by dividing its magnitude by the specified amount.
 
 ### AnimationFrame
 
@@ -1808,20 +1664,20 @@ function Gamepad(
   }>
 ): {
   /**
-   * A `Vector` indicating which direction the left stick is being pressed in,
+   * A `Point` indicating which direction the left stick is being pressed in,
    * and how far it's being pressed.
    *
    * Available since version: 0.0.0
    */
-  leftStick: Vector;
+  leftStick: Point;
 
   /**
-   * A `Vector` indicating which direction the right stick is being pressed in,
+   * A `Point` indicating which direction the right stick is being pressed in,
    * and how far it's being pressed.
    *
    * Available since version: 0.0.0
    */
-  rightStick: Vector;
+  rightStick: Point;
 
   /**
    * A Set containing all the names of the currently pressed buttons.
@@ -1891,12 +1747,14 @@ function Geometry(init: {
   position?: Point | undefined;
 
   /**
-   * The current rotation of the current Entity.
+   * The current rotation of the current Entity,
+   * expressed in clockwise radians from the x-axis.
+   *
    * If unspecified, it will default to 0.
    *
    * Available since version: 0.0.1
    */
-  rotation?: Angle | undefined;
+  rotation?: number | undefined;
 
   /**
    * The current x and y scale factor for the current Entity.
@@ -1921,11 +1779,12 @@ function Geometry(init: {
   position: Point;
 
   /**
-   * The current rotation of the current Entity.
+   * The current rotation of the current Entity,
+   * expressed in clockwise radians from the x-axis.
    *
    * Available since version: 0.0.1
    */
-  rotation: Angle;
+  rotation: number;
 
   /**
    * The current x and y scale factor for the current Entity.
@@ -2068,7 +1927,7 @@ function Keyboard(
   pressed: Set<string>;
 
   /**
-   * A helper function that creates a `Vector` pointing in the direction indicated by
+   * A helper function that creates a `Point` pointing in the direction indicated by
    * the combined state of the four specified direction keys. This is mainly useful
    * in that it allows you to treat Gamepad and Keyboard inputs the same.
    *
@@ -2084,7 +1943,7 @@ function Keyboard(
     downKey: string,
     leftKey: string,
     rightKey: string
-  ): Vector;
+  ): Point;
 };
 ```
 
@@ -2563,14 +2422,14 @@ function PhysicsBody(
    *
    * Available since version: 0.0.1
    */
-  applyForce(position: Point, force: Vector): void;
+  applyForce(position: Point, force: Point): void;
 
   /**
    * Sets the angle of the physics body.
    *
    * Available since version: 0.0.1
    */
-  setAngle(angle: Angle | number): void;
+  setAngle(angle: number): void;
 
   /**
    * Sets the angular velocity of the physics body; how fast it is rotating.

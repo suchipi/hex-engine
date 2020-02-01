@@ -1,8 +1,6 @@
 import { useType } from "@hex-engine/core";
 import { useUpdate } from "../Canvas";
-import { Vector, Point, Angle } from "../Models";
-
-const origin = new Point(0, 0);
+import { Point } from "../Models";
 
 /** This Component provides the current state of a connected Gamepad, if present. */
 export default function Gamepad(
@@ -33,10 +31,10 @@ export default function Gamepad(
   useType(Gamepad);
 
   const state = {
-    /** A `Vector` indicating which direction the left stick is being pressed in, and how far it's being pressed. */
-    leftStick: new Vector(new Angle(0), 0),
-    /** A `Vector` indicating which direction the right stick is being pressed in, and how far it's being pressed. */
-    rightStick: new Vector(new Angle(0), 0),
+    /** A `Point` indicating which direction the left stick is being pressed in, and how far it's being pressed. */
+    leftStick: new Point(0, 0),
+    /** A `Point` indicating which direction the right stick is being pressed in, and how far it's being pressed. */
+    rightStick: new Point(0, 0),
     /** A Set containing all the names of the currently pressed buttons. */
     pressed: new Set<string>(),
     /**
@@ -80,18 +78,6 @@ export default function Gamepad(
     ],
   };
 
-  /** Convert an analog stick's x and y positions to a Vector in Canvas-space. */
-  function stickToVector(x: number, y: number) {
-    const target = new Point(x, y);
-
-    const vector = Vector.fromPoints(origin, target);
-    if (Math.abs(vector.magnitude) < state.deadzone) {
-      vector.magnitude = 0;
-    }
-
-    return vector;
-  }
-
   function buttonName(index: number): string {
     return state.buttonNames[index] || "unknown button";
   }
@@ -104,8 +90,11 @@ export default function Gamepad(
     }
     state.present = true;
 
-    state.leftStick = stickToVector(gamepad.axes[0], gamepad.axes[1]);
-    state.rightStick = stickToVector(gamepad.axes[2], gamepad.axes[3]);
+    state.leftStick.x = gamepad.axes[0];
+    state.leftStick.y = gamepad.axes[1];
+
+    state.rightStick.x = gamepad.axes[2];
+    state.rightStick.y = gamepad.axes[3];
 
     gamepad.buttons.forEach((button, index) => {
       const name = buttonName(index);

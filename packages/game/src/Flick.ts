@@ -6,7 +6,6 @@ import {
   useEntitiesAtPoint,
   Point,
   Physics,
-  Vector,
   Entity,
   Geometry,
   useEntityTransforms,
@@ -51,10 +50,9 @@ export default function Flick() {
     if (!physics) return;
     physics.setStatic(false);
 
-    const vector = Vector.fromPoints(downPoint, holdPoint)
-      .multiplyMutate(physics.body.mass)
-      .divideMutate(1000);
-    vector.angle.addMutate(Math.PI); // Invert direction
+    const vector = downPoint.add(holdPoint);
+    vector.magnitude = (vector.magnitude * physics.body.mass) / 1000;
+    vector.angle += Math.PI; // Invert direction
     physics.applyForce(downPoint, vector);
 
     target = null;

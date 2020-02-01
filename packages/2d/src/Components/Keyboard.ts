@@ -3,7 +3,7 @@ import {
   useType,
   useCallbackAsCurrent,
 } from "@hex-engine/core";
-import { Vector, Angle } from "../Models";
+import { Point } from "../Models";
 
 let firstKeyHasHappened = false;
 let pendingFirstKeyHandlers: Array<() => void> = [];
@@ -92,7 +92,7 @@ export default function Keyboard({
     pressed,
 
     /**
-     * A helper function that creates a `Vector` pointing in the direction indicated by
+     * A helper function that creates a `Point` pointing in the direction indicated by
      * the combined state of the four specified direction keys. This is mainly useful
      * in that it allows you to treat Gamepad and Keyboard inputs the same.
      *
@@ -106,69 +106,28 @@ export default function Keyboard({
       downKey: string,
       leftKey: string,
       rightKey: string
-    ): Vector {
+    ): Point {
       const pressedKeys = pressed;
-      let angle = 0;
-      let magnitude = 1;
 
-      const half = Math.PI;
-      const quarter = Math.PI / 2;
-      const eighth = Math.PI / 4;
-
+      let x = 0;
+      let y = 0;
+      if (pressedKeys.has(leftKey) || pressedKeys.has(leftKey.toUpperCase())) {
+        x -= 1;
+      }
       if (
-        (pressedKeys.has(upKey) || pressedKeys.has(upKey.toUpperCase())) &&
-        (pressedKeys.has(rightKey) || pressedKeys.has(rightKey.toUpperCase()))
+        pressedKeys.has(rightKey) ||
+        pressedKeys.has(rightKey.toUpperCase())
       ) {
-        // up right
-        angle = -eighth;
-      } else if (
-        (pressedKeys.has(upKey) || pressedKeys.has(upKey.toUpperCase())) &&
-        (pressedKeys.has(leftKey) || pressedKeys.has(leftKey.toUpperCase()))
-      ) {
-        // up left
-        angle = half + eighth;
-      } else if (
-        (pressedKeys.has(downKey) || pressedKeys.has(downKey.toUpperCase())) &&
-        (pressedKeys.has(rightKey) || pressedKeys.has(rightKey.toUpperCase()))
-      ) {
-        // down right
-        angle = eighth;
-      } else if (
-        (pressedKeys.has(downKey) || pressedKeys.has(downKey.toUpperCase())) &&
-        (pressedKeys.has(leftKey) || pressedKeys.has(leftKey.toUpperCase()))
-      ) {
-        // down left
-        angle = quarter + eighth;
-      } else if (
-        (pressedKeys.has(upKey) || pressedKeys.has(upKey.toUpperCase())) &&
-        !(pressedKeys.has(downKey) || pressedKeys.has(downKey.toUpperCase()))
-      ) {
-        // up
-        angle = -quarter;
-      } else if (
-        (pressedKeys.has(downKey) || pressedKeys.has(downKey.toUpperCase())) &&
-        !(pressedKeys.has(upKey) || pressedKeys.has(upKey.toUpperCase()))
-      ) {
-        // down
-        angle = quarter;
-      } else if (
-        (pressedKeys.has(leftKey) || pressedKeys.has(leftKey.toUpperCase())) &&
-        !(pressedKeys.has(rightKey) || pressedKeys.has(rightKey.toUpperCase()))
-      ) {
-        // left
-        angle = half;
-      } else if (
-        (pressedKeys.has(rightKey) ||
-          pressedKeys.has(rightKey.toUpperCase())) &&
-        !(pressedKeys.has(leftKey) || pressedKeys.has(leftKey.toUpperCase()))
-      ) {
-        // right
-        angle = 0;
-      } else {
-        magnitude = 0;
+        x += 1;
+      }
+      if (pressedKeys.has(upKey) || pressedKeys.has(upKey.toUpperCase())) {
+        y -= 1;
+      }
+      if (pressedKeys.has(downKey) || pressedKeys.has(downKey.toUpperCase())) {
+        y += 1;
       }
 
-      return new Vector(new Angle(angle), magnitude);
+      return new Point(x, y);
     },
   };
 }

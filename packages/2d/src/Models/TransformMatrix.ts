@@ -1,4 +1,3 @@
-import Angle from "./Angle";
 import Point from "./Point";
 
 export function createSVGMatrix(): DOMMatrix {
@@ -152,19 +151,17 @@ export default class TransformMatrix {
   }
 
   /** Creates a new TransformMatrix with the same values as this one, but with a rotation applied. */
-  rotate(radians: Angle | number): TransformMatrix {
-    const rotation = typeof radians === "number" ? radians : radians.radians;
+  rotate(radians: number): TransformMatrix {
     // canvas `rotate` uses radians, DOMMatrix uses degrees.
-    const degrees = (rotation * 180) / Math.PI;
+    const degrees = (radians * 180) / Math.PI;
 
     return TransformMatrix.fromDOMMatrix(this._matrix.rotate(degrees));
   }
 
   /** Mutates this TransformMatrix by applying a rotation. */
-  rotateMutate(radians: Angle | number): this {
-    const rotation = typeof radians === "number" ? radians : radians.radians;
+  rotateMutate(radians: number): this {
     // canvas `rotate` uses radians, DOMMatrix uses degrees.
-    const degrees = (rotation * 180) / Math.PI;
+    const degrees = (radians * 180) / Math.PI;
 
     if (typeof this._matrix.rotateSelf === "function") {
       this._matrix.rotateSelf(degrees);

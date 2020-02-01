@@ -8,6 +8,28 @@ export default class Point {
   x: number;
   y: number;
 
+  set magnitude(newValue: number) {
+    this.normalizeMutate();
+    this.x *= newValue;
+    this.y *= newValue;
+  }
+  get magnitude() {
+    return Math.sqrt(Math.pow(0 - this.x, 2) + Math.pow(0 - this.y, 2));
+  }
+
+  get angle() {
+    // Invert y component because JS math functions
+    // assume normal coordinate space
+    const radians = Math.atan2(-this.y, this.x);
+    return radians;
+  }
+  set angle(newValue: number) {
+    const x = this.magnitude * Math.cos(newValue);
+    const y = -(this.magnitude * Math.sin(newValue)); // Inverted because of canvas coordinate space
+    this.x = x;
+    this.y = y;
+  }
+
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
@@ -16,6 +38,14 @@ export default class Point {
   /** Create a Point from any object with an x property and a y property. */
   static from({ x, y }: { x: number; y: number }): Point {
     return new Point(x, y);
+  }
+
+  /** Create a Point from an angle and magnitude. */
+  static fromAngleAndMagnitude(angle: number, magnitude: number): Point {
+    const point = new Point(1, 1);
+    point.angle = angle;
+    point.magnitude = magnitude;
+    return point;
   }
 
   /** Create a new Point with the same x and y values as this one. */
@@ -259,6 +289,37 @@ export default class Point {
   mutateInto(other: { x: number; y: number }) {
     this.x = other.x;
     this.y = other.y;
+  }
+
+  /** Create a new Point by normalizing the magnitude of this one. */
+  normalize(): Point {
+    const existingMagnitude = this.magnitude;
+    const normalizedX = this.x / existingMagnitude;
+    const normalizedY = this.y / existingMagnitude;
+    return new Point(normalizedX, normalizedY);
+  }
+
+  /** Mutate this point by normalizing its magnitude. */
+  normalizeMutate(): this {
+    const existingMagnitude = this.magnitude;
+    const normalizedX = this.x / existingMagnitude;
+    const normalizedY = this.y / existingMagnitude;
+    this.x = normalizedX;
+    this.y = normalizedY;
+    return this;
+  }
+
+  /** Create a new Point equivalent to this one but rotated by the specified amount (in radians), clockwise. */
+  rotate(radians: number): Point {
+    const nextPoint = this.clone();
+    nextPoint.angle += radians;
+    return nextPoint;
+  }
+
+  /** Mutate this Point by rotating it the specified amount (in radians), clockwise. */
+  rotateMutate(radians: number): this {
+    this.angle += radians;
+    return this;
   }
 
   /** Create a DOMPoint with the same x and y values as this Point. */

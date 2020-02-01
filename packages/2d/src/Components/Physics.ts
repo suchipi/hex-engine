@@ -8,7 +8,7 @@ import {
 } from "@hex-engine/core";
 import Matter from "matter-js";
 import Geometry from "./Geometry";
-import { Angle, Point, Polygon, Circle, Vector } from "../Models";
+import { Point, Polygon, Circle } from "../Models";
 import { useUpdate, useDraw, useDebugOverlayDrawTime } from "../Hooks";
 
 // Matter needs this
@@ -309,7 +309,7 @@ function PhysicsBody(
   const addCollisionListener = useCollisionListener();
 
   const opts = {
-    angle: geometry.rotation.radians,
+    angle: geometry.rotation,
     label,
     ...otherOpts,
   };
@@ -359,7 +359,7 @@ function PhysicsBody(
         [shape.points],
         {
           ...opts,
-          angle: geometry.rotation.radians,
+          angle: geometry.rotation,
         }
       );
       if (nextBody) {
@@ -384,10 +384,10 @@ function PhysicsBody(
 
     if (body.isStatic) {
       Matter.Body.setPosition(body, geometry.position);
-      Matter.Body.setAngle(body, geometry.rotation.radians);
+      Matter.Body.setAngle(body, geometry.rotation);
     } else {
       geometry.position.mutateInto(body.position);
-      geometry.rotation.radians = body.angle;
+      geometry.rotation = body.angle;
     }
 
     lastPoints = (geometry.shape as Polygon).points;
@@ -398,14 +398,11 @@ function PhysicsBody(
     get body() {
       return body;
     },
-    applyForce(position: Point, force: Vector) {
-      Matter.Body.applyForce(body, position, force.toPoint());
+    applyForce(position: Point, force: Point) {
+      Matter.Body.applyForce(body, position, force);
     },
-    setAngle(angle: Angle | number) {
-      Matter.Body.setAngle(
-        body,
-        typeof angle === "number" ? angle : angle.radians
-      );
+    setAngle(angle: number) {
+      Matter.Body.setAngle(body, angle);
     },
     setAngularVelocity(velocity: number) {
       Matter.Body.setAngularVelocity(body, velocity);

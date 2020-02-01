@@ -1,5 +1,5 @@
 import { useType } from "@hex-engine/core";
-import { Angle, Point, Shape } from "../Models";
+import { Point, Shape } from "../Models";
 import {
   useInspectorHoverOutline,
   useEntityTransforms,
@@ -15,12 +15,12 @@ import {
 function Geometry<S extends Shape>({
   shape,
   position = new Point(0, 0),
-  rotation = new Angle(0),
+  rotation = 0,
   scale = new Point(1, 1),
 }: {
   shape: S;
   position?: Point | undefined;
-  rotation?: Angle | undefined;
+  rotation?: number | undefined;
   scale?: Point | undefined;
 }) {
   useType(Geometry);

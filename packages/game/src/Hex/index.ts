@@ -11,7 +11,6 @@ import {
   useDestroy,
   useEntityName,
   useContext,
-  Angle,
   ProceduralSfx,
 } from "@hex-engine/2d";
 import samples from "modal-synthesis/samples";
@@ -34,7 +33,7 @@ export default function Hex({ position }: { position: Point }) {
         new Point(5, 14),
       ]),
       position,
-      rotation: new Angle(Math.random() * 2 * Math.PI),
+      rotation: Math.random() * 2 * Math.PI,
     })
   );
 

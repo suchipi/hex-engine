@@ -343,10 +343,6 @@ export default function Tree({
         (data.x != null && data.y != null
           ? ` (${formatNumber(data.x)}, ${formatNumber(data.y)})`
           : "") +
-        // Angle
-        (data.radians != null
-          ? ` (${formatNumber(data.radians / Math.PI)}π)`
-          : "") +
         // LineSegment
         (typeof data.start === "object" &&
         data.start != null &&
