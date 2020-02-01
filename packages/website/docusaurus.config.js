@@ -35,6 +35,12 @@ module.exports = {
           position: "right",
           target: "_blank",
         },
+        {
+          to: "https://discord.gg/afFkpC9",
+          label: "Discord",
+          position: "right",
+          target: "_blank",
+        },
       ],
     },
 

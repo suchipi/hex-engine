@@ -2,6 +2,10 @@
 
 ---
 
+[Website](https://hex-engine.dev) - [Discord](https://discord.gg/afFkpC9) - [GitHub](https://github.com/suchipi/hex-engine)
+
+---
+
 ⚠️ **WORK IN PROGRESS** ⚠️
 
 Hex Engine is a 2D Game Engine for the browser, written in TypeScript. It is designed to feel similar to [React](https://reactjs.org/).
@@ -30,13 +34,11 @@ import {
   useUpdate,
   useNewComponent,
   SystemFont,
-  Label
+  Label,
 } from "@hex-engine/2d";
 
 export default function MyComponent() {
-  const font = useNewComponent(() =>
-    SystemFont({ name: "Arial", size: 12 })
-  );
+  const font = useNewComponent(() => SystemFont({ name: "Arial", size: 12 }));
   const label = useNewComponent(() => Label({ font }));
 
   let elapsedTime = 0;
