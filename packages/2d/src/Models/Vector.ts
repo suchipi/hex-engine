@@ -1,8 +1,7 @@
 /**
  * A generic object with an `x` and `y` property.
  *
- * Although it is named `Point`, it is not only used to represent points in space-
- * it's also often used to represent two-dimensional sizes.
+ * A two-dimensional vector, used to represent points, sizes, and more.
  */
 export default class Vector {
   x: number;
