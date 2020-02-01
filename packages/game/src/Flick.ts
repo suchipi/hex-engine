@@ -50,7 +50,7 @@ export default function Flick() {
     if (!physics) return;
     physics.setStatic(false);
 
-    const vector = downPoint.add(holdPoint);
+    const vector = holdPoint.subtract(downPoint);
     vector.magnitude = (vector.magnitude * physics.body.mass) / 1000;
     vector.angle += Math.PI; // Invert direction
     physics.applyForce(downPoint, vector);
