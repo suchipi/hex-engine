@@ -27,18 +27,18 @@
     "eslint-config-unobtrusive": "^1.2.5",
     "eslint-plugin-import": "^2.20.0",
     "eslint-plugin-react": "^7.18.0",
-    "jest": "^24.9.0",
+    "jest": "^25.1.0",
     "prettier": "^1.19.1",
-    "ts-jest": "^24.3.0",
+    "ts-jest": "^25.1.0",
     "typescript": "^3.7.4",
     "workspace-builder": "^1.0.0"
   },
   "scripts": {
     "clean": "workspace-builder clean",
-    "build": "tsc --noEmit && workspace-builder",
+    "build": "yarn test && workspace-builder",
     "watch": "workspace-builder watch",
     "start": "yarn watch",
-    "test": "yarn clean && tsc --noEmit && jest",
+    "test": "tsc --noEmit && jest",
     "build-website": "cd packages/website && yarn build"
   },
   "dependencies": {
