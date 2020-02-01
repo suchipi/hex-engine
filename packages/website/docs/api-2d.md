@@ -205,6 +205,7 @@ A generic object with an `x` and `y` property.
 Although it is named `Vector`, it is not only used to represent points in space- it's also often used to represent two-dimensional sizes.
 
 > In versions prior to 0.0.1, this class was called `Vec2`.
+> In versions after 0.0.1 but prior to 0.2.0, this class was called `Point`.
 
 #### Static Methods
 
