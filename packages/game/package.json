@@ -5,7 +5,7 @@
   "license": "MIT",
   "main": "dist/index.html",
   "dependencies": {
-    "@hex-engine/2d": "^0.1.16",
+    "@hex-engine/2d": "^0.2.0",
     "@types/lodash": "^4.14.149",
     "lodash": "^4.17.15",
     "safety-match": "^0.1.1"

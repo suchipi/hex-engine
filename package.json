@@ -38,7 +38,7 @@
     "build": "yarn test && workspace-builder",
     "watch": "workspace-builder watch",
     "start": "yarn watch",
-    "test": "tsc --noEmit && jest",
+    "test": "yarn clean && tsc --noEmit && jest",
     "build-website": "cd packages/website && yarn build"
   },
   "dependencies": {
