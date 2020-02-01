@@ -7,6 +7,7 @@ import {
   PauseIcon,
   PaneRightIcon,
   PaneLeftIcon,
+  PickEntityIcon,
 } from "./Icons";
 
 type RunLoopAPI = ReturnType<typeof RunLoop>;
@@ -16,11 +17,15 @@ export default function Controls({
   error,
   isOpen,
   toggleOpen,
+  isSelectMode,
+  toggleSelectMode,
 }: {
   runLoop: RunLoopAPI;
   error: Error | null;
   isOpen: boolean;
   toggleOpen: () => void;
+  isSelectMode: boolean;
+  toggleSelectMode: () => void;
 }) {
   return (
     <div
@@ -30,6 +35,16 @@ export default function Controls({
         padding: 2,
       }}
     >
+      <Button
+        title="Pick an entity from the canvas"
+        onClick={toggleSelectMode!}
+      >
+        <span
+          style={{ padding: 4, color: `${isSelectMode ? "#008eff" : "#222"}` }}
+        >
+          <PickEntityIcon />
+        </span>
+      </Button>
       {runLoop.isPaused() ? (
         <>
           <Button

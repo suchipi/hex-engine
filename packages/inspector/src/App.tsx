@@ -12,11 +12,15 @@ export default function App({
   runLoop,
   error,
   isHovered,
+  isSelectMode,
+  toggleSelectMode,
 }: {
   entity: Entity;
   runLoop: RunLoopAPI | null;
   error: Error | null;
   isHovered: boolean;
+  isSelectMode: boolean;
+  toggleSelectMode: () => void;
 }) {
   let ent = entity;
 
@@ -48,6 +52,8 @@ export default function App({
         <StateKey value="controls">
           {runLoop && !open ? (
             <Controls
+              isSelectMode={isSelectMode}
+              toggleSelectMode={toggleSelectMode}
               isOpen={open}
               toggleOpen={() => setOpen(!open)}
               runLoop={runLoop}
@@ -87,6 +93,8 @@ export default function App({
           <StateKey value="controls">
             {runLoop ? (
               <Controls
+                isSelectMode={isSelectMode}
+                toggleSelectMode={toggleSelectMode}
                 isOpen={open}
                 toggleOpen={() => setOpen(!open)}
                 runLoop={runLoop}

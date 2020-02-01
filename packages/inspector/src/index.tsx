@@ -14,8 +14,14 @@ import debounce from "lodash.debounce";
 import useForceUpdate from "use-force-update";
 import App from "./App";
 import useInspectorHover from "./useInspectorHover";
+import useInspectorSelect from "./useInspectorSelect";
 
 type RunLoopAPI = ReturnType<typeof RunLoop>;
+
+interface SelectModeState {
+  getSelectMode: () => boolean;
+  toggleSelectMode: () => void;
+}
 
 const initialState = localStorage.inspectorState
   ? JSON.parse(localStorage.inspectorState)
@@ -31,6 +37,7 @@ function Root({
   entity,
   runLoop,
   stateHolder,
+  selectModeStateHolder,
 }: {
   entity: Entity;
   runLoop: RunLoopAPI | null;
@@ -39,6 +46,7 @@ function Root({
     forceUpdate: null | (() => void);
     isHovered: boolean;
   };
+  selectModeStateHolder: SelectModeState;
 }) {
   const forceUpdate = useForceUpdate();
 
@@ -54,6 +62,8 @@ function Root({
         runLoop={runLoop}
         error={stateHolder.err}
         isHovered={stateHolder.isHovered}
+        isSelectMode={selectModeStateHolder.getSelectMode()}
+        toggleSelectMode={selectModeStateHolder.toggleSelectMode}
       />
     </StateTreeProvider>
   );
@@ -91,6 +101,13 @@ export default function Inspector() {
     isHovered: false,
   };
 
+  let isSelectMode = false;
+
+  const selectModeStateHolder: SelectModeState = {
+    getSelectMode: () => isSelectMode,
+    toggleSelectMode: () => (isSelectMode = !isSelectMode),
+  };
+
   useNewComponent(() =>
     ErrorBoundary((err) => {
       console.error(err, err.stack);
@@ -119,7 +136,12 @@ export default function Inspector() {
   });
 
   ReactDOM.render(
-    <Root entity={entity} runLoop={runLoop} stateHolder={stateHolder} />,
+    <Root
+      entity={entity}
+      runLoop={runLoop}
+      stateHolder={stateHolder}
+      selectModeStateHolder={selectModeStateHolder}
+    />,
     el,
     useCallbackAsCurrent(() => {
       const tick = useCallbackAsCurrent(() => {
@@ -138,6 +160,10 @@ export default function Inspector() {
       tick();
     })
   );
+
+  return {
+    ...selectModeStateHolder,
+  };
 }
 
-export { useInspectorHover };
+export { useInspectorHover, useInspectorSelect };
