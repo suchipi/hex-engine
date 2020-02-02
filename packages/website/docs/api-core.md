@@ -271,6 +271,8 @@ import { useNewComponent } from "@hex-engine/core";
 Create a new [`Component`] and add it to the current Component's Entity.
 Returns an object that has all the properties and methods of a [`Component`] instance as well as all the properties and methods of the object returned by the provided Component function (if any).
 
+Note that the Component function passed into `useNewComponent` will only be called _once_, in order to create the Component instance.
+
 #### Usage
 
 ```ts
@@ -592,7 +594,7 @@ function MyComponent() {
 
 ### useCurrentComponent
 
-> Available since version: 0.0.0
+> Available since version: 0.3.0
 
 `useCurrentComponent(): Component`
 
@@ -613,6 +615,70 @@ function MyComponent() {
   useType(MyComponent);
 
   const rootEnt = useRootEntity();
+}
+```
+
+### useNewRootComponent
+
+> Available since version: 0.3.0
+
+`useNewRootComponent(): Component`
+
+```ts
+import { useNewRootComponent } from "@hex-engine/core";
+```
+
+Like [`useNewComponent`], but instead of placing the newly-created component on the current Entity instance, it gets placed on the root Entity.
+
+#### Usage
+
+This is mostly used by hook functions that need some "global" state or "global" listeners.
+
+For instance, consider a hypothetical `useWindowSize` hook function that returns the current window size.
+You _could_ create a new window resize event listener every time `useWindowSize` is called:
+
+```ts
+function useWindowSize() {
+  const size = { x: window.innerWidth, y: window.innerHeight };
+
+  window.addEventListener("resize", () => {
+    size.x = window.innerWidth;
+    size.y = window.innerHeight;
+  });
+
+  return size;
+}
+```
+
+But since every consumer of `useWindowSize` wants the same values, it's more efficient to only create one event listener, and re-use its results:
+
+```ts
+import { useType, useRootEntity, useNewRootComponent } from "@hex-engine/core";
+
+function WindowSizeListener() {
+  useType(WindowSizeListener);
+
+  // We moved all the code that *was* in useWindowSize into a Component function
+  const size = { x: window.innerWidth, y: window.innerHeight };
+
+  window.addEventListener("resize", () => {
+    size.x = window.innerWidth;
+    size.y = window.innerHeight;
+  });
+
+  return { size };
+}
+
+function useWindowSize() {
+  // If there's already a WindowSizeListener component on the root entity, use it...
+  let listenerComponent = useRootEntity().getComponent(WindowSizeListener);
+
+  // But if there's not one yet, put one there, then use it.
+  if (!listenerComponent) {
+    listenerComponent = useNewRootComponent(WindowSizeListener);
+  }
+
+  return listenerComponent.size;
 }
 ```
 
