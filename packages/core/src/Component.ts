@@ -43,6 +43,7 @@ export default class Component implements ComponentInterface {
       }
     }
 
+    this._isEnabling = false;
     this._isEnabled = true;
   }
 
@@ -60,6 +61,7 @@ export default class Component implements ComponentInterface {
       }
     }
 
+    this._isDisabling = false;
     this._isEnabled = false;
   }
 }
