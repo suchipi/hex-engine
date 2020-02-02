@@ -1,6 +1,6 @@
 {
   "name": "@hex-engine/core",
-  "version": "0.1.4",
+  "version": "0.3.0",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "src/index.ts",
