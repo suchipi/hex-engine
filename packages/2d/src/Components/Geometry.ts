@@ -5,6 +5,7 @@ import {
   useEntityTransforms,
   useDebugOverlayDrawTime,
   useInspectorSelectEntity,
+  useEntitiesAtPoint,
 } from "../Hooks";
 import { LowLevelMouse } from "../Components";
 
@@ -43,18 +44,15 @@ function Geometry<S extends Shape>({
   const { onMouseDown } = useNewComponent(LowLevelMouse);
 
   onMouseDown(({ pos }) => {
-    if (shape.containsPoint(pos)) {
-      useInspectorSelectEntity(() => useEntity());
+    const worldPos = useEntityTransforms()
+      .matrixForWorldPosition()
+      .transformPoint(pos);
+
+    const ent = useEntitiesAtPoint(worldPos)[0];
+
+    if (ent) {
+      useInspectorSelectEntity(() => ent);
     }
-    // const worldPos = useEntityTransforms()
-    //   .matrixForWorldPosition()
-    //   .transformPoint(pos);
-
-    // const ent = useEntitiesAtPoint(worldPos)[0];
-
-    // if (ent) {
-    //   useInspectorSelectEntity(() => ent);
-    // }
   });
 
   useDebugOverlayDrawTime();

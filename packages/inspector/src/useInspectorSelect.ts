@@ -8,14 +8,12 @@ export default function useInspectorSelect() {
     throw new Error("Could not find an inspector component on the root entity");
   }
 
-  const { getSelectMode, toggleSelectMode } = inspector!;
-
-  console.log("is select mode?", getSelectMode());
+  const { getSelectMode, toggleSelectMode, selectEntity } = inspector!;
 
   return {
     getSelectMode,
     inspectEntity: (entity: Entity) => {
-      console.log("Inspecting entity", entity.id, entity.name);
+      selectEntity(entity);
       toggleSelectMode();
     },
   };

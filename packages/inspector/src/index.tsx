@@ -21,6 +21,8 @@ type RunLoopAPI = ReturnType<typeof RunLoop>;
 interface SelectModeState {
   getSelectMode: () => boolean;
   toggleSelectMode: () => void;
+  getSelectedEntity: () => null | Entity;
+  selectEntity: (entity: Entity) => void;
 }
 
 const initialState = localStorage.inspectorState
@@ -58,7 +60,7 @@ function Root({
       onUpdate={debouncedSaveState}
     >
       <App
-        entity={entity}
+        entity={selectModeStateHolder.getSelectedEntity()!}
         runLoop={runLoop}
         error={stateHolder.err}
         isHovered={stateHolder.isHovered}
@@ -102,10 +104,16 @@ export default function Inspector() {
   };
 
   let isSelectMode = false;
+  let selectedEntity: null | Entity = null;
 
   const selectModeStateHolder: SelectModeState = {
     getSelectMode: () => isSelectMode,
     toggleSelectMode: () => (isSelectMode = !isSelectMode),
+    getSelectedEntity: () => selectedEntity,
+    selectEntity: (entity: Entity) => {
+      console.log("Selecting entity", entity.id, entity.name);
+      selectedEntity = entity;
+    },
   };
 
   useNewComponent(() =>
