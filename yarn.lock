@@ -3080,15 +3080,16 @@
     "@webassemblyjs/wast-parser" "1.8.5"
     "@xtuc/long" "4.2.2"
 
-"@workspace-builder/babel@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@workspace-builder/babel/-/babel-1.0.0.tgz#55d6edb0d25350230098cc3a98567b4b881adec4"
-  integrity sha512-kIInmyNxenmit0Vx9Vsd1edH6ok/Yrc7GK0kCy0bjvIg1wFQLIP+FXh1o+oCZV6QHOqDgSOo6Ui4+U98IEN39g==
+"@workspace-builder/babel@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@workspace-builder/babel/-/babel-1.0.1.tgz#11fa0f8f34d380169f991dfc2e58b9351c280229"
+  integrity sha512-SoBCD3C9PwSRNpFk28Sa+9t7RjLOPCJd+9Yj0riFRDrJEmLZPfzO/hhoUowBpfESKLu52hRn40hroH9REr8C3w==
   dependencies:
     "@babel/cli" "^7.2.3"
     "@babel/core" "^7.2.2"
     "@workspace-builder/tools" "1.0.0"
     babel-preset-react-app "7.0.0"
+    cross-env "^7.0.0"
 
 "@workspace-builder/shell-command@^1.0.0":
   version "1.0.0"
@@ -4719,6 +4720,13 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
+cross-env@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-7.0.0.tgz#5a3b2ddce51ec713ea58f2fb79ce22e65b4f5479"
+  integrity sha512-rV6M9ldNgmwP7bx5u6rZsTbYidzwvrwIYZnT08hSGLcQCcggofgFW+sNe7IhA1SRauPS0QuLbbX+wdNtpqE5CQ==
+  dependencies:
+    cross-spawn "^7.0.1"
+
 cross-spawn@6.0.5, cross-spawn@^6.0.0, cross-spawn@^6.0.5:
   version "6.0.5"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-6.0.5.tgz#4a5ec7c64dfae22c3a14124dbacdee846d80cbc4"
@@ -4730,7 +4738,7 @@ cross-spawn@6.0.5, cross-spawn@^6.0.0, cross-spawn@^6.0.5:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
-cross-spawn@^7.0.0:
+cross-spawn@^7.0.0, cross-spawn@^7.0.1:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.1.tgz#0ab56286e0f7c24e153d04cc2aa027e43a9a5d14"
   integrity sha512-u7v4o84SwFpD32Z8IIcPZ6z1/ie24O6RU3RbtL5Y316l3KuHVPx9ItBgWQ6VlfAFnRnTtMUrsQ9MUUTuEZjogg==
