@@ -1,5 +1,3 @@
-import StateAccumulator from "./StateAccumulator";
-
 /**
  * A Hex Engine Entity. The most common way to make one of these is via `useChild`,
  * but you also get one returned by `createRoot`. You can get the Entity for the current
@@ -86,16 +84,6 @@ export interface Entity {
    * Additionally, all entities are disabled prior to being destroyed.
    */
   destroy(): void;
-
-  /**
-   * Get a State Accumulator associated with this Entity instance.
-   *
-   * You probably won't ever need to use this directly, but some hooks in
-   * `@hex-engine/2d` use it to persist state to an Entity instance and
-   * retrieve it later.
-   * @param key Which State Accumulator to get.
-   */
-  stateAccumulator<T>(key: symbol): StateAccumulator<T>;
 }
 
 /**
@@ -137,16 +125,4 @@ export interface Component {
    * is enabled or disabled, use `useEnableDisable`.
    */
   disable(): void;
-
-  /**
-   * Get a State Accumulator associated with this Component instance,
-   * as returned by `useStateAccumulator`.
-   *
-   * You probably won't ever need to use this directly, but some hooks in
-   * `@hex-engine/2d` use it to persist state to a Component instance and
-   * retrieve it later.
-   * @param key Which State Accumulator to get. This matches the key passed
-   * into `useStateAccumulator`.
-   */
-  stateAccumulator<T>(key: symbol): StateAccumulator<T>;
 }

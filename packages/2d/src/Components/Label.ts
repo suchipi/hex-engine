@@ -1,5 +1,5 @@
 import { useType } from "@hex-engine/core";
-import { useUpdate } from "../Canvas";
+import { useUpdate } from "../Hooks";
 import { FontImplementation } from "./Font";
 import { Vector } from "../Models";
 

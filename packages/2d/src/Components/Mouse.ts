@@ -1,7 +1,6 @@
 import {
   useType,
   useNewComponent,
-  useStateAccumulator,
   useCallbackAsCurrent,
   useEntity,
   Entity,
@@ -10,11 +9,6 @@ import LowLevelMouse, { HexMouseEvent } from "./LowLevelMouse";
 import MousePosition from "./MousePosition";
 import Geometry from "./Geometry";
 
-const ON_DOWN = Symbol("ON_DOWN");
-const ON_UP = Symbol("ON_UP");
-const ON_CLICK = Symbol("ON_CLICK");
-const ON_RIGHT_CLICK = Symbol("ON_RIGHT_CLICK");
-const ON_MIDDLE_CLICK = Symbol("ON_MIDDLE_CLICK");
 type Callback = (event: HexMouseEvent) => void;
 
 /**
@@ -39,11 +33,13 @@ export default function Mouse({
 } = {}) {
   useType(Mouse);
 
-  const onDownState = useStateAccumulator<Callback>(ON_DOWN);
-  const onUpState = useStateAccumulator<Callback>(ON_UP);
-  const onClickState = useStateAccumulator<Callback>(ON_CLICK);
-  const onRightClickState = useStateAccumulator<Callback>(ON_RIGHT_CLICK);
-  const onMiddleClickState = useStateAccumulator<Callback>(ON_MIDDLE_CLICK);
+  const storage = {
+    onDownCallbacks: new Set<Callback>(),
+    onUpCallbacks: new Set<Callback>(),
+    onClickCallbacks: new Set<Callback>(),
+    onRightClickCallbacks: new Set<Callback>(),
+    onMiddleClickCallbacks: new Set<Callback>(),
+  };
 
   const { onMouseDown, onMouseUp } = useNewComponent(LowLevelMouse);
   const mousePosition = useNewComponent(() =>
@@ -60,7 +56,7 @@ export default function Mouse({
 
     if (buttons.left) {
       pressingLeft = true;
-      onDownState.all().forEach((callback) => callback(event));
+      storage.onDownCallbacks.forEach((callback) => callback(event));
     }
     if (buttons.right) {
       pressingRight = true;
@@ -75,19 +71,19 @@ export default function Mouse({
 
     if (mousePosition.isInsideBounds) {
       if (pressingLeft && buttons.left) {
-        onClickState.all().forEach((callback) => callback(event));
+        storage.onClickCallbacks.forEach((callback) => callback(event));
       }
       if (pressingRight && buttons.right) {
-        onRightClickState.all().forEach((callback) => callback(event));
+        storage.onRightClickCallbacks.forEach((callback) => callback(event));
       }
       if (pressingMiddle && buttons.middle) {
-        onMiddleClickState.all().forEach((callback) => callback(event));
+        storage.onMiddleClickCallbacks.forEach((callback) => callback(event));
       }
     }
 
     if (buttons.left) {
       pressingLeft = false;
-      onUpState.all().forEach((callback) => callback(event));
+      storage.onUpCallbacks.forEach((callback) => callback(event));
     }
     if (buttons.right) {
       pressingRight = false;
@@ -99,19 +95,19 @@ export default function Mouse({
 
   const callbackSetters = {
     onDown(callback: (event: HexMouseEvent) => void) {
-      onDownState.add(useCallbackAsCurrent(callback));
+      storage.onDownCallbacks.add(useCallbackAsCurrent(callback));
     },
     onUp(callback: (event: HexMouseEvent) => void) {
-      onUpState.add(useCallbackAsCurrent(callback));
+      storage.onUpCallbacks.add(useCallbackAsCurrent(callback));
     },
     onClick(callback: (event: HexMouseEvent) => void) {
-      onClickState.add(useCallbackAsCurrent(callback));
+      storage.onClickCallbacks.add(useCallbackAsCurrent(callback));
     },
     onRightClick(callback: (event: HexMouseEvent) => void) {
-      onRightClickState.add(useCallbackAsCurrent(callback));
+      storage.onRightClickCallbacks.add(useCallbackAsCurrent(callback));
     },
     onMiddleClick(callback: (event: HexMouseEvent) => void) {
-      onMiddleClickState.add(useCallbackAsCurrent(callback));
+      storage.onMiddleClickCallbacks.add(useCallbackAsCurrent(callback));
     },
   };
 

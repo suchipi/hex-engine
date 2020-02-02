@@ -27,7 +27,7 @@ import proxyProperties from "./proxyProperties";
 export default function instantiate<T>(
   componentFunction: () => T,
   entity: EntityInterface
-): ComponentInterface & T {
+): T extends {} ? T & ComponentInterface : ComponentInterface {
   const instance = new Component(entity);
 
   const ret: unknown = HooksSystem.withInstance(instance, () => {
@@ -46,12 +46,10 @@ export default function instantiate<T>(
     }
   });
 
-  const api = {};
-  proxyProperties(instance, api);
   if (typeof ret === "object" && ret != null) {
-    proxyProperties(ret, api);
+    proxyProperties(ret, instance);
   }
 
   // @ts-ignore
-  return api;
+  return instance;
 }

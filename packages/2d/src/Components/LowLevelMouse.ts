@@ -1,16 +1,10 @@
 import {
   useType,
   useEnableDisable,
-  useStateAccumulator,
   useCallbackAsCurrent,
 } from "@hex-engine/core";
-import { useUpdate } from "../Canvas";
 import { Vector } from "../Models";
-import { useContext, useEntityTransforms } from "../Hooks";
-
-const MOUSE_MOVE = Symbol("MOUSE_MOVE");
-const MOUSE_DOWN = Symbol("MOUSE_DOWN");
-const MOUSE_UP = Symbol("MOUSE_UP");
+import { useContext, useUpdate, useEntityTransforms } from "../Hooks";
 
 /** A Mouse event in Hex Engine. */
 export class HexMouseEvent {
@@ -74,6 +68,12 @@ export function useFirstClick(handler: () => void) {
 export default function LowLevelMouse() {
   useType(LowLevelMouse);
 
+  const storage = {
+    moveCallbacks: new Set<(event: HexMouseEvent) => void>(),
+    downCallbacks: new Set<(event: HexMouseEvent) => void>(),
+    upCallbacks: new Set<(event: HexMouseEvent) => void>(),
+  };
+
   const context = useContext();
   const canvas: HTMLCanvasElement = context.canvas;
 
@@ -126,14 +126,6 @@ export default function LowLevelMouse() {
     event.buttons.mouse5 = Boolean(buttons & 16) || button === 4;
   }
 
-  const moveState = useStateAccumulator<(event: HexMouseEvent) => void>(
-    MOUSE_MOVE
-  );
-  const downState = useStateAccumulator<(event: HexMouseEvent) => void>(
-    MOUSE_DOWN
-  );
-  const upState = useStateAccumulator<(event: HexMouseEvent) => void>(MOUSE_UP);
-
   let pendingMove: null | (() => void) = null;
   let pendingDown: null | (() => void) = null;
   let pendingUp: null | (() => void) = null;
@@ -142,7 +134,7 @@ export default function LowLevelMouse() {
     pendingMove = () => {
       pendingMove = null;
       updateEvent({ clientX, clientY, buttons });
-      moveState.all().forEach((callback) => callback(event));
+      storage.moveCallbacks.forEach((callback) => callback(event));
     };
   };
   const handleMouseDown = ({ clientX, clientY, button }: MouseEvent) => {
@@ -157,14 +149,14 @@ export default function LowLevelMouse() {
     pendingDown = () => {
       pendingDown = null;
       updateEvent({ clientX, clientY, button });
-      downState.all().forEach((callback) => callback(event));
+      storage.downCallbacks.forEach((callback) => callback(event));
     };
   };
   const handleMouseUp = ({ clientX, clientY, button }: MouseEvent) => {
     pendingUp = () => {
       pendingUp = null;
       updateEvent({ clientX, clientY, button });
-      upState.all().forEach((callback) => callback(event));
+      storage.upCallbacks.forEach((callback) => callback(event));
     };
   };
 
@@ -190,7 +182,7 @@ export default function LowLevelMouse() {
     pendingDown = () => {
       pendingDown = null;
       updateEvent({ clientX, clientY, button });
-      downState.all().forEach((callback) => callback(event));
+      storage.downCallbacks.forEach((callback) => callback(event));
     };
 
     isTouching = true;
@@ -206,7 +198,7 @@ export default function LowLevelMouse() {
     pendingMove = () => {
       pendingMove = null;
       updateEvent({ clientX, clientY, button });
-      moveState.all().forEach((callback) => callback(event));
+      storage.moveCallbacks.forEach((callback) => callback(event));
     };
   };
   const handleTouchEnd = (ev: TouchEvent) => {
@@ -222,7 +214,7 @@ export default function LowLevelMouse() {
     pendingUp = () => {
       pendingUp = null;
       updateEvent({ clientX, clientY, button });
-      upState.all().forEach((callback) => callback(event));
+      storage.upCallbacks.forEach((callback) => callback(event));
     };
 
     isTouching = false;
@@ -274,15 +266,15 @@ export default function LowLevelMouse() {
   return {
     /** Registers the provided function to be called when the mouse cursor moves. */
     onMouseMove: (callback: (event: HexMouseEvent) => void) => {
-      moveState.add(useCallbackAsCurrent(callback));
+      storage.moveCallbacks.add(useCallbackAsCurrent(callback));
     },
     /** Registers the provided function to be called when any button on the mouse is pressed down. */
     onMouseDown: (callback: (event: HexMouseEvent) => void) => {
-      downState.add(useCallbackAsCurrent(callback));
+      storage.downCallbacks.add(useCallbackAsCurrent(callback));
     },
     /** Registers the provided function to be called when any button on the mouse is released. */
     onMouseUp: (callback: (event: HexMouseEvent) => void) => {
-      upState.add(useCallbackAsCurrent(callback));
+      storage.upCallbacks.add(useCallbackAsCurrent(callback));
     },
   };
 }

@@ -2,10 +2,7 @@ import {
   Component as ComponentInterface,
   Entity as EntityInterface,
 } from "./Interface";
-import StateAccumulator from "./StateAccumulator";
-
-export const ON_ENABLED = Symbol("ON_ENABLED");
-export const ON_DISABLED = Symbol("ON_DISABLED");
+import { StorageForUseEnableDisable } from "./Hooks/useEnableDisable";
 
 export default class Component implements ComponentInterface {
   _kind: "component" = "component";
@@ -14,21 +11,8 @@ export default class Component implements ComponentInterface {
 
   entity: EntityInterface;
 
-  // This really should be { [key: symbol]: any },
-  // but TypeScript doesn't allow using unique symbols as indexers.
-  _accumulatedState: any = {};
-
   constructor(entity: EntityInterface) {
     this.entity = entity;
-  }
-
-  stateAccumulator<T>(key: symbol): StateAccumulator<T> {
-    const state = this._accumulatedState;
-    if (!state[key]) {
-      state[key] = new StateAccumulator<T>();
-    }
-
-    return state[key];
   }
 
   _isEnabled: boolean = true;
@@ -46,15 +30,22 @@ export default class Component implements ComponentInterface {
   }
 
   enable() {
-    this.stateAccumulator<() => void>(ON_ENABLED)
-      .all()
-      .forEach((callback) => callback());
+    if (this._isEnabled) return;
     this._isEnabled = true;
+
+    const storage = this.entity.getComponent(StorageForUseEnableDisable);
+    if (storage) {
+      storage.enableCallbacks.forEach((callback) => callback());
+    }
   }
+
   disable() {
-    this.stateAccumulator<() => void>(ON_DISABLED)
-      .all()
-      .forEach((callback) => callback());
+    if (!this._isEnabled) return;
     this._isEnabled = false;
+
+    const storage = this.entity.getComponent(StorageForUseEnableDisable);
+    if (storage) {
+      storage.disableCallbacks.forEach((callback) => callback());
+    }
   }
 }

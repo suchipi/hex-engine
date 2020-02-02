@@ -1,5 +1,5 @@
 import { useNewComponent, useType } from "@hex-engine/core";
-import { useUpdate } from "../Canvas";
+import { useUpdate } from "../Hooks";
 import Timer from "./Timer";
 
 /**

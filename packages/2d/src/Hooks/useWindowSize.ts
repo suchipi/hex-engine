@@ -1,9 +1,43 @@
-import { useRootEntity, useListenerAccumulator } from "@hex-engine/core";
+import {
+  useRootEntity,
+  useType,
+  useCallbackAsCurrent,
+  useCurrentComponent,
+  useNewRootComponent,
+} from "@hex-engine/core";
 import { useUpdate } from ".";
 import { Vector } from "../Models";
 
-const ON_WINDOW_RESIZE = Symbol("ON_WINDOW_RESIZE");
-const WINDOW_SIZE = Symbol("WINDOW_SIZE");
+function StorageForWindowSize() {
+  useType(StorageForWindowSize);
+
+  const size = new Vector(window.innerWidth, window.innerHeight);
+  const listeners = new Set<() => void>();
+
+  let changePending = false;
+  window.addEventListener("resize", () => {
+    if (window.innerWidth !== size.x) {
+      size.x = window.innerWidth;
+      changePending = true;
+    }
+    if (window.innerHeight !== size.y) {
+      size.y = window.innerHeight;
+      changePending = true;
+    }
+  });
+
+  useUpdate(() => {
+    if (changePending) {
+      listeners.forEach((callback) => callback());
+      changePending = false;
+    }
+  });
+
+  return {
+    size,
+    listeners,
+  };
+}
 
 /**
  * Returns an object with two properties on it:
@@ -12,40 +46,20 @@ const WINDOW_SIZE = Symbol("WINDOW_SIZE");
  * a function to be run every time the window size changes.
  */
 export default function useWindowSize() {
-  const resizeListeners = useListenerAccumulator<() => void>(
-    useRootEntity().stateAccumulator(ON_WINDOW_RESIZE)
-  );
-  const sizeState = useRootEntity().stateAccumulator<Vector>(WINDOW_SIZE);
-
-  let size: Vector;
-  if (sizeState.all().length > 0) {
-    size = sizeState.all()[0];
-  } else {
-    size = new Vector(window.innerWidth, window.innerHeight);
-    sizeState.add(size);
-
-    let changePending = false;
-    window.addEventListener("resize", () => {
-      if (window.innerWidth !== size.x) {
-        size.x = window.innerWidth;
-        changePending = true;
-      }
-      if (window.innerHeight !== size.y) {
-        size.y = window.innerHeight;
-        changePending = true;
-      }
-    });
-
-    useUpdate(() => {
-      if (changePending) {
-        resizeListeners.callListeners();
-        changePending = false;
-      }
-    });
-  }
+  const storage =
+    useRootEntity().getComponent(StorageForWindowSize) ||
+    useNewRootComponent(StorageForWindowSize);
 
   return {
-    windowSize: size,
-    onWindowResize: resizeListeners.addListener,
+    windowSize: storage.size,
+    onWindowResize: (callback: () => void) => {
+      const component = useCurrentComponent();
+      const wrapped = useCallbackAsCurrent(callback);
+      storage.listeners.add(() => {
+        if (component.isEnabled) {
+          wrapped();
+        }
+      });
+    },
   };
 }

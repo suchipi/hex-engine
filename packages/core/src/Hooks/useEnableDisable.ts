@@ -1,10 +1,20 @@
 import HooksSystem from "../HooksSystem";
-import { ON_ENABLED, ON_DISABLED } from "../Component";
 const {
+  useType,
   useCallbackAsCurrent,
-  useStateAccumulator,
   useIsEnabled,
+  useNewComponent,
+  useEntity,
 } = HooksSystem.hooks;
+
+export function StorageForUseEnableDisable() {
+  useType(StorageForUseEnableDisable);
+
+  return {
+    enableCallbacks: new Set<() => void>(),
+    disableCallbacks: new Set<() => void>(),
+  };
+}
 
 /**
  * Returns an objest with two functions on it: `onEnabled` and `onDisabled`.
@@ -13,8 +23,9 @@ const {
  * - `onDisabled` registers a function to be called when the current Component is disabled.
  */
 export default function useEnableDisable() {
-  const enabledState = useStateAccumulator<() => void>(ON_ENABLED);
-  const disabledState = useStateAccumulator<() => void>(ON_DISABLED);
+  const storage =
+    useEntity().getComponent(StorageForUseEnableDisable) ||
+    useNewComponent(StorageForUseEnableDisable);
 
   return {
     /**
@@ -24,7 +35,7 @@ export default function useEnableDisable() {
      * @param handler The function to call when the current Component is enabled.
      */
     onEnabled: (handler: () => void) => {
-      enabledState.add(useCallbackAsCurrent(handler));
+      storage.enableCallbacks.add(useCallbackAsCurrent(handler));
       if (useIsEnabled()) {
         handler();
       }
@@ -37,7 +48,7 @@ export default function useEnableDisable() {
      * @param handler The function to be called when the current Component is disabled.
      */
     onDisabled: (handler: () => void) => {
-      disabledState.add(useCallbackAsCurrent(handler));
+      storage.disableCallbacks.add(useCallbackAsCurrent(handler));
       if (!useIsEnabled()) {
         handler();
       }

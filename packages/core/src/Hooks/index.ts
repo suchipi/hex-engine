@@ -1,15 +1,15 @@
 import useDestroy from "./useDestroy";
 import useEnableDisable from "./useEnableDisable";
 import useFrame from "./useFrame";
+import useNewRootComponent from "./useNewRootComponent";
 import useEntityName from "./useEntityName";
 import useRootEntity from "./useRootEntity";
-import useListenerAccumulator from "./useListenerAccumulator";
 
 export {
   useDestroy,
   useEnableDisable,
   useFrame,
+  useNewRootComponent,
   useEntityName,
   useRootEntity,
-  useListenerAccumulator,
 };

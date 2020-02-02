@@ -334,7 +334,7 @@ export default class Vector {
       point.y = this.y;
       return point;
     } else {
-      throw new Error("Unable to convert Point to DOMPoint on this browser");
+      throw new Error("Unable to convert Vector to DOMPoint in this browser");
     }
   }
 

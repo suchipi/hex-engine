@@ -1,5 +1,5 @@
 import { useType } from "@hex-engine/core";
-import { useUpdate } from "../Canvas";
+import { useUpdate } from "../Hooks";
 
 /** This Component can be used to check how far the current time is from some desired time in the future. */
 function Timer() {

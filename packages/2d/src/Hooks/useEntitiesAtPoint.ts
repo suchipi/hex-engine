@@ -27,7 +27,7 @@ export default function useEntitiesAtPoint(worldPos: Vector): Array<Entity> {
 
   const sort = useCanvasDrawOrderSort();
   const components = sort(entsUnderCursor)
-    .filter(Canvas.DrawOrder.isDebugOverlay)
+    .filter((comp) => Canvas.DrawOrder.isDebugOverlay(comp))
     .reverse();
 
   const entsSeenSoFar = new Set();

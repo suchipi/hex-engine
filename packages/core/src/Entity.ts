@@ -3,9 +3,7 @@ import {
   Component as ComponentInterface,
 } from "./Interface";
 import instantiate from "./instantiate";
-import StateAccumulator from "./StateAccumulator";
-
-export const ON_DESTROY = Symbol("ON_DESTROY");
+import { StorageForUseDestroy } from "./Hooks/useDestroy";
 
 function destroy(entity: Entity) {
   if (entity.parent) {
@@ -14,8 +12,12 @@ function destroy(entity: Entity) {
     }
 
     entity.disable();
-    const onDestroyState = entity.stateAccumulator<() => void>(ON_DESTROY);
-    onDestroyState.all().forEach((callback) => callback());
+
+    const storageForUseDestroy = entity.getComponent(StorageForUseDestroy);
+    if (storageForUseDestroy) {
+      storageForUseDestroy.callbacks.forEach((callback) => callback());
+    }
+
     entity.parent._removeChild(entity);
   } else {
     throw new Error("Cannot destroy the root entity");
@@ -65,10 +67,6 @@ export default class Entity implements EntityInterface {
   name: string | null = null;
   id: number = -1;
   rootComponent: any;
-
-  // This really should be { [key: symbol]: any },
-  // but TypeScript doesn't allow using unique symbols as indexers.
-  _accumulatedState: any = {};
 
   static _create<T>(
     componentFactory: () => T,
@@ -145,14 +143,5 @@ export default class Entity implements EntityInterface {
     }
 
     return ancestors;
-  }
-
-  stateAccumulator<T>(key: symbol): StateAccumulator<T> {
-    const state = this._accumulatedState;
-    if (!state[key]) {
-      state[key] = new StateAccumulator<T>();
-    }
-
-    return state[key];
   }
 }

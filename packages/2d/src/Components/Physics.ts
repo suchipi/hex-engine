@@ -5,6 +5,7 @@ import {
   useEntity,
   Entity,
   useCallbackAsCurrent,
+  useNewRootComponent,
 } from "@hex-engine/core";
 import Matter from "matter-js";
 import Geometry from "./Geometry";
@@ -198,23 +199,16 @@ function PhysicsEngine({
 
 /** Get the Physics Engine from the root Entity. If it is not present, throw an Error. */
 function useEngine() {
-  const engine = useRootEntity().getComponent(PhysicsEngine)?.engine;
-  if (!engine) {
-    throw new Error(
-      "Attempted to get Physics.Engine component from the root entity, but there wasn't one there."
-    );
-  }
+  const engine =
+    useRootEntity().getComponent(PhysicsEngine)?.engine ||
+    useNewRootComponent(PhysicsEngine).engine;
   return engine;
 }
 
 function useCollisionListener() {
-  const addCollisionListener = useRootEntity().getComponent(PhysicsEngine)
-    ?.addCollisionListener;
-  if (!addCollisionListener) {
-    throw new Error(
-      "Attempted to get Physics.Engine component from the root entity, but there wasn't one there.  "
-    );
-  }
+  const addCollisionListener =
+    useRootEntity().getComponent(PhysicsEngine)?.addCollisionListener ||
+    useNewRootComponent(PhysicsEngine).addCollisionListener;
   return addCollisionListener;
 }
 

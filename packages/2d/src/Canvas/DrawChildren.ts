@@ -2,18 +2,29 @@ import {
   useCallbackAsCurrent,
   useEntity,
   useFrame,
-  useStateAccumulator,
   Component,
   useType,
+  useNewComponent,
+  useCurrentComponent,
+  useRootEntity,
+  useNewRootComponent,
 } from "@hex-engine/core";
 import { useCanvasDrawOrderSort } from "./DrawOrder";
-
-const DRAW_CALLBACKS = Symbol("DRAW_CALLBACKS");
+import useContext from "../Hooks/useContext";
+import useBackstage from "../Hooks/useBackstage";
 
 type DrawCallback = (
   context: CanvasRenderingContext2D,
   backstage: CanvasRenderingContext2D
 ) => void;
+
+function StorageForDrawChildren() {
+  useType(StorageForDrawChildren);
+
+  return {
+    callbacksByComponent: new WeakMap<Component, Set<DrawCallback>>(),
+  };
+}
 
 /**
  * Registers a function to be called once a frame, after all `useUpdate` functions have been called.
@@ -23,9 +34,21 @@ type DrawCallback = (
  * In most cases, you should use `useDraw` instead of `useRawDraw`.
  */
 export function useRawDraw(callback: DrawCallback) {
-  useStateAccumulator<DrawCallback>(DRAW_CALLBACKS).add(
-    useCallbackAsCurrent(callback)
-  );
+  const storage =
+    useRootEntity().getComponent(StorageForDrawChildren) ||
+    useNewRootComponent(StorageForDrawChildren);
+
+  const component = useCurrentComponent();
+  let storageForComponent: Set<DrawCallback>;
+  const maybeStorageForComponent = storage.callbacksByComponent.get(component);
+  if (maybeStorageForComponent) {
+    storageForComponent = maybeStorageForComponent;
+  } else {
+    storageForComponent = new Set();
+    storage.callbacksByComponent.set(component, storageForComponent);
+  }
+
+  storageForComponent.add(useCallbackAsCurrent(callback));
 }
 
 /**
@@ -33,24 +56,23 @@ export function useRawDraw(callback: DrawCallback) {
  * draw callbacks, in the order specified by the Canvas.DrawOrder component
  * on the root Entity, or a default order if there is no such component.
  */
-export function DrawChildren({
-  context,
-  backstage,
-  backgroundColor,
-}: {
-  context: CanvasRenderingContext2D;
-  backstage: CanvasRenderingContext2D;
-  backgroundColor: string;
-}) {
+export function DrawChildren({ backgroundColor }: { backgroundColor: string }) {
   useType(DrawChildren);
+
+  const context = useContext();
+  const backstage = useBackstage();
+
+  const storage = useNewComponent(StorageForDrawChildren);
 
   function drawComponent(component: Component) {
     if (component.isEnabled) {
-      const drawCallbacks = component
-        .stateAccumulator<DrawCallback>(DRAW_CALLBACKS)
-        .all();
-      for (const drawCallback of drawCallbacks) {
-        drawCallback(context, backstage);
+      const maybeStorageForComponent = storage.callbacksByComponent.get(
+        component
+      );
+      if (maybeStorageForComponent) {
+        for (const drawCallback of maybeStorageForComponent) {
+          drawCallback(context, backstage);
+        }
       }
     }
   }

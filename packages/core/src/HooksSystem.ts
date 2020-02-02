@@ -4,7 +4,6 @@ import {
   Component as ComponentInterface,
   Entity as EntityInterface,
 } from "./Interface";
-import StateAccumulator from "./StateAccumulator";
 import instantiate from "./instantiate";
 
 /**
@@ -18,11 +17,12 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
      * @param componentFunction The function that creates the new Component.
      * @returns The new Component instance.
      */
-    <T>(componentFunction: () => T): T & ComponentInterface => {
+    <T>(
+      componentFunction: () => T
+    ): T extends {} ? T & ComponentInterface : ComponentInterface => {
       const child = instantiate(componentFunction, instance.entity);
       instance.entity.components.add(child);
 
-      // @ts-ignore
       return child;
     },
 
@@ -46,6 +46,12 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
      * Get the Entity that this Component belongs to.
      */
     () => instance.entity,
+
+  useCurrentComponent: (instance) =>
+    /**
+     * Get the Component instance for the current Component function.
+     */
+    () => instance,
 
   useCallbackAsCurrent: (instance) =>
     /**
@@ -74,36 +80,6 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
       // To make debugging easier
       func.toString = () => "useCallbackAsCurrent(" + callback.toString() + ")";
       return func;
-    },
-
-  useStateAccumulator: (instance) =>
-    /**
-     * Create an object associated with the current Component instance that will
-     * hold one or more values within. You can add values to this object using
-     * the `add` method, and retrieve all the values that have been added
-     * using the `all` method. You can also remove values from this object using
-     * the `remove` method.
-     *
-     * This object is called a "State Accumulator".
-     *
-     * Additionally, you can retrieve a State Accumulator from a Component instance
-     * by using its `.stateAccumulator` method.
-     *
-     * You probably won't need to use this directly, but it is used by several
-     * hooks and Components in `@hex-engine/2d` to collect data from potential
-     * consumers of those hooks/Components.
-     *
-     * The most common usage of `useStateAccumulator` is to use it to collect
-     * functions that you'll call at some point in the future, and then
-     * iterate over them with `.all()` and call them, when it's time.
-     *
-     * @param key A unique Symbol that will be used to store this State
-     * Accumulator on the Component instance. To get back the same State
-     * Accumulator later, pass in the same symbol to either
-     * `useStateAccumulator` or `component.stateAccumulator`.
-     */
-    <T>(key: symbol): StateAccumulator<T> => {
-      return instance.stateAccumulator<T>(key);
     },
 
   useIsEnabled: (instance) =>

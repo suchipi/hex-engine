@@ -5,7 +5,6 @@ import {
   useCallbackAsCurrent,
 } from "@hex-engine/core";
 import Inspector from "@hex-engine/inspector";
-import { UpdateChildren, useUpdate } from "./UpdateChildren";
 import { DrawChildren, useRawDraw } from "./DrawChildren";
 import DrawOrder, {
   useDebugOverlayDrawTime,
@@ -14,6 +13,8 @@ import DrawOrder, {
 import polyfillContext from "./polyfillContext";
 import useCanvasSize from "../Hooks/useCanvasSize";
 import useWindowSize from "../Hooks/useWindowSize";
+import { setContext } from "../Hooks/useContext";
+import { setBackstage } from "../Hooks/useBackstage";
 
 /** The built-in Canvas component that should be placed on your root Entity in order to render everything in your game. */
 export default Object.assign(
@@ -46,6 +47,8 @@ export default Object.assign(
     }
     polyfillContext(context);
 
+    setContext(context);
+
     const backstageCanvas = document.createElement("canvas");
     backstageCanvas.width = canvas.width;
     backstageCanvas.height = canvas.height;
@@ -56,15 +59,14 @@ export default Object.assign(
     }
     polyfillContext(backstageContext);
 
+    setBackstage(backstageContext);
+
     useNewComponent(RunLoop);
     useNewComponent(() =>
       DrawChildren({
-        context,
-        backstage: backstageContext,
         backgroundColor,
       })
     );
-    useNewComponent(UpdateChildren);
     if (process.env.NODE_ENV !== "production") {
       useNewComponent(() => Inspector());
     }
@@ -103,33 +105,7 @@ export default Object.assign(
 
     setPixelated(true);
 
-    let canvasSizeHookResult: null | ReturnType<typeof useCanvasSize> = null;
-    let windowSizeHookResult: null | ReturnType<typeof useWindowSize> = null;
-
-    const resize = useCallbackAsCurrent(
-      ({
-        realWidth,
-        realHeight,
-        pixelWidth,
-        pixelHeight,
-      }: {
-        realWidth: number | string;
-        realHeight: number | string;
-        pixelWidth: number;
-        pixelHeight: number;
-      }) => {
-        if (!canvasSizeHookResult) {
-          canvasSizeHookResult = useCanvasSize();
-        }
-
-        canvasSizeHookResult.resizeCanvas({
-          realWidth,
-          realHeight,
-          pixelWidth,
-          pixelHeight,
-        });
-      }
-    );
+    const { resizeCanvas } = useCanvasSize();
 
     return {
       element: canvas,
@@ -138,14 +114,11 @@ export default Object.assign(
 
       setPixelated,
 
-      resize,
+      resize: resizeCanvas,
 
       fullscreen: useCallbackAsCurrent(
         ({ pixelZoom = 1 }: { pixelZoom?: number } = {}) => {
-          if (!windowSizeHookResult) {
-            windowSizeHookResult = useWindowSize();
-          }
-          const { windowSize, onWindowResize } = windowSizeHookResult;
+          const { windowSize, onWindowResize } = useWindowSize();
 
           Object.assign(document.body.style, {
             margin: 0,
@@ -154,7 +127,7 @@ export default Object.assign(
           });
 
           const matchWindowSize = () => {
-            resize({
+            resizeCanvas({
               realWidth: windowSize.x,
               realHeight: windowSize.y,
               pixelWidth: windowSize.x / pixelZoom,
@@ -173,9 +146,4 @@ export default Object.assign(
   }
 );
 
-export {
-  useUpdate,
-  useRawDraw,
-  useDebugOverlayDrawTime,
-  useCanvasDrawOrderSort,
-};
+export { useRawDraw, useDebugOverlayDrawTime, useCanvasDrawOrderSort };

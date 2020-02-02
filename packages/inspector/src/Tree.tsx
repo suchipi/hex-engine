@@ -5,7 +5,7 @@ import Expandable from "./Expandable";
 import Button from "./Button";
 import EditableString from "./EditableString";
 import EditableBoolean from "./EditableBoolean";
-import { HOVER_BEGIN, HOVER_END } from "./useInspectorHover";
+import { StorageForInspectorHover } from "./useInspectorHover";
 
 function gatherPropertyNames(
   obj: Object,
@@ -267,19 +267,31 @@ export default function Tree({
 
       onMouseEnter = () => {
         hoverables.forEach((component) => {
-          component
-            .stateAccumulator<() => void>(HOVER_BEGIN)
-            .all()
-            .forEach((callback: () => void) => callback());
+          const storageForEntity = component.entity.getComponent(
+            StorageForInspectorHover
+          );
+          if (!storageForEntity) return;
+          const storageForComponent = storageForEntity.beginCallbacks.get(
+            component
+          );
+          if (!storageForComponent) return;
+
+          storageForComponent.forEach((callback: () => void) => callback());
         });
       };
 
       onMouseLeave = () => {
         hoverables.forEach((component) => {
-          component
-            .stateAccumulator<() => void>(HOVER_END)
-            .all()
-            .forEach((callback: () => void) => callback());
+          const storageForEntity = component.entity.getComponent(
+            StorageForInspectorHover
+          );
+          if (!storageForEntity) return;
+          const storageForComponent = storageForEntity.endCallbacks.get(
+            component
+          );
+          if (!storageForComponent) return;
+
+          storageForComponent.forEach((callback: () => void) => callback());
         });
       };
     } else if (data._kind === "component") {
@@ -290,18 +302,27 @@ export default function Tree({
         className += " - disabled";
       }
       content = entriesForProperties(gatherPropertyNames(data));
+
       onMouseEnter = () => {
-        data
-          .stateAccumulator(HOVER_BEGIN)
-          .all()
-          .forEach((callback: () => void) => callback());
+        const storageForEntity = data.entity.getComponent(
+          StorageForInspectorHover
+        );
+        if (!storageForEntity) return;
+        const storageForComponent = storageForEntity.beginCallbacks.get(data);
+        if (!storageForComponent) return;
+
+        storageForComponent.forEach((callback: () => void) => callback());
       };
 
       onMouseLeave = () => {
-        data
-          .stateAccumulator(HOVER_END)
-          .all()
-          .forEach((callback: () => void) => callback());
+        const storageForEntity = data.entity.getComponent(
+          StorageForInspectorHover
+        );
+        if (!storageForEntity) return;
+        const storageForComponent = storageForEntity.endCallbacks.get(data);
+        if (!storageForComponent) return;
+
+        storageForComponent.forEach((callback: () => void) => callback());
       };
     } else if (data._kind === "grid" && typeof data.defaultValue === "number") {
       className = `Grid (${data.size.x}, ${data.size.y})`;

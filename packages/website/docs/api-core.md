@@ -137,20 +137,6 @@ on this Entity and all of its children.
 
 Additionally, all entities are [disabled][`entity.disable`] prior to being destroyed.
 
-##### stateAccumulator
-
-> Available since version: 0.1.2
-
-`stateAccumulator<T>(key: symbol): StateAccumulator<T>`
-
-Get a [`StateAccumulator`] associated with this Entity instance.
-
-You probably won't ever need to use this directly, but some hooks in
-[`@hex-engine/2d`] use it to persist state to an Entity instance and
-retrieve it later.
-
-> In versions prior to 0.1.4, the returned StateAccumulator didn't have a `remove` method.
-
 ### Component
 
 > Available since version: 0.0.0
@@ -213,21 +199,6 @@ Disable this Component.
 
 Use the [`useEnableDisable`] hook to specify what happens when a [`Component`] is enabled or disabled.
 
-##### stateAccumulator
-
-> Available since version: 0.0.0
-
-`stateAccumulator<T>(key: Symbol): StateAccumulator<T>`
-
-Gets a [`StateAccumulator`] associated with this Component instance,
-as returned by [`useStateAccumulator`].
-
-You probably won't ever need to use this directly, but some hooks in
-[`@hex-engine/2d`] use it to persist state to a Component instance
-and retrieve it later.
-
-> In versions prior to 0.1.4, the returned StateAccumulator didn't have a `remove` method.
-
 ## Functions
 
 ### createRoot
@@ -253,17 +224,6 @@ const rootEntity = createRoot(() => {
 
 // rootEntity is an Entity
 ```
-
-## Classes
-
-### StateAccumulator
-
-An object that will hold one or more values within. You can add values to this object using
-the `add` method, remove them with the `remove` method, and retrieve all the values that have been added using the `all` method.
-
-The most common use of a StateAccumulator is to persist one or more state values to either component or entity instances so that they can be shared between multiple component functions or hooks, since you can use [`useStateAccumulator`], [`Component.stateAccumulator`], or [`Entity.stateAccumulator`] to retrieve a StateAccumulator from the corresponding object, by using a unique Symbol as the key.
-
-You usually won't need to use StateAccumulators directly, but many hooks and Components in [`@hex-engine/2d`] are built using them.
 
 ## Hooks
 
@@ -459,63 +419,6 @@ function MyChildComponent(useSibling: (componentFunction: Function) => Entity) {
 }
 ```
 
-### useStateAccumulator
-
-> Available since version: 0.0.0
-
-`useStateAccumulator<T>(key: symbol): StateAccumulator`
-
-```ts
-import { useStateAccumulator } from "@hex-engine/core";
-```
-
-Create a [`StateAccumulator`] associated with the current Component instance.
-
-You probably won't need to use this directly, but it is used by several
-hooks and Components in [`@hex-engine/2d`].
-
-> In versions prior to 0.1.4, the returned StateAccumulator didn't have a `remove` method.
-
-#### Parameters
-
-##### key
-
-A unique Symbol that will be used to store this StateAccumulator on the Component instance. To get back the same StateAccumulator later, pass in the same symbol to either
-[`useStateAccumulator`] or [`component.stateAccumulator`].
-
-#### Usage
-
-```ts
-import {
-  useType,
-  useNewComponent,
-  useStateAccumulator,
-} from "@hex-engine/core";
-
-const FRUITS = Symbol("FRUITS");
-
-function MyComponent() {
-  useType(MyComponent);
-
-  const fruits = useStateAccumulator<string>(FRUITS);
-  fruits.add("apple");
-
-  return {
-    addFruit: (fruit: string) => {
-      fruits.add(fruit);
-    }),
-  };
-}
-
-function MyOtherComponent() {
-  useType(MyOtherComponent);
-
-  const { addFruit } = useNewComponent(MyComponent);
-
-  addFruit("orange");
-}
-```
-
 ### useDestroy
 
 > Available since version: 0.0.1
@@ -687,57 +590,29 @@ function MyComponent() {
 }
 ```
 
-### useListenerAccumulator
+### useCurrentComponent
 
-> Available since version: 0.1.4
+> Available since version: 0.0.0
 
-`useListenerAccumulator<T>(stateAccumulator: StateAccumulator<T>): { addListener(callback: T): void, callListeners(...args: Parameters<T>): void }`
+`useCurrentComponent(): Component`
 
 ```ts
-import { useListenerAccumulator } from "@hex-engine/core";
+import { useCurrentComponent } from "@hex-engine/core";
 ```
 
-Stores listener callbacks in the received [`StateAccumulator`],
-and adds/removes them from the StateAccumulator when the current
-component is enabled/disabled.
+Gives you the current Component instance.
 
-This lets you store all your listeners in one StateAccumulator
-(on the root entity, for example), but still handles enabling and
-disabling relative to the local component.
+You can use this as a WeakMap key, or you can check its `isEnabled` property.
 
 #### Usage
 
 ```ts
-import {
-  useNewComponent,
-  useRootEntity,
-  useListenerAccumulator,
-} from "@hex-engine/core";
+import { useType, useRootEntity } from "@hex-engine/core";
 
-const ON_RESIZE = Symbol("ON_RESIZE");
-const RESIZE_LISTENER_SETUP = Symbol("RESIZE_LISTENER_SETUP");
+function MyComponent() {
+  useType(MyComponent);
 
-function useResize() {
-  const rootEntity = useRootEntity();
-
-  const resizeListeners = useListenerAccumulator<(event: FocusEvent) => void>(
-    rootEntity.stateAccumulator(ON_RESIZE)
-  );
-  const setupState = rootEntity.stateAccumulator<boolean>(
-    RESIZE_LISTENER_SETUP
-  );
-
-  if (setupState.length === 0) {
-    // Only create the window event listener once
-    window.addEventListener("resize", (event: FocusEvent) => {
-      resizeListeners.callListeners(event);
-    });
-    setupState.add(true);
-  }
-
-  return {
-    onResize: resizeListeners.addListener,
-  };
+  const rootEnt = useRootEntity();
 }
 ```
 
@@ -815,29 +690,25 @@ function MyComponent() {
 [`entity.enable`]: #enable
 [`entity.disable`]: #disable
 [`entity.destroy`]: #destroy
-[`entity.stateaccumulator`]: #stateaccumulator
 [`component`]: #component
 [`component.type`]: #type
 [`component.entity`]: #entity-1
 [`component.isenabled`]: #isenabled
 [`component.enable`]: #enable-1
 [`component.disable`]: #disable-1
-[`component.stateaccumulator`]: #stateaccumulator-1
 [`createroot`]: #createroot
-[`stateaccumulator`]: #stateaccumulator-2
 [`usetype`]: #usetype
 [`usenewcomponent`]: #usenewcomponent
 [`useentity`]: #useentity
 [`usechild`]: #usechild
 [`useisenabled`]: #useisenabled
 [`usecallbackascurrent`]: #usecallbackascurrent
-[`usestateaccumulator`]: #usestateaccumulator
 [`usedestroy`]: #usedestroy
 [`useenabledisable`]: #useenabledisable
 [`useentityname`]: #useentityname
 [`useframe`]: #useframe
 [`userootentity`]: #userootentity
-[`uselisteneraccumulator`]: #uselisteneraccumulator
+[`usecurrentcomponent`]: #usecurrentcomponent
 [`runloop`]: #runloop
 [`errorboundary`]: #errorboundary
 [`canvas`]: /docs/api-2d#canvas

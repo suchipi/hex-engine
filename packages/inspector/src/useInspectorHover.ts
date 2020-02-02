@@ -1,8 +1,20 @@
-import { useStateAccumulator, useCallbackAsCurrent } from "@hex-engine/core";
+import {
+  useCallbackAsCurrent,
+  useType,
+  useNewComponent,
+  useEntity,
+  Component,
+  useCurrentComponent,
+} from "@hex-engine/core";
 
-export const HOVER_BEGIN = Symbol("INSPECTOR_HOVER_BEGIN");
-export const HOVER_END = Symbol("INSPECTOR_HOVER_END");
-type Callback = () => void;
+export function StorageForInspectorHover() {
+  useType(StorageForInspectorHover);
+
+  return {
+    beginCallbacks: new WeakMap<Component, Set<() => void>>(),
+    endCallbacks: new WeakMap<Component, Set<() => void>>(),
+  };
+}
 
 /**
  * Returns an object with three properties:
@@ -18,16 +30,31 @@ type Callback = () => void;
  * Inspector, you visually highlight the corresponding rendered objects, if any.
  */
 export default function useInspectorHover() {
-  const beginState = useStateAccumulator<Callback>(HOVER_BEGIN);
-  const endState = useStateAccumulator<Callback>(HOVER_END);
+  const storage =
+    useEntity().getComponent(StorageForInspectorHover) ||
+    useNewComponent(StorageForInspectorHover);
+
+  const component = useCurrentComponent();
 
   const api = {
     isHovered: false,
     onHoverStart(callback: () => void) {
-      beginState.add(useCallbackAsCurrent(callback));
+      let storageForComponent = storage.beginCallbacks.get(component);
+      if (!storageForComponent) {
+        storageForComponent = new Set<() => void>();
+        storage.beginCallbacks.set(component, storageForComponent);
+      }
+
+      storageForComponent.add(useCallbackAsCurrent(callback));
     },
     onHoverEnd(callback: () => void) {
-      endState.add(useCallbackAsCurrent(callback));
+      let storageForComponent = storage.endCallbacks.get(component);
+      if (!storageForComponent) {
+        storageForComponent = new Set<() => void>();
+        storage.endCallbacks.set(component, storageForComponent);
+      }
+
+      storageForComponent.add(useCallbackAsCurrent(callback));
     },
   };
 

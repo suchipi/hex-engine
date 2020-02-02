@@ -6,16 +6,15 @@ import {
 import HooksSystem from "./HooksSystem";
 import RunLoop from "./Components/RunLoop";
 import ErrorBoundary from "./Components/ErrorBoundary";
-import StateAccumulator from "./StateAccumulator";
 
 const {
   useNewComponent,
   useEntity,
   useCallbackAsCurrent,
-  useStateAccumulator,
   useType,
   useIsEnabled,
   useChild,
+  useCurrentComponent,
 } = HooksSystem.hooks;
 
 /**
@@ -41,10 +40,9 @@ export {
   useNewComponent,
   useEntity,
   useCallbackAsCurrent,
-  useStateAccumulator,
   useType,
   useIsEnabled,
   useChild,
-  StateAccumulator,
+  useCurrentComponent,
 };
 export * from "./Hooks";

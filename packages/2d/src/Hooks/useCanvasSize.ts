@@ -1,12 +1,86 @@
-import { useListenerAccumulator, useRootEntity } from "@hex-engine/core";
+import {
+  useRootEntity,
+  useType,
+  useCurrentComponent,
+  useCallbackAsCurrent,
+  useNewRootComponent,
+} from "@hex-engine/core";
 import { useUpdate } from ".";
+import useWindowSize from "./useWindowSize";
 import useContext from "./useContext";
 import useBackstage from "./useBackstage";
-import useWindowSize from "./useWindowSize";
 import { Vector } from "../Models";
 
-const ON_CANVAS_RESIZE = Symbol("ON_CANVAS_RESIZE");
-const CANVAS_SIZE = Symbol("CANVAS_SIZE");
+function StorageForCanvasSize(): {
+  listeners: Set<() => void>;
+  size: Vector;
+  resizeCanvas: (options: {
+    realWidth: number | string;
+    realHeight: number | string;
+    pixelWidth: number;
+    pixelHeight: number;
+  }) => void;
+} {
+  useType(StorageForCanvasSize);
+
+  const context = useContext();
+  const backstage = useBackstage();
+
+  const listeners = new Set<() => void>();
+  const size = new Vector(context.canvas.width, context.canvas.height);
+
+  let changePending = false;
+  useWindowSize().onWindowResize(() => {
+    if (context.canvas.width !== size.x) {
+      size.x = context.canvas.width;
+      changePending = true;
+    }
+    if (context.canvas.height !== size.y) {
+      size.y = context.canvas.height;
+      changePending = true;
+    }
+  });
+
+  useUpdate(() => {
+    if (changePending) {
+      changePending = false;
+      listeners.forEach((callback) => callback());
+    }
+  });
+
+  function resizeCanvas({
+    realWidth,
+    realHeight,
+    pixelWidth,
+    pixelHeight,
+  }: {
+    realWidth: number | string;
+    realHeight: number | string;
+    pixelWidth: number;
+    pixelHeight: number;
+  }) {
+    context.canvas.width = pixelWidth;
+    context.canvas.height = pixelHeight;
+    context.canvas.style.width =
+      typeof realWidth === "number" ? realWidth + "px" : realWidth;
+    context.canvas.style.height =
+      typeof realHeight === "number" ? realHeight + "px" : realHeight;
+
+    backstage.canvas.width = pixelWidth;
+    backstage.canvas.height = pixelHeight;
+
+    size.x = pixelWidth;
+    size.y = pixelHeight;
+
+    listeners.forEach((callback) => callback());
+  }
+
+  return {
+    listeners,
+    size,
+    resizeCanvas,
+  };
+}
 
 /**
  * Returns an object with three properties on it:
@@ -21,69 +95,21 @@ const CANVAS_SIZE = Symbol("CANVAS_SIZE");
  *    }) => void`: A function that resizes the canvas.
  */
 export default function useCanvasSize() {
-  const context = useContext();
-  const backstage = useBackstage();
-
-  const resizeListeners = useListenerAccumulator<() => void>(
-    useRootEntity().stateAccumulator(ON_CANVAS_RESIZE)
-  );
-  const sizeState = useRootEntity().stateAccumulator<Vector>(CANVAS_SIZE);
-
-  let size: Vector;
-  if (sizeState.all().length > 0) {
-    size = sizeState.all()[0];
-  } else {
-    size = new Vector(context.canvas.width, context.canvas.height);
-    sizeState.add(size);
-
-    let changePending = false;
-    useWindowSize().onWindowResize(() => {
-      if (context.canvas.width !== size.x) {
-        size.x = context.canvas.width;
-        changePending = true;
-      }
-      if (context.canvas.height !== size.y) {
-        size.y = context.canvas.height;
-        changePending = true;
-      }
-    });
-
-    useUpdate(() => {
-      if (changePending) {
-        changePending = false;
-        resizeListeners.callListeners();
-      }
-    });
-  }
+  const storage =
+    useRootEntity().getComponent(StorageForCanvasSize) ||
+    useNewRootComponent(StorageForCanvasSize);
 
   return {
-    canvasSize: size,
-    onCanvasResize: resizeListeners.addListener,
-    resizeCanvas: ({
-      realWidth,
-      realHeight,
-      pixelWidth,
-      pixelHeight,
-    }: {
-      realWidth: number | string;
-      realHeight: number | string;
-      pixelWidth: number;
-      pixelHeight: number;
-    }) => {
-      context.canvas.width = pixelWidth;
-      context.canvas.height = pixelHeight;
-      context.canvas.style.width =
-        typeof realWidth === "number" ? realWidth + "px" : realWidth;
-      context.canvas.style.height =
-        typeof realHeight === "number" ? realHeight + "px" : realHeight;
-
-      backstage.canvas.width = pixelWidth;
-      backstage.canvas.height = pixelHeight;
-
-      size.x = pixelWidth;
-      size.y = pixelHeight;
-
-      resizeListeners.callListeners();
+    canvasSize: storage.size,
+    onCanvasResize: (callback: () => void) => {
+      const component = useCurrentComponent();
+      const wrapped = useCallbackAsCurrent(callback);
+      storage.listeners.add(() => {
+        if (component.isEnabled) {
+          wrapped();
+        }
+      });
     },
+    resizeCanvas: storage.resizeCanvas,
   };
 }

@@ -1,7 +1,19 @@
 import HooksSystem from "../HooksSystem";
-import { ON_DESTROY } from "../Entity";
 
-const { useCallbackAsCurrent, useEntity } = HooksSystem.hooks;
+const {
+  useCallbackAsCurrent,
+  useEntity,
+  useType,
+  useNewComponent,
+} = HooksSystem.hooks;
+
+export function StorageForUseDestroy() {
+  useType(StorageForUseDestroy);
+
+  return {
+    callbacks: new Set<() => void>(),
+  };
+}
 
 /**
  * Return an object with two functions on it: `onDestroy` and `destroy`.
@@ -10,7 +22,9 @@ const { useCallbackAsCurrent, useEntity } = HooksSystem.hooks;
  * - `destroy` destroys the current Entity.
  */
 export default function useDestroy() {
-  const onDestroyState = useEntity().stateAccumulator<() => void>(ON_DESTROY);
+  const storage =
+    useEntity().getComponent(StorageForUseDestroy) ||
+    useNewComponent(StorageForUseDestroy);
 
   return {
     /**
@@ -25,7 +39,7 @@ export default function useDestroy() {
      * @param callback The function to run.
      */
     onDestroy: (callback: () => void) => {
-      onDestroyState.add(useCallbackAsCurrent(callback));
+      storage.callbacks.add(useCallbackAsCurrent(callback));
     },
   };
 }

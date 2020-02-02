@@ -1,5 +1,5 @@
 import { useType } from "@hex-engine/core";
-import { useUpdate } from "../Canvas";
+import { useUpdate } from "../Hooks";
 import { Vector } from "../Models";
 
 /** This Component provides the current state of a connected Gamepad, if present. */

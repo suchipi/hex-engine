@@ -1,20 +1,15 @@
 import {
   useType,
   useNewComponent,
-  useStateAccumulator,
   useCallbackAsCurrent,
   useEntity,
   Entity,
 } from "@hex-engine/core";
-import { useUpdate } from "../Canvas";
-import { useEntitiesAtPoint } from "../Hooks";
+import { useEntitiesAtPoint, useUpdate } from "../Hooks";
 import LowLevelMouse, { HexMouseEvent } from "./LowLevelMouse";
 import Geometry from "./Geometry";
 import { Vector } from "../Models";
 
-const ON_ENTER = Symbol("ON_ENTER");
-const ON_MOVE = Symbol("ON_MOVE");
-const ON_LEAVE = Symbol("ON_LEAVE");
 type Callback = (event: HexMouseEvent) => void;
 
 export default function MousePosition({
@@ -33,9 +28,11 @@ export default function MousePosition({
     return useEntitiesAtPoint(worldPoint)[0] === entity;
   }
 
-  const onEnterState = useStateAccumulator<Callback>(ON_ENTER);
-  const onMoveState = useStateAccumulator<Callback>(ON_MOVE);
-  const onLeaveState = useStateAccumulator<Callback>(ON_LEAVE);
+  const storage = {
+    onEnterCallbacks: new Set<Callback>(),
+    onMoveCallbacks: new Set<Callback>(),
+    onLeaveCallbacks: new Set<Callback>(),
+  };
 
   const { onMouseMove } = useNewComponent(LowLevelMouse);
 
@@ -45,15 +42,15 @@ export default function MousePosition({
   function handleEvent(event: HexMouseEvent) {
     position.mutateInto(event.pos);
 
-    onMoveState.all().forEach((callback) => callback(event));
+    storage.onMoveCallbacks.forEach((callback) => callback(event));
 
     if (pointIsWithinBounds(event.pos)) {
       if (!isInsideBounds) {
-        onEnterState.all().forEach((callback) => callback(event));
+        storage.onEnterCallbacks.forEach((callback) => callback(event));
       }
       isInsideBounds = true;
     } else if (isInsideBounds) {
-      onLeaveState.all().forEach((callback) => callback(event));
+      storage.onLeaveCallbacks.forEach((callback) => callback(event));
       isInsideBounds = false;
     }
   }
@@ -62,13 +59,13 @@ export default function MousePosition({
 
   const callbackSetters = {
     onEnter(callback: Callback) {
-      onEnterState.add(useCallbackAsCurrent(callback));
+      storage.onEnterCallbacks.add(useCallbackAsCurrent(callback));
     },
     onMove(callback: Callback) {
-      onMoveState.add(useCallbackAsCurrent(callback));
+      storage.onMoveCallbacks.add(useCallbackAsCurrent(callback));
     },
     onLeave(callback: Callback) {
-      onLeaveState.add(useCallbackAsCurrent(callback));
+      storage.onLeaveCallbacks.add(useCallbackAsCurrent(callback));
     },
   };
 

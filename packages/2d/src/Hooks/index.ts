@@ -7,9 +7,9 @@ import useFilledPixelBounds from "./useFilledPixelBounds";
 import useInspectorHoverOutline from "./useInspectorHoverOutline";
 import useEntityTransforms from "./useEntityTransforms";
 import useWindowSize from "./useWindowSize";
+import useUpdate from "./useUpdate";
 
 import {
-  useUpdate,
   useRawDraw,
   useDebugOverlayDrawTime,
   useCanvasDrawOrderSort,
