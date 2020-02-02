@@ -44,6 +44,7 @@ export default (mode: "production" | "development") => {
         {
           test: /\.[tj]sx?$/,
           loader: require.resolve("babel-loader"),
+          exclude: /node_modules/,
           options: {
             babelrc: false,
             compact: true,
