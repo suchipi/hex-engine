@@ -449,6 +449,8 @@ Returns an objest with three properties on it: `isEnabled`, `onEnabled` and `onD
 - `onEnabled` is a function that registers another function to be called when the current Component is [enabled][`component.enable`].
 - `onDisabled` is a function that registers another function to be called when the current Component is [disabled][`component.disable`].
 
+> In versions prior to 0.3.0, the `isEnabled` property was not present.
+
 Note: If the Component is already enabled when you call `onEnabled`, then the function you provide to `onEnabled` will be called immediately. Likewise, if the Component is already disabled when you call `onDisabled`, then the function you provide to `onDisabled` will be called immediately.
 
 #### Usage
