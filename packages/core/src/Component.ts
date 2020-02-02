@@ -29,23 +29,37 @@ export default class Component implements ComponentInterface {
     }
   }
 
+  _isEnabling: boolean = false;
+
   enable() {
-    if (this._isEnabled) return;
-    this._isEnabled = true;
+    if (this._isEnabled || this._isEnabling) return;
+    this._isEnabling = true;
 
     const storage = this.entity.getComponent(StorageForUseEnableDisable);
     if (storage) {
-      storage.enableCallbacks.forEach((callback) => callback());
+      const componentStorage = storage.enableCallbacks.get(this);
+      if (componentStorage) {
+        componentStorage.forEach((callback) => callback());
+      }
     }
+
+    this._isEnabled = true;
   }
 
+  _isDisabling: boolean = false;
+
   disable() {
-    if (!this._isEnabled) return;
-    this._isEnabled = false;
+    if (!this._isEnabled || this._isDisabling) return;
+    this._isDisabling = true;
 
     const storage = this.entity.getComponent(StorageForUseEnableDisable);
     if (storage) {
-      storage.disableCallbacks.forEach((callback) => callback());
+      const componentStorage = storage.disableCallbacks.get(this);
+      if (componentStorage) {
+        componentStorage.forEach((callback) => callback());
+      }
     }
+
+    this._isEnabled = false;
   }
 }

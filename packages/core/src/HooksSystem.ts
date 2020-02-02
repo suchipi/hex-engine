@@ -82,15 +82,6 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
       return func;
     },
 
-  useIsEnabled: (instance) =>
-    /**
-     * Get a boolean value indicating whether the current Component is enabled.
-     *
-     * To define what should happen when your Component is enabled or disabled,
-     * use `useEnableDisable`.
-     */
-    () => instance.isEnabled,
-
   useChild: (instance) =>
     /**
      * Create a new Entity and add it as a child to the current Entity.

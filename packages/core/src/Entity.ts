@@ -6,22 +6,27 @@ import instantiate from "./instantiate";
 import { StorageForUseDestroy } from "./Hooks/useDestroy";
 
 function destroy(entity: Entity) {
-  if (entity.parent) {
-    for (const child of entity.children) {
-      destroy(child);
-    }
-
-    entity.disable();
-
-    const storageForUseDestroy = entity.getComponent(StorageForUseDestroy);
-    if (storageForUseDestroy) {
-      storageForUseDestroy.callbacks.forEach((callback) => callback());
-    }
-
-    entity.parent._removeChild(entity);
-  } else {
+  if (entity.parent == null) {
     throw new Error("Cannot destroy the root entity");
   }
+
+  if (entity._isDestroying) return;
+  entity._isDestroying = true;
+
+  for (const child of entity.children) {
+    destroy(child);
+  }
+
+  entity.disable();
+
+  const storageForUseDestroy = entity.getComponent(StorageForUseDestroy);
+  if (storageForUseDestroy) {
+    storageForUseDestroy.callbacks.forEach((callback) => callback());
+  }
+
+  entity.parent._removeChild(entity);
+
+  entity._isDestroying = false;
 }
 
 function enable(entity: Entity) {
@@ -68,6 +73,8 @@ export default class Entity implements EntityInterface {
   id: number = -1;
   rootComponent: any;
 
+  _isDestroying: boolean = false;
+
   static _create<T>(
     componentFactory: () => T,
     parent?: Entity
@@ -100,7 +107,6 @@ export default class Entity implements EntityInterface {
     child.parent = this;
   }
   _removeChild(child: Entity): void {
-    child.disable();
     this.children.delete(child);
     child.parent = null;
   }

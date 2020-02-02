@@ -343,33 +343,6 @@ function MyOtherComponent() {
 }
 ```
 
-### useIsEnabled
-
-> Available since version: 0.0.0
-
-`useIsEnabled(): boolean`
-
-```ts
-import { useIsEnabled } from "@hex-engine/core";
-```
-
-Get a boolean value indicating whether the current Component instance is enabled.
-
-To define what should happen when your Component is enabled or disabled,
-use [`useEnableDisable`].
-
-#### Usage
-
-```ts
-import { useType, useIsEnabled } from "@hex-engine/core";
-
-function MyComponent() {
-  useType(MyComponent);
-
-  const isEnabled = useIsEnabled();
-}
-```
-
 ### useCallbackAsCurrent
 
 > Available since version: 0.0.0
@@ -470,10 +443,11 @@ function MyComponent() {
 import { useEnableDisable } from "@hex-engine/core";
 ```
 
-Returns an objest with two functions on it: `onEnabled` and `onDisabled`.
+Returns an objest with three properties on it: `isEnabled`, `onEnabled` and `onDisabled`.
 
-- `onEnabled` registers a function to be called when the current Component is [enabled][`component.enable`].
-- `onDisabled` registers a function to be called when the current Component is [disabled][`component.disable`].
+- `isEnabled` is a writable boolean indicating whether the component is currently [enabled][`component.enable`].
+- `onEnabled` is a function that registers another function to be called when the current Component is [enabled][`component.enable`].
+- `onDisabled` is a function that registers another function to be called when the current Component is [disabled][`component.disable`].
 
 Note: If the Component is already enabled when you call `onEnabled`, then the function you provide to `onEnabled` will be called immediately. Likewise, if the Component is already disabled when you call `onDisabled`, then the function you provide to `onDisabled` will be called immediately.
 
@@ -767,7 +741,6 @@ function MyComponent() {
 [`usenewcomponent`]: #usenewcomponent
 [`useentity`]: #useentity
 [`usechild`]: #usechild
-[`useisenabled`]: #useisenabled
 [`usecallbackascurrent`]: #usecallbackascurrent
 [`usedestroy`]: #usedestroy
 [`useenabledisable`]: #useenabledisable

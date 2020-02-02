@@ -12,7 +12,6 @@ const {
   useEntity,
   useCallbackAsCurrent,
   useType,
-  useIsEnabled,
   useChild,
   useCurrentComponent,
 } = HooksSystem.hooks;
@@ -41,7 +40,6 @@ export {
   useEntity,
   useCallbackAsCurrent,
   useType,
-  useIsEnabled,
   useChild,
   useCurrentComponent,
 };

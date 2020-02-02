@@ -2,32 +2,49 @@ import HooksSystem from "../HooksSystem";
 const {
   useType,
   useCallbackAsCurrent,
-  useIsEnabled,
+  useCurrentComponent,
   useNewComponent,
   useEntity,
 } = HooksSystem.hooks;
+import { Component } from "../Interface";
 
 export function StorageForUseEnableDisable() {
   useType(StorageForUseEnableDisable);
 
   return {
-    enableCallbacks: new Set<() => void>(),
-    disableCallbacks: new Set<() => void>(),
+    enableCallbacks: new WeakMap<Component, Set<() => void>>(),
+    disableCallbacks: new WeakMap<Component, Set<() => void>>(),
   };
 }
 
 /**
- * Returns an objest with two functions on it: `onEnabled` and `onDisabled`.
  *
- * - `onEnabled` registers a function to be called when the current Component is enabled.
- * - `onDisabled` registers a function to be called when the current Component is disabled.
+ * Returns an objest with three properties on it: `isEnabled`, `onEnabled` and `onDisabled`.
+ * - `isEnabled` is a writable boolean indicating whether the component is currently enabled.
+ * - `onEnabled` is a function that registers another function to be called when the current Component is enabled.
+ * - `onDisabled` is a function that registers another function to be called when the current Component is disabled.
+ *
+ * Note: If the Component is already enabled when you call `onEnabled`, then
+ * the function you provide to `onEnabled` will be called immediately. Likewise,
+ * if the Component is already disabled when you call `onDisabled`, then the
+ * function you provide to `onDisabled` will be called immediately.
+ *
  */
 export default function useEnableDisable() {
   const storage =
     useEntity().getComponent(StorageForUseEnableDisable) ||
     useNewComponent(StorageForUseEnableDisable);
 
+  const component = useCurrentComponent();
+
   return {
+    get isEnabled() {
+      return component.isEnabled;
+    },
+    set isEnabled(nextValue: boolean) {
+      component.isEnabled = nextValue;
+    },
+
     /**
      * Register a function to be called when the current Component is enabled.
      *
@@ -35,8 +52,14 @@ export default function useEnableDisable() {
      * @param handler The function to call when the current Component is enabled.
      */
     onEnabled: (handler: () => void) => {
-      storage.enableCallbacks.add(useCallbackAsCurrent(handler));
-      if (useIsEnabled()) {
+      let componentStorage = storage.enableCallbacks.get(component);
+      if (!componentStorage) {
+        componentStorage = new Set<() => void>();
+        storage.enableCallbacks.set(component, componentStorage);
+      }
+
+      componentStorage.add(useCallbackAsCurrent(handler));
+      if (component.isEnabled) {
         handler();
       }
     },
@@ -48,8 +71,14 @@ export default function useEnableDisable() {
      * @param handler The function to be called when the current Component is disabled.
      */
     onDisabled: (handler: () => void) => {
-      storage.disableCallbacks.add(useCallbackAsCurrent(handler));
-      if (!useIsEnabled()) {
+      let componentStorage = storage.disableCallbacks.get(component);
+      if (!componentStorage) {
+        componentStorage = new Set<() => void>();
+        storage.disableCallbacks.set(component, componentStorage);
+      }
+
+      componentStorage.add(useCallbackAsCurrent(handler));
+      if (!component.isEnabled) {
         handler();
       }
     },
