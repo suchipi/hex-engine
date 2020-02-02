@@ -39,6 +39,7 @@ export default Object.assign(
       canvas.style.msUserSelect = "none";
       canvas.style.webkitUserSelect = "none";
     }
+    canvas.className = canvas.className + " " + "hex-engine";
     canvas.addEventListener("contextmenu", (event) => event.preventDefault());
 
     const context = canvas.getContext("2d");
@@ -120,11 +121,14 @@ export default Object.assign(
         ({ pixelZoom = 1 }: { pixelZoom?: number } = {}) => {
           const { windowSize, onWindowResize } = useWindowSize();
 
-          Object.assign(document.body.style, {
-            margin: 0,
-            padding: 0,
-            overflow: "hidden",
-          });
+          const doc = canvas.ownerDocument;
+          if (doc) {
+            Object.assign(doc.body.style, {
+              margin: 0,
+              padding: 0,
+              overflow: "hidden",
+            });
+          }
 
           const matchWindowSize = () => {
             resizeCanvas({

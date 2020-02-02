@@ -5,5 +5,9 @@
     "es6": true,
     "browser": true,
     "jest": true
+  },
+  "globals": {
+    "Cypress": true,
+    "cy": true
   }
 }

@@ -5,23 +5,30 @@ import {
   useCurrentComponent,
   useNewRootComponent,
 } from "@hex-engine/core";
-import { useUpdate } from ".";
+import { useUpdate, useContext } from ".";
 import { Vector } from "../Models";
 
 function StorageForWindowSize() {
   useType(StorageForWindowSize);
 
-  const size = new Vector(window.innerWidth, window.innerHeight);
+  const { canvas } = useContext();
+  const win = canvas.ownerDocument?.defaultView;
+  if (!win) {
+    throw new Error(
+      "Root canvas is not part of a document; therefore, useWindowSize can't setup event listeners"
+    );
+  }
+  const size = new Vector(win.innerWidth, win.innerHeight);
   const listeners = new Set<() => void>();
 
   let changePending = false;
-  window.addEventListener("resize", () => {
-    if (window.innerWidth !== size.x) {
-      size.x = window.innerWidth;
+  win.addEventListener("resize", () => {
+    if (win.innerWidth !== size.x) {
+      size.x = win.innerWidth;
       changePending = true;
     }
-    if (window.innerHeight !== size.y) {
-      size.y = window.innerHeight;
+    if (win.innerHeight !== size.y) {
+      size.y = win.innerHeight;
       changePending = true;
     }
   });

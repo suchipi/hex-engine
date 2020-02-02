@@ -4,6 +4,7 @@ import {
   useCallbackAsCurrent,
 } from "@hex-engine/core";
 import { Vector } from "../Models";
+import { useContext } from "../Hooks";
 
 let firstKeyHasHappened = false;
 let pendingFirstKeyHandlers: Array<() => void> = [];
@@ -70,14 +71,22 @@ export default function Keyboard({
 
   const { onEnabled, onDisabled } = useEnableDisable();
 
+  const { canvas } = useContext();
+  const doc = canvas.ownerDocument;
+  if (!doc) {
+    throw new Error(
+      "Root canvas is not part of a document; therefore, Keyboard can't setup event listeners"
+    );
+  }
+
   onEnabled(() => {
-    document.addEventListener("keydown", processKeydown);
-    document.addEventListener("keyup", processKeyup);
+    doc.addEventListener("keydown", processKeydown);
+    doc.addEventListener("keyup", processKeyup);
   });
 
   onDisabled(() => {
-    document.removeEventListener("keydown", processKeydown);
-    document.removeEventListener("keyup", processKeyup);
+    doc.removeEventListener("keydown", processKeydown);
+    doc.removeEventListener("keyup", processKeyup);
   });
 
   return {

@@ -22,12 +22,12 @@ if (fs.existsSync(localDir("src/index.html"))) {
   htmlWebpackPluginOptions.template = localDir("src/index.html");
 }
 
-export default (mode: "production" | "development") => {
+export default (mode: "production" | "development" | "test") => {
   return {
     context: localDir(),
     devtool: mode === "development" ? "eval-source-map" : undefined,
 
-    mode,
+    mode: mode === "test" ? "development" : mode,
 
     entry: [packageDir("./src/polyfills"), localDir("./src/index.ts")],
     output: {
@@ -92,30 +92,32 @@ export default (mode: "production" | "development") => {
       new webpack.DefinePlugin({
         "process.env.NODE_ENV": JSON.stringify(mode),
       }),
-      new HtmlWebpackPlugin(htmlWebpackPluginOptions),
+      mode === "test" ? null : new HtmlWebpackPlugin(htmlWebpackPluginOptions),
 
-      new ForkTsCheckerWebpackPlugin({
-        typescript: resolve.sync("typescript", {
-          basedir: localDir(),
-        }),
-        async: mode === "development",
-        useTypescriptIncrementalApi: true,
-        checkSyntacticErrors: true,
-        tsconfig: fs.existsSync(localDir("tsconfig.json"))
-          ? localDir("tsconfig.json")
-          : packageDir("tsconfig.json"),
-        reportFiles: [
-          "**",
-          "!**/__tests__/**",
-          "!**/?(*.)(spec|test).*",
-          "!**/src/setupTests.*",
-        ],
-        silent: false,
+      mode === "test"
+        ? null
+        : new ForkTsCheckerWebpackPlugin({
+            typescript: resolve.sync("typescript", {
+              basedir: localDir(),
+            }),
+            async: mode === "development",
+            useTypescriptIncrementalApi: true,
+            checkSyntacticErrors: true,
+            tsconfig: fs.existsSync(localDir("tsconfig.json"))
+              ? localDir("tsconfig.json")
+              : packageDir("tsconfig.json"),
+            reportFiles: [
+              "**",
+              "!**/__tests__/**",
+              "!**/?(*.)(spec|test).*",
+              "!**/src/setupTests.*",
+            ],
+            silent: false,
 
-        // The formatter is invoked directly in react-dev-utils/WebpackDevServerUtils during development
-        formatter: mode === "production" ? typescriptFormatter : undefined,
-      }),
-    ],
+            // The formatter is invoked directly in react-dev-utils/WebpackDevServerUtils during development
+            formatter: mode === "production" ? typescriptFormatter : undefined,
+          }),
+    ].filter(Boolean),
     optimization: {
       usedExports: true,
     },
