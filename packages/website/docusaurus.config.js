@@ -28,7 +28,7 @@ module.exports = {
       links: [
         { to: "docs/getting-started", label: "Docs", position: "left" },
         { to: "docs/api-reference", label: "API", position: "left" },
-        { to: "blog", label: "Blog", position: "left" },
+        // { to: "blog", label: "Blog", position: "left" },
         {
           to: "https://github.com/suchipi/hex-engine",
           label: "GitHub",
