@@ -585,12 +585,12 @@ You can use this as a WeakMap key, or you can check its `isEnabled` property.
 #### Usage
 
 ```ts
-import { useType, useRootEntity } from "@hex-engine/core";
+import { useType, useCurrentComponent } from "@hex-engine/core";
 
 function MyComponent() {
   useType(MyComponent);
 
-  const rootEnt = useRootEntity();
+  const component = useCurrentComponent();
 }
 ```
 
