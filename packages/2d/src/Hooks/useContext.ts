@@ -1,5 +1,4 @@
 import { useType, useRootEntity, useNewRootComponent } from "@hex-engine/core";
-import Canvas from "../Canvas";
 
 function StorageForUseContext(): { context: CanvasRenderingContext2D | null } {
   useType(StorageForUseContext);
