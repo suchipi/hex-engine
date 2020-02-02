@@ -49,10 +49,7 @@ function Geometry<S extends Shape>({
       .transformPoint(pos);
 
     const ent = useEntitiesAtPoint(worldPos)[0];
-
-    if (ent) {
-      useInspectorSelectEntity(() => ent);
-    }
+    useInspectorSelectEntity(() => ent);
   });
 
   useDebugOverlayDrawTime();

@@ -54,13 +54,15 @@ function Root({
 
   stateHolder.forceUpdate = forceUpdate;
 
+  const selectedEntity = selectModeStateHolder.getSelectedEntity();
+
   return (
     <StateTreeProvider
       initialValue={initialState}
       onUpdate={debouncedSaveState}
     >
       <App
-        entity={selectModeStateHolder.getSelectedEntity()!}
+        entity={selectedEntity ? selectedEntity : entity}
         runLoop={runLoop}
         error={stateHolder.err}
         isHovered={stateHolder.isHovered}
@@ -111,7 +113,6 @@ export default function Inspector() {
     toggleSelectMode: () => (isSelectMode = !isSelectMode),
     getSelectedEntity: () => selectedEntity,
     selectEntity: (entity: Entity) => {
-      console.log("Selecting entity", entity.id, entity.name);
       selectedEntity = entity;
     },
   };
