@@ -2,6 +2,10 @@
 
 # 0.3.0
 
+## New hook: `useNewRootComponent`
+
+It's like `useNewComponenent`, but instead of adding the new component to the current component's entity, it adds it to the root entity. Check [the docs](https://hex-engine.dev/docs/api-core#usenewrootcomponent) for more info.
+
 ## `useIsEnabled` removed
 
 Use `useEnableDisable().isEnabled` instead.
