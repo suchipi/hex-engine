@@ -3,6 +3,10 @@ title: Guides
 sidebar_label: Guides Index
 ---
 
+Guides:
+
+- [Hex Engine for React Developers](/docs/hex-engine-for-react-devs)
+
 Coming Soon:
 
 - How to make a Tic Tac Toe game
