@@ -44,6 +44,10 @@ function Geometry<S extends Shape>({
   const { onMouseDown } = useNewComponent(LowLevelMouse);
 
   onMouseDown(({ pos }) => {
+    if (!shape.containsPoint(pos)) {
+      return;
+    }
+
     const worldPos = useEntityTransforms()
       .matrixForWorldPosition()
       .transformPoint(pos);
