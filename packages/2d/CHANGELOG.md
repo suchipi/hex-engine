@@ -1,5 +1,11 @@
 # Changelog
 
+# 0.3.1
+
+## Upgraded `@hex-engine/core` to 0.3.1 (non-breaking change)
+
+This fixes a bug where Components could not be re-disabled after they were disabled and then enabled.
+
 # 0.3.0
 
 ## Upgraded `@hex-engine/core` to 0.3.0 (breaking change)

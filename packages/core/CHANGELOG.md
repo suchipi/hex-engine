@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.3.1
+
+Fixed a bug where Components could not be re-disabled after they were disabled and then enabled.
+
 # 0.3.0
 
 ## New hook: `useNewRootComponent`
