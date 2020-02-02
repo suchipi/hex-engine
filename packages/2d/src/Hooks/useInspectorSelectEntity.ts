@@ -5,9 +5,9 @@ export default function useInspectorSelectEntity(getEntity: () => Entity) {
   if (process.env.NODE_ENV === "production") return;
 
   const { getSelectMode, inspectEntity } = useInspectorSelect();
-  const entity = getEntity();
 
   if (getSelectMode()) {
+    const entity = getEntity();
     inspectEntity(entity);
   }
 }
