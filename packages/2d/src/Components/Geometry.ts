@@ -1,13 +1,10 @@
-import { useType, useEntity, useNewComponent } from "@hex-engine/core";
+import { useType, useEntity } from "@hex-engine/core";
 import { Vector, Shape } from "../Models";
 import {
   useInspectorHoverOutline,
   useEntityTransforms,
   useDebugOverlayDrawTime,
-  useInspectorSelectEntity,
-  useEntitiesAtPoint,
 } from "../Hooks";
-import { LowLevelMouse } from "../Components";
 
 /**
  * This Component provides information about the shape, position, rotation, and scale
@@ -41,26 +38,11 @@ function Geometry<S extends Shape>({
     },
   };
 
-  const { onMouseDown } = useNewComponent(LowLevelMouse);
-
-  onMouseDown(({ pos }) => {
-    if (!shape.containsPoint(pos)) {
-      return;
-    }
-
-    const worldPos = useEntityTransforms()
-      .matrixForWorldPosition()
-      .transformPoint(pos);
-
-    const ent = useEntitiesAtPoint(worldPos)[0];
-
-    if (ent === useEntity()) {
-      useInspectorSelectEntity(() => ent);
-    }
-  });
-
   useDebugOverlayDrawTime();
-  useInspectorHoverOutline(() => geometry.shape);
+  useInspectorHoverOutline(
+    () => useEntity(),
+    () => geometry
+  );
 
   return geometry;
 }
