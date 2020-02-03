@@ -578,19 +578,67 @@ function MyComponent() {
 import { useCurrentComponent } from "@hex-engine/core";
 ```
 
-Gives you the current Component instance.
+Gives you the current Component instance; the instance for the Component whose Component function is currently executing.
 
-You can use this as a WeakMap key, or you can check its `isEnabled` property.
+This component is an escape hatch; the only useful thing you can do with it (that you can't do with other hooks) is use its return value as a WeakMap key. The main time you would want to do this is when you want a hook to transparently correlate some state with a component instance so that another Component can retrieve it later.
 
 #### Usage
 
+To demonstrate how you can use `useCurrentComponent`, I'm going to make a hook that associates a "color" with each component. Then, I'll make a component that uses those colors.
+
+In order to persist state related to each component instance (rather than the entire entity instance), I'll use `useCurrentComponent` to get the component instance, so I can use it as a WeakMap key. Then, when I want to retrieve the state later, I can use the component instance as a WeakMap key again.
+
+It's a pretty contrived example, but this pattern is how hooks like [`useDraw`](/docs/api-2d#usedraw), [`useUpdate`](/docs/api-2d#useupdate), [`useEnableDisable`](#useenabledisable),and [`useInspectorHover`](/docs/api-inspector#useinspectorhover) are implemented.
+
 ```ts
-import { useType, useCurrentComponent } from "@hex-engine/core";
+import {
+  useType,
+  Component,
+  useEntity,
+  useNewComponent,
+  useCurrentComponent,
+  useRootEntity,
+} from "@hex-engine/core";
 
-function MyComponent() {
-  useType(MyComponent);
+function StorageForUseColor() {
+  useType(StorageForUseColor);
 
+  return {
+    componentColors: new WeakMap<Component, string>(),
+  };
+}
+
+function useColor(color: string) {
+  // Get the "StorageForUseColor" component off of the current component's Entity, if it has one
+  let storage = useEntity().getComponent(StorageForUseColor);
+  if (!storage) {
+    // If there's no StorageForUseColor on the entity yet, create one and add it
+    storage = useNewComponent(StorageForUseColor);
+  }
+
+  // Now, write the color into the WeakMap, using the component instance as the key:
   const component = useCurrentComponent();
+  storage.componentColors.set(component, color);
+}
+
+// Now, let's make a component that gets the colors for all the components in the tree and prints them:
+function ColorPrinter() {
+  useType(ColorPrinter);
+
+  const rootEntity = useRootEntity();
+  const allEntities = [rootEntity, ...rootEntity.descendants()];
+
+  for (const entity of allEntities) {
+    const storage = entity.getComponent(StorageForUseColor);
+    if (storage) {
+      for (const component of entity.components) {
+        const colorForComponent = storage.componentColors.get(component);
+        if (colorForComponent) {
+          console.log(colorForComponent);
+        }
+      }
+    }
+  }
 }
 ```
 
