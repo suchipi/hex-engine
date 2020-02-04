@@ -47,6 +47,8 @@ function Root({
     err: Error | null;
     forceUpdate: null | (() => void);
     isHovered: boolean;
+    getIsOpen: () => boolean;
+    toggleOpen: () => void;
   };
   selectModeStateHolder: SelectModeState;
 }) {
@@ -66,6 +68,8 @@ function Root({
         runLoop={runLoop}
         error={stateHolder.err}
         isHovered={stateHolder.isHovered}
+        isOpen={stateHolder.getIsOpen()}
+        toggleOpen={stateHolder.toggleOpen}
         isSelectMode={selectModeStateHolder.getSelectMode()}
         toggleSelectMode={selectModeStateHolder.toggleSelectMode}
       />
@@ -91,6 +95,7 @@ export default function Inspector() {
   useType(Inspector);
 
   const pauseOnStart = localStorage.inspectorPauseOnStart === "true";
+  let isOpen = localStorage.inspectorOpen === "true";
 
   const entity = useRootEntity();
   const runLoop = entity.getComponent(RunLoop);
@@ -99,10 +104,17 @@ export default function Inspector() {
     err: Error | null;
     forceUpdate: null | (() => void);
     isHovered: boolean;
+    getIsOpen: () => boolean;
+    toggleOpen: () => void;
   } = {
     err: null,
     forceUpdate: null,
     isHovered: false,
+    getIsOpen: () => isOpen,
+    toggleOpen: () => {
+      isOpen = !isOpen;
+      localStorage.inspectorOpen = isOpen;
+    },
   };
 
   let isSelectMode = false;
@@ -113,6 +125,10 @@ export default function Inspector() {
     toggleSelectMode: () => (isSelectMode = !isSelectMode),
     getSelectedEntity: () => selectedEntity,
     selectEntity: (entity: Entity) => {
+      if (!stateHolder.getIsOpen()) {
+        stateHolder.toggleOpen();
+      }
+
       selectedEntity = entity;
     },
   };

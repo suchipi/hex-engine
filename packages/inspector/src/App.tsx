@@ -1,6 +1,6 @@
 import React from "react";
 import { Entity, RunLoop } from "@hex-engine/core";
-import { StateKey, useStateTree } from "react-state-tree";
+import { StateKey } from "react-state-tree";
 import Tree from "./Tree";
 import Controls from "./Controls";
 import PausedOverlay from "./PausedOverlay";
@@ -12,6 +12,8 @@ export default function App({
   runLoop,
   error,
   isHovered,
+  isOpen,
+  toggleOpen,
   isSelectMode,
   toggleSelectMode,
 }: {
@@ -19,12 +21,12 @@ export default function App({
   runLoop: RunLoopAPI | null;
   error: Error | null;
   isHovered: boolean;
+  isOpen: boolean;
+  toggleOpen: () => void;
   isSelectMode: boolean;
   toggleSelectMode: () => void;
 }) {
   let ent = entity;
-
-  const [open, setOpen] = useStateTree(false, "open");
 
   return (
     <div
@@ -50,12 +52,12 @@ export default function App({
         }}
       >
         <StateKey value="controls">
-          {runLoop && !open ? (
+          {runLoop && !isOpen ? (
             <Controls
               isSelectMode={isSelectMode}
               toggleSelectMode={toggleSelectMode}
-              isOpen={open}
-              toggleOpen={() => setOpen(!open)}
+              isOpen={isOpen}
+              toggleOpen={toggleOpen}
               runLoop={runLoop}
               error={error}
             />
@@ -65,7 +67,7 @@ export default function App({
       {runLoop && runLoop.isPaused() && runLoop.frameNumber === 0 ? (
         <PausedOverlay runLoop={runLoop} />
       ) : null}
-      {open ? (
+      {isOpen ? (
         <div
           style={{
             position: "fixed",
@@ -95,8 +97,8 @@ export default function App({
               <Controls
                 isSelectMode={isSelectMode}
                 toggleSelectMode={toggleSelectMode}
-                isOpen={open}
-                toggleOpen={() => setOpen(!open)}
+                isOpen={isOpen}
+                toggleOpen={toggleOpen}
                 runLoop={runLoop}
                 error={error}
               />
