@@ -18,13 +18,6 @@ import useInspectorSelect from "./useInspectorSelect";
 
 type RunLoopAPI = ReturnType<typeof RunLoop>;
 
-interface SelectModeState {
-  getSelectMode: () => boolean;
-  toggleSelectMode: () => void;
-  getSelectedEntity: () => null | Entity;
-  selectEntity: (entity: Entity) => void;
-}
-
 const initialState = localStorage.inspectorState
   ? JSON.parse(localStorage.inspectorState)
   : {};
@@ -39,7 +32,6 @@ function Root({
   entity,
   runLoop,
   stateHolder,
-  selectModeStateHolder,
 }: {
   entity: Entity;
   runLoop: RunLoopAPI | null;
@@ -49,14 +41,17 @@ function Root({
     isHovered: boolean;
     getIsOpen: () => boolean;
     toggleOpen: () => void;
+    getSelectMode: () => boolean;
+    toggleSelectMode: () => void;
+    getSelectedEntity: () => null | Entity;
+    selectEntity: (entity: Entity) => void;
   };
-  selectModeStateHolder: SelectModeState;
 }) {
   const forceUpdate = useForceUpdate();
 
   stateHolder.forceUpdate = forceUpdate;
 
-  const selectedEntity = selectModeStateHolder.getSelectedEntity();
+  const selectedEntity = stateHolder.getSelectedEntity();
 
   return (
     <StateTreeProvider
@@ -70,8 +65,8 @@ function Root({
         isHovered={stateHolder.isHovered}
         isOpen={stateHolder.getIsOpen()}
         toggleOpen={stateHolder.toggleOpen}
-        isSelectMode={selectModeStateHolder.getSelectMode()}
-        toggleSelectMode={selectModeStateHolder.toggleSelectMode}
+        isSelectMode={stateHolder.getSelectMode()}
+        toggleSelectMode={stateHolder.toggleSelectMode}
       />
     </StateTreeProvider>
   );
@@ -95,10 +90,12 @@ export default function Inspector() {
   useType(Inspector);
 
   const pauseOnStart = localStorage.inspectorPauseOnStart === "true";
-  let isOpen = localStorage.inspectorOpen === "true";
-
   const entity = useRootEntity();
   const runLoop = entity.getComponent(RunLoop);
+
+  let isOpen = localStorage.inspectorOpen === "true";
+  let isSelectMode = false;
+  let selectedEntity: null | Entity = null;
 
   const stateHolder: {
     err: Error | null;
@@ -106,6 +103,10 @@ export default function Inspector() {
     isHovered: boolean;
     getIsOpen: () => boolean;
     toggleOpen: () => void;
+    getSelectMode: () => boolean;
+    toggleSelectMode: () => void;
+    getSelectedEntity: () => null | Entity;
+    selectEntity: (entity: Entity) => void;
   } = {
     err: null,
     forceUpdate: null,
@@ -115,12 +116,6 @@ export default function Inspector() {
       isOpen = !isOpen;
       localStorage.inspectorOpen = isOpen;
     },
-  };
-
-  let isSelectMode = false;
-  let selectedEntity: null | Entity = null;
-
-  const selectModeStateHolder: SelectModeState = {
     getSelectMode: () => isSelectMode,
     toggleSelectMode: () => (isSelectMode = !isSelectMode),
     getSelectedEntity: () => selectedEntity,
@@ -161,12 +156,7 @@ export default function Inspector() {
   });
 
   ReactDOM.render(
-    <Root
-      entity={entity}
-      runLoop={runLoop}
-      stateHolder={stateHolder}
-      selectModeStateHolder={selectModeStateHolder}
-    />,
+    <Root entity={entity} runLoop={runLoop} stateHolder={stateHolder} />,
     el,
     useCallbackAsCurrent(() => {
       const tick = useCallbackAsCurrent(() => {
@@ -187,7 +177,7 @@ export default function Inspector() {
   );
 
   return {
-    ...selectModeStateHolder,
+    ...stateHolder,
   };
 }
 
