@@ -1,7 +1,7 @@
 import { useNewComponent, useEntity } from "@hex-engine/core";
 import { useInspectorSelect } from "@hex-engine/inspector";
-import Geometry from "../Components/Geometry";
 import { useDraw } from "../Hooks";
+import Geometry from "../Components/Geometry";
 import Mouse from "../Components/Mouse";
 
 /**
