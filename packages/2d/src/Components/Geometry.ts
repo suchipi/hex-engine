@@ -2,6 +2,7 @@ import { useType, useEntity } from "@hex-engine/core";
 import { Vector, Shape } from "../Models";
 import {
   useInspectorHoverOutline,
+  useInspectorSelectEntity,
   useEntityTransforms,
   useDebugOverlayDrawTime,
 } from "../Hooks";
@@ -39,10 +40,8 @@ function Geometry<S extends Shape>({
   };
 
   useDebugOverlayDrawTime();
-  useInspectorHoverOutline(
-    () => useEntity(),
-    () => geometry
-  );
+  useInspectorHoverOutline(() => geometry.shape);
+  useInspectorSelectEntity(() => geometry);
 
   return geometry;
 }

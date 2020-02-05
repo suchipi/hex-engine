@@ -1,63 +1,32 @@
-import { Entity, useNewComponent } from "@hex-engine/core";
-import { useInspectorHover, useInspectorSelect } from "@hex-engine/inspector";
-import Geometry from "../Components/Geometry";
+import { useInspectorHover } from "@hex-engine/inspector";
+import { Shape } from "../Models";
 import { useDraw } from "../Hooks";
-import Mouse from "../Components/Mouse";
 
 /**
- * Sets up the Inspector so that when the current Entity or Component is hovered over
- * in the canvas or from the Inspector tree, an outline around the geometry's shape
- * is drawn on screen. If the entity is being clicked on from the canvas and the
- * Inspector is in select mode, the entity will be reported to the Inspector and
- * expanded in the Inspector tree.
+ * Sets up the Inspector so that when the current Entity or Component is hovered over,
+ * the provided function will be called to get a shape that should be drawn onto the screen.
  *
  * This function does nothing in release builds.
  */
-export default function useInspectorHoverOutline(
-  getEntity: () => Entity,
-  getGeometry: () => ReturnType<typeof Geometry>
-) {
+export default function useInspectorHoverOutline(getShape: () => Shape) {
   if (process.env.NODE_ENV === "production") return;
 
-  const entity = getEntity();
-  const geometry = getGeometry();
-  const shape = geometry.shape;
-
   const { onHoverStart, onHoverEnd } = useInspectorHover();
-  const { getSelectMode, inspectEntity } = useInspectorSelect();
 
-  const { onEnter, onLeave, onClick } = useNewComponent(() =>
-    Mouse({ entity, geometry })
-  );
-
-  let hovered = false;
-
-  onHoverStart(() => (hovered = true));
-  onHoverEnd(() => (hovered = false));
-
-  onEnter(() => {
-    if (getSelectMode()) {
-      hovered = true;
-    }
+  let visible = false;
+  onHoverStart(() => {
+    visible = true;
   });
 
-  onLeave(() => {
-    if (getSelectMode()) {
-      hovered = false;
-    }
-  });
-
-  onClick(() => {
-    if (getSelectMode()) {
-      hovered = false;
-      inspectEntity(entity);
-    }
+  onHoverEnd(() => {
+    visible = false;
   });
 
   useDraw((context) => {
-    if (hovered) {
+    if (visible) {
+      const shape = getShape();
       context.lineWidth = 3;
-      context.strokeStyle = "magenta";
+      context.strokeStyle = "#B076C7";
       shape.draw(context, "stroke");
     }
   });
