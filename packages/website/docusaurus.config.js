@@ -44,6 +44,11 @@ module.exports = {
       ],
     },
 
+    algolia: {
+      apiKey: "3d7810edc3f8e62e8f4bd29c2a06a284",
+      indexName: "hex-engine",
+    },
+
     // meta tag
     image: "img/hex.png",
   },
