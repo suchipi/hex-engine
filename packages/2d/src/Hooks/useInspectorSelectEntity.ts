@@ -56,16 +56,14 @@ export default function useInspectorHoverOutline(
       const shape = geometry!.shape;
       const color = "#B076C7";
       const alpha = 0.35;
-      const previousAlpha = context.globalAlpha;
-
-      context.fillStyle = color;
-      context.globalAlpha = alpha;
-      shape.draw(context, "fill");
-      context.globalAlpha = previousAlpha;
 
       context.lineWidth = 3;
       context.strokeStyle = color;
       shape.draw(context, "stroke");
+
+      context.fillStyle = color;
+      context.globalAlpha = alpha;
+      shape.draw(context, "fill");
     }
   });
 }
