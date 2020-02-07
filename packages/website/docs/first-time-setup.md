@@ -5,7 +5,7 @@ title: First Time Setup
 To quickly scaffold out a template game using Hex Engine, you can use the npm package `create-hex-engine-game`. Pick a directory where you want to make your game, then run the following in a terminal emulator or command prompt:
 
 ```
-npx create-hex-engine-game my-game
+npx create-hex-engine-game@latest my-game
 ```
 
 You can change `my-game` to whatever you want; that's the name of the folder where it's going to put everything.

@@ -5,7 +5,7 @@ This package provides a CLI that helps you scaffold a new [Hex Engine](https://g
 ## Usage
 
 ```
-npx create-hex-engine-game my-new-game
+npx create-hex-engine-game@latest my-new-game
 ```
 
 This will create and set up a new `@hex-engine/2d` game in the folder `my-new-game`.
