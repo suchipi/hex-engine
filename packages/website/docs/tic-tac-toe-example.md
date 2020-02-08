@@ -9,16 +9,17 @@ In this guide, we'll learn how to create a simple Tic Tac Toe game using Hex Eng
 Firstly, we'll want to create a new Hex Engine project. To do this, we'll use a handy tool called `create-hex-engine-game`:
 
 ```shell
-npx create-hex-engine-game tic-tac-toe
+npx create-hex-engine-game@latest tic-tac-toe
 ```
 
 All of our work will take place within the newly created `tic-tac-toe/` directory. Now that the project is setup, let's spin up the development environment.
 
 ```shell
+cd tic-tac-toe
 npm start
 ```
 
-`create-hex-engine` has set us up with a basic game already. Head on over to [localhost:8080](localhost:8080) to check it out! Once you're done, we can proceed by deleting the default files in `src/`.
+`create-hex-engine` has set us up with a basic game already. Head on over to [http://localhost:8080](http://localhost:8080) to check it out! Once you're done, we can proceed by deleting the default files in `src/`.
 
 ```shell
 rm src/*
@@ -61,7 +62,7 @@ You should now see a blank canvas and the Hex Engine inspector in the browser!
 In our root, we've made use of a few different parts of Hex Engine.
 
 - [`useType`](/docs/api-core#usetype) is used in every component so they can be retrieved later with functions like [`Entity#getComponent`](/docs/api-core#getcomponent).
-- [`useNewComponent`](/docs/api-core#usenewcomponent) is used to create a new [`Component`](/docs/api-core#component) instance and attach it to the current entity (Root in our case).
+- [`useNewComponent`](/docs/api-core#usenewcomponent) is used to create a new [`Component`](/docs/api-core#component) instance and attach it to the current [entity](/docs/api-core#entity) (the root Entity in our case).
 - [`Canvas`](/docs/api-2d#canvas) creates a new Canvas component that will render the things in our game.
 
 ## Create The Cell Component
@@ -99,12 +100,14 @@ export default function Cell({ size, position }) {
 This component uses a few new concepts.
 
 - [`Geometry`](/docs/api-2d#geometry) creates a new geometry component for our cell. We'll use this to place and size the cell.
-- [`Polygon#rectangle`](/docs/api-2d#polygon) creates a new rectangular polygon that our `Geometry` component uses to set its width and height.
+- [`Polygon.rectangle`](/docs/api-2d#polygon) creates a new rectangular polygon that our `Geometry` component uses to set its width and height.
 - [`useDraw`](/docs/api-2d#usedraw) will run a function once each frame, passing it the drawing context from our canvas. Here we use it to apply a stroke around our cell.
 
 ## Drawing The Grid
 
 With the `Cell` component created, we can start drawing a grid. Modify our `src/Root.ts` file with the following.
+
+> Throughout the rest of this guide, a special comment `/* ...snip... */` will be used in code examples to indicate that there is some other code in that file already, that isn't being shown, so that it's clear what code is being added. You don't need to put the `/* ...snip... */` comment in your code.
 
 ```ts
 // src/Root.ts
@@ -141,9 +144,9 @@ export default function Root() {
 
 You should now see the board rendering in your browser! Here's the rundown on the new things we used.
 
-- [`Grid`](/docs/api-2d#grid) creates a simple Grid object. Here we make a 3x3 grid where each cell has the value `" "`. This value will be changed later to either `"x"` or `"o"` to print in the Cell component.
+- [`Grid`](/docs/api-2d#grid) creates a simple grid object. Here we make a 3x3 grid where each cell has the value `" "`. This value will be changed later to either `"x"` or `"o"` to print in the Cell component.
 - [`Vector`](/docs/api-2d#vector) creates a simple 2d Vector object with `x` and `y` properties.
-- [`useChild`](/docs/api-core#usechild) allows us to create a new instance of a Component as a child of the current Entity. Here, we create new `Cell` components as children of our `Root` component.
+- [`useChild`](/docs/api-core#usechild) allows us to create a new Entity as a child of the current Entity, and create a new Component on that new Entity. Here, we create Entities with `Cell` components as children of our `Root` component.
 
 ## Printing Cell Values
 
@@ -158,7 +161,7 @@ export default function Root() {
     useChild(() =>
       Cell({
         /* ...snip... */
-        // Here is the new parameter we are adding
+        // Here is the new argument we are adding
         getContent: () => grid.get(rowIndex, columnIndex),
       })
     )
@@ -179,7 +182,7 @@ import {
 
 export default function Cell({
   /* ...snip... */
-  // Destructure our new argument
+  // Destructure our new parameter
   getContent,
 }) {
   /* ...snip... */
@@ -200,7 +203,7 @@ export default function Cell({
 }
 ```
 
-To test that this is working, you can try setting the default cell value in the grid to a character other than a space. For example, you could change it to `new Grid(3, 3, "x")`. If you don't, don't forget to change it back to `new Grid(3, 3, " ")`!
+To test that this is working, you can try setting the default cell value in the grid to a character other than a space. For example, you could change it to `new Grid(3, 3, "x")`. If you do, don't forget to change it back to `new Grid(3, 3, " ")`!
 
 To render text, we made use of two new components.
 
@@ -209,7 +212,7 @@ To render text, we made use of two new components.
 
 ## Handling Input
 
-Now that the `Cell` component can render its value in the grid, let's allow the user to start placing x's and o's! To do so, we'll pass an `onClick` handler to the `Cell` component that will modify the game state when a user clicks on a cell.
+Now that the `Cell` component can render its value in the grid, let's allow the user to start placing 'x's and 'o's! To do so, we'll pass an `onClick` handler to the `Cell` component that will modify the game state when a user clicks on a cell.
 
 ```ts
 // src/Root.ts
