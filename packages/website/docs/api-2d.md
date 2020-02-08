@@ -2011,9 +2011,27 @@ function Label(options: {
 import { LowLevelMouse } from "@hex-engine/2d";
 ```
 
-A low-level Mouse Component. It supports mousemove, mousedown, and mouseup events.
+A low-level Mouse Component. It supports mousemove, mousedown, and mouseup events. The positions on these events are in Entity-local space; they're not "world positions".
+
 For click events, information about whether the cursor is within an Entity's geometry,
 and clean separation between left-click, right-click, and middle-click events, use `Mouse` instead.
+
+> If you need to convert an Entity-local position to a world position, you can use the following code snippet:
+>
+> ```ts
+> const worldPoint = useEntityTransforms()
+>   .matrixForWorldPosition()
+>   .transformPoint(localPoint);
+> ```
+>
+> And if you need to go the other way, you can use the following snippet:
+>
+> ```ts
+> const localPoint = useEntityTransforms()
+>   .matrixForWorldPosition()
+>   .inverse()
+>   .transformPoint(worldPoint);
+> ```
 
 > In versions prior to 0.0.1, this component was called `Mouse`.
 
@@ -2052,6 +2070,30 @@ import { Mouse } from "@hex-engine/2d";
 
 A Component that gives you information about where the Mouse is, relative to the current Entity,
 and lets you register functions to be called when the mouse cursor interacts with the current Entity.
+
+The `Mouse` component cooperates with the [`Geometry`](#geometry) component in order to:
+
+- Identify whether the mouse is "inside" the Entity
+- Call event listeners with positions relative to the Entity's current position, rotation, and scale
+
+If you do not provide a Mouse component with a specific Geometry component to use when it is created, then it will use [`Entity.getComponent`](/docs/api-core#getcomponent) to obtain one.
+
+> If you need to convert an Entity-local position to a world position, you can use the following code snippet:
+>
+> ```ts
+> const worldPoint = useEntityTransforms()
+>   .matrixForWorldPosition()
+>   .transformPoint(localPoint);
+> ```
+>
+> And if you need to go the other way, you can use the following snippet:
+>
+> ```ts
+> const localPoint = useEntityTransforms()
+>   .matrixForWorldPosition()
+>   .inverse()
+>   .transformPoint(worldPoint);
+> ```
 
 ```ts
 function Mouse(options?: {
