@@ -29,7 +29,7 @@ rm src/*
 
 Each game in Hex Engine has a Root Entity. To create this, we'll make two files.
 
-1. Firstly, we'll create an `index.ts` file to import our Root Entity and instantiate our game.
+1. Firstly, we'll create an `index.ts` file to import our Root Component and instantiate our game.
 
 ```ts
 // src/index.ts
@@ -39,7 +39,7 @@ import Root from "./Root";
 createRoot(Root)
 ```
 
-2. Next, we'll create a simple root creates a canvas.
+2. Next, we'll create the Root component that creates and sets up a canvas to render the game into.
 
 ```ts
 // src/Root.ts
