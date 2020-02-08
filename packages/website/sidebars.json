@@ -8,7 +8,7 @@
       "whats-in-the-box",
       "are-you-trying-to-pick-up-the-ground"
     ],
-    "Guides": ["guides", "hex-engine-for-react-devs"],
+    "Guides": ["guides", "hex-engine-for-react-devs", "tic-tac-toe-example"],
     "API Reference": ["api-reference", "api-2d", "api-core", "api-inspector"]
   }
 }

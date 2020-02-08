@@ -6,6 +6,7 @@ sidebar_label: Guides Index
 Guides:
 
 - [Hex Engine for React Developers](/docs/hex-engine-for-react-devs)
+- [Tic Tac Toe Example](/docs/tic-tac-toe-example)
 
 Coming Soon:
 
