@@ -18,17 +18,24 @@ type OgmoEntityData = {
   _eid: string;
   x: number;
   y: number;
-  originX: number;
-  originY: number;
-  values: { [key: string]: any };
+  width?: number;
+  height?: number;
+  originX?: number;
+  originY?: number;
+  rotation?: number;
+  flippedX?: boolean;
+  flippedY?: boolean;
+  values?: { [key: string]: any };
 };
 
 type OgmoDecalData = {
-  position: Vector;
-  scale: Vector;
-  rotation: number;
+  x: number;
+  y: number;
+  scaleX?: number;
+  scaleY?: number;
+  rotation?: number;
   texture: string;
-  values: { [key: string]: any };
+  values?: { [key: string]: any };
 };
 
 type OgmoTileset = {
@@ -92,21 +99,17 @@ type OgmoProject = {
   layers: Array<OgmoProjectLayer>;
 };
 
-function OgmoDecal(decalData: {
-  position: Vector;
-  scale: Vector;
-  rotation: number;
-  texture: string;
-  values: { [key: string]: any };
-}) {
+function OgmoDecal(decalData: OgmoDecalData) {
   useType(OgmoDecal);
 
   const geometry = useNewComponent(() =>
     Geometry({
       shape: Polygon.rectangle(1, 1),
-      position: decalData.position,
+      position: new Vector(decalData.x, decalData.y),
+      // Note: looks like at time of writing, decal rotation is always in radians,
+      // regardless of the angle export setting of the project
       rotation: decalData.rotation,
-      scale: decalData.scale,
+      scale: new Vector(decalData.scaleX ?? 1, decalData.scaleY ?? 1),
     })
   );
 
@@ -137,7 +140,7 @@ type OgmoLevelLayer =
   | {
       definition: "grid";
       projectLayer: OgmoProjectGridLayer;
-      grid: Grid<string | undefined>;
+      grid: Grid<string>;
     }
   | {
       definition: "entity";
@@ -147,13 +150,7 @@ type OgmoLevelLayer =
   | {
       definition: "decal";
       projectLayer: OgmoProjectDecalLayer;
-      decals: Array<{
-        position: Vector;
-        scale: Vector;
-        rotation: number;
-        texture: string;
-        values: { [key: string]: any };
-      }>;
+      decals: Array<OgmoDecalData>;
     };
 
 type OgmoLevelApi = {
@@ -188,11 +185,7 @@ function OgmoLevel(project: OgmoProject, levelData: any): OgmoLevelApi {
           };
         }
         case "grid": {
-          const grid = new Grid<string | undefined>(
-            layer.gridCellsX,
-            layer.gridCellsY,
-            undefined
-          );
+          const grid = new Grid<string>(layer.gridCellsX, layer.gridCellsY, "");
           grid.setData(layer.grid);
           return {
             definition: "grid",
@@ -250,7 +243,14 @@ function OgmoLevel(project: OgmoProject, levelData: any): OgmoLevelApi {
         }
         case "entity": {
           layer.entities.forEach((entData) => {
-            project.createEntity(entData);
+            project.createEntity({
+              ...entData,
+              // Note: looks like at time of writing, entity rotation is always in degrees,
+              // regardless of the angle export setting of the project
+              rotation: entData.rotation
+                ? entData.rotation * (Math.PI / 180)
+                : 0,
+            });
           });
           break;
         }

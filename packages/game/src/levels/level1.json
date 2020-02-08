@@ -42,17 +42,20 @@
       "gridCellsX": 20,
       "gridCellsY": 15,
       "entities": [
+        {"name": "new entity", "id": 1, "_eid": "17916759", "x": 72, "y": 117.5, "width": 16, "height": 16, "originX": 0, "originY": 0, "rotation": 0, "flippedX": false, "flippedY": false},
         {
           "name": "player!!",
-          "id": 0,
+          "id": 2,
           "_eid": "17913416",
-          "x": 214,
-          "y": 112.5,
-          "originX": 0,
-          "originY": 0,
+          "x": 216,
+          "y": 120,
+          "width": 16,
+          "height": 16,
+          "originX": 8,
+          "originY": 8,
+          "rotation": 0,
           "values": {"some_boolean": false}
-        },
-        {"name": "new entity", "id": 1, "_eid": "17916759", "x": 72, "y": 133.5, "originX": 0, "originY": 0}
+        }
       ]
     },
     {
@@ -70,12 +73,12 @@
           "y": 60.5,
           "scaleX": 5,
           "scaleY": 5,
-          "rotation": -0.5247934168526351,
+          "rotation": 0.8172329554208042,
           "texture": "player-overworld-preview.png",
           "values": {"some_float": 0.1234}
         }
       ],
-      "folder": "../decals"
+      "folder": "decals"
     }
   ]
 }

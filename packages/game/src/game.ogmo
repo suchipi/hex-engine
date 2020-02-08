@@ -187,12 +187,12 @@
         "x": 16,
         "y": 16
       },
-      "resizeableX": false,
-      "resizeableY": false,
-      "rotatable": false,
+      "resizeableX": true,
+      "resizeableY": true,
+      "rotatable": true,
       "rotationDegrees": 360,
-      "canFlipX": false,
-      "canFlipY": false,
+      "canFlipX": true,
+      "canFlipY": true,
       "canSetColor": false,
       "hasNodes": false,
       "nodeLimit": 0,
@@ -210,8 +210,8 @@
         "y": 16
       },
       "origin": {
-        "x": 0,
-        "y": 0
+        "x": 8,
+        "y": 8
       },
       "originAnchored": true,
       "shape": {
@@ -250,9 +250,9 @@
         "x": 16,
         "y": 16
       },
-      "resizeableX": false,
-      "resizeableY": false,
-      "rotatable": false,
+      "resizeableX": true,
+      "resizeableY": true,
+      "rotatable": true,
       "rotationDegrees": 360,
       "canFlipX": false,
       "canFlipY": false,
