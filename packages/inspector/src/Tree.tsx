@@ -347,6 +347,27 @@ export default function Tree({
           {entriesForProperties(gatherPropertyNames(data))}
         </>
       );
+    } else if (data._kind === "grid" && typeof data.defaultValue === "string") {
+      className = `Grid (${data.size.x}, ${data.size.y})`;
+      content = (
+        <>
+          {data.data.map((row: Array<string>, xIndex: number) => (
+            <div key={xIndex}>
+              {row.map((gridValue, yIndex) => (
+                <EditableString
+                  expanded={false}
+                  color="rgb(196, 26, 22)"
+                  value={gridValue}
+                  onChange={(newValue) => {
+                    data.data[xIndex][yIndex] = newValue;
+                  }}
+                />
+              ))}
+            </div>
+          ))}
+          {entriesForProperties(gatherPropertyNames(data))}
+        </>
+      );
     } else if (data._kind === "grid") {
       className = `Grid (${data.size.x}, ${data.size.y})`;
       content = entriesForProperties(gatherPropertyNames(data));
