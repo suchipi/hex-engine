@@ -72,35 +72,45 @@ export default Object.assign(
       useNewComponent(() => Inspector());
     }
 
+    let preDraw: (context: CanvasRenderingContext2D) => void = () => {};
+
+    useRawDraw((context) => {
+      preDraw(context);
+    });
+
     function setPixelated(on: boolean) {
       if (on) {
         canvas.style.imageRendering = navigator.userAgent.match(/firefox/i)
           ? "-moz-crisp-edges"
           : "pixelated";
 
-        [
-          "imageSmoothingEnabled",
-          "mozImageSmoothingEnabled",
-          "oImageSmoothingEnabled",
-          "webkitImageSmoothingEnabled",
-          "msImageSmoothingEnabled",
-        ].forEach((property) => {
-          // @ts-ignore
-          context[property] = false;
-        });
+        preDraw = (context) => {
+          [
+            "imageSmoothingEnabled",
+            "mozImageSmoothingEnabled",
+            "oImageSmoothingEnabled",
+            "webkitImageSmoothingEnabled",
+            "msImageSmoothingEnabled",
+          ].forEach((property) => {
+            // @ts-ignore
+            context[property] = false;
+          });
+        };
       } else {
         canvas.style.imageRendering = "";
 
-        [
-          "imageSmoothingEnabled",
-          "mozImageSmoothingEnabled",
-          "oImageSmoothingEnabled",
-          "webkitImageSmoothingEnabled",
-          "msImageSmoothingEnabled",
-        ].forEach((property) => {
-          // @ts-ignore
-          context[property] = true;
-        });
+        preDraw = (context) => {
+          [
+            "imageSmoothingEnabled",
+            "mozImageSmoothingEnabled",
+            "oImageSmoothingEnabled",
+            "webkitImageSmoothingEnabled",
+            "msImageSmoothingEnabled",
+          ].forEach((property) => {
+            // @ts-ignore
+            context[property] = true;
+          });
+        };
       }
     }
 
