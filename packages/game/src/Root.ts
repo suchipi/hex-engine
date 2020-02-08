@@ -1,20 +1,13 @@
 import {
   Canvas,
   useNewComponent,
-  useChild,
   useType,
-  Vector,
-  Physics,
-  AudioContext,
-  useCanvasSize,
+  useChild,
+  Ogmo,
 } from "@hex-engine/2d";
-import Button from "./Button";
 import FPS from "./FPS";
-import Hex from "./Hex";
-import Scene from "./Scene";
-import Controls from "./Controls";
-import CustomDrawOrder from "./CustomDrawOrder";
-import Test from "./Test";
+import ogmoProject from "./game.ogmo";
+import ogmoLevel from "./levels/level1.json";
 
 export default function Root() {
   useType(Root);
@@ -23,32 +16,14 @@ export default function Root() {
   canvas.setPixelated(true);
   canvas.fullscreen({ pixelZoom: 2 });
 
-  useNewComponent(CustomDrawOrder);
-
-  useNewComponent(AudioContext);
-  useNewComponent(Physics.Engine);
   useNewComponent(FPS);
-  useNewComponent(Controls);
 
-  const scene = useChild(Scene).rootComponent;
+  const ogmo = useNewComponent(() =>
+    Ogmo(ogmoProject, {
+      "player!!": (data) => useChild(() => {}),
+      "new entity": (data) => useChild(() => {}),
+    })
+  );
 
-  useChild(() => {
-    Button({
-      calcPosition: (size) =>
-        new Vector(0, canvas.element.height)
-          .subtractYMutate(size.y / 2)
-          .addXMutate(size.x / 2)
-          .roundMutate(),
-      text: "Create Hex",
-      onClick: () => {
-        const randomX = Math.random() * canvas.element.width;
-
-        scene.useChild(() => Hex({ position: new Vector(randomX, 0) }));
-      },
-    });
-  });
-
-  const { canvasSize } = useCanvasSize();
-
-  useChild(() => Test(canvasSize.divide(2)));
+  ogmo.loadLevel(ogmoLevel);
 }

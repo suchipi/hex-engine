@@ -52,3 +52,13 @@ declare module "*.fnt" {
   const data: BMFontLoader.Font;
   export default data;
 }
+
+declare module "*.ogmo" {
+  const data: any;
+  export default data;
+}
+
+declare module "*.json" {
+  const data: any;
+  export default data;
+}
