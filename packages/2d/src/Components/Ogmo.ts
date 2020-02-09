@@ -173,9 +173,16 @@ type OgmoLevelLayer =
     };
 
 type OgmoLevelApi = {
+  /** The size of the level, in pixels. */
   size: Vector;
+
+  /** The render offset for the level. */
   offset: Vector;
+
+  /** Any custom values that were placed on the level from the Ogmo editor. */
   values: { [key: string]: any };
+
+  /** An array of the layers in the level. */
   layers: Array<OgmoLevelLayer>;
 };
 
@@ -307,7 +314,7 @@ function defaultDecalFactory(decalData: OgmoDecalData): Entity {
 }
 
 /**
- * A Component that provides an interface for working with an Ogmo Editor project.
+ * A Component that provides an interface for working with an [Ogmo Editor](https://ogmo-editor-3.github.io/) project.
  *
  * @param projectData The imported *.ogmo file
  * @param entityFactories An object map of functions that will be used to
@@ -392,7 +399,13 @@ function OgmoProject(
     layers: project.layers,
 
     /**
-     * Create a new OgmoLevel component for the given level data.
+     * Create a new OgmoLevel component for the given level data,
+     * and add it to the current component's Entity.
+     *
+     * ```ts
+     * import levelData from "./level.json";
+     * ogmo.useLevel(levelData);
+     * ```
      */
     useLevel(levelData: any) {
       return useNewComponent(() => OgmoLevel(project, levelData));

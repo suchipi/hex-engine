@@ -2236,6 +2236,146 @@ function Mouse(options?: {
 };
 ```
 
+### Ogmo.Project
+
+> Available since version: Unreleased
+
+```ts
+import { Ogmo, useNewComponent } from "@hex-engine/2d";
+import myProject from "./myProject.ogmo";
+
+useNewComponent(() => Ogmo.Project(myProject));
+```
+
+A Component that provides an interface for working with an [Ogmo Editor](https://ogmo-editor-3.github.io/) project.
+
+> Note: Several of the types in this overview are omitted. Rely on your IDE for definitions of these types.
+
+````ts
+function OgmoProject(
+  /**
+   * The imported *.ogmo file
+   *
+   * Available since version: Unreleased
+   */
+  projectData: any,
+
+  /**
+   * An object map of functions that will be used to
+   * construct entities in Ogmo levels, by name; for example:
+   *
+   * { player: (entData) => useChild(() => Player(entData)) }
+   *
+   * Available since version: Unreleased
+   */
+  entityFactories: {
+    [name: string]: (entityData: OgmoEntityData) => Entity;
+  } = {},
+
+  /**
+   * An optional function that will be called to construct entities for decals.
+   * The default implementation uses Ogmo.Decal.
+   *
+   * Available since version: Unreleased
+   */
+  decalFactory?: (decalData: OgmoDecalData) => Entity
+): {
+  /**
+   * All of the tilesets specified in the Ogmo project.
+   *
+   * Available since version: Unreleased
+   */
+  tilesets: Array<OgmoTileset>;
+
+  /**
+   * All of the layer definitions specified in the Ogmo project.
+   *
+   * Available since version: Unreleased
+   */
+  layers: Array<OgmoProjectLayer>;
+
+  /**
+   * Create a new OgmoLevel component for the given level data,
+   * and add it to the current component's Entity.
+   *
+   * ```ts
+   * import levelData from "./level.json";
+   * ogmo.useLevel(levelData);
+   * ```
+   *
+   * Available since version: Unreleased
+   */
+  useLevel(
+    levelData: any
+  ): Component & {
+    /**
+     * The size of the level, in pixels.
+     *
+     * Available since version: Unreleased
+     */
+    size: Vector;
+
+    /**
+     * The render offset for the level.
+     *
+     * Available since version: Unreleased
+     */
+    offset: Vector;
+
+    /**
+     * Any custom values that were placed on the level from the Ogmo editor.
+     *
+     * Available since version: Unreleased
+     */
+    values: { [key: string]: any };
+
+    /**
+     * An array of the layers in the level.
+     *
+     * Available since version: Unreleased
+     */
+    layers: Array<OgmoLevelLayer>;
+  };
+};
+````
+
+### Ogmo.Level
+
+> Available since version: Unreleased
+
+```ts
+import { Ogmo } from "@hex-engine/2d";
+Ogmo.Level;
+```
+
+A component representing a single Ogmo level. When created, it will loop over all the
+layers, decals, tiles, entities, and grids in the level, and create appropriate objects
+to represent each.
+
+It cooperates with an Ogmo.Project component to get layer information and create entities
+and decals.
+
+You cannot create these manually; instead, use the `useLevel` method on [Ogmo.Project](#ogmoproject).
+
+### Ogmo.Decal
+
+> Available since version: Unreleased
+
+```ts
+import { Ogmo } from "@hex-engine/2d";
+Ogmo.Entity;
+```
+
+The default Ogmo decal component, used in the creation of decal entities
+when rendering the [decal layer](https://ogmo-editor-3.github.io/docs/#/manual/decal-layers.md) of an Ogmo level.
+
+It loads the image for the decal, and draws it with the position, rotation,
+and scale specified by the decal data in the level.
+
+If you want to use a different component to render decals, instead of this
+one, then you can override it when you create the Ogmo.Project by passing
+a custom function as its `decalFactory` parameter.
+
 ### Physics.Engine
 
 > Available since version: 0.0.1
