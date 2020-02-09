@@ -12,7 +12,6 @@
     "lodash.setwith": "^4.3.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-state-tree": "^0.1.2",
     "use-force-update": "^1.0.7"
   },
   "devDependencies": {
