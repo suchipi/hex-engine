@@ -1,0 +1,26 @@
+{
+  "ogmoVersion": "3.3.0",
+  "width": 128,
+  "height": 178,
+  "offsetX": 0,
+  "offsetY": 0,
+  "layers": [
+    {
+      "name": "entities",
+      "_eid": "26786965",
+      "offsetX": 0,
+      "offsetY": 0,
+      "gridCellWidth": 8,
+      "gridCellHeight": 8,
+      "gridCellsX": 16,
+      "gridCellsY": 24,
+      "entities": [
+        {"name": "entity_1", "id": 0, "_eid": "26788032", "x": 24, "y": 24, "width": 16, "height": 16, "originX": 8, "originY": 8, "rotation": 0, "flippedX": false, "flippedY": false},
+        {"name": "entity_1", "id": 1, "_eid": "26788032", "x": 26, "y": 54, "width": 16, "height": 16, "originX": 8, "originY": 8, "rotation": 15, "flippedX": false, "flippedY": false},
+        {"name": "entity_1", "id": 2, "_eid": "26788032", "x": 32, "y": 139, "width": 32, "height": 16, "originX": 16, "originY": 8, "rotation": 0, "flippedX": false, "flippedY": false},
+        {"name": "entity_1", "id": 3, "_eid": "26788032", "x": 24, "y": 111, "width": 16, "height": 16, "originX": 8, "originY": 8, "rotation": 0, "flippedX": true, "flippedY": false},
+        {"name": "entity_1", "id": 4, "_eid": "26788032", "x": 24, "y": 85, "width": 16, "height": 16, "originX": 8, "originY": 8, "rotation": 0, "flippedX": false, "flippedY": true}
+      ]
+    }
+  ]
+}

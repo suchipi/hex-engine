@@ -1,0 +1,26 @@
+{
+  "ogmoVersion": "3.3.0",
+  "width": 256,
+  "height": 256,
+  "offsetX": 0,
+  "offsetY": 0,
+  "layers": [
+    {
+      "name": "decals",
+      "_eid": "26847869",
+      "offsetX": 0,
+      "offsetY": 0,
+      "gridCellWidth": 8,
+      "gridCellHeight": 8,
+      "gridCellsX": 32,
+      "gridCellsY": 32,
+      "decals": [
+        {"x": 24, "y": 24, "scaleX": 1, "scaleY": 1, "rotation": 0, "texture": "tiles.png"},
+        {"x": 24, "y": 56, "scaleX": 1, "scaleY": 1, "rotation": 1.0152898326842843, "texture": "tiles.png"},
+        {"x": 96, "y": 104, "scaleX": 5, "scaleY": -4, "rotation": 0, "texture": "tiles.png"},
+        {"x": 128, "y": 40, "scaleX": 2, "scaleY": -5, "rotation": -0.5684914496697709, "texture": "tiles.png"}
+      ],
+      "folder": ""
+    }
+  ]
+}
