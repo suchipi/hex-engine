@@ -119,7 +119,7 @@ export default function Tree({
               name={prop.toString()}
               data={val}
               parent={data}
-              path={[...path, index]}
+              path={[...path, prop.toString()]}
               onExpand={onExpand}
               getExpanded={getExpanded}
             />
