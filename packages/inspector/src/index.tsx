@@ -30,7 +30,6 @@ interface StateHolder {
   toggleOpen: () => void;
   getSelectMode: () => boolean;
   toggleSelectMode: () => void;
-  getSelectedEntity: () => null | Entity;
   selectEntity: (entity: Entity) => void;
 }
 
@@ -45,8 +44,18 @@ function saveTree(tree: any) {
 const debouncedSaveTree = debounce(saveTree, 100);
 
 function getRootToEntityPath(entity: Entity): Array<string | number> {
-  // @todo implement
-  return ["root"];
+  const path: Array<string | number> = [];
+  let ent = entity;
+
+  while (ent.parent) {
+    const idx = [...ent.parent.children].indexOf(ent);
+    path.push(idx, "children");
+    ent = ent.parent;
+  }
+
+  path.push("root");
+  path.reverse();
+  return path;
 }
 
 function Root({
@@ -96,12 +105,11 @@ export default function Inspector() {
   useType(Inspector);
 
   const pauseOnStart = localStorage.inspectorPauseOnStart === "true";
-  const entity = useRootEntity();
-  const runLoop = entity.getComponent(RunLoop);
+  const rootEntity = useRootEntity();
+  const runLoop = rootEntity.getComponent(RunLoop);
 
   let isOpen = localStorage.inspectorOpen === "true";
   let isSelectMode = false;
-  let selectedEntity: null | Entity = null;
   let tree = initialInspectorTree;
 
   const stateHolder: StateHolder = {
@@ -137,7 +145,6 @@ export default function Inspector() {
     },
     getSelectMode: () => isSelectMode,
     toggleSelectMode: () => (isSelectMode = !isSelectMode),
-    getSelectedEntity: () => selectedEntity,
     selectEntity: (entity: Entity) => {
       if (!stateHolder.getIsOpen()) {
         stateHolder.toggleOpen();
@@ -176,7 +183,7 @@ export default function Inspector() {
   });
 
   ReactDOM.render(
-    <Root entity={entity} runLoop={runLoop} stateHolder={stateHolder} />,
+    <Root entity={rootEntity} runLoop={runLoop} stateHolder={stateHolder} />,
     el,
     useCallbackAsCurrent(() => {
       const tick = useCallbackAsCurrent(() => {
