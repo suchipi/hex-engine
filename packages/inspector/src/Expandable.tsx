@@ -8,6 +8,7 @@ export default function Expandable({
   children,
   hasContent,
   expanded,
+  isSelected,
   onExpand,
   onMouseEnter,
   onMouseLeave,
@@ -19,14 +20,26 @@ export default function Expandable({
   children: React.ReactNode;
   hasContent: boolean;
   expanded: boolean;
+  isSelected: boolean;
   onExpand: () => void;
   onMouseEnter?: (event: React.MouseEvent) => void;
   onMouseLeave?: (event: React.MouseEvent) => void;
   onContextMenu?: (event: React.MouseEvent) => void;
 }) {
-
   return (
-    <div style={{ paddingLeft: 8, paddingTop: 2 }}>
+    <div style={{ position: "relative", paddingLeft: 8, paddingTop: 2 }}>
+      {isSelected && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: "-100vw",
+            width: "300vw",
+            height: 18,
+            background: "rgba(176, 118, 199, 0.3)",
+          }}
+        />
+      )}
       <span
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}

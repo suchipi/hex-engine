@@ -30,6 +30,7 @@ interface StateHolder {
   toggleOpen: () => void;
   getSelectMode: () => boolean;
   toggleSelectMode: () => void;
+  getSelectedEntity: () => null | Entity;
   selectEntity: (entity: Entity) => void;
 }
 
@@ -74,6 +75,7 @@ function Root({
   return (
     <App
       entity={entity}
+      getSelectedEntity={stateHolder.getSelectedEntity}
       runLoop={runLoop}
       error={stateHolder.err}
       getExpanded={stateHolder.getExpanded}
@@ -111,6 +113,7 @@ export default function Inspector() {
   let isOpen = localStorage.inspectorOpen === "true";
   let isSelectMode = false;
   let tree = initialInspectorTree;
+  let selectedEntity: null | Entity = null;
 
   const stateHolder: StateHolder = {
     tree,
@@ -145,6 +148,7 @@ export default function Inspector() {
     },
     getSelectMode: () => isSelectMode,
     toggleSelectMode: () => (isSelectMode = !isSelectMode),
+    getSelectedEntity: () => selectedEntity,
     selectEntity: (entity: Entity) => {
       if (!stateHolder.getIsOpen()) {
         stateHolder.toggleOpen();
@@ -152,6 +156,7 @@ export default function Inspector() {
 
       const entityPath = getRootToEntityPath(entity);
       stateHolder.setExpanded(entityPath, true);
+      selectedEntity = entity;
     },
   };
 

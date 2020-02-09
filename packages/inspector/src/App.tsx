@@ -12,6 +12,7 @@ export default function App({
   error,
   onExpand,
   getExpanded,
+  getSelectedEntity,
   isHovered,
   isOpen,
   toggleOpen,
@@ -19,6 +20,7 @@ export default function App({
   toggleSelectMode,
 }: {
   entity: Entity;
+  getSelectedEntity: () => null | Entity;
   runLoop: RunLoopAPI | null;
   error: Error | null;
   onExpand: (path: Array<string | number>, expand: boolean) => void;
@@ -111,6 +113,7 @@ export default function App({
               path={["root"]}
               onExpand={onExpand}
               getExpanded={getExpanded}
+              getSelectedEntity={getSelectedEntity}
             />
           </div>
         </div>

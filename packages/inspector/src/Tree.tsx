@@ -1,4 +1,4 @@
-import { Component } from "@hex-engine/core";
+import { Entity, Component } from "@hex-engine/core";
 import React from "react";
 import Expandable from "./Expandable";
 import Button from "./Button";
@@ -33,6 +33,7 @@ export default function Tree({
   path,
   onExpand,
   getExpanded,
+  getSelectedEntity,
 }: {
   name: string;
   data: any;
@@ -40,6 +41,7 @@ export default function Tree({
   path: Array<string | number>;
   onExpand: (path: Array<string | number>, expand) => void;
   getExpanded: (path: Array<string | number>) => boolean;
+  getSelectedEntity: () => null | Entity;
 }) {
   let className = "";
   let hasContent = false;
@@ -66,6 +68,7 @@ export default function Tree({
         path={[...path, index]}
         onExpand={onExpand}
         getExpanded={getExpanded}
+        getSelectedEntity={getSelectedEntity}
       />
     ));
   }
@@ -122,6 +125,7 @@ export default function Tree({
               path={[...path, prop.toString()]}
               onExpand={onExpand}
               getExpanded={getExpanded}
+              getSelectedEntity={getSelectedEntity}
             />
           );
         })}
@@ -413,6 +417,8 @@ export default function Tree({
     onExpand(path, !expanded);
   };
 
+  const selectedEntity = getSelectedEntity();
+
   return (
     <Expandable
       className={className}
@@ -420,6 +426,7 @@ export default function Tree({
       hasContent={hasContent}
       preview={preview}
       expanded={expanded}
+      isSelected={selectedEntity !== null && data.id === selectedEntity.id}
       onExpand={handleExpand}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
