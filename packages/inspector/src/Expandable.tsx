@@ -41,7 +41,7 @@ export default function Expandable({
               left: "-100vw",
               width: "300vw",
               height: 18,
-              background: "rgba(176, 118, 199, 0.3)",
+              background: "rgba(176,118,199,0.35)",
             }}
           />
         )}
