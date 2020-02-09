@@ -59,11 +59,11 @@ function Root({
 
   return (
     <App
-      getExpanded={stateHolder.getExpanded}
-      onExpand={stateHolder.setExpanded}
       entity={entity}
       runLoop={runLoop}
       error={stateHolder.err}
+      getExpanded={stateHolder.getExpanded}
+      onExpand={stateHolder.setExpanded}
       isHovered={stateHolder.isHovered}
       isOpen={stateHolder.getIsOpen()}
       toggleOpen={stateHolder.toggleOpen}
