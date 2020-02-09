@@ -101,7 +101,7 @@ export default function Inspector() {
 
   const stateHolder: StateHolder = {
     tree,
-    setExpanded: (path, expand) => {
+    setExpanded: (path: Array<string | number>, expand: boolean) => {
       if (expand) {
         setWith(tree, path, {}, Object);
       } else {
@@ -119,7 +119,7 @@ export default function Inspector() {
 
       debouncedSaveTree(tree);
     },
-    getExpanded: (path) => {
+    getExpanded: (path: Array<string | number>) => {
       return get(tree, path) !== undefined;
     },
     err: null,
