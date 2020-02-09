@@ -12,6 +12,10 @@ import TileMap from "./TileMap";
 import { Grid, Vector, Polygon } from "../Models";
 import { useDraw } from "../Hooks";
 
+/**
+ * The data that describes an entity inside of an Ogmo level.
+ * This shape comes directly from the level json.
+ */
 type OgmoEntityData = {
   name: string;
   id: number;
@@ -28,6 +32,10 @@ type OgmoEntityData = {
   values?: { [key: string]: any };
 };
 
+/**
+ * The data that describes a decal inside of an Ogmo level.
+ * This shape comes directly from the level json.
+ */
 type OgmoDecalData = {
   x: number;
   y: number;
@@ -92,13 +100,24 @@ type OgmoProjectLayer =
   | OgmoProjectEntityLayer
   | OgmoProjectDecalLayer;
 
-type OgmoProject = {
+type OgmoProjectApi = {
   createEntity: (data: OgmoEntityData) => Entity;
   createDecal: (data: OgmoDecalData) => Entity;
   tilesets: Array<OgmoTileset>;
   layers: Array<OgmoProjectLayer>;
 };
 
+/**
+ * The default Ogmo decal component, used in the creation of decal entities
+ * when rendering the decal layer of an ogmo level.
+ *
+ * It loads the image for the decal, and draws it with the position, rotation,
+ * and scale specified by the decal data in the level.
+ *
+ * If you want to use a different component to render decals, instead of this
+ * one, then you can override it when you create the Ogmo.Project by passing
+ * a custom function as its `decalFactory` parameter.
+ */
 function OgmoDecal(decalData: OgmoDecalData) {
   useType(OgmoDecal);
 
@@ -160,7 +179,17 @@ type OgmoLevelApi = {
   layers: Array<OgmoLevelLayer>;
 };
 
-function OgmoLevel(project: OgmoProject, levelData: any): OgmoLevelApi {
+/**
+ * A component representing a single Ogmo level. When created, it will loop over all the
+ * layers, decals, tiles, entities, and grids in the level, and create appropriate objects
+ * to represent each.
+ *
+ * It cooperates with an Ogmo.Project component to get layer information and create entities
+ * and decals.
+ *
+ * You cannot create these manually; instead, use the `useLevel` method on Ogmo.Project.
+ */
+function OgmoLevel(project: OgmoProjectApi, levelData: any): OgmoLevelApi {
   useType(OgmoLevel);
 
   const layers: Array<OgmoLevelLayer> = (levelData.layers as Array<any>).map(
@@ -294,7 +323,7 @@ function OgmoProject(
 ) {
   useType(OgmoProject);
 
-  const project: OgmoProject = {
+  const project: OgmoProjectApi = {
     createEntity: (data: OgmoEntityData) => {
       const factoryForName = entityFactories[data.name];
       if (factoryForName) {
@@ -352,9 +381,20 @@ function OgmoProject(
   );
 
   return {
+    /**
+     * All of the tilesets specified in the Ogmo project.
+     */
     tilesets: project.tilesets,
+
+    /**
+     * All of the layer definitions specified in the Ogmo project.
+     */
     layers: project.layers,
-    loadLevel(levelData: any) {
+
+    /**
+     * Create a new OgmoLevel component for the given level data.
+     */
+    useLevel(levelData: any) {
       return useNewComponent(() => OgmoLevel(project, levelData));
     },
   };

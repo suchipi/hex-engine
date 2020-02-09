@@ -33,5 +33,5 @@ export default function Root() {
     })
   );
 
-  ogmo.loadLevel(ogmoLevel);
+  ogmo.useLevel(ogmoLevel);
 }

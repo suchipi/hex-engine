@@ -12,7 +12,7 @@ it("has a grid containing the data", () => {
 
       const ogmo = useNewComponent(() => Ogmo.Project(project, {}));
 
-      const level = ogmo.loadLevel(levelData);
+      const level = ogmo.useLevel(levelData);
 
       const layer = level.layers[0];
 

@@ -12,7 +12,7 @@ it("renders correctly", () => {
 
       const ogmo = useNewComponent(() => Ogmo.Project(project, {}));
 
-      ogmo.loadLevel(level);
+      ogmo.useLevel(level);
     });
   });
   cy.matchImageSnapshot();

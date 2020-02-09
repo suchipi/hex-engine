@@ -39,7 +39,7 @@ it("renders correctly", () => {
         })
       );
 
-      ogmo.loadLevel(level);
+      ogmo.useLevel(level);
     });
   });
   cy.matchImageSnapshot();

@@ -21,7 +21,7 @@ it("renders correctly", () => {
 
       const ogmo = useNewComponent(() => Ogmo.Project(project, {}));
 
-      ogmo.loadLevel(level);
+      ogmo.useLevel(level);
     });
   });
   cy.matchImageSnapshot();
@@ -51,7 +51,7 @@ it("renders correctly - custom decals", () => {
         )
       );
 
-      ogmo.loadLevel(level);
+      ogmo.useLevel(level);
     });
   });
   cy.matchImageSnapshot();
