@@ -18,7 +18,7 @@ it("renders correctly", () => {
       canvas.fullscreen();
 
       const ogmo = useNewComponent(() =>
-        Ogmo(project, {
+        Ogmo.Project(project, {
           entity_1: (data) =>
             useChild(() => {
               useDraw((context) => {

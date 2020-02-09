@@ -10,7 +10,7 @@ it("has a grid containing the data", () => {
       );
       canvas.fullscreen();
 
-      const ogmo = useNewComponent(() => Ogmo(project, {}));
+      const ogmo = useNewComponent(() => Ogmo.Project(project, {}));
 
       const level = ogmo.loadLevel(levelData);
 

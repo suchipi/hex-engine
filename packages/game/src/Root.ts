@@ -26,7 +26,7 @@ export default function Root() {
   });
 
   const ogmo = useNewComponent(() =>
-    Ogmo(ogmoProject, {
+    Ogmo.Project(ogmoProject, {
       "player!!": (data) =>
         useChild(() => Player(new Vector(data.x, data.y), data.rotation || 0)),
       "new entity": (_data) => useChild(() => {}),

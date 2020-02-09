@@ -19,7 +19,7 @@ it("renders correctly", () => {
       );
       canvas.fullscreen();
 
-      const ogmo = useNewComponent(() => Ogmo(project, {}));
+      const ogmo = useNewComponent(() => Ogmo.Project(project, {}));
 
       ogmo.loadLevel(level);
     });
@@ -36,7 +36,7 @@ it("renders correctly - custom decals", () => {
       canvas.fullscreen();
 
       const ogmo = useNewComponent(() =>
-        Ogmo(project, {}, (decalData) =>
+        Ogmo.Project(project, {}, (decalData) =>
           useChild(() => {
             const font = useNewComponent(() =>
               SystemFont({ name: "sans-serif", size: 10 })

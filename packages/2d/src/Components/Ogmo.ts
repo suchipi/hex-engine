@@ -277,85 +277,94 @@ function defaultDecalFactory(decalData: OgmoDecalData): Entity {
   return useChild(() => OgmoDecal(decalData));
 }
 
-const Ogmo = Object.assign(
-  function Ogmo(
-    projectData: any,
-    entityFactories: {
-      [name: string]: (entityData: OgmoEntityData) => Entity;
-    } = {},
-    decalFactory?: (decalData: OgmoDecalData) => Entity
-  ) {
-    useType(Ogmo);
+/**
+ * A Component that provides an interface for working with an Ogmo Editor project.
+ *
+ * @param projectData The imported *.ogmo file
+ * @param entityFactories An object map of functions that will be used to
+ * construct entities in Ogmo levels, by name; for example: { player: (entData) => useChild(() => Player(entData)) }
+ * @param decalFactory An optional function that will be called to construct entities for decals. The default implementation uses Ogmo.Decal.
+ */
+function OgmoProject(
+  projectData: any,
+  entityFactories: {
+    [name: string]: (entityData: OgmoEntityData) => Entity;
+  } = {},
+  decalFactory?: (decalData: OgmoDecalData) => Entity
+) {
+  useType(OgmoProject);
 
-    const project: OgmoProject = {
-      createEntity: (data: OgmoEntityData) => {
-        const factoryForName = entityFactories[data.name];
-        if (factoryForName) {
-          return factoryForName(data);
-        } else {
-          throw new Error(`No Ogmo entity factory defined for: ${data.name}`);
-        }
-      },
-      createDecal: decalFactory || defaultDecalFactory,
-      tilesets: [],
-      layers: [],
-    };
+  const project: OgmoProject = {
+    createEntity: (data: OgmoEntityData) => {
+      const factoryForName = entityFactories[data.name];
+      if (factoryForName) {
+        return factoryForName(data);
+      } else {
+        throw new Error(`No Ogmo entity factory defined for: ${data.name}`);
+      }
+    },
+    createDecal: decalFactory || defaultDecalFactory,
+    tilesets: [],
+    layers: [],
+  };
 
-    project.tilesets = (projectData.tilesets as Array<any>).map(
-      (tileset: any) => ({
-        label: tileset.label,
-        path: tileset.path,
-        tileSize: new Vector(tileset.tileWidth, tileset.tileHeight),
-        tileSeparation: new Vector(
-          tileset.tileSeparationX,
-          tileset.tileSeparationY
-        ),
-      })
-    );
+  project.tilesets = (projectData.tilesets as Array<any>).map(
+    (tileset: any) => ({
+      label: tileset.label,
+      path: tileset.path,
+      tileSize: new Vector(tileset.tileWidth, tileset.tileHeight),
+      tileSeparation: new Vector(
+        tileset.tileSeparationX,
+        tileset.tileSeparationY
+      ),
+    })
+  );
 
-    project.layers = (projectData.layers as Array<any>).map(
-      (layer: any, index: number) => {
-        switch (layer.definition) {
-          case "tile": {
-            const tileset = project.tilesets.find(
-              (tileset) => tileset.label === layer.defaultTileset
+  project.layers = (projectData.layers as Array<any>).map(
+    (layer: any, index: number) => {
+      switch (layer.definition) {
+        case "tile": {
+          const tileset = project.tilesets.find(
+            (tileset) => tileset.label === layer.defaultTileset
+          );
+          if (!tileset) {
+            throw new Error(
+              `Ogmo layer ${index} referenced non-existent default tileset: '${layer.defaultTileset}'`
             );
-            if (!tileset) {
-              throw new Error(
-                `Ogmo layer ${index} referenced non-existent default tileset: '${layer.defaultTileset}'`
-              );
-            }
+          }
 
-            return {
-              ...layer,
-              gridSize: Vector.from(layer.gridSize),
-              defaultTileset: tileset,
-            };
-          }
-          case "grid":
-          case "entity":
-          case "decal": {
-            return {
-              ...layer,
-              gridSize: Vector.from(layer.gridSize),
-            };
-          }
+          return {
+            ...layer,
+            gridSize: Vector.from(layer.gridSize),
+            defaultTileset: tileset,
+          };
+        }
+        case "grid":
+        case "entity":
+        case "decal": {
+          return {
+            ...layer,
+            gridSize: Vector.from(layer.gridSize),
+          };
         }
       }
-    );
+    }
+  );
 
-    return {
-      tilesets: project.tilesets,
-      layers: project.layers,
-      loadLevel(levelData: any) {
-        return useNewComponent(() => OgmoLevel(project, levelData));
-      },
-    };
-  },
-  {
-    Level: OgmoLevel,
-    Decal: OgmoDecal,
-  }
-);
+  return {
+    tilesets: project.tilesets,
+    layers: project.layers,
+    loadLevel(levelData: any) {
+      return useNewComponent(() => OgmoLevel(project, levelData));
+    },
+  };
+}
+Object.defineProperty(OgmoProject, "name", { value: "Ogmo.Project" });
+
+const Ogmo = {
+  Project: OgmoProject,
+  Level: OgmoLevel,
+  Decal: OgmoDecal,
+};
 
 export default Ogmo;

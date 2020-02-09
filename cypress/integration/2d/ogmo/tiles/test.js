@@ -10,7 +10,7 @@ it("renders correctly", () => {
       );
       canvas.fullscreen();
 
-      const ogmo = useNewComponent(() => Ogmo(project, {}));
+      const ogmo = useNewComponent(() => Ogmo.Project(project, {}));
 
       ogmo.loadLevel(level);
     });
