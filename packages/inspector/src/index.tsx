@@ -44,6 +44,11 @@ function saveTree(tree: any) {
 
 const debouncedSaveTree = debounce(saveTree, 100);
 
+function getRootToEntityPath(entity: Entity): Array<string | number> {
+  // @todo implement
+  return ["root"];
+}
+
 function Root({
   entity,
   runLoop,
@@ -138,7 +143,8 @@ export default function Inspector() {
         stateHolder.toggleOpen();
       }
 
-      selectedEntity = entity;
+      const entityPath = getRootToEntityPath(entity);
+      stateHolder.setExpanded(entityPath, true);
     },
   };
 

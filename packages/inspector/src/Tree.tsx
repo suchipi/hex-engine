@@ -1,5 +1,5 @@
 import { Component } from "@hex-engine/core";
-import React, { useState } from "react";
+import React from "react";
 import Expandable from "./Expandable";
 import Button from "./Button";
 import EditableString from "./EditableString";
@@ -407,11 +407,10 @@ export default function Tree({
     }
   }
 
-  const [expanded, setExpanded] = useState(getExpanded(path));
+  const expanded = getExpanded(path);
 
   const handleExpand = () => {
     onExpand(path, !expanded);
-    setExpanded(!expanded)
   };
 
   return (
