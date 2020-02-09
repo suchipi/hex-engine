@@ -282,7 +282,7 @@ const Ogmo = Object.assign(
     projectData: any,
     entityFactories: {
       [name: string]: (entityData: OgmoEntityData) => Entity;
-    },
+    } = {},
     decalFactory?: (decalData: OgmoDecalData) => Entity
   ) {
     useType(Ogmo);
