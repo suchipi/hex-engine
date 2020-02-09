@@ -9,5 +9,13 @@
   "globals": {
     "Cypress": true,
     "cy": true
-  }
+  },
+  "overrides": [
+    {
+      "files": "cypress/**/*.js",
+      "rules": {
+        "import/no-extraneous-dependencies": "off"
+      }
+    }
+  ]
 }

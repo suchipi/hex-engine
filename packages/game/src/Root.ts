@@ -29,7 +29,7 @@ export default function Root() {
     Ogmo(ogmoProject, {
       "player!!": (data) =>
         useChild(() => Player(new Vector(data.x, data.y), data.rotation || 0)),
-      "new entity": (data) => useChild(() => {}),
+      "new entity": (_data) => useChild(() => {}),
     })
   );
 
