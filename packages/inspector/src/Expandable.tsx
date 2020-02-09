@@ -28,23 +28,23 @@ export default function Expandable({
 }) {
   return (
     <div style={{ position: "relative", paddingLeft: 8, paddingTop: 2 }}>
-      {isSelected && (
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: "-100vw",
-            width: "300vw",
-            height: 18,
-            background: "rgba(176, 118, 199, 0.3)",
-          }}
-        />
-      )}
       <span
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         onContextMenu={onContextMenu}
       >
+        {isSelected && (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: "-100vw",
+              width: "300vw",
+              height: 18,
+              background: "rgba(176, 118, 199, 0.3)",
+            }}
+          />
+        )}
         <Button
           style={{
             color: "rgb(110, 110, 110)",
