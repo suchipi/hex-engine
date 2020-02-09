@@ -9,8 +9,9 @@ import {
   useNewComponent,
   ErrorBoundary,
 } from "@hex-engine/core";
-import { StateTreeProvider } from "react-state-tree";
 import debounce from "lodash.debounce";
+import setWith from "lodash.setwith";
+import get from "lodash.get";
 import useForceUpdate from "use-force-update";
 import App from "./App";
 import useInspectorHover from "./useInspectorHover";
@@ -18,15 +19,30 @@ import useInspectorSelect from "./useInspectorSelect";
 
 type RunLoopAPI = ReturnType<typeof RunLoop>;
 
-const initialState = localStorage.inspectorState
-  ? JSON.parse(localStorage.inspectorState)
-  : {};
-
-function saveState(state: any) {
-  localStorage.inspectorState = JSON.stringify(state);
+interface StateHolder {
+  tree: any;
+  setExpanded: (path: Array<string | number>, expand) => void;
+  getExpanded: (path: Array<string | number>) => boolean;
+  err: Error | null;
+  forceUpdate: null | (() => void);
+  isHovered: boolean;
+  getIsOpen: () => boolean;
+  toggleOpen: () => void;
+  getSelectMode: () => boolean;
+  toggleSelectMode: () => void;
+  getSelectedEntity: () => null | Entity;
+  selectEntity: (entity: Entity) => void;
 }
 
-const debouncedSaveState = debounce(saveState, 100);
+const initialInspectorTree = localStorage.inspectorTree
+  ? JSON.parse(localStorage.inspectorTree)
+  : { root: {} };
+
+function saveTree(tree: any) {
+  localStorage.inspectorTree = JSON.stringify(tree);
+}
+
+const debouncedSaveTree = debounce(saveTree, 100);
 
 function Root({
   entity,
@@ -35,40 +51,25 @@ function Root({
 }: {
   entity: Entity;
   runLoop: RunLoopAPI | null;
-  stateHolder: {
-    err: Error | null;
-    forceUpdate: null | (() => void);
-    isHovered: boolean;
-    getIsOpen: () => boolean;
-    toggleOpen: () => void;
-    getSelectMode: () => boolean;
-    toggleSelectMode: () => void;
-    getSelectedEntity: () => null | Entity;
-    selectEntity: (entity: Entity) => void;
-  };
+  stateHolder: StateHolder;
 }) {
   const forceUpdate = useForceUpdate();
 
   stateHolder.forceUpdate = forceUpdate;
 
-  const selectedEntity = stateHolder.getSelectedEntity();
-
   return (
-    <StateTreeProvider
-      initialValue={initialState}
-      onUpdate={debouncedSaveState}
-    >
-      <App
-        entity={selectedEntity ? selectedEntity : entity}
-        runLoop={runLoop}
-        error={stateHolder.err}
-        isHovered={stateHolder.isHovered}
-        isOpen={stateHolder.getIsOpen()}
-        toggleOpen={stateHolder.toggleOpen}
-        isSelectMode={stateHolder.getSelectMode()}
-        toggleSelectMode={stateHolder.toggleSelectMode}
-      />
-    </StateTreeProvider>
+    <App
+      getExpanded={stateHolder.getExpanded}
+      onExpand={stateHolder.setExpanded}
+      entity={entity}
+      runLoop={runLoop}
+      error={stateHolder.err}
+      isHovered={stateHolder.isHovered}
+      isOpen={stateHolder.getIsOpen()}
+      toggleOpen={stateHolder.toggleOpen}
+      isSelectMode={stateHolder.getSelectMode()}
+      toggleSelectMode={stateHolder.toggleSelectMode}
+    />
   );
 }
 
@@ -96,18 +97,31 @@ export default function Inspector() {
   let isOpen = localStorage.inspectorOpen === "true";
   let isSelectMode = false;
   let selectedEntity: null | Entity = null;
+  let tree = initialInspectorTree;
 
-  const stateHolder: {
-    err: Error | null;
-    forceUpdate: null | (() => void);
-    isHovered: boolean;
-    getIsOpen: () => boolean;
-    toggleOpen: () => void;
-    getSelectMode: () => boolean;
-    toggleSelectMode: () => void;
-    getSelectedEntity: () => null | Entity;
-    selectEntity: (entity: Entity) => void;
-  } = {
+  const stateHolder: StateHolder = {
+    tree,
+    setExpanded: (path, expand) => {
+      if (expand) {
+        setWith(tree, path, {}, Object);
+      } else {
+        const key = path.pop();
+
+        // lodash.get(obj, []) does not return obj. We need to test if we
+        // reached the root and manually delete it.
+        if (key === "root") {
+          delete tree.root;
+        } else {
+          const subtree = get(tree, path);
+          delete subtree[key!];
+        }
+      }
+
+      debouncedSaveTree(tree);
+    },
+    getExpanded: (path) => {
+      return get(tree, path) !== undefined;
+    },
     err: null,
     forceUpdate: null,
     isHovered: false,

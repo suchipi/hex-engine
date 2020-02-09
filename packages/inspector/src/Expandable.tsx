@@ -1,5 +1,4 @@
 import React from "react";
-import { useStateTree } from "react-state-tree";
 import Button from "./Button";
 
 export default function Expandable({
@@ -8,6 +7,8 @@ export default function Expandable({
   className,
   children,
   hasContent,
+  expanded,
+  onExpand,
   onMouseEnter,
   onMouseLeave,
   onContextMenu,
@@ -17,15 +18,12 @@ export default function Expandable({
   className: React.ReactNode;
   children: React.ReactNode;
   hasContent: boolean;
+  expanded: boolean;
+  onExpand: () => void;
   onMouseEnter?: (event: React.MouseEvent) => void;
   onMouseLeave?: (event: React.MouseEvent) => void;
   onContextMenu?: (event: React.MouseEvent) => void;
 }) {
-  const [expanded, setExpanded] = useStateTree(false, "e");
-
-  const toggle = () => {
-    setExpanded(!expanded);
-  };
 
   return (
     <div style={{ paddingLeft: 8, paddingTop: 2 }}>
@@ -43,7 +41,7 @@ export default function Expandable({
             userSelect: "none",
             transform: expanded ? "rotateZ(90deg)" : "",
           }}
-          onClick={toggle}
+          onClick={onExpand}
         >
           ▶
         </Button>
@@ -55,14 +53,14 @@ export default function Expandable({
               userSelect: "none",
               marginRight: "0.7em",
             }}
-            onClick={toggle}
+            onClick={onExpand}
           >
             {label}:
           </Button>
         ) : null}
 
         {className ? (
-          <Button style={{ marginRight: "0.7em" }} onClick={toggle}>
+          <Button style={{ marginRight: "0.7em" }} onClick={onExpand}>
             {className}
           </Button>
         ) : null}

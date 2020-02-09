@@ -1,6 +1,5 @@
 import React from "react";
 import { Entity, RunLoop } from "@hex-engine/core";
-import { StateKey } from "react-state-tree";
 import Tree from "./Tree";
 import Controls from "./Controls";
 import PausedOverlay from "./PausedOverlay";
@@ -11,6 +10,8 @@ export default function App({
   entity,
   runLoop,
   error,
+  onExpand,
+  getExpanded,
   isHovered,
   isOpen,
   toggleOpen,
@@ -20,6 +21,8 @@ export default function App({
   entity: Entity;
   runLoop: RunLoopAPI | null;
   error: Error | null;
+  onExpand: (path: Array<string | number>, expand: boolean) => void;
+  getExpanded: (path: Array<string | number>) => boolean;
   isHovered: boolean;
   isOpen: boolean;
   toggleOpen: () => void;
@@ -51,18 +54,16 @@ export default function App({
             : null),
         }}
       >
-        <StateKey value="controls">
-          {runLoop && !isOpen ? (
-            <Controls
-              isSelectMode={isSelectMode}
-              toggleSelectMode={toggleSelectMode}
-              isOpen={isOpen}
-              toggleOpen={toggleOpen}
-              runLoop={runLoop}
-              error={error}
-            />
-          ) : null}
-        </StateKey>
+        {runLoop && !isOpen ? (
+          <Controls
+            isSelectMode={isSelectMode}
+            toggleSelectMode={toggleSelectMode}
+            isOpen={isOpen}
+            toggleOpen={toggleOpen}
+            runLoop={runLoop}
+            error={error}
+          />
+        ) : null}
       </div>
       {runLoop && runLoop.isPaused() && runLoop.frameNumber === 0 ? (
         <PausedOverlay runLoop={runLoop} />
@@ -92,23 +93,26 @@ export default function App({
               : null),
           }}
         >
-          <StateKey value="controls">
-            {runLoop ? (
-              <Controls
-                isSelectMode={isSelectMode}
-                toggleSelectMode={toggleSelectMode}
-                isOpen={isOpen}
-                toggleOpen={toggleOpen}
-                runLoop={runLoop}
-                error={error}
-              />
-            ) : null}
-          </StateKey>
-          <StateKey value="tree">
-            <div style={{ flexBasis: "100%" }}>
-              <Tree name="root" data={ent} parent={null} />
-            </div>
-          </StateKey>
+          {runLoop ? (
+            <Controls
+              isSelectMode={isSelectMode}
+              toggleSelectMode={toggleSelectMode}
+              isOpen={isOpen}
+              toggleOpen={toggleOpen}
+              runLoop={runLoop}
+              error={error}
+            />
+          ) : null}
+          <div style={{ flexBasis: "100%" }}>
+            <Tree
+              name="root"
+              data={ent}
+              parent={null}
+              path={["root"]}
+              onExpand={onExpand}
+              getExpanded={getExpanded}
+            />
+          </div>
         </div>
       ) : null}
     </div>
