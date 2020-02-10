@@ -1,4 +1,4 @@
-import { useType, useEntity } from "@hex-engine/core";
+import { useType } from "@hex-engine/core";
 import { Vector, Shape } from "../Models";
 import {
   useInspectorHoverOutline,
