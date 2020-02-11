@@ -3429,6 +3429,20 @@ the provided function will be called to get a shape that should be drawn onto th
 
 This function does nothing in release builds.
 
+### useInspectorSelectEntity
+
+> Available since version: 0.3.2
+
+```ts
+import { useInspectorSelectEntity } from "@hex-engine/2d";
+```
+
+`useInspectorSelectEntity(getGeometry: () => Geometry)`
+
+Sets up the Inspector to enable hovering and clicking on the current rendered Entity by calling the provided function to get a Geometry for the Entity. Only rendered Entities that use a Geometry component can be hovered/clicked on when the Inspector is in entity select mode.
+
+This function does nothing in release builds.
+
 ### useRawDraw
 
 > Available since version: 0.0.0

@@ -9,23 +9,55 @@ import {
   useNewComponent,
   ErrorBoundary,
 } from "@hex-engine/core";
-import { StateTreeProvider } from "react-state-tree";
 import debounce from "lodash.debounce";
+import setWith from "lodash.setwith";
+import get from "lodash.get";
 import useForceUpdate from "use-force-update";
 import App from "./App";
 import useInspectorHover from "./useInspectorHover";
+import useInspectorSelect from "./useInspectorSelect";
 
 type RunLoopAPI = ReturnType<typeof RunLoop>;
 
-const initialState = localStorage.inspectorState
-  ? JSON.parse(localStorage.inspectorState)
-  : {};
-
-function saveState(state: any) {
-  localStorage.inspectorState = JSON.stringify(state);
+interface StateHolder {
+  tree: any;
+  setExpanded: (path: Array<string | number>, expand) => void;
+  getExpanded: (path: Array<string | number>) => boolean;
+  err: Error | null;
+  forceUpdate: null | (() => void);
+  isHovered: boolean;
+  getIsOpen: () => boolean;
+  toggleOpen: () => void;
+  getSelectMode: () => boolean;
+  toggleSelectMode: () => void;
+  getSelectedEntity: () => null | Entity;
+  selectEntity: (entity: Entity) => void;
 }
 
-const debouncedSaveState = debounce(saveState, 100);
+const initialInspectorTree = localStorage.inspectorTree
+  ? JSON.parse(localStorage.inspectorTree)
+  : { root: {} };
+
+function saveTree(tree: any) {
+  localStorage.inspectorTree = JSON.stringify(tree);
+}
+
+const debouncedSaveTree = debounce(saveTree, 100);
+
+function getRootToEntityPath(entity: Entity): Array<string | number> {
+  const path: Array<string | number> = [];
+  let ent = entity;
+
+  while (ent.parent) {
+    const idx = [...ent.parent.children].indexOf(ent);
+    path.push(idx, "children");
+    ent = ent.parent;
+  }
+
+  path.push("root");
+  path.reverse();
+  return path;
+}
 
 function Root({
   entity,
@@ -34,28 +66,26 @@ function Root({
 }: {
   entity: Entity;
   runLoop: RunLoopAPI | null;
-  stateHolder: {
-    err: Error | null;
-    forceUpdate: null | (() => void);
-    isHovered: boolean;
-  };
+  stateHolder: StateHolder;
 }) {
   const forceUpdate = useForceUpdate();
 
   stateHolder.forceUpdate = forceUpdate;
 
   return (
-    <StateTreeProvider
-      initialValue={initialState}
-      onUpdate={debouncedSaveState}
-    >
-      <App
-        entity={entity}
-        runLoop={runLoop}
-        error={stateHolder.err}
-        isHovered={stateHolder.isHovered}
-      />
-    </StateTreeProvider>
+    <App
+      entity={entity}
+      getSelectedEntity={stateHolder.getSelectedEntity}
+      runLoop={runLoop}
+      error={stateHolder.err}
+      getExpanded={stateHolder.getExpanded}
+      onExpand={stateHolder.setExpanded}
+      isHovered={stateHolder.isHovered}
+      isOpen={stateHolder.getIsOpen()}
+      toggleOpen={stateHolder.toggleOpen}
+      isSelectMode={stateHolder.getSelectMode()}
+      toggleSelectMode={stateHolder.toggleSelectMode}
+    />
   );
 }
 
@@ -77,18 +107,57 @@ export default function Inspector() {
   useType(Inspector);
 
   const pauseOnStart = localStorage.inspectorPauseOnStart === "true";
+  const rootEntity = useRootEntity();
+  const runLoop = rootEntity.getComponent(RunLoop);
 
-  const entity = useRootEntity();
-  const runLoop = entity.getComponent(RunLoop);
+  let isOpen = localStorage.inspectorOpen === "true";
+  let isSelectMode = false;
+  let tree = initialInspectorTree;
+  let selectedEntity: null | Entity = null;
 
-  const stateHolder: {
-    err: Error | null;
-    forceUpdate: null | (() => void);
-    isHovered: boolean;
-  } = {
+  const stateHolder: StateHolder = {
+    tree,
+    setExpanded: (path: Array<string | number>, expand: boolean) => {
+      if (expand) {
+        setWith(tree, path, {}, Object);
+      } else {
+        const key = path.pop();
+
+        // lodash.get(obj, []) does not return obj. We need to test if we
+        // reached the root and manually delete it.
+        if (key === "root") {
+          delete tree.root;
+        } else {
+          const subtree = get(tree, path);
+          delete subtree[key!];
+        }
+      }
+
+      debouncedSaveTree(tree);
+    },
+    getExpanded: (path: Array<string | number>) => {
+      return get(tree, path) !== undefined;
+    },
     err: null,
     forceUpdate: null,
     isHovered: false,
+    getIsOpen: () => isOpen,
+    toggleOpen: () => {
+      isOpen = !isOpen;
+      localStorage.inspectorOpen = isOpen;
+    },
+    getSelectMode: () => isSelectMode,
+    toggleSelectMode: () => (isSelectMode = !isSelectMode),
+    getSelectedEntity: () => selectedEntity,
+    selectEntity: (entity: Entity) => {
+      if (!stateHolder.getIsOpen()) {
+        stateHolder.toggleOpen();
+      }
+
+      const entityPath = getRootToEntityPath(entity);
+      stateHolder.setExpanded(entityPath, true);
+      selectedEntity = entity;
+    },
   };
 
   useNewComponent(() =>
@@ -119,7 +188,7 @@ export default function Inspector() {
   });
 
   ReactDOM.render(
-    <Root entity={entity} runLoop={runLoop} stateHolder={stateHolder} />,
+    <Root entity={rootEntity} runLoop={runLoop} stateHolder={stateHolder} />,
     el,
     useCallbackAsCurrent(() => {
       const tick = useCallbackAsCurrent(() => {
@@ -138,6 +207,17 @@ export default function Inspector() {
       tick();
     })
   );
+
+  const { getSelectMode, toggleSelectMode, selectEntity } = stateHolder;
+  const inspectorSelectApi = {
+    getSelectMode,
+    toggleSelectMode,
+    selectEntity,
+  };
+
+  return {
+    ...inspectorSelectApi,
+  };
 }
 
-export { useInspectorHover };
+export { useInspectorHover, useInspectorSelect };

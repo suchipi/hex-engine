@@ -5,6 +5,7 @@ import useDraw from "./useDraw";
 import useEntitiesAtPoint from "./useEntitiesAtPoint";
 import useFilledPixelBounds from "./useFilledPixelBounds";
 import useInspectorHoverOutline from "./useInspectorHoverOutline";
+import useInspectorSelectEntity from "./useInspectorSelectEntity";
 import useEntityTransforms from "./useEntityTransforms";
 import useWindowSize from "./useWindowSize";
 import useUpdate from "./useUpdate";
@@ -26,6 +27,7 @@ export {
   useEntitiesAtPoint,
   useFilledPixelBounds,
   useInspectorHoverOutline,
+  useInspectorSelectEntity,
   useEntityTransforms,
   useUpdate,
   useRawDraw,

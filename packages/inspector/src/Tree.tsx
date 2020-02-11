@@ -1,6 +1,5 @@
-import { Component } from "@hex-engine/core";
+import { Entity, Component } from "@hex-engine/core";
 import React from "react";
-import { StateKey, StateListKey } from "react-state-tree";
 import Expandable from "./Expandable";
 import Button from "./Button";
 import EditableString from "./EditableString";
@@ -31,10 +30,18 @@ export default function Tree({
   name,
   data,
   parent,
+  path,
+  onExpand,
+  getExpanded,
+  getSelectedEntity,
 }: {
   name: string;
   data: any;
   parent: any;
+  path: Array<string | number>;
+  onExpand: (path: Array<string | number>, expand) => void;
+  getExpanded: (path: Array<string | number>) => boolean;
+  getSelectedEntity: () => null | Entity;
 }) {
   let className = "";
   let hasContent = false;
@@ -52,13 +59,18 @@ export default function Tree({
   );
 
   function entriesForArray(array: Array<any>) {
-    return (
-      <StateListKey value="children">
-        {array.map((val, index) => (
-          <Tree key={index} data={val} name={String(index)} parent={array} />
-        ))}
-      </StateListKey>
-    );
+    return array.map((val, index) => (
+      <Tree
+        key={index}
+        data={val}
+        name={String(index)}
+        parent={array}
+        path={[...path, index]}
+        onExpand={onExpand}
+        getExpanded={getExpanded}
+        getSelectedEntity={getSelectedEntity}
+      />
+    ));
   }
 
   function entriesForProperties(properties: Array<symbol | string>) {
@@ -101,16 +113,20 @@ export default function Tree({
     }
 
     return (
-      <StateKey value="p">
+      <>
         {propsToRender.map((prop, index) => {
           const val = data[prop];
           return (
-            <StateKey
-              key={typeof prop === "string" ? prop : index}
-              value={prop.toString()}
-            >
-              <Tree name={prop.toString()} data={val} parent={data} />
-            </StateKey>
+            <Tree
+              key={index}
+              name={prop.toString()}
+              data={val}
+              parent={data}
+              path={[...path, prop.toString()]}
+              onExpand={onExpand}
+              getExpanded={getExpanded}
+              getSelectedEntity={getSelectedEntity}
+            />
           );
         })}
         {propsToRender !== sortedProperties ? (
@@ -119,7 +135,7 @@ export default function Tree({
             properties not shown.
           </div>
         ) : null}
-      </StateKey>
+      </>
     );
   }
 
@@ -416,12 +432,23 @@ export default function Tree({
     }
   }
 
+  const expanded = getExpanded(path);
+
+  const handleExpand = () => {
+    onExpand(path, !expanded);
+  };
+
+  const selectedEntity = getSelectedEntity();
+
   return (
     <Expandable
       className={className}
       label={name}
       hasContent={hasContent}
       preview={preview}
+      expanded={expanded}
+      isSelected={selectedEntity !== null && data.id === selectedEntity.id}
+      onExpand={handleExpand}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onContextMenu={(event) => {

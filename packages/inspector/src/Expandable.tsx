@@ -1,5 +1,4 @@
 import React from "react";
-import { useStateTree } from "react-state-tree";
 import Button from "./Button";
 
 export default function Expandable({
@@ -8,6 +7,9 @@ export default function Expandable({
   className,
   children,
   hasContent,
+  expanded,
+  isSelected,
+  onExpand,
   onMouseEnter,
   onMouseLeave,
   onContextMenu,
@@ -17,23 +19,32 @@ export default function Expandable({
   className: React.ReactNode;
   children: React.ReactNode;
   hasContent: boolean;
+  expanded: boolean;
+  isSelected: boolean;
+  onExpand: () => void;
   onMouseEnter?: (event: React.MouseEvent) => void;
   onMouseLeave?: (event: React.MouseEvent) => void;
   onContextMenu?: (event: React.MouseEvent) => void;
 }) {
-  const [expanded, setExpanded] = useStateTree(false, "e");
-
-  const toggle = () => {
-    setExpanded(!expanded);
-  };
-
   return (
-    <div style={{ paddingLeft: 8, paddingTop: 2 }}>
+    <div style={{ position: "relative", paddingLeft: 8, paddingTop: 2 }}>
       <span
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         onContextMenu={onContextMenu}
       >
+        {isSelected && (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: "-100vw",
+              width: "300vw",
+              height: 18,
+              background: "rgba(176,118,199,0.35)",
+            }}
+          />
+        )}
         <Button
           style={{
             color: "rgb(110, 110, 110)",
@@ -43,7 +54,7 @@ export default function Expandable({
             userSelect: "none",
             transform: expanded ? "rotateZ(90deg)" : "",
           }}
-          onClick={toggle}
+          onClick={onExpand}
         >
           ▶
         </Button>
@@ -55,14 +66,14 @@ export default function Expandable({
               userSelect: "none",
               marginRight: "0.7em",
             }}
-            onClick={toggle}
+            onClick={onExpand}
           >
             {label}:
           </Button>
         ) : null}
 
         {className ? (
-          <Button style={{ marginRight: "0.7em" }} onClick={toggle}>
+          <Button style={{ marginRight: "0.7em" }} onClick={onExpand}>
             {className}
           </Button>
         ) : null}

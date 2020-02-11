@@ -1,5 +1,11 @@
 # Changelog
 
+# 0.3.2
+
+## Upgraded `@hex-engine/2d` and `@hex-engine/inspector` to 0.3.2 (non-breaking change)
+
+This adds a feature to select rendered entities for inspection in the Inspector tree if the Inspector is in entity select mode.
+
 # 0.3.1
 
 Fixed a bug where Components could not be re-disabled after they were disabled and then enabled.

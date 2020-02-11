@@ -20,9 +20,9 @@ Anyway, here's the API documentation for `@hex-engine/inspector`. Note that most
 import Inspector from "@hex-engine/inspector";
 ```
 
-`Inspector(): void`
+`Inspector(): { getSelectMode: () => boolean, toggleSelectMode: () => void, selectEntity: (entity: Entity) => void }`
 
-A Component function that renders an Inspector overlay onto the page, that shows you information about the current Entity tree, and allows you to tweak values and pause/resume/step frame execution.
+A Component function that renders an Inspector overlay onto the page, that shows you information about the current Entity tree, and allows you to tweak values, pause/resume/step frame execution and inspect entities. The Inspector returns an API for interacting with the entity select mode.
 
 It stores its state (which things are opened, whether you are paused, etc) in localStorage, so that state persists across page refreshes.
 
@@ -39,7 +39,8 @@ import Inspector from "@hex-engine/inspector";
 function MyComponent() {
   useType(MyComponent);
 
-  useNewComponent(Inspector);
+  // use methods on inspectorSelectApi to select entities for inspection in the Inspector
+  const inspectorSelectApi = useNewComponent(Inspector);
 }
 ```
 
@@ -100,6 +101,49 @@ function MyComponent() {
 
   onHoverEnd(() => {
     // Remove the overlay outline from the game
+  });
+}
+```
+
+### useInspectorSelect
+
+> Available since version: 0.3.2
+
+```ts
+import { useInspectorSelect } from "@hex-engine/inspector";
+```
+
+`useInspectorHover(): { getSelectMode: () => boolean, inspectEntity: (entity: Entity) => void }`
+
+Returns an object with two properties:
+
+- `getSelectMode`: A function that returns whether the Inspector is in entity select mode or not.
+- `inspectEntity`: A function that takes in an Entity and passes it on to the Inspector for inspection.
+
+The idea here is that when someone puts the Inspector into entity select mode and interacts with a rendered Entity, the Inspector tree is expanded to inspect the correspeonding Entity.
+
+#### Usage
+
+```ts
+import { useType, useEntity } from "@hex-engine/core";
+import { useInspectorSelect } from "@hex-engine/inspector";
+import { Mouse } from "@hex-engine/2d";
+
+function MyComponent() {
+  useType(MyComponent);
+
+  // Use the inspector select hook
+  const { getSelectMode, inspectEntity } = useInspectorSelect();
+
+  // Set up a mouse component to detect clicks on our entity
+  const { onClick } = useNewComponent(() => Mouse());
+
+  // Set up the click handler
+  onClick(() => {
+    if (getSelectMode()) {
+      // inspect the current entity if the inspector is in entity select mode
+      inspectEntity(useEntity());
+    }
   });
 }
 ```
