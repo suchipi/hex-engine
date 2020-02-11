@@ -2,9 +2,15 @@
 
 # 0.3.2
 
-## Upgraded `@hex-engine/2d` and `@hex-engine/inspector` to 0.3.2 (non-breaking change)
+## New feature: Select entity from Inspector
+
+(Upgraded `@hex-engine/inspector` to 0.3.2 (non-breaking change))
 
 This adds a feature to select rendered entities for inspection in the Inspector tree if the Inspector is in entity select mode.
+
+## Bugfix: canvas.setPixelated wasn't working as intended
+
+`imageSmoothingEnabled` wasn't getting set properly; now, it is.
 
 # 0.3.1
 
