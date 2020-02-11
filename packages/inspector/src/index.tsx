@@ -208,8 +208,15 @@ export default function Inspector() {
     })
   );
 
+  const { getSelectMode, toggleSelectMode, selectEntity } = stateHolder;
+  const inspectorSelectApi = {
+    getSelectMode,
+    toggleSelectMode,
+    selectEntity,
+  };
+
   return {
-    ...stateHolder,
+    ...inspectorSelectApi,
   };
 }
 
