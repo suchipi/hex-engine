@@ -23,7 +23,7 @@ jobs:
         run: yarn
 
       - name: Check types
-        run: yarn tsc
+        run: yarn tsc --noEmit
 
       - name: Run jest tests
         run: yarn jest
