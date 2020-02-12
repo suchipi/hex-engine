@@ -1,5 +1,11 @@
 # Changelog
 
+# 0.3.3
+
+## Upgraded `@hex-engine/inspector` to 0.3.3 (non-breaking change)
+
+This fixes a Typescript error due to the types for React not being included in the inspector.
+
 # 0.3.2
 
 ## New feature: Select entity from Inspector
