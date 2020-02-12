@@ -42,6 +42,7 @@ export default function Expandable({
               width: "300vw",
               height: 18,
               background: "rgba(176,118,199,0.35)",
+              pointerEvents: "none",
             }}
           />
         )}
