@@ -25,5 +25,5 @@ jobs:
       - name: Check types
         run: yarn tsc --noEmit
 
-      - name: Run jest tests
-        run: yarn jest
+      - name: Run tests
+        run: yarn test-it

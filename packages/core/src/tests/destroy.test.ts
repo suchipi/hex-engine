@@ -20,7 +20,7 @@ test("cannot destroy root ent", () => {
 
   expect(() => {
     ent.destroy();
-  }).toThrowErrorMatchingInlineSnapshot(`"Cannot destroy the root entity"`);
+  }).toThrowError(`Cannot destroy the root entity`);
 });
 
 test("onDestroy in component, destroy from entity", () => {
@@ -35,11 +35,7 @@ test("onDestroy in component, destroy from entity", () => {
   });
 
   ent.destroy();
-  expect(messages).toMatchInlineSnapshot(`
-    Array [
-      "onDestroy in component",
-    ]
-  `);
+  expect(messages).toEqual(["onDestroy in component"]);
 });
 
 test("onDestroy in component, destroy from component", () => {
@@ -52,11 +48,7 @@ test("onDestroy in component, destroy from component", () => {
     });
   });
 
-  expect(messages).toMatchInlineSnapshot(`
-    Array [
-      "onDestroy in component",
-    ]
-  `);
+  expect(messages).toEqual(["onDestroy in component"]);
 });
 
 test("children are destroyed depth-first", () => {
@@ -80,13 +72,11 @@ test("children are destroyed depth-first", () => {
   });
 
   ent.destroy();
-  expect(messages).toMatchInlineSnapshot(`
-    Array [
-      "onDestroy in grandchild",
-      "onDestroy in child",
-      "onDestroy in component",
-    ]
-  `);
+  expect(messages).toEqual([
+    "onDestroy in grandchild",
+    "onDestroy in child",
+    "onDestroy in component",
+  ]);
 });
 
 test("child destroy doesn't destroy parent", () => {
@@ -110,12 +100,7 @@ test("child destroy doesn't destroy parent", () => {
   });
 
   ent.destroy();
-  expect(messages).toMatchInlineSnapshot(`
-    Array [
-      "onDestroy in grandchild",
-      "onDestroy in child",
-    ]
-  `);
+  expect(messages).toEqual(["onDestroy in grandchild", "onDestroy in child"]);
 });
 
 test("destroy disables", () => {
@@ -148,16 +133,14 @@ test("destroy disables", () => {
   });
 
   ent.destroy();
-  expect(messages).toMatchInlineSnapshot(`
-    Array [
-      "grandchild disabled",
-      "onDestroy in grandchild",
-      "child disabled",
-      "onDestroy in child",
-      "component disabled",
-      "onDestroy in component",
-    ]
-  `);
+  expect(messages).toEqual([
+    "grandchild disabled",
+    "onDestroy in grandchild",
+    "child disabled",
+    "onDestroy in child",
+    "component disabled",
+    "onDestroy in component",
+  ]);
 });
 
 test("destroy from component A runs onDestroy in sibling component", () => {
@@ -181,10 +164,8 @@ test("destroy from component A runs onDestroy in sibling component", () => {
 
   // @ts-ignore
   ent.rootComponent.boom();
-  expect(messages).toMatchInlineSnapshot(`
-    Array [
-      "onDestroy in component",
-      "onDestroy in other component",
-    ]
-  `);
+  expect(messages).toEqual([
+    "onDestroy in component",
+    "onDestroy in other component",
+  ]);
 });
