@@ -2451,20 +2451,20 @@
   dependencies:
     jasmine-core "~3.2.0"
 
-"@test-it/cli@^0.4.0":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@test-it/cli/-/cli-0.4.1.tgz#b3db002dd2822f5c0480704634fb647f2d0e261f"
-  integrity sha512-41MmOewbianOONFGcNWl4gZj6V65Nd4K938O6UWaDdvAYpyTNI1NH37KjL/E8LDQsbyiG0AzrjD7iMYhwMkZ+g==
+"@test-it/cli@^0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@test-it/cli/-/cli-0.4.2.tgz#86202bf74fbfb61c0dfed9fcd7338c17078d93fa"
+  integrity sha512-k6ODCAsLW2Bz1pcdHIospU952BS/zWdIUxH73Kg1ZEaH+Vc9YF760YZJJvNIGgqtvh90WieaUP5rN8SmmFLfEQ==
   dependencies:
     chalk "^3.0.0"
     debug "^4.1.1"
     globby "^11.0.0"
     make-module-env "^1.0.1"
-    node-nw "^0.5.1"
+    node-nw "^0.5.2"
     nwjs-types "^1.0.0"
     yargs-parser "^17.0.0"
 
-"@test-it/core@^0.4.0":
+"@test-it/core@^0.4.1":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@test-it/core/-/core-0.4.1.tgz#f22dd02f7eae6059266a796d85a01ca3f71de9cb"
   integrity sha512-7g6VAr8Pzjk4FdWHfXSpbycr6k7Mz8witXZtpMYZhyc6DFTk4bpAF1pVGLRoGd5ZICOc0ihUTYL37i1p9GrcqQ==
@@ -8935,10 +8935,10 @@ node-modules-regexp@^1.0.0:
   resolved "https://registry.yarnpkg.com/node-modules-regexp/-/node-modules-regexp-1.0.0.tgz#8d9dbe28964a4ac5712e9131642107c71e90ec40"
   integrity sha1-jZ2+KJZKSsVxLpExZCEHxx6Q7EA=
 
-node-nw@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/node-nw/-/node-nw-0.5.1.tgz#4f650a1c5b5e4d64b4ca741525507eea041484b2"
-  integrity sha512-rEGTTIssOUwiTKkj8y4bz0vGiEMy60ich70Zttc9cfxBwOG4gWLkK1lXzdPhwMtdBZZyn6FYSuqH6nWdrpgHcA==
+node-nw@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/node-nw/-/node-nw-0.5.2.tgz#15640729f941fc08a75e1d5d5cf637dd001a32e5"
+  integrity sha512-qS4TCTeAjPwOj9d70iujBiGhRO80z33KhV6c55GjKpUK4kbskMOfipHzmaZhJXqQMPwh6WS/cCad0OrR5nfd1Q==
   dependencies:
     debug "^4.1.1"
     mkdirp "^1.0.3"

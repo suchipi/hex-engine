@@ -18,8 +18,8 @@
     "@babel/preset-env": "^7.7.7",
     "@babel/preset-react": "^7.7.4",
     "@babel/preset-typescript": "^7.7.7",
-    "@test-it/cli": "^0.4.0",
-    "@test-it/core": "^0.4.0",
+    "@test-it/cli": "^0.4.2",
+    "@test-it/core": "^0.4.1",
     "@workspace-builder/babel": "^1.0.1",
     "@workspace-builder/shell-command": "^1.0.0",
     "babel-eslint": "^10.0.3",
@@ -35,10 +35,12 @@
   },
   "scripts": {
     "clean": "workspace-builder clean",
-    "build": "yarn test",
+    "build": "workspace-builder",
     "watch": "workspace-builder watch",
     "start": "yarn watch",
-    "test": "yarn clean && tsc --noEmit && test-it && workspace-builder && cypress run --headed",
+    "typecheck": "tsc --noEmit",
+    "test-it": "test-it './**/*.test.{ts,js,tsx,jsx}' '!**/node_modules/**' '!**/node_modules_docker/**'",
+    "test": "yarn clean && yarn typecheck && yarn test-it",
     "build-website": "cd packages/website && yarn build"
   },
   "dependencies": {
