@@ -1,6 +1,9 @@
 name: CI tests
 
 on:
+  push:
+    branches:
+      - master
   pull_request:
     types: [opened, synchronize]
 
@@ -10,20 +13,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Read .nvmrc
-        run: echo ::set-output name=NVMRC::$(cat .nvmrc)
-        id: nvm
-
-      - name: Setup node
-        uses: actions/setup-node@v1
-        with:
-          node-version: "${{ steps.nvm.outputs.NVMRC }}"
-
-      - name: Install dependencies
-        run: yarn
-
-      - name: Check types
-        run: yarn tsc --noEmit
-
-      - name: Run jest tests
-        run: yarn jest
+      - name: Run tests
+        run: ./in-docker.sh 'yarn install && yarn test'
