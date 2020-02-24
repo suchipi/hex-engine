@@ -14,4 +14,4 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Run tests
-        run: docker run --rm -it -v $PWD:/app suchipi/node-nw-env:0.5.2 bash -c 'Xvfb -screen 0 1024x768x16 -ac & source /usr/local/nvm/nvm.sh && cd /app && nvm use && yarn install && yarn test'
+        run: ./in-docker.sh 'yarn install && yarn test'

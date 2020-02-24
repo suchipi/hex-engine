@@ -15,6 +15,10 @@ beforeEach(() => {
   messages = [];
 });
 
+test("bad", () => {
+  expect(2 + 2).toBe(5);
+});
+
 test("cannot destroy root ent", () => {
   const ent = createRoot(() => {});
 

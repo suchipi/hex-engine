@@ -39,8 +39,8 @@
     "watch": "workspace-builder watch",
     "start": "yarn watch",
     "typecheck": "tsc --noEmit",
-    "test-it": "test-it './**/*.test.{ts,js,tsx,jsx}' '!**/node_modules/**' '!**/node_modules_docker/**'",
-    "test": "yarn clean && yarn typecheck && yarn test-it",
+    "test-it": "test-it './packages/*/src/**/*.test.{ts,js,tsx,jsx}' '!**/node_modules/**'",
+    "test": "yarn typecheck && yarn test-it",
     "build-website": "cd packages/website && yarn build"
   },
   "dependencies": {
