@@ -13,5 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Verify docker
+        run: docker ps -a
+
       - name: Run tests
         run: ./in-docker.sh 'yarn install && yarn test'
