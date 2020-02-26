@@ -2451,27 +2451,31 @@
   dependencies:
     jasmine-core "~3.2.0"
 
-"@test-it/cli@^0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@test-it/cli/-/cli-0.4.2.tgz#86202bf74fbfb61c0dfed9fcd7338c17078d93fa"
-  integrity sha512-k6ODCAsLW2Bz1pcdHIospU952BS/zWdIUxH73Kg1ZEaH+Vc9YF760YZJJvNIGgqtvh90WieaUP5rN8SmmFLfEQ==
+"@test-it/cli@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@test-it/cli/-/cli-0.5.2.tgz#30f9e158b6ddef8ded8fa9a67f371f8fc9d09c19"
+  integrity sha512-VeWigckImT8Dv0OVVIODDFkM7o89NDTKsrjn7125rjoRPqHpqQPj9OmlyrjIYghfZ/eWwW7A2J69UoYrHPy5wQ==
   dependencies:
     chalk "^3.0.0"
+    chokidar "^3.3.1"
+    date-fns "^2.10.0"
     debug "^4.1.1"
     globby "^11.0.0"
+    lodash.debounce "^4.0.8"
     make-module-env "^1.0.1"
     node-nw "^0.5.2"
     nwjs-types "^1.0.0"
     yargs-parser "^17.0.0"
 
-"@test-it/core@^0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@test-it/core/-/core-0.4.1.tgz#f22dd02f7eae6059266a796d85a01ca3f71de9cb"
-  integrity sha512-7g6VAr8Pzjk4FdWHfXSpbycr6k7Mz8witXZtpMYZhyc6DFTk4bpAF1pVGLRoGd5ZICOc0ihUTYL37i1p9GrcqQ==
+"@test-it/core@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@test-it/core/-/core-0.5.2.tgz#a003a652f51e90188bd140a85f7daf5c2ee0550a"
+  integrity sha512-pzl4/3qW0mzaLQ/SGY06N+rSsyG7mtlsBrpNaYg5T0hhfpCsNDvQXcFFGvvTj6k2/9zXE/8l3i0UjOcFKKrARw==
   dependencies:
     "@suchipi/jasmine-mini" "^3.2.1"
-    "@test-it/default-loader" "^0.4.0"
-    "@test-it/default-reporter" "^0.4.0"
+    "@test-it/default-loader" "^0.5.0"
+    "@test-it/default-reporter" "^0.5.0"
+    bluebird "^3.7.2"
     builtins "^3.0.0"
     chai "^4.2.0"
     chai-jest-snapshot "^2.0.0"
@@ -2485,10 +2489,10 @@
     regenerator-runtime "^0.13.3"
     resolve "^1.15.1"
 
-"@test-it/default-loader@^0.4.0":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@test-it/default-loader/-/default-loader-0.4.1.tgz#9e51d4a62bea8229b6337d47cf1ab8fc6a51ef62"
-  integrity sha512-VbwXuYnZ2yFC6jmlxq1/mPNkh2S4Tw4Heci7UAWrdrZ9V08nyHFtfkLxmlQ82UZzMF+xq64bUcO7cRRxcE5mGw==
+"@test-it/default-loader@^0.5.0":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@test-it/default-loader/-/default-loader-0.5.2.tgz#aadff800eb114b10368ea2233b3e669d4c618ae4"
+  integrity sha512-/YPLR2lxo9dTijppGow/pFbMY0Zgg7K0x4b+rc85zZrmg6Msoo5w2C9RDJB/1wVrIzl9wUZpglPHAtQrCoZPSA==
   dependencies:
     "@babel/core" "^7.8.4"
     "@babel/plugin-proposal-class-properties" "^7.8.3"
@@ -2500,11 +2504,12 @@
     "@babel/preset-env" "^7.8.4"
     "@babel/preset-react" "^7.8.3"
     "@babel/preset-typescript" "^7.8.3"
+    mime-types "^2.1.26"
 
-"@test-it/default-reporter@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@test-it/default-reporter/-/default-reporter-0.4.0.tgz#a59b59118e94c170c420038c1a790f89fcb72685"
-  integrity sha512-HD5ccVHncnPL+3D27Y6EAaf9up+cKYRbBATnbRW/CfhW1Ecb5ASP4250feU3atYU8LMKcTc2XfYsE1uXxdhgXg==
+"@test-it/default-reporter@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@test-it/default-reporter/-/default-reporter-0.5.0.tgz#cad8e8615f2e464a0b6dbc19d0ffe8934a41d810"
+  integrity sha512-T+48HbXPTMh5HT7N87uoIw9Um7vSbYtUzQUku0tzTg7RpXg3v58SEv9FQL71t/AcHAwIByISYjki9WZ51Sx3xQ==
   dependencies:
     chalk "^3.0.0"
     debug "^4.1.1"
@@ -3650,7 +3655,7 @@ bluebird@3.7.1:
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.1.tgz#df70e302b471d7473489acf26a93d63b53f874de"
   integrity sha512-DdmyoGCleJnkbp3nkbxTLJ18rjDsE4yCggEwKNXkeV123sPNfOCYeDoeuOY+F2FrSjO1YXcTU+dsy96KMy+gcg==
 
-bluebird@^3.5.5, bluebird@^3.7.1:
+bluebird@^3.5.5, bluebird@^3.7.1, bluebird@^3.7.2:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
@@ -4231,7 +4236,7 @@ chokidar@^2.0.2, chokidar@^2.0.4, chokidar@^2.1.8:
   optionalDependencies:
     fsevents "^1.2.7"
 
-chokidar@^3.3.0:
+chokidar@^3.3.0, chokidar@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.3.1.tgz#c84e5b3d18d9a4d77558fef466b1bf16bbeb3450"
   integrity sha512-4QYCEWOcK3OJrxwvyyAOxFuhpvOVCYkr33LPfFNBjAD/w3sEzWsp2BUOkI4l9bHvWioAd0rc6NlHUOEaWkTeqg==
@@ -5007,6 +5012,11 @@ date-fns@^1.27.2:
   version "1.30.1"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.30.1.tgz#2e71bf0b119153dbb4cc4e88d9ea5acfb50dc05c"
   integrity sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==
+
+date-fns@^2.10.0:
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.10.0.tgz#abd10604d8bafb0bcbd2ba2e9b0563b922ae4b6b"
+  integrity sha512-EhfEKevYGWhWlZbNeplfhIU/+N+x0iCIx7VzKlXma2EdQyznVlZhCptXUY+BegNpPW2kjdx15Rvq503YcXXrcA==
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.9:
   version "2.6.9"
@@ -8614,7 +8624,7 @@ mime-db@1.43.0:
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.43.0.tgz#0a12e0502650e473d735535050e7c8f4eb4fae58"
   integrity sha512-+5dsGEEovYbT8UY9yD7eE4XTc4UwJ1jBYlgaQQF38ENsKR3wj/8q8RFZrF9WIZpB2V1ArTVFUva8sAul1NzRzQ==
 
-mime-types@^2.1.12, mime-types@~2.1.19:
+mime-types@^2.1.12, mime-types@^2.1.26, mime-types@~2.1.19:
   version "2.1.26"
   resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.26.tgz#9c921fc09b7e149a65dfdc0da4d20997200b0a06"
   integrity sha512-01paPWYgLrkqAyrlDorC1uDwl2p3qZT7yl806vW7DvDoxwXi46jsjFbg+WdwotBIk6/MbEhO/dh5aZ5sNj/dWQ==
