@@ -72,6 +72,8 @@ export default function LowLevelMouse() {
     moveCallbacks: new Set<(event: HexMouseEvent) => void>(),
     downCallbacks: new Set<(event: HexMouseEvent) => void>(),
     upCallbacks: new Set<(event: HexMouseEvent) => void>(),
+    outCallbacks: new Set<(event: HexMouseEvent) => void>(),
+    overCallbacks: new Set<(event: HexMouseEvent) => void>(),
   };
 
   const context = useContext();
@@ -160,6 +162,14 @@ export default function LowLevelMouse() {
     };
   };
 
+  const handleMouseOut = () => {
+    storage.outCallbacks.forEach((callback) => callback(event));
+  };
+
+  const handleMouseOver = () => {
+    storage.overCallbacks.forEach((callback) => callback(event));
+  };
+
   let isTouching = false;
   const handleTouchStart = (ev: TouchEvent) => {
     ev.preventDefault();
@@ -234,6 +244,8 @@ export default function LowLevelMouse() {
     canvas.addEventListener("mousemove", handleMouseMove);
     canvas.addEventListener("mousedown", handleMouseDown);
     canvas.addEventListener("mouseup", handleMouseUp);
+    canvas.addEventListener("mouseover", handleMouseOver);
+    canvas.addEventListener("mouseout", handleMouseOut);
 
     canvas.addEventListener("touchstart", handleTouchStart);
     canvas.addEventListener("touchmove", handleTouchMove);
@@ -275,6 +287,12 @@ export default function LowLevelMouse() {
     /** Registers the provided function to be called when any button on the mouse is released. */
     onMouseUp: (callback: (event: HexMouseEvent) => void) => {
       storage.upCallbacks.add(useCallbackAsCurrent(callback));
+    },
+    onMouseOut: (callback: (event: HexMouseEvent) => void) => {
+      storage.outCallbacks.add(useCallbackAsCurrent(callback));
+    },
+    onMouseOver: (callback: (event: HexMouseEvent) => void) => {
+      storage.overCallbacks.add(useCallbackAsCurrent(callback));
     },
   };
 }
