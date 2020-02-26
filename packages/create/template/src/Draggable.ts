@@ -34,10 +34,12 @@ export default function Draggable(geometry: ReturnType<typeof Geometry>) {
     }
   });
 
-  mouse.onUp(() => {
+  const onUpHandler = (e) => {
     if (physics) {
       physics.setStatic(originalStatic);
     }
     isDragging = false;
-  });
+  };
+  mouse.onUp(onUpHandler);
+  mouse.onOut(onUpHandler);
 }
