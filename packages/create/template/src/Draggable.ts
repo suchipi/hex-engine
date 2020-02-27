@@ -36,7 +36,7 @@ export default function Draggable(geometry: ReturnType<typeof Geometry>) {
     }
   });
 
-  const onUpHandler = (e) => {
+  const onUpHandler = () => {
     if (physics) {
       physics.setStatic(originalStatic);
     }
