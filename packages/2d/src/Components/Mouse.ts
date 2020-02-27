@@ -39,11 +39,9 @@ export default function Mouse({
     onClickCallbacks: new Set<Callback>(),
     onRightClickCallbacks: new Set<Callback>(),
     onMiddleClickCallbacks: new Set<Callback>(),
-    onOutCallbacks: new Set<Callback>(),
-    onOverCallbacks: new Set<Callback>(),
   };
 
-  const { onMouseDown, onMouseUp, onMouseOut, onMouseOver } = useNewComponent(LowLevelMouse);
+  const { onMouseDown, onMouseUp } = useNewComponent(LowLevelMouse);
   const mousePosition = useNewComponent(() =>
     MousePosition({ entity, geometry })
   );
@@ -95,14 +93,6 @@ export default function Mouse({
     }
   });
 
-  onMouseOut((event) => {
-    storage.onOutCallbacks.forEach((callback) => callback(event));
-  });
-
-  onMouseOver((event) => {
-    storage.onOverCallbacks.forEach((callback) => callback(event));
-  });
-
   const callbackSetters = {
     onDown(callback: (event: HexMouseEvent) => void) {
       storage.onDownCallbacks.add(useCallbackAsCurrent(callback));
@@ -118,12 +108,6 @@ export default function Mouse({
     },
     onMiddleClick(callback: (event: HexMouseEvent) => void) {
       storage.onMiddleClickCallbacks.add(useCallbackAsCurrent(callback));
-    },
-    onOut(callback: (event: HexMouseEvent) => void) {
-      storage.onOutCallbacks.add(useCallbackAsCurrent(callback));
-    },
-    onOver(callback: (event: HexMouseEvent) => void) {
-      storage.onOverCallbacks.add(useCallbackAsCurrent(callback));
     },
   };
 
@@ -189,16 +173,6 @@ export default function Mouse({
      */
     get onLeave() {
       return mousePosition.onLeave;
-    },
-
-    // TODO: explain
-    get onOut() {
-      return callbackSetters.onOut;
-    },
-
-    // TODO: explain
-    get onOver() {
-      return callbackSetters.onOver;
     },
 
     /**
