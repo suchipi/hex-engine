@@ -288,10 +288,10 @@ export default function LowLevelMouse() {
     onMouseUp: (callback: (event: HexMouseEvent) => void) => {
       storage.upCallbacks.add(useCallbackAsCurrent(callback));
     },
-    onMouseOut: (callback: (event: HexMouseEvent) => void) => {
+    onCanvasLeave: (callback: (event: HexMouseEvent) => void) => {
       storage.outCallbacks.add(useCallbackAsCurrent(callback));
     },
-    onMouseOver: (callback: (event: HexMouseEvent) => void) => {
+    onCanvasEnter: (callback: (event: HexMouseEvent) => void) => {
       storage.overCallbacks.add(useCallbackAsCurrent(callback));
     },
   };

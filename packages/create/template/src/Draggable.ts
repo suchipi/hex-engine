@@ -6,6 +6,7 @@ import {
   Physics,
   Mouse,
   Vector,
+  LowLevelMouse,
 } from "@hex-engine/2d";
 
 export default function Draggable(geometry: ReturnType<typeof Geometry>) {
@@ -14,6 +15,7 @@ export default function Draggable(geometry: ReturnType<typeof Geometry>) {
   const physics = useEntity().getComponent(Physics.Body);
 
   const mouse = useNewComponent(Mouse);
+  const { onCanvasLeave } = useNewComponent(LowLevelMouse);
 
   let originalStatic = false;
   let isDragging = false;
@@ -41,5 +43,5 @@ export default function Draggable(geometry: ReturnType<typeof Geometry>) {
     isDragging = false;
   };
   mouse.onUp(onUpHandler);
-  mouse.onOut(onUpHandler);
+  onCanvasLeave(onUpHandler);
 }
