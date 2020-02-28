@@ -5,7 +5,13 @@ import { cp, cd, exec } from "shelljs";
 const spinner = ora();
 const templateDir = path.resolve(__dirname, "..", "template");
 
-export default function makeIt(targetDirectory: string) {
+function execAsync(cmd: string): Promise<unknown> {
+  return new Promise((resolve) => {
+    exec(cmd, {silent: true}, resolve)
+  })
+}
+
+export default async function makeIt(targetDirectory: string) {
   console.log(`Creating a @hex-engine/2d game in '${targetDirectory}'...`);
 
   cp("-r", templateDir, targetDirectory);
@@ -13,9 +19,9 @@ export default function makeIt(targetDirectory: string) {
 
   spinner.start("Installing dependencies ...");
 
-  exec("npm install --save @hex-engine/2d@latest", { silent: true });
-  exec("npm install --save-dev hex-engine-scripts@latest", { silent: true });
-  exec("npm install --save-dev typescript@latest", { silent: true });
+  await execAsync("npm install --save @hex-engine/2d@latest");
+  await execAsync("npm install --save-dev hex-engine-scripts@latest");
+  await execAsync("npm install --save-dev typescript@latest");
 
   spinner.succeed('Dependencies installed !');
 
