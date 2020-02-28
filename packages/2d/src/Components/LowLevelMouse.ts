@@ -304,9 +304,11 @@ export default function LowLevelMouse() {
     onMouseUp: (callback: Callback) => {
       storage.upCallbacks.add(useCallbackAsCurrent(callback));
     },
+    /** Registers the provided function to be called when the mouse exits the canvas. */
     onCanvasLeave: (callback: Callback) => {
       storage.outCallbacks.add(useCallbackAsCurrent(callback));
     },
+    /** Registers the provided function to be called when the mouse enters the canvas. */
     onCanvasEnter: (callback: Callback) => {
       storage.overCallbacks.add(useCallbackAsCurrent(callback));
     },
