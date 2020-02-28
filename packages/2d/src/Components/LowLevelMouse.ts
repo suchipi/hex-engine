@@ -6,6 +6,9 @@ import {
 import { Vector } from "../Models";
 import { useContext, useUpdate, useEntityTransforms } from "../Hooks";
 
+type Callback = (event: HexMouseEvent) => void;
+class CallbackSet extends Set<Callback> { /***/ }
+
 /** A Mouse event in Hex Engine. */
 export class HexMouseEvent {
   /** The position of the cursor, relative to the current Entity's origin. */
@@ -69,11 +72,11 @@ export default function LowLevelMouse() {
   useType(LowLevelMouse);
 
   const storage = {
-    moveCallbacks: new Set<(event: HexMouseEvent) => void>(),
-    downCallbacks: new Set<(event: HexMouseEvent) => void>(),
-    upCallbacks: new Set<(event: HexMouseEvent) => void>(),
-    outCallbacks: new Set<(event: HexMouseEvent) => void>(),
-    overCallbacks: new Set<(event: HexMouseEvent) => void>(),
+    moveCallbacks: new CallbackSet(),
+    downCallbacks: new CallbackSet(),
+    upCallbacks: new CallbackSet(),
+    outCallbacks: new CallbackSet(),
+    overCallbacks: new CallbackSet(),
   };
 
   const context = useContext();
@@ -105,6 +108,11 @@ export default function LowLevelMouse() {
     mouse4: false,
     mouse5: false,
   });
+
+  const triggerCallbacks = (callbacks: CallbackSet) =>
+    callbacks.forEach((callback) => callback(event))
+  ;
+
   function updateEvent({
     clientX,
     clientY,
@@ -136,7 +144,7 @@ export default function LowLevelMouse() {
     pendingMove = () => {
       pendingMove = null;
       updateEvent({ clientX, clientY, buttons });
-      storage.moveCallbacks.forEach((callback) => callback(event));
+      triggerCallbacks(storage.moveCallbacks);
     };
   };
   const handleMouseDown = ({ clientX, clientY, button }: MouseEvent) => {
@@ -151,23 +159,31 @@ export default function LowLevelMouse() {
     pendingDown = () => {
       pendingDown = null;
       updateEvent({ clientX, clientY, button });
-      storage.downCallbacks.forEach((callback) => callback(event));
+      triggerCallbacks(storage.downCallbacks);
     };
   };
   const handleMouseUp = ({ clientX, clientY, button }: MouseEvent) => {
     pendingUp = () => {
       pendingUp = null;
       updateEvent({ clientX, clientY, button });
-      storage.upCallbacks.forEach((callback) => callback(event));
+      triggerCallbacks(storage.upCallbacks);
     };
   };
 
-  const handleMouseOut = () => {
-    storage.outCallbacks.forEach((callback) => callback(event));
+  const handleMouseOut = ({ clientX, clientY, buttons }: MouseEvent) => {
+    pendingMove = () => {
+      pendingMove = null;
+      updateEvent({ clientX, clientY, buttons });
+      triggerCallbacks(storage.outCallbacks);
+    };
   };
 
-  const handleMouseOver = () => {
-    storage.overCallbacks.forEach((callback) => callback(event));
+  const handleMouseOver = ({ clientX, clientY, buttons }: MouseEvent) => {
+    pendingMove = () => {
+      pendingMove = null;
+      updateEvent({ clientX, clientY, buttons });
+      triggerCallbacks(storage.overCallbacks);
+    };
   };
 
   let isTouching = false;
@@ -192,7 +208,7 @@ export default function LowLevelMouse() {
     pendingDown = () => {
       pendingDown = null;
       updateEvent({ clientX, clientY, button });
-      storage.downCallbacks.forEach((callback) => callback(event));
+      triggerCallbacks(storage.downCallbacks);
     };
 
     isTouching = true;
@@ -208,7 +224,7 @@ export default function LowLevelMouse() {
     pendingMove = () => {
       pendingMove = null;
       updateEvent({ clientX, clientY, button });
-      storage.moveCallbacks.forEach((callback) => callback(event));
+      triggerCallbacks(storage.moveCallbacks);
     };
   };
   const handleTouchEnd = (ev: TouchEvent) => {
@@ -224,7 +240,7 @@ export default function LowLevelMouse() {
     pendingUp = () => {
       pendingUp = null;
       updateEvent({ clientX, clientY, button });
-      storage.upCallbacks.forEach((callback) => callback(event));
+      triggerCallbacks(storage.upCallbacks);
     };
 
     isTouching = false;
@@ -277,21 +293,21 @@ export default function LowLevelMouse() {
 
   return {
     /** Registers the provided function to be called when the mouse cursor moves. */
-    onMouseMove: (callback: (event: HexMouseEvent) => void) => {
+    onMouseMove: (callback: Callback) => {
       storage.moveCallbacks.add(useCallbackAsCurrent(callback));
     },
     /** Registers the provided function to be called when any button on the mouse is pressed down. */
-    onMouseDown: (callback: (event: HexMouseEvent) => void) => {
+    onMouseDown: (callback: Callback) => {
       storage.downCallbacks.add(useCallbackAsCurrent(callback));
     },
     /** Registers the provided function to be called when any button on the mouse is released. */
-    onMouseUp: (callback: (event: HexMouseEvent) => void) => {
+    onMouseUp: (callback: Callback) => {
       storage.upCallbacks.add(useCallbackAsCurrent(callback));
     },
-    onCanvasLeave: (callback: (event: HexMouseEvent) => void) => {
+    onCanvasLeave: (callback: Callback) => {
       storage.outCallbacks.add(useCallbackAsCurrent(callback));
     },
-    onCanvasEnter: (callback: (event: HexMouseEvent) => void) => {
+    onCanvasEnter: (callback: Callback) => {
       storage.overCallbacks.add(useCallbackAsCurrent(callback));
     },
   };
