@@ -7,8 +7,8 @@ const templateDir = path.resolve(__dirname, "..", "template");
 
 function execAsync(cmd: string): Promise<unknown> {
   return new Promise((resolve) => {
-    exec(cmd, {silent: true}, resolve)
-  })
+    exec(cmd, { silent: true }, resolve);
+  });
 }
 
 export default async function makeIt(targetDirectory: string) {
@@ -17,13 +17,13 @@ export default async function makeIt(targetDirectory: string) {
   cp("-r", templateDir, targetDirectory);
   cd(targetDirectory);
 
-  spinner.start("Installing dependencies ...");
+  spinner.start("Installing dependencies...");
 
   await execAsync("npm install --save @hex-engine/2d@latest");
   await execAsync("npm install --save-dev hex-engine-scripts@latest");
   await execAsync("npm install --save-dev typescript@latest");
 
-  spinner.succeed('Dependencies installed !');
+  spinner.succeed("Dependencies installed!");
 
   console.log("");
   console.log(`All done! To start working on your game, run:
