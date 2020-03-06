@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Button from "./Button";
 
 export default function Expandable({
@@ -26,8 +26,19 @@ export default function Expandable({
   onMouseLeave?: (event: React.MouseEvent) => void;
   onContextMenu?: (event: React.MouseEvent) => void;
 }) {
+  const elementRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isSelected) {
+      elementRef.current?.scrollIntoView({ block: "center" });
+    }
+  }, [isSelected]);
+
   return (
-    <div style={{ position: "relative", paddingLeft: 8, paddingTop: 2 }}>
+    <div
+      ref={elementRef}
+      style={{ position: "relative", paddingLeft: 8, paddingTop: 2 }}
+    >
       <span
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
