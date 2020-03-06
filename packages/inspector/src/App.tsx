@@ -78,7 +78,6 @@ export default function App({
             right: 0,
             bottom: 0,
             width: "33vw",
-            overflow: "auto",
             backgroundColor: "rgba(255, 255, 255, 0.75)",
             boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
 
@@ -105,7 +104,7 @@ export default function App({
               error={error}
             />
           ) : null}
-          <div style={{ flexBasis: "100%" }}>
+          <div style={{ flexBasis: "100%", overflow: "auto" }}>
             <Tree
               name="root"
               data={ent}
