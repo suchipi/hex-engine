@@ -8,6 +8,7 @@ import {
   PaneRightIcon,
   PaneLeftIcon,
   PickEntityIcon,
+  MinimizeIcon,
 } from "./Icons";
 
 type RunLoopAPI = ReturnType<typeof RunLoop>;
@@ -19,6 +20,7 @@ export default function Controls({
   toggleOpen,
   isSelectMode,
   toggleSelectMode,
+  collapseTree,
 }: {
   runLoop: RunLoopAPI;
   error: Error | null;
@@ -26,6 +28,7 @@ export default function Controls({
   toggleOpen: () => void;
   isSelectMode: boolean;
   toggleSelectMode: () => void;
+  collapseTree: () => void;
 }) {
   return (
     <div
@@ -45,6 +48,18 @@ export default function Controls({
           <PickEntityIcon />
         </span>
       </Button>
+      {isOpen && (
+        <Button title="Collapse Inspector Tree" onClick={collapseTree}>
+          <span
+            style={{
+              padding: 4,
+              color: "#222",
+            }}
+          >
+            <MinimizeIcon />
+          </span>
+        </Button>
+      )}
       {runLoop.isPaused() ? (
         <>
           <Button

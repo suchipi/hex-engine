@@ -32,6 +32,7 @@ interface StateHolder {
   toggleSelectMode: () => void;
   getSelectedEntity: () => null | Entity;
   selectEntity: (entity: Entity) => void;
+  collapseTree: () => void;
 }
 
 const initialInspectorTree = localStorage.inspectorTree
@@ -85,6 +86,7 @@ function Root({
       toggleOpen={stateHolder.toggleOpen}
       isSelectMode={stateHolder.getSelectMode()}
       toggleSelectMode={stateHolder.toggleSelectMode}
+      collapseTree={stateHolder.collapseTree}
     />
   );
 }
@@ -124,9 +126,9 @@ export default function Inspector() {
         const key = path.pop();
 
         // lodash.get(obj, []) does not return obj. We need to test if we
-        // reached the root and manually delete it.
+        // reached the root and manually collapse it
         if (key === "root") {
-          delete tree.root;
+          tree.root = {};
         } else {
           const subtree = get(tree, path);
           delete subtree[key!];
@@ -137,6 +139,9 @@ export default function Inspector() {
     },
     getExpanded: (path: Array<string | number>) => {
       return get(tree, path) !== undefined;
+    },
+    collapseTree: () => {
+      tree.root = {};
     },
     err: null,
     forceUpdate: null,
