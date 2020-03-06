@@ -46,49 +46,44 @@ export default function Expandable({
             }}
           />
         )}
-        <Button
-          style={{
-            color: "rgb(110, 110, 110)",
-            display: "inline-block",
-            fontSize: 12,
-            marginRight: 3,
-            userSelect: "none",
-            transform: expanded ? "rotateZ(90deg)" : "",
-          }}
-          onClick={onExpand}
-        >
-          ▶
-        </Button>
-
-        {label ? (
-          <Button
+        <Button onClick={onExpand}>
+          <div
             style={{
-              color: "rgb(136, 19, 145)",
+              color: "rgb(110, 110, 110)",
+              display: "inline-block",
+              fontSize: 12,
+              marginRight: 3,
               userSelect: "none",
-              marginRight: "0.7em",
+              transform: expanded ? "rotateZ(90deg)" : "",
             }}
-            onClick={onExpand}
           >
-            {label}:
-          </Button>
-        ) : null}
-
-        {className ? (
-          <Button style={{ marginRight: "0.7em" }} onClick={onExpand}>
-            {className}
-          </Button>
-        ) : null}
-
+            ▶
+          </div>
+          {label && (
+            <span
+              style={{
+                color: "rgb(136, 19, 145)",
+                userSelect: "none",
+                marginRight: "0.7em",
+              }}
+            >
+              {label}
+            </span>
+          )}
+          {className && (
+            <span style={{ marginRight: "0.7em" }}>{className}</span>
+          )}
+        </Button>
         {expanded ? null : preview}
       </span>
 
-      {expanded ? (
+      {expanded && (
         <div>
           {(hasContent ? children : null) || (
             <span style={{ paddingLeft: 8, paddingTop: 2 }}>{preview}</span>
           )}
         </div>
-      ) : null}
+      )}
     </div>
   );
 }
