@@ -128,7 +128,7 @@ export default function Inspector() {
         // lodash.get(obj, []) does not return obj. We need to test if we
         // reached the root and manually collapse it
         if (key === "root") {
-          tree.root = {};
+          stateHolder.collapseTree();
         } else {
           const subtree = get(tree, path);
           delete subtree[key!];
