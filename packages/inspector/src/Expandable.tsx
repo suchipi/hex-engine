@@ -32,7 +32,7 @@ export default function Expandable({
     if (isSelected) {
       elementRef.current?.scrollIntoView({ block: "center" });
     }
-  }, [isSelected]);
+  }, [isSelected, elementRef]);
 
   return (
     <div
