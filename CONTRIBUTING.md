@@ -1,8 +1,8 @@
-# Contributing to Hex-engine
+# Contributing to Hex Engine
 
 First off, thanks for taking the time to contribute !
 
-The following is a set of guidelines for contributing to Hex-engine. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
+The following is a set of guidelines for contributing to Hex Engine. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
 
 #### Table Of Contents
 
@@ -14,11 +14,11 @@ The following is a set of guidelines for contributing to Hex-engine. These are m
 
 ## Code of Conduct
 
-By participating to hex-engine, you pledge to uphold the standards listed in the Contributor Covenant Code of Conduct, as found here: https://www.contributor-covenant.org/version/2/0/code_of_conduct
+By participating to Hex Engine, you pledge to uphold the standards listed in the Contributor Covenant Code of Conduct, as found here: https://www.contributor-covenant.org/version/2/0/code_of_conduct
 
 ## How to contribute
 
-Hex-engine greatly appreciates PRs, but open an issue first to check if the change you want to make are in line with the project vision.
+Hex Engine greatly appreciates pull requests, but open an issue first to check if the change you want to make are in line with the project vision.
 
 ### Install the project
 
@@ -27,7 +27,7 @@ In first you need to fork and clone this repository.
 git clone https://github.com/<your-gh-user-name>/hex-engine.git
 ```
 
-After install the dependencies. Hex-engine use *yarn* to manage dependency. If you don't have *yarn* just install it with this command : 
+Afterwards install the dependencies. Hex Engine use *yarn* to manage dependencies. If you don't have *yarn* just install it with this command : 
 ```
 npm install -g yarn 
 ```
@@ -37,7 +37,7 @@ And you can install the dependencies with this command line :
 ```
 yarn install
 ```
-Now you can run the hex-engine project with the following command : 
+Now you can run the Hex Engine project with the following command : 
 
 ```
 yarn start
@@ -45,17 +45,17 @@ yarn start
 
 ### Project Structure
 
-This project is separate in multiple packages which you can find into the *packages* folder.
+This project is separated in multiple packages which you can find in the *packages* folder.
 
 | Package                      | Description                             |
 | ---------------------------- | --------------------------------------- |
 | `2d`                         | Provide primitives for making a 2D game.|
 | `core`                       | Core Entity and Component system.       |
 | `create`                     | Cli to create boilerplate project.      |
-| `game`                       | Example of use case with hex-engine.    |
-| `inspectore`                 | Integrate the inspectore to debug hex game. |
-| `scripts`                    | Cli for hex-engine.                     |
-| `website`                    | Hex-engine website.                     |
+| `game`                       | Example of use case with Hex Engine.    |
+| `inspector`                 | Integrate the inspector to debug Hex Engine projects. |
+| `scripts`                    | CLI for Hex Engine.                     |
+| `website`                    | Hex Engine website.                     |
 
 ### Npm script reference
 
