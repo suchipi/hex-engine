@@ -8,8 +8,8 @@ export function PaneRightIcon({
   height?: number | string | undefined;
 } = {}) {
   /* This Source Code Form is subject to the terms of the Mozilla Public
-   - License, v. 2.0. If a copy of the MPL was not distributed with this
-   - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+  - License, v. 2.0. If a copy of the MPL was not distributed with this
+  - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
   return (
     <svg viewBox="0 0 16 16" width={width} height={height}>
       <path
@@ -33,8 +33,8 @@ export function PaneLeftIcon({
   height?: number | string | undefined;
 } = {}) {
   /* This Source Code Form is subject to the terms of the Mozilla Public
-   - License, v. 2.0. If a copy of the MPL was not distributed with this
-   - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+  - License, v. 2.0. If a copy of the MPL was not distributed with this
+  - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
   return (
     <svg viewBox="0 0 16 16" width={width} height={height}>
       <path
@@ -58,8 +58,8 @@ export function PauseIcon({
   height?: number | string | undefined;
 } = {}) {
   /* This Source Code Form is subject to the terms of the Mozilla Public
- - License, v. 2.0. If a copy of the MPL was not distributed with this
- - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+  - License, v. 2.0. If a copy of the MPL was not distributed with this
+  - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
   return (
     <svg viewBox="0 0 16 16" width={width} height={height}>
       <path
@@ -82,8 +82,8 @@ export function ResumeIcon({
   height?: number | string | undefined;
 } = {}) {
   /* This Source Code Form is subject to the terms of the Mozilla Public
- - License, v. 2.0. If a copy of the MPL was not distributed with this
- - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+  - License, v. 2.0. If a copy of the MPL was not distributed with this
+  - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
   return (
     <svg viewBox="0 0 16 16" width={width} height={height}>
       <path
@@ -102,8 +102,8 @@ export function StepIcon({
   height?: number | string | undefined;
 } = {}) {
   /* This Source Code Form is subject to the terms of the Mozilla Public
- - License, v. 2.0. If a copy of the MPL was not distributed with this
- - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+  - License, v. 2.0. If a copy of the MPL was not distributed with this
+  - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
   return (
     <svg viewBox="0 0 16 16" width={width} height={height}>
       <g fillRule="evenodd">
@@ -124,10 +124,9 @@ export function PickEntityIcon({
   width?: number | string | undefined;
   height?: number | string | undefined;
 } = {}) {
-  /*
-  <!-- This Source Code Form is subject to the terms of the Mozilla Public
-   - License, v. 2.0. If a copy of the MPL was not distributed with this
-   - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+  /* This Source Code Form is subject to the terms of the Mozilla Public
+  - License, v. 2.0. If a copy of the MPL was not distributed with this
+  - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
   return (
     <svg viewBox="0 0 16 16" width={width} height={height}>
       <path
@@ -138,6 +137,27 @@ export function PickEntityIcon({
         fill="currentColor"
         d="M12.87 14.6c.3.36.85.4 1.2.1.36-.31.4-.86.1-1.22l-1.82-2.13 2.42-1a.3.3 0 0 0 .01-.56L7.43 6.43a.3.3 0 0 0-.42.35l2.13 7.89a.3.3 0 0 0 .55.07l1.35-2.28 1.83 2.14z"
       />
+    </svg>
+  );
+}
+
+export function MinimizeIcon({
+  width = 16,
+  height = 16,
+}: {
+  width?: number | string | undefined;
+  height?: number | string | undefined;
+} = {}) {
+  /* This Source Code Form is subject to the terms of the Mozilla Public
+  - License, v. 2.0. If a copy of the MPL was not distributed with this
+  - file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+  return (
+    <svg viewBox="0 0 16 16" width={width} height={height}>
+      <path
+        fill="currentColor"
+        d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zm-1 12H3V3h10z"
+      />
+      <path fill="currentColor" d="M5 9h6a1 1 0 0 0 0-2H5a1 1 0 0 0 0 2z" />
     </svg>
   );
 }

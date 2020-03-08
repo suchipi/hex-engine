@@ -18,6 +18,7 @@ export default function App({
   toggleOpen,
   isSelectMode,
   toggleSelectMode,
+  collapseTree,
 }: {
   entity: Entity;
   getSelectedEntity: () => null | Entity;
@@ -30,6 +31,7 @@ export default function App({
   toggleOpen: () => void;
   isSelectMode: boolean;
   toggleSelectMode: () => void;
+  collapseTree: () => void;
 }) {
   let ent = entity;
 
@@ -64,6 +66,7 @@ export default function App({
             toggleOpen={toggleOpen}
             runLoop={runLoop}
             error={error}
+            collapseTree={collapseTree}
           />
         ) : null}
       </div>
@@ -78,10 +81,8 @@ export default function App({
             right: 0,
             bottom: 0,
             width: "33vw",
-            overflow: "auto",
             backgroundColor: "rgba(255, 255, 255, 0.75)",
             boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
-
             display: "flex",
             flexDirection: "column",
             height: "100%",
@@ -103,9 +104,10 @@ export default function App({
               toggleOpen={toggleOpen}
               runLoop={runLoop}
               error={error}
+              collapseTree={collapseTree}
             />
           ) : null}
-          <div style={{ flexBasis: "100%" }}>
+          <div style={{ flexBasis: "100%", overflowY: "auto" }}>
             <Tree
               name="root"
               data={ent}
