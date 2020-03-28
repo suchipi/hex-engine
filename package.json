@@ -18,13 +18,10 @@
     "@babel/preset-env": "^7.7.7",
     "@babel/preset-react": "^7.7.4",
     "@babel/preset-typescript": "^7.7.7",
-    "@test-it/cli": "^0.5.2",
-    "@test-it/core": "^0.5.2",
     "@workspace-builder/babel": "^1.0.1",
     "@workspace-builder/shell-command": "^1.0.0",
     "babel-eslint": "^10.0.3",
     "babel-plugin-remove-prev-node": "^1.0.0",
-    "cypress": "^3.8.3",
     "eslint": "^6.8.0",
     "eslint-config-unobtrusive": "^1.2.5",
     "eslint-plugin-import": "^2.20.0",
@@ -44,7 +41,6 @@
     "build-website": "cd packages/website && yarn build"
   },
   "dependencies": {
-    "@types/jest": "^25.1.3",
     "core-js": "^3.6.1",
     "regenerator-runtime": "^0.13.3"
   }
