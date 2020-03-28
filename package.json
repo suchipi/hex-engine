@@ -39,7 +39,7 @@
     "watch": "workspace-builder watch",
     "start": "yarn watch",
     "typecheck": "tsc --noEmit",
-    "test-it": "test-it './packages/*/src/**/*.test.{ts,js,tsx,jsx}' '!**/node_modules/**'",
+    "test-it": "hex-engine-scripts test './packages/*/src/**/*.test.{ts,js,tsx,jsx}' '!**/node_modules/**'",
     "test": "yarn typecheck && yarn test-it",
     "build-website": "cd packages/website && yarn build"
   },
