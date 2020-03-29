@@ -41,7 +41,7 @@ export default function loader(filepath: string): string {
       return runSimpleWebpackLoader(require("bmfont-loader"), filepath);
     }
     default: {
-      // Default loader supports js, ts, jsx, tsx, json, css, json, and behaves like url-loader for everything else.
+      // Default loader supports js, ts, jsx, tsx, json, css, and behaves like url-loader for everything else.
       return defaultLoader(filepath);
     }
   }
