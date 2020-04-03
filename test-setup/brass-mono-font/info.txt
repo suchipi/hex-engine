@@ -1,0 +1,4 @@
+Brass Mono Font by Peter Fonseca
+
+Downloaded from https://www.fontspace.com/brass-mono-font-f29885
+Sources at https://github.com/fonsecapeter/brass_mono
