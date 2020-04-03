@@ -2815,10 +2815,10 @@
   dependencies:
     jasmine-core "~3.2.0"
 
-"@test-it/cli@^0.6.3":
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/@test-it/cli/-/cli-0.6.3.tgz#9ef758449fcb03d887039e61972d4e9fd3623761"
-  integrity sha512-uWJheIsEU4Fd0LhrY7VPZrcaDcRpWSRTo2m6kbVXfJGj3houFQ+V7Zutqv2T3HRatjqKed5HIOBcoUbeGmFKiA==
+"@test-it/cli@^0.6.4":
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/@test-it/cli/-/cli-0.6.4.tgz#9083ae4d5bb116fce9d2dbffa321400d0c0ec434"
+  integrity sha512-f3Zdj6ghxfYAP6evwkUaxKwxn11bTBch6gyhAJPgzyaoYfnnOe72v9kkeZnMLmUMiTL26HzKjfMBWPl0Avvg3A==
   dependencies:
     chalk "^3.0.0"
     chokidar "^3.3.1"
