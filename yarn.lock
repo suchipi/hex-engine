@@ -3875,10 +3875,10 @@ babel-plugin-macros@2.4.2:
     cosmiconfig "^5.0.5"
     resolve "^1.8.1"
 
-babel-plugin-remove-prev-node@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-remove-prev-node/-/babel-plugin-remove-prev-node-1.0.0.tgz#faa5bfebd63ff0c27895208d15f8f13edb386d8d"
-  integrity sha512-KofO0TcoOTNUqRgTHIsVI57RveM+lGSzLcy/who3ZfuOtSe4tU3a/W2jJShCztUQEJCwcEtb6wzLuFWlQA4uXA==
+babel-plugin-remove-prev-node@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/babel-plugin-remove-prev-node/-/babel-plugin-remove-prev-node-1.0.1.tgz#5148cef27ebde0334c83036c7140886b470abb62"
+  integrity sha512-c0QGUAMYKL3+W6iA6n+dk/tN85gBDZKv0sOOGpTQSISu9IhCkjbcmqBxRuONlbWsFGnCyd65h4VWMl07jjBnTA==
   dependencies:
     "@babel/helper-plugin-utils" "^7.8.3"
 
