@@ -23,11 +23,11 @@ This example test starts the game, advances it 100 frames, and then takes a scre
 This test assumes your root component is accessible via `./Root`.
 
 ```ts
-// frame101.test.ts
+// frame100.test.ts
 import { createRoot, RunLoop } from "@hex-engine/2d";
 import Root from "./Root";
 
-test("frame 101 renders as expected", async () => {
+test("frame 100 renders as expected", async () => {
   const rootEnt = createRoot(Root);
   const runLoop = rootEnt.getComponent(RunLoop)!;
   runLoop.pause(); // This is the same as hitting the pause button in the Hex Engine inspector.
@@ -43,12 +43,12 @@ test("frame 101 renders as expected", async () => {
 If your tests will be run across different operating systems, then the font for the inspector may render differently. As such, you may wish to hide the inspector UI prior to taking your screenshot. You can do that as follows:
 
 ```ts {3,15,16}
-// frame101.test.ts
+// frame100.test.ts
 import { createRoot, RunLoop } from "@hex-engine/2d";
 import Inspector from "@hex-engine/inspector"; // Add inspector import
 import Root from "./Root";
 
-test("frame 101 renders as expected", async () => {
+test("frame 100 renders as expected", async () => {
   const rootEnt = createRoot(Root);
   const runLoop = rootEnt.getComponent(RunLoop)!;
   runLoop.pause();
@@ -98,11 +98,11 @@ To debug a test using Chrome DevTools, instead of using `test` or `it` when decl
 
 <!-- prettier-ignore -->
 ```ts {5}
-// frame101.test.ts
+// frame100.test.ts
 import { createRoot, RunLoop } from "@hex-engine/2d";
 import Root from "./Root";
 
-debug("frame 101 renders as expected", async () => { // test changed to debug
+debug("frame 100 renders as expected", async () => { // test changed to debug
   const rootEnt = createRoot(Root);
   const runLoop = rootEnt.getComponent(RunLoop)!;
   runLoop.pause();
