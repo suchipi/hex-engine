@@ -82,7 +82,13 @@ export default function defaultLoader(filename: string): string {
           compact: false,
           sourceType: "unambiguous" as "unambiguous",
           presets: [
-            ["@babel/preset-env", { modules: false }],
+            [
+              "@babel/preset-env",
+              {
+                modules: false,
+                targets: { node: "current" },
+              },
+            ],
             "@babel/preset-typescript",
             "@babel/preset-react",
           ],
