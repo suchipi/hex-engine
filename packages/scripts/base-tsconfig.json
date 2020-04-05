@@ -1,17 +1,15 @@
 {
   "files": [
-    "./node_modules/aseprite-loader/index.d.ts",
-    "./node_modules/xml-source-loader/index.d.ts",
-    "./node_modules/bmfont-loader/index.d.ts",
-    "./node_modules/hex-engine-scripts/ts-webpack.ts",
-    "./node_modules/@test-it/core/globals.d.ts"
+    "../aseprite-loader/index.d.ts",
+    "../xml-source-loader/index.d.ts",
+    "../bmfont-loader/index.d.ts",
+    "../hex-engine-scripts/ts-webpack.ts",
+    "../@test-it/core/globals.d.ts"
   ],
-  "include": ["./src"],
   "compilerOptions": {
     "lib": ["esnext", "dom"],
     "target": "es5",
     "module": "ES2015",
-    "outDir": "./dist",
 
     "strict": true,
     "noImplicitAny": false,
