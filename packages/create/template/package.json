@@ -7,6 +7,7 @@
   "scripts": {
     "start": "hex-engine-scripts dev",
     "dev": "hex-engine-scripts dev",
-    "build": "hex-engine-scripts build"
+    "build": "hex-engine-scripts build",
+    "test": "hex-engine-scripts test"
   }
 }

@@ -2,11 +2,11 @@
 title: Testing
 ---
 
-As of Unreleased, Hex Engine includes the [Test-It](https://github.com/suchipi/test-it) test runner. You can use this for unit tests, visual regression testing, debugging, and more.
+As of 0.4.0, Hex Engine includes the [Test-It](https://github.com/suchipi/test-it) test runner. You can use this for unit tests, visual regression testing, debugging, and more.
 
 To add tests to your codebase, create files whose filenames end with `.test.ts`, `.test.tsx`, `.test.js`, or `.test.jsx`. Those files will be run by [Test-It](https://github.com/suchipi/test-it) when you run `npm test`.
 
-> Note: If your codebase was created with a version of Hex Engine prior to Unreleased, then there won't be a `test` script in your `package.json`, so `npm test` won't work. To fix it, create a new project by following the instructions in [First Time Setup](/docs/first-time-setup), then copy your game files from your existing codebase into the new project.
+> Note: If your codebase was created with a version of Hex Engine prior to 0.4.0, then there won't be a `test` script in your `package.json`, so `npm test` won't work. To fix it, create a new project by following the instructions in [First Time Setup](/docs/first-time-setup), then copy your game files from your existing codebase into the new project.
 
 You can run your tests in watch mode by passing the `--watch` flag, ie `npm test -- --watch`.
 
