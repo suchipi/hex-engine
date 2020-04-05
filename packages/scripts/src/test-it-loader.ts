@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
-// @ts-ignore implicit any
-import defaultLoader from "@test-it/default-loader";
+import * as babel from "@babel/core";
+import mime from "mime-types";
 
 // This only supports webpack loaders that are:
 // - Synchronous
@@ -26,23 +26,84 @@ function runSimpleWebpackLoader(
   }
 }
 
-export default function loader(filepath: string): string {
-  const ext = path.extname(filepath);
+export default function defaultLoader(filename: string): string {
+  const extension = path.extname(filename);
 
-  switch (ext) {
+  switch (extension) {
     case ".ase":
     case ".aseprite": {
-      return runSimpleWebpackLoader(require("aseprite-loader"), filepath);
+      return runSimpleWebpackLoader(require("aseprite-loader"), filename);
     }
     case ".xml": {
-      return runSimpleWebpackLoader(require("xml-source-loader"), filepath);
+      return runSimpleWebpackLoader(require("xml-source-loader"), filename);
     }
     case ".fnt": {
-      return runSimpleWebpackLoader(require("bmfont-loader"), filepath);
+      return runSimpleWebpackLoader(require("bmfont-loader"), filename);
     }
+    case ".json": {
+      return "module.exports = " + fs.readFileSync(filename, "utf-8");
+    }
+    case ".css": {
+      // This imitates style-loader
+      const content = fs.readFileSync(filename, "utf-8");
+      return `
+        var style = document.createElement("style");
+        style.type = "text/css";
+        style.textContent = ${JSON.stringify(content)};
+        document.head.appendChild(style);
+      `;
+    }
+    case ".js":
+    case ".jsx":
+    case ".mjs":
+    case ".ts":
+    case ".tsx": {
+      let config;
+      if (filename.match(/node_modules/)) {
+        // We need to always compile ESM to CJS, because @hex-engine
+        // packages are published with ESM, but test-it can't run
+        // ESM unless the loader compiles it to CJS. Its default loader
+        // compiles ESM to CJS, but not for node_modules (for speed).
+        //
+        // The reason @hex-engine packages are published with ESM
+        // is because it allows webpack to treeshake unused named
+        // exports, which reduces the size of published games
+        // drastically, because it removes unused component functions.
+        //
+        // We could relax this to only compile node_modules/@hex-engine,
+        // but I want third-party hex-engine component libraries to be
+        // able to benefit from tree-shaking, too.
+        config = {
+          plugins: ["@babel/plugin-transform-modules-commonjs"],
+        };
+      } else {
+        config = {
+          sourceType: "unambiguous" as "unambiguous",
+          presets: [
+            ["@babel/preset-env", { modules: false }],
+            "@babel/preset-typescript",
+            "@babel/preset-react",
+          ],
+          plugins: [
+            "@babel/plugin-proposal-class-properties",
+            "@babel/plugin-proposal-nullish-coalescing-operator",
+            "@babel/plugin-proposal-optional-chaining",
+            "@babel/plugin-transform-modules-commonjs",
+          ],
+          filename,
+        };
+      }
+
+      const result = babel.transformFileSync(filename, config);
+      return result?.code || "";
+    }
+
     default: {
-      // Default loader supports js, ts, jsx, tsx, json, css, and behaves like url-loader for everything else.
-      return defaultLoader(filepath);
+      // This imitates url-loader, standing in place of file-loader
+      const type = mime.lookup(extension) || "application/octet-stream";
+      const base64 = fs.readFileSync(filename, "base64");
+      const url = `data:${type};base64,${base64}`;
+      return `module.exports = ${JSON.stringify(url)}`;
     }
   }
 }
