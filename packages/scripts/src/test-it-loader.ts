@@ -74,10 +74,12 @@ export default function defaultLoader(filename: string): string {
         // but I want third-party hex-engine component libraries to be
         // able to benefit from tree-shaking, too.
         config = {
+          compact: true,
           plugins: ["@babel/plugin-transform-modules-commonjs"],
         };
       } else {
         config = {
+          compact: false,
           sourceType: "unambiguous" as "unambiguous",
           presets: [
             ["@babel/preset-env", { modules: false }],
