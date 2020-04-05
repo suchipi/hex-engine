@@ -6,7 +6,7 @@ As of Unreleased, Hex Engine includes the [Test-It](https://github.com/suchipi/t
 
 To add tests to your codebase, create files whose filenames end with `.test.ts`, `.test.tsx`, `.test.js`, or `.test.jsx`. Those files will be run by [Test-It](https://github.com/suchipi/test-it) when you run `npm test`.
 
-> Note: If your codebase was created with an old version of Hex Engine, then the `npm test` command may not work. To fix it, create a new project by following the instructions in [First Time Setup](/docs/first-time-setup), then copy your game files from your existing codebase into the new project.
+> Note: If your codebase was created with a version of Hex Engine prior to Unreleased, then there won't be a `test` script in your `package.json`, so `npm test` won't work. To fix it, create a new project by following the instructions in [First Time Setup](/docs/first-time-setup), then copy your game files from your existing codebase into the new project.
 
 You can run your tests in watch mode by passing the `--watch` flag, ie `npm test -- --watch`.
 
@@ -40,6 +40,30 @@ test("frame 101 renders as expected", async () => {
 });
 ```
 
+If your tests will be run across different operating systems, then the font for the inspector may render differently. As such, you may wish to hide the inspector UI prior to taking your screenshot. You can do that as follows:
+
+```ts {3,15,16}
+// frame101.test.ts
+import { createRoot, RunLoop } from "@hex-engine/2d";
+import { Inspector } from "@hex-engine/inspector"; // Add inspector import
+import Root from "./Root";
+
+test("frame 101 renders as expected", async () => {
+  const rootEnt = createRoot(Root);
+  const runLoop = rootEnt.getComponent(RunLoop)!;
+  runLoop.pause();
+
+  for (let i = 0; i < 100; i++) {
+    runLoop.step();
+  }
+
+  const inspector = rootEnt.getComponent(Inspector)!;
+  inspector.hide(); // Hide the inspector UI
+
+  expect(await TestIt.captureScreenshot()).toMatchImageSnapshot();
+});
+```
+
 ### Unit Test
 
 This example test creates an empty canvas and tests a single component in isolation. It sets up a root entity with a canvas and the component under test, and then takes a screenshot of the page. The first time the test is run, the screenshot will be taken and saved to disk. On subsequent runs, the screenshot will be taken and compared to the screenshot on disk, and the test will fail if the screenshot differs.
@@ -49,6 +73,7 @@ This test assumes that the component you want to test is accessible via `./MyCom
 ```ts
 // MyComponent.test.ts
 import { createRoot, useNewComponent, Canvas, RunLoop } from "@hex-engine/2d";
+import { Inspector } from "@hex-engine/inspector";
 import MyComponent from "./MyComponent";
 
 test("MyComponent renders as expected", async () => {
@@ -59,6 +84,9 @@ test("MyComponent renders as expected", async () => {
 
   const runLoop = rootEnt.getComponent(RunLoop)!;
   runLoop.pause();
+
+  const inspector = rootEnt.getComponent(Inspector)!;
+  inspector.hide();
 
   expect(await TestIt.captureScreenshot()).toMatchImageSnapshot();
 });
@@ -77,10 +105,10 @@ import Root from "./Root";
 debug("frame 101 renders as expected", async () => { // test changed to debug
   const rootEnt = createRoot(Root);
   const runLoop = rootEnt.getComponent(RunLoop)!;
-  runLoop.pause(); // This is the same as hitting the pause button in the Hex Engine inspector.
+  runLoop.pause();
 
   for (let i = 0; i < 100; i++) {
-    runLoop.step(); // This advances to the next frame; it's the same as hitting the step button in the Hex Engine inspector.
+    runLoop.step();
   }
 
   expect(await TestIt.captureScreenshot()).toMatchImageSnapshot();
