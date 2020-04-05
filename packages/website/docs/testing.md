@@ -45,7 +45,7 @@ If your tests will be run across different operating systems, then the font for 
 ```ts {3,15,16}
 // frame101.test.ts
 import { createRoot, RunLoop } from "@hex-engine/2d";
-import { Inspector } from "@hex-engine/inspector"; // Add inspector import
+import Inspector from "@hex-engine/inspector"; // Add inspector import
 import Root from "./Root";
 
 test("frame 101 renders as expected", async () => {
@@ -73,7 +73,7 @@ This test assumes that the component you want to test is accessible via `./MyCom
 ```ts
 // MyComponent.test.ts
 import { createRoot, useNewComponent, Canvas, RunLoop } from "@hex-engine/2d";
-import { Inspector } from "@hex-engine/inspector";
+import Inspector from "@hex-engine/inspector";
 import MyComponent from "./MyComponent";
 
 test("MyComponent renders as expected", async () => {
