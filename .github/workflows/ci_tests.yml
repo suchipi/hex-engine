@@ -14,4 +14,4 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Run tests
-        run: ./in-docker.sh 'yarn install && yarn test'
+        run: ./in-docker.sh 'yarn install && yarn build && yarn test'

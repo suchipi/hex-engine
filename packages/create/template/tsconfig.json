@@ -1,34 +1,4 @@
 {
-  "include": [
-    "./src",
-    "node_modules/aseprite-loader/index.d.ts",
-    "node_modules/xml-source-loader/index.d.ts",
-    "node_modules/bmfont-loader/index.d.ts",
-    "node_modules/hex-engine-scripts/ts-webpack.ts"
-  ],
-
-  "compilerOptions": {
-    "lib": ["es2019", "dom"],
-    "target": "es5",
-    "module": "ES2015",
-    "outDir": "./dist",
-
-    "strict": true,
-    "noImplicitAny": false,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictPropertyInitialization": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "downlevelIteration": true,
-
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-
-    "jsx": "react"
-  }
+  "extends": "hex-engine-scripts/base-tsconfig.json",
+  "include": ["./src"]
 }

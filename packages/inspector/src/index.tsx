@@ -222,6 +222,12 @@ export default function Inspector() {
 
   return {
     ...inspectorSelectApi,
+    hide() {
+      el.style.visibility = "hidden";
+    },
+    show() {
+      el.style.visibility = "";
+    },
   };
 }
 

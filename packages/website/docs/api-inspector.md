@@ -20,7 +20,7 @@ Anyway, here's the API documentation for `@hex-engine/inspector`. Note that most
 import Inspector from "@hex-engine/inspector";
 ```
 
-`Inspector(): { getSelectMode: () => boolean, toggleSelectMode: () => void, selectEntity: (entity: Entity) => void }`
+`Inspector(): { getSelectMode: () => boolean, toggleSelectMode: () => void, selectEntity: (entity: Entity) => void, hide: () => void, show: () => void }`
 
 A Component function that renders an Inspector overlay onto the page, that shows you information about the current Entity tree, and allows you to tweak values, pause/resume/step frame execution and inspect entities. The Inspector returns an API for interacting with the entity select mode.
 
@@ -29,6 +29,8 @@ It stores its state (which things are opened, whether you are paused, etc) in lo
 Note that the Inspector is pretty performance-heavy while open.
 
 Since the Inspector lowers the framerate while open, and allows you to tweak Component and Entity values arbitrarily, you probably don't want to include it in your final game release. If you are using [`@hex-engine/2d`], it will be omitted from your optimized production bundle automatically.
+
+You can use the `hide` and `show` methods on the Inspector component instance to hide or show the inspector's UI.
 
 #### Usage
 
