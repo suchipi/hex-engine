@@ -5,11 +5,11 @@ import {
   Canvas,
   Ogmo,
   useChild,
-  SystemFont,
   Label,
   useDraw,
   Entity,
 } from "@hex-engine/2d";
+import useBitmapFont from "../../useBitmapFont";
 import Inspector from "@hex-engine/inspector";
 import project from "./project.ogmo";
 import level from "./level.json";
@@ -46,9 +46,7 @@ it("renders correctly - custom decals", () =>
     const ogmo = useNewComponent(() =>
       Ogmo.Project(project, {}, (decalData) =>
         useChild(() => {
-          const font = useNewComponent(() =>
-            SystemFont({ name: "sans-serif", size: 10 })
-          );
+          const font = useBitmapFont();
           const label = useNewComponent(() => Label({ font }));
 
           useDraw((context) => {

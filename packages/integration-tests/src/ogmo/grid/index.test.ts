@@ -1,3 +1,4 @@
+/// <reference types="@test-it/core/globals" />
 import { createRoot, useNewComponent, Canvas, Ogmo } from "@hex-engine/2d";
 import project from "./project.ogmo";
 import levelData from "./level.json";

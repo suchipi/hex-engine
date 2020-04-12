@@ -1,3 +1,4 @@
+/// <reference types="@test-it/core/globals" />
 import {
   createRoot,
   useNewComponent,
