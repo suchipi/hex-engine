@@ -2912,10 +2912,10 @@
     nwjs-types "^1.0.0"
     yargs-parser "^17.0.0"
 
-"@test-it/core@^0.6.5":
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/@test-it/core/-/core-0.6.5.tgz#864c91b61c57e52b6d0b1efa184010fdcf69a57d"
-  integrity sha512-Ccc8rXA6XMdqdnzQEJT/QtegE78EHm72IrLZ6wWqJOGvIo3Sxim0kJf3PCqc7FJ4cDmu/ppv6y/onhWiwN85tA==
+"@test-it/core@^0.6.6":
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/@test-it/core/-/core-0.6.6.tgz#5ab50d44b4698d84ce7e8eb021a3cc78e41df931"
+  integrity sha512-A1TsqAac/ouPd2jVbT6Hs2VUoLbHlQ9Y+ry0Rfm4TqBVzZgE+IJ4QgaMDJvtawRIm4rUKlrC/UCj5+7dPjRXSA==
   dependencies:
     "@suchipi/jasmine-mini" "^3.2.1"
     "@test-it/default-loader" "^0.6.4"

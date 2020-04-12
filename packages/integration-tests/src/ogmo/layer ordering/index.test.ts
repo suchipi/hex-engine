@@ -41,6 +41,6 @@ it("renders correctly", async () => {
   inspector.hide();
 
   expect(await TestIt.captureScreenshot()).toMatchImageSnapshot({
-    threshold: 0.2,
+    maxDifferentPixels: 10,
   });
 });
