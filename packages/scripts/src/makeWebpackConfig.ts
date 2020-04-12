@@ -68,10 +68,7 @@ export default (mode: "production" | "development" | "test") => {
         },
         {
           test: /\.(png|jpe?g|gif|wav|mp3|ogg)$/i,
-          use:
-            mode === "test"
-              ? require.resolve("url-loader")
-              : require.resolve("file-loader"),
+          use: require.resolve("file-loader"),
         },
         {
           test: /\.(ase|aseprite)$/i,
