@@ -39,7 +39,6 @@
     "typecheck": "tsc --noEmit",
     "test-it": "node ./packages/scripts/dist/cli.js test './packages/*/src/**/*.test.{ts,js,tsx,jsx}' '!**/node_modules/**'",
     "test": "yarn typecheck && yarn test-it",
-    "cypress:run": "cypress run --headed",
     "build-website": "cd packages/website && yarn build"
   },
   "dependencies": {
