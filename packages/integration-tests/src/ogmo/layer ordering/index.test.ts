@@ -11,20 +11,11 @@ import Inspector from "@hex-engine/inspector";
 import project from "./project.ogmo";
 import level from "./level.json";
 
-async function screenshotRoot(cb: () => void) {
+it("renders correctly", async () => {
   const rootEnt = createRoot(() => {
     const canvas = useNewComponent(() => Canvas({ backgroundColor: "white" }));
     canvas.fullscreen();
-    cb();
-  });
-  const inspector = rootEnt.getComponent(Inspector)!;
-  inspector.hide();
 
-  expect(await TestIt.captureScreenshot()).toMatchImageSnapshot();
-}
-
-it("renders correctly", () =>
-  screenshotRoot(() => {
     const ogmo = useNewComponent(() =>
       Ogmo.Project(project, {
         entity_1: (data) =>
@@ -45,4 +36,11 @@ it("renders correctly", () =>
     );
 
     ogmo.useLevel(level);
-  }));
+  });
+  const inspector = rootEnt.getComponent(Inspector)!;
+  inspector.hide();
+
+  expect(await TestIt.captureScreenshot()).toMatchImageSnapshot({
+    threshold: 0.2,
+  });
+});

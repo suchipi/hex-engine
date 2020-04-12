@@ -22,27 +22,27 @@ beforeEach(() => {
   document.body.innerHTML = "";
 });
 
-async function screenshotRoot(cb: () => void) {
+it("renders correctly", async () => {
   rootEnt = createRoot(() => {
     const canvas = useNewComponent(() => Canvas({ backgroundColor: "white" }));
     canvas.fullscreen();
-    cb();
+
+    const ogmo = useNewComponent(() => Ogmo.Project(project, {}));
+    ogmo.useLevel(level);
   });
   const inspector = rootEnt.getComponent(Inspector)!;
   inspector.hide();
 
-  expect(await TestIt.captureScreenshot()).toMatchImageSnapshot();
-}
+  expect(await TestIt.captureScreenshot()).toMatchImageSnapshot({
+    threshold: 0.2,
+  });
+});
 
-it("renders correctly", () =>
-  screenshotRoot(() => {
-    const ogmo = useNewComponent(() => Ogmo.Project(project, {}));
+it("renders correctly - custom decals", async () => {
+  rootEnt = createRoot(() => {
+    const canvas = useNewComponent(() => Canvas({ backgroundColor: "white" }));
+    canvas.fullscreen();
 
-    ogmo.useLevel(level);
-  }));
-
-it("renders correctly - custom decals", () =>
-  screenshotRoot(() => {
     const ogmo = useNewComponent(() =>
       Ogmo.Project(project, {}, (decalData) =>
         useChild(() => {
@@ -58,4 +58,9 @@ it("renders correctly - custom decals", () =>
     );
 
     ogmo.useLevel(level);
-  }));
+  });
+  const inspector = rootEnt.getComponent(Inspector)!;
+  inspector.hide();
+
+  expect(await TestIt.captureScreenshot()).toMatchImageSnapshot();
+});
