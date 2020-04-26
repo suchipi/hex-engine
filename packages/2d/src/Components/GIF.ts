@@ -1,62 +1,93 @@
 import { AnimationAPI, AnimationFrame } from './Animation';
 import { useType } from '@hex-engine/core';
-import gifken from 'gifken';
+import gifken, { Gif } from 'gifken';
 
-interface GIFInterface extends AnimationAPI<{}> {
+interface GIFInterface extends AnimationAPI<HTMLImageElement> {
+    getGif(): Gif,
     drawCurrentFrame(context: CanvasRenderingContext2D): void;
 }
 
-export default function GIF(options: { url: string }): GIFInterface {
+export default function GIF(options: { url: string, width: number, height: number, fps?: number, compressed?: boolean, loop?: boolean }): GIFInterface {
     useType(GIF);
-    let frames: any[] = [];
+    let gif: Gif = new Gif();
+    let frames: AnimationFrame<HTMLImageElement>[] = [];
+    let play: boolean = false;
     let i = 0;
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", options.url, true);
-    xhr.responseType = "arraybuffer";
-    xhr.onload = (e: any) => {
-        var arrayBuffer = e.target["response"];
-        var gif = gifken.Gif.parse(arrayBuffer);
-
-        frames = gif.split(false).map(frame => {
-            const url = URL.createObjectURL(new Blob(frame.writeToArrayBuffer())).toString();
-            const img = document.createElement('img');
-            img.src = url;
-            return img
+    load(options.url).then(arrayBuffer => {
+        gif = gifken.Gif.parse(arrayBuffer);
+        frames = getFrames({
+            gif,
+            width: options.width,
+            height: options.height,
+            compressed: options.compressed
         })
-    };
-    xhr.send();
 
+        setInterval(() => {
+            if (frames.length - 1 > i && play) {
+                i++;
+            }
+
+            if(frames.length - 1 <= i && options.loop && play) {
+                i = 0;
+            }
+        }, 30)
+    })
+
+    
     return {
+        getGif() {
+            return gif;
+        },
         drawCurrentFrame(context: CanvasRenderingContext2D) {
-            if(frames.length !== 0) {
-                context.drawImage(frames[i], 0, 0);
-                if(frames.length - 1 > i) {
-                    i++;
-                }
+            if(frames.length !== 0 && play) {
+                context.drawImage(frames[i].data, 0, 0);
             }
         },
-        frames: [],
-        loop: false, 
-        currentFrameIndex: 0,
-        currentFrame: new AnimationFrame({}, {
-            duration: 0,
-        }),
+        frames: frames,
+        loop: options.loop || false, 
+        currentFrameIndex: i,
+        currentFrame: frames[i],
         currentFrameCompletion: 0,
         pause() {
-            return void 0;
+            play = false;
         },
         resume() {
-            return void 0;
+            play = true;
         },
         play() {
-            return void 0;
+            play = true;
         },
         restart() {
-            return void 0;
+            i = 0;
+            play = true;
         },  
         goToFrame(frameNumber: number) {
-            return frameNumber;
+            i = frameNumber;
         },
     }
+}
+
+async function load(url: string) {
+    return await fetch(url)
+        .then((res) => res.arrayBuffer());
+}
+
+function getFrames({ gif, width, height, compressed = false }: {
+    gif: Gif, 
+    width: number, 
+    height: number,
+    compressed?: boolean,
+}){
+    return gif.split(compressed).map(frame => {
+        const blob = gifken.GifPresenter.writeToBlob(frame.writeToArrayBuffer())
+        const url = URL.createObjectURL(blob).toString();
+        const img = document.createElement('img');
+        img.width = width;
+        img.height = height;
+        img.src = url;
+        return new AnimationFrame<HTMLImageElement>(img, {
+            duration: 0,
+        });
+    });
 }
