@@ -4,10 +4,17 @@ import gifken, { Gif } from 'gifken';
 
 interface GIFInterface extends AnimationAPI<HTMLImageElement> {
     getGif(): Gif,
-    drawCurrentFrame(context: CanvasRenderingContext2D): void;
+    drawCurrentFrame(context: CanvasRenderingContext2D, x?: number, y?: number): void;
 }
 
-export default function GIF(options: { url: string, width: number, height: number, fps?: number, compressed?: boolean, loop?: boolean }): GIFInterface {
+export default function GIF(options: { 
+    url: string, 
+    width: number, 
+    height: number, 
+    fps?: number, 
+    compressed?: boolean, 
+    loop?: boolean 
+}): GIFInterface {
     useType(GIF);
     let gif: Gif = new Gif();
     let frames: AnimationFrame<HTMLImageElement>[] = [];
@@ -31,7 +38,7 @@ export default function GIF(options: { url: string, width: number, height: numbe
             if(frames.length - 1 <= i && options.loop && play) {
                 i = 0;
             }
-        }, 30)
+        }, 1000 / (options.fps || 25))
     })
 
     
@@ -39,9 +46,9 @@ export default function GIF(options: { url: string, width: number, height: numbe
         getGif() {
             return gif;
         },
-        drawCurrentFrame(context: CanvasRenderingContext2D) {
+        drawCurrentFrame(context: CanvasRenderingContext2D, x: number = 0, y: number = 0) {
             if(frames.length !== 0 && play) {
-                context.drawImage(frames[i].data, 0, 0);
+                context.drawImage(frames[i].data, x, y);
             }
         },
         frames: frames,
