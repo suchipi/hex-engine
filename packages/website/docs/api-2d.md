@@ -2807,12 +2807,12 @@ function PhysicsConstraint(
 };
 ```
 
-### ProcceduralSfx
+### ProceduralSfx
 
 > Available since version: 0.0.1
 
 ```ts
-import { ProcceduralSfx } from "@hex-engine/2d";
+import { ProceduralSfx } from "@hex-engine/2d";
 ```
 
 A Component that can be used to generate procedural sound effects,
