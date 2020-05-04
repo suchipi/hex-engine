@@ -2238,7 +2238,7 @@ function Mouse(options?: {
 
 ### Ogmo.Project
 
-> Available since version: Unreleased
+> Available since version: 0.4.1
 
 ```ts
 import { Ogmo, useNewComponent } from "@hex-engine/2d";
@@ -2256,7 +2256,7 @@ function OgmoProject(
   /**
    * The imported *.ogmo file
    *
-   * Available since version: Unreleased
+   * Available since version: 0.4.1
    */
   projectData: any,
 
@@ -2266,7 +2266,7 @@ function OgmoProject(
    *
    * { player: (entData) => useChild(() => Player(entData)) }
    *
-   * Available since version: Unreleased
+   * Available since version: 0.4.1
    */
   entityFactories: {
     [name: string]: (entityData: OgmoEntityData) => Entity;
@@ -2276,21 +2276,21 @@ function OgmoProject(
    * An optional function that will be called to construct entities for decals.
    * The default implementation uses Ogmo.Decal.
    *
-   * Available since version: Unreleased
+   * Available since version: 0.4.1
    */
   decalFactory?: (decalData: OgmoDecalData) => Entity
 ): {
   /**
    * All of the tilesets specified in the Ogmo project.
    *
-   * Available since version: Unreleased
+   * Available since version: 0.4.1
    */
   tilesets: Array<OgmoTileset>;
 
   /**
    * All of the layer definitions specified in the Ogmo project.
    *
-   * Available since version: Unreleased
+   * Available since version: 0.4.1
    */
   layers: Array<OgmoProjectLayer>;
 
@@ -2303,7 +2303,7 @@ function OgmoProject(
    * ogmo.useLevel(levelData);
    * ```
    *
-   * Available since version: Unreleased
+   * Available since version: 0.4.1
    */
   useLevel(
     levelData: any
@@ -2311,28 +2311,28 @@ function OgmoProject(
     /**
      * The size of the level, in pixels.
      *
-     * Available since version: Unreleased
+     * Available since version: 0.4.1
      */
     size: Vector;
 
     /**
      * The render offset for the level.
      *
-     * Available since version: Unreleased
+     * Available since version: 0.4.1
      */
     offset: Vector;
 
     /**
      * Any custom values that were placed on the level from the Ogmo editor.
      *
-     * Available since version: Unreleased
+     * Available since version: 0.4.1
      */
     values: { [key: string]: any };
 
     /**
      * An array of the layers in the level.
      *
-     * Available since version: Unreleased
+     * Available since version: 0.4.1
      */
     layers: Array<OgmoLevelLayer>;
   };
@@ -2341,7 +2341,7 @@ function OgmoProject(
 
 ### Ogmo.Level
 
-> Available since version: Unreleased
+> Available since version: 0.4.1
 
 ```ts
 import { Ogmo } from "@hex-engine/2d";
@@ -2359,7 +2359,7 @@ You cannot create these manually; instead, use the `useLevel` method on [Ogmo.Pr
 
 ### Ogmo.Decal
 
-> Available since version: Unreleased
+> Available since version: 0.4.1
 
 ```ts
 import { Ogmo } from "@hex-engine/2d";
