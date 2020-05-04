@@ -86,6 +86,15 @@ export default (mode: "production" | "development" | "test") => {
           test: /\.css$/i,
           use: [require.resolve("style-loader"), require.resolve("css-loader")],
         },
+        {
+          test: /\.ogmo$/i,
+          use: require.resolve("ogmo-project-loader"),
+        },
+        {
+          test: /\.json$/i,
+          use: require.resolve("ogmo-level-json-loader"),
+          type: "javascript/auto",
+        },
       ],
     },
     plugins: [

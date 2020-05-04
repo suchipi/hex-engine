@@ -15,14 +15,6 @@ beforeEach(() => {
   messages = [];
 });
 
-test("cannot destroy root ent", () => {
-  const ent = createRoot(() => {});
-
-  expect(() => {
-    ent.destroy();
-  }).toThrowError(`Cannot destroy the root entity`);
-});
-
 test("onDestroy in component, destroy from entity", () => {
   let ent!: Entity;
 

@@ -1,0 +1,50 @@
+{
+  "ogmoVersion": "3.3.0",
+  "width": 320,
+  "height": 240,
+  "offsetX": 0,
+  "offsetY": 0,
+  "layers": [
+    {
+      "name": "decals_1",
+      "_eid": "26896663",
+      "offsetX": 0,
+      "offsetY": 0,
+      "gridCellWidth": 8,
+      "gridCellHeight": 8,
+      "gridCellsX": 40,
+      "gridCellsY": 30,
+      "decals": [
+        {"x": 120, "y": 64, "scaleX": 2, "scaleY": 3, "rotation": 0, "texture": "tiles.png"}
+      ],
+      "folder": ""
+    },
+    {
+      "name": "entities",
+      "_eid": "26786965",
+      "offsetX": 0,
+      "offsetY": 0,
+      "gridCellWidth": 8,
+      "gridCellHeight": 8,
+      "gridCellsX": 40,
+      "gridCellsY": 30,
+      "entities": [
+        {"name": "entity_1", "id": 0, "_eid": "26788032", "x": 136, "y": 56, "width": 16, "height": 16, "originX": 8, "originY": 8, "rotation": 0, "flippedX": false, "flippedY": false}
+      ]
+    },
+    {
+      "name": "decals_2",
+      "_eid": "26899603",
+      "offsetX": 0,
+      "offsetY": 0,
+      "gridCellWidth": 8,
+      "gridCellHeight": 8,
+      "gridCellsX": 40,
+      "gridCellsY": 30,
+      "decals": [
+        {"x": 128, "y": 64, "scaleX": 5, "scaleY": 2, "rotation": 0.7625170311180718, "texture": "tiles.png"}
+      ],
+      "folder": ""
+    }
+  ]
+}

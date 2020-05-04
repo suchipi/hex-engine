@@ -1,0 +1,10 @@
+{
+  "name": "@hex-engine/integration-tests",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@hex-engine/2d": "0.4.1",
+    "@hex-engine/core": "0.4.1",
+    "@hex-engine/inspector": "0.4.1"
+  }
+}

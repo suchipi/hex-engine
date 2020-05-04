@@ -41,7 +41,10 @@ export default function defaultLoader(filename: string): string {
       return runSimpleWebpackLoader(require("bmfont-loader"), filename);
     }
     case ".json": {
-      return "module.exports = " + fs.readFileSync(filename, "utf-8");
+      return runSimpleWebpackLoader(
+        require("ogmo-level-json-loader"),
+        filename
+      );
     }
     case ".css": {
       // This imitates style-loader
@@ -52,6 +55,9 @@ export default function defaultLoader(filename: string): string {
         style.textContent = ${JSON.stringify(content)};
         document.head.appendChild(style);
       `;
+    }
+    case ".ogmo": {
+      return runSimpleWebpackLoader(require("ogmo-project-loader"), filename);
     }
     case ".js":
     case ".jsx":

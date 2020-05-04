@@ -6,6 +6,7 @@
     "packages/create",
     "packages/game",
     "packages/inspector",
+    "packages/integration-tests",
     "packages/scripts",
     "packages/website"
   ],

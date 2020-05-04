@@ -6,10 +6,6 @@ import instantiate from "./instantiate";
 import { StorageForUseDestroy } from "./Hooks/useDestroy";
 
 function destroy(entity: Entity) {
-  if (entity.parent == null) {
-    throw new Error("Cannot destroy the root entity");
-  }
-
   if (entity._isDestroying) return;
   entity._isDestroying = true;
 
@@ -24,7 +20,9 @@ function destroy(entity: Entity) {
     storageForUseDestroy.callbacks.forEach((callback) => callback());
   }
 
-  entity.parent._removeChild(entity);
+  if (entity.parent) {
+    entity.parent._removeChild(entity);
+  }
 
   entity._isDestroying = false;
 }

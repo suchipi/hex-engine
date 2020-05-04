@@ -2912,10 +2912,10 @@
     nwjs-types "^1.0.0"
     yargs-parser "^17.0.0"
 
-"@test-it/core@^0.6.4":
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/@test-it/core/-/core-0.6.4.tgz#f28590eaa6c2a69ab213acd47827125162b08df2"
-  integrity sha512-O3hebsd9vgQykBDwQon1gbChCr7l64qMdYimB5+ki6CCFRiBifS+gfJuiiWNDVHbX1P+6cSFRRe5IHXI8K2WCA==
+"@test-it/core@^0.6.6":
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/@test-it/core/-/core-0.6.6.tgz#5ab50d44b4698d84ce7e8eb021a3cc78e41df931"
+  integrity sha512-A1TsqAac/ouPd2jVbT6Hs2VUoLbHlQ9Y+ry0Rfm4TqBVzZgE+IJ4QgaMDJvtawRIm4rUKlrC/UCj5+7dPjRXSA==
   dependencies:
     "@suchipi/jasmine-mini" "^3.2.1"
     "@test-it/default-loader" "^0.6.4"
@@ -9407,6 +9407,24 @@ obuf@^1.0.0, obuf@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/obuf/-/obuf-1.1.2.tgz#09bea3343d41859ebd446292d11c9d4db619084e"
   integrity sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==
+
+ogmo-level-json-loader@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/ogmo-level-json-loader/-/ogmo-level-json-loader-0.2.0.tgz#5c0f59001f32ff08ecde9bab0734a2a92d390485"
+  integrity sha512-aUEIzPBcu8a3lRJumJSvIxz8Qis8CneFC6gzUdmfl5atg6kkqaK9qIRp483CdzJSu9f6w+rnj2oBffBXwesh6g==
+  dependencies:
+    "@babel/generator" "^7.7.7"
+    "@babel/template" "^7.7.4"
+    "@babel/types" "^7.7.4"
+
+ogmo-project-loader@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/ogmo-project-loader/-/ogmo-project-loader-0.2.0.tgz#37cdb895b2614670f4cb5c52417f171eee35bd29"
+  integrity sha512-aZ9yBYyGc66P96VmZdgPPN0m0amqXiiusF7XfLElbBG5/ntCdkeUXWTBek6OF/ujcF4QawZ85EFKb8ObsVLvbQ==
+  dependencies:
+    "@babel/generator" "^7.7.7"
+    "@babel/template" "^7.7.4"
+    "@babel/types" "^7.7.4"
 
 on-exit@^1.0.1:
   version "1.0.1"

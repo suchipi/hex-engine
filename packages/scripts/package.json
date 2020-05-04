@@ -1,6 +1,6 @@
 {
   "name": "hex-engine-scripts",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "main": "dist/index.js",
   "bin": "dist/cli.js",
   "license": "MIT",
@@ -15,7 +15,7 @@
     "@babel/preset-react": "^7.9.4",
     "@babel/preset-typescript": "^7.9.0",
     "@test-it/cli": "^0.6.4",
-    "@test-it/core": "^0.6.4",
+    "@test-it/core": "^0.6.6",
     "@types/lodash.debounce": "^4.0.6",
     "@types/react-dev-utils": "^9.0.2",
     "@types/webpack": "^4.41.2",
@@ -29,6 +29,8 @@
     "html-webpack-plugin": "^3.2.0",
     "mime-types": "^2.1.26",
     "on-exit": "^1.0.1",
+    "ogmo-level-json-loader": "^0.2.0",
+    "ogmo-project-loader": "^0.2.0",
     "react-dev-utils": "^10.0.0",
     "regenerator-runtime": "^0.13.3",
     "resolve": "^1.14.2",
@@ -43,6 +45,6 @@
     "@types/mime-types": "^2.1.0"
   },
   "peerDependencies": {
-    "@hex-engine/2d": ">=0.4.0"
+    "@hex-engine/2d": ">=0.4.1"
   }
 }
