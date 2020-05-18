@@ -1,5 +1,5 @@
 import { useType } from "@hex-engine/core";
-import { Vector, Shape } from "../Models";
+import { Vector, Shape, Polygon } from "../Models";
 import {
   useInspectorHoverOutline,
   useInspectorSelectEntity,
@@ -13,16 +13,21 @@ import {
  *
  * You should only have one `Geometry` component per `Entity`.
  */
-function Geometry<S extends Shape>({
-  shape,
+function Geometry({
+  shape = new Polygon([]),
   position = new Vector(0, 0),
   rotation = 0,
   scale = new Vector(1, 1),
 }: {
-  shape: S;
+  shape?: Shape;
   position?: Vector | undefined;
   rotation?: number | undefined;
   scale?: Vector | undefined;
+} = {
+  shape: new Polygon([]),
+  position: new Vector(0, 0),
+  rotation: 0,
+  scale: new Vector(1, 1),
 }) {
   useType(Geometry);
 
