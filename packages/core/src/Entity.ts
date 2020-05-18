@@ -148,4 +148,9 @@ export default class Entity implements EntityInterface {
 
     return ancestors;
   }
+
+  takeChild(entity: Entity) {
+    entity.parent?._removeChild(entity);
+    this._addChild(entity);
+  }
 }
