@@ -10,7 +10,7 @@ export default function SystemFont({
 }: {
   name: string;
   size: number;
-  color?: void | string;
+  color?: void | string | CanvasGradient;
 }) {
   useType(SystemFont);
 
