@@ -1,5 +1,13 @@
 # Changelog
 
+# 0.4.2
+
+Fixed type errors when using package with TypeScript 3.9.
+
+# 0.4.0, 0.4.1
+
+Added support for Ogmo Editor and added a testing framework.
+
 # 0.3.4
 
 ## The result of `useEntitiesAtPoint` is now cached for the duration of each frame.

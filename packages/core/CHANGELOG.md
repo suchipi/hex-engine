@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.4.0, 0.4.1
+
+Added a testing framework.
+
 # 0.3.2
 
 ## Upgraded `@hex-engine/2d` and `@hex-engine/inspector` to 0.3.2 (non-breaking change)
