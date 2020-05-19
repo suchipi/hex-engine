@@ -28,7 +28,7 @@
     "eslint-plugin-import": "^2.20.0",
     "eslint-plugin-react": "^7.18.0",
     "prettier": "^1.19.1",
-    "typescript": "^3.7.4",
+    "typescript": "^3.9.2",
     "workspace-builder": "^1.0.0"
   },
   "scripts": {
