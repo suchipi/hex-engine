@@ -13,18 +13,17 @@ import {
  *
  * You should only have one `Geometry` component per `Entity`.
  */
-function Geometry({
-  shape = new Polygon([]),
+function Geometry<S extends Shape = Polygon>({
+  shape,
   position = new Vector(0, 0),
   rotation = 0,
   scale = new Vector(1, 1),
 }: {
-  shape?: Shape;
+  shape?: S;
   position?: Vector | undefined;
   rotation?: number | undefined;
   scale?: Vector | undefined;
 } = {
-  shape: new Polygon([]),
   position: new Vector(0, 0),
   rotation: 0,
   scale: new Vector(1, 1),
@@ -34,7 +33,7 @@ function Geometry({
   const transforms = useEntityTransforms();
 
   const geometry = {
-    shape,
+    shape: shape ?? new Polygon([]),
     position,
     rotation,
     scale,
