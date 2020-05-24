@@ -595,6 +595,15 @@ Create a new Vector equivalent to this one but rotated by the specified amount (
 
 Mutate this Vector by rotating it the specified amount (in radians), clockwise.
 
+##### dotProduct
+
+> Available since version: Unreleased
+
+`dotProduct(other: Vector): number`
+
+Returns the dot product of this vector with `other`. The resulting number is negative if the vectors face
+opposite directions, and null if they are perpendicular.
+
 ##### asDOMPoint
 
 > Available since version: 0.0.0
