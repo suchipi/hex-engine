@@ -124,6 +124,15 @@ Disable all [`Component`]s on this Entity and its [descendants][`entity.descenda
 
 Use the [`useEnableDisable`] hook to specify what happens when a [`Component`] is enabled or disabled.
 
+##### takeChild
+
+> Available since version: Unreleased
+
+`takeChild(entity: Entity)`
+
+Transfer the ownership of `entity` to this Entity, so that it becomes the 
+[parent][`entity.parent`] of `entity`.
+
 ##### destroy
 
 > Available since version: 0.1.2

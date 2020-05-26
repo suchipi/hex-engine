@@ -45,6 +45,11 @@ export interface Entity {
    * parent) will be last in the Array.
    */
   ancestors(): Array<Entity>;
+  
+  /**
+   * Transfer the ownership of the Entity from its parent to this Entity.
+   */
+  takeChild(entity: Entity): void;
 
   /**
    * All the Component instances that are on this Entity.
