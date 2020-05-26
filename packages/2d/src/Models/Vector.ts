@@ -321,6 +321,11 @@ export default class Vector {
     return this;
   }
 
+  /** Return the dot product with the other vector. If it's negative, they are in opposite directions */
+  dotProduct(other: Vector): number {
+    return other.x * this.x + other.y * this.y;
+  }
+
   /** Create a DOMPoint with the same x and y values as this Point. */
   asDOMPoint(): DOMPoint {
     if (window.DOMPoint) {
