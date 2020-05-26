@@ -602,7 +602,7 @@ Mutate this Vector by rotating it the specified amount (in radians), clockwise.
 `dotProduct(other: Vector): number`
 
 Returns the dot product of this vector with `other`. The resulting number is negative if the vectors face
-opposite directions, and null if they are perpendicular.
+opposite directions, and 0 if they are perpendicular.
 
 ##### asDOMPoint
 
