@@ -604,6 +604,22 @@ Mutate this Vector by rotating it the specified amount (in radians), clockwise.
 Returns the dot product of this vector with `other`. The resulting number is negative if the vectors face
 opposite directions, and 0 if they are perpendicular.
 
+##### perpendicular
+
+> Available since version: Unreleased
+
+`perpendicular(): Vector`
+
+Returns a vector perpendicular to this vector, with the same magnitude.
+
+##### perpendicularMutate
+
+> Available since version: Unreleased
+
+`perpendicularMutate(): this`
+
+Rotate this vector to make it perpendicular to its former self.
+
 ##### asDOMPoint
 
 > Available since version: 0.0.0

@@ -62,6 +62,14 @@ test("oppositeMutate", () => {
   expect(v2.y).toBe(-2);
 });
 
+test("perpendicular", () => {
+  const v1 = new Vector(3, 5);
+  const v2 = v1.perpendicular();
+
+  expect(v1.magnitude).toBeCloseTo(v2.magnitude);
+  expect(v1.dotProduct(v2)).toBeCloseTo(0);
+});
+
 // etc
 
 test("normalize", () => {
