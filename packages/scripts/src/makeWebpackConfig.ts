@@ -29,7 +29,7 @@ export default (mode: "production" | "development" | "test") => {
 
     mode: mode === "test" ? "development" : mode,
 
-    entry: [packageDir("./src/polyfills"), localDir("./src/index.ts")],
+    entry: [packageDir("./src/polyfills"), localDir(process.env.HEX_ENGINE_ENTRY_POINT || "./src/index.ts")],
     output: {
       path: localDir("dist"),
     },
