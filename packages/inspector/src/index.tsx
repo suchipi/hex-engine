@@ -35,9 +35,17 @@ interface StateHolder {
   collapseTree: () => void;
 }
 
-const initialInspectorTree = localStorage.inspectorTree
-  ? JSON.parse(localStorage.inspectorTree)
-  : { root: {} };
+// Chrome throws an error when localStorage is not available, even if all you do
+// is check if it's undefined. So this approach is needed.
+const initialInspectorTree = (() => {
+  try {
+    return localStorage.inspectorTree
+      ? JSON.parse(localStorage.inspectorTree)
+      : { root: {} };
+  } catch (err) {
+    return { root: {} };
+  }
+})();
 
 function saveTree(tree: any) {
   localStorage.inspectorTree = JSON.stringify(tree);
