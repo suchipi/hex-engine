@@ -18,7 +18,7 @@ export default function GIF(options: {
   let gif: Gif = new Gif();
   let frames: AnimationFrame<HTMLImageElement>[] = [];
   let play: boolean = false;
-  let i = 0;
+  let currentFrameIndex: number = 0;
 
   load(options.url).then(async arrayBuffer => {
     gif = gifken.Gif.parse(arrayBuffer);
@@ -29,46 +29,55 @@ export default function GIF(options: {
     })
 
     setInterval(() => {
-      if (frames.length - 1 > i && play) {
-        i++;
+      if (frames.length - 1 > currentFrameIndex && play) {
+        currentFrameIndex ++;
       }
 
-      if(frames.length - 1 <= i && options.loop && play) {
-        i = 0;
+      if(frames.length - 1 <= currentFrameIndex && options.loop && play) {
+        currentFrameIndex = 0;
       }
     }, 1000 / (options.fps || 25))
   })
 
-    
   return {
     getGif() {
       return gif;
     },
     drawCurrentFrame(context: CanvasRenderingContext2D, x: number = 0, y: number = 0) {
-      if(frames.length !== 0 && play) {
-          context.drawImage(frames[i].data, x, y);
+      if(frames.length !== 0) {
+        context.drawImage(frames[currentFrameIndex].data, x, y);
       }
     },
     frames: frames,
     loop: options.loop || false, 
-    currentFrameIndex: i,
-    currentFrame: frames[i],
-    currentFrameCompletion: 0,
+    get currentFrameIndex() {
+      return currentFrameIndex;
+    },
+    get currentFrame() {
+      return frames[currentFrameIndex];
+    },
+    get currentFrameCompletion() {
+      if(frames.length !== 0) {
+        return currentFrameIndex / frames.length;
+      }
+    
+      return 1;
+    },
     pause() {
       play = false;
     },
     resume() {
-      play = true;
+      this.play();
     },
     play() {
       play = true;
     },
     restart() {
-      i = 0;
+      currentFrameIndex = 0;
       play = true;
     },  
     goToFrame(frameNumber: number) {
-      i = frameNumber;
+      currentFrameIndex = frameNumber;
     },
   }
 }
