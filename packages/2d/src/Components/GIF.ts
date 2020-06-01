@@ -7,6 +7,29 @@ interface GIFInterface extends AnimationAPI<HTMLImageElement> {
   drawCurrentFrame(context: CanvasRenderingContext2D, x?: number, y?: number): void;
 }
 
+/**
+ * A component which able you to play and manipulate gifs into hex-engine.
+ * @example
+ * import someGifFile from "./your.gif";
+ *
+ * export default function MyGif() {
+ *   useType(MyGif);
+ *
+ *   const gif = useNewComponent(() => GIF({
+ *     url: someGifFile, 
+ *     width: 200, 
+ *     height: 200, 
+ *     fps: 20,
+ *     loop: true
+ *   }));
+ *
+ *   gif.play()
+ *
+ *   useDraw((context) => {
+ *     gif.drawCurrentFrame(context);
+ *   });
+ * } 
+ */
 export default function GIF(options: { 
   url: string, 
   width: number, 
