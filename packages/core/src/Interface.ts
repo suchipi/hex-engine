@@ -47,11 +47,6 @@ export interface Entity {
   ancestors(): Array<Entity>;
   
   /**
-   * Transfer the ownership of the Entity from its parent to this Entity.
-   */
-  takeChild(entity: Entity): void;
-
-  /**
    * All the Component instances that are on this Entity.
    */
   components: Set<Component>;
