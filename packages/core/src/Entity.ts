@@ -5,29 +5,7 @@ import {
 import instantiate from "./instantiate";
 import { StorageForUseDestroy } from "./Hooks/useDestroy";
 
-function destroy(entity: Entity) {
-  if (entity._isDestroying) return;
-  entity._isDestroying = true;
-
-  for (const child of entity.children) {
-    destroy(child);
-  }
-
-  entity.disable();
-
-  const storageForUseDestroy = entity.getComponent(StorageForUseDestroy);
-  if (storageForUseDestroy) {
-    storageForUseDestroy.callbacks.forEach((callback) => callback());
-  }
-
-  if (entity.parent) {
-    entity.parent._removeChild(entity);
-  }
-
-  entity._isDestroying = false;
-}
-
-function enable(entity: Entity) {
+function enable(entity: EntityInterface) {
   for (const component of entity.components) {
     if (!component.isEnabled) {
       component.enable();
@@ -38,7 +16,7 @@ function enable(entity: Entity) {
   }
 }
 
-function disable(entity: Entity) {
+function disable(entity: EntityInterface) {
   for (const component of entity.components) {
     if (component.isEnabled) {
       component.disable();
@@ -49,7 +27,7 @@ function disable(entity: Entity) {
   }
 }
 
-function gatherDescendants(ent: Entity, descendants: Array<Entity> = []) {
+function gatherDescendants(ent: EntityInterface, descendants: Array<EntityInterface> = []) {
   for (const child of ent.children) {
     descendants.push(child);
   }
@@ -65,8 +43,8 @@ export default class Entity implements EntityInterface {
   _kind: "entity" = "entity";
 
   components: Set<ComponentInterface> = new Set();
-  children: Set<Entity> = new Set();
-  parent: Entity | null = null;
+  children: Set<EntityInterface> = new Set();
+  _parent: EntityInterface | null = null;
   name: string | null = null;
   id: number = -1;
   rootComponent: any;
@@ -83,9 +61,7 @@ export default class Entity implements EntityInterface {
     ent.id = id;
     id++;
 
-    if (parent) {
-      parent._addChild(ent);
-    }
+    ent.parent = parent || null;
 
     const component = instantiate(componentFactory, ent);
     ent.rootComponent = component;
@@ -100,13 +76,14 @@ export default class Entity implements EntityInterface {
     );
   }
 
-  _addChild(child: Entity): void {
-    this.children.add(child);
-    child.parent = this;
+  get parent(): EntityInterface | null {
+    return this._parent;
   }
-  _removeChild(child: Entity): void {
-    this.children.delete(child);
-    child.parent = null;
+  set parent(newParent: EntityInterface | null) {
+    if (this.parent === newParent) return;
+    this.parent?.children.delete(this);
+    this._parent = newParent;
+    newParent?.children.add(this);
   }
 
   getComponent<Func extends (...args: any[]) => any>(
@@ -130,7 +107,23 @@ export default class Entity implements EntityInterface {
   }
 
   destroy() {
-    destroy(this);
+    if (this._isDestroying) return;
+    this._isDestroying = true;
+
+    for (const child of this.children) {
+      child.destroy();
+    }
+
+    this.disable();
+
+    const storageForUseDestroy = this.getComponent(StorageForUseDestroy);
+    if (storageForUseDestroy) {
+      storageForUseDestroy.callbacks.forEach((callback) => callback());
+    }
+
+    this.parent = null;
+
+    this._isDestroying = false;
   }
 
   descendants() {
@@ -138,7 +131,7 @@ export default class Entity implements EntityInterface {
   }
 
   ancestors() {
-    const ancestors: Array<Entity> = [];
+    const ancestors: Array<EntityInterface> = [];
 
     let currentEnt = this.parent;
     while (currentEnt) {
@@ -149,8 +142,7 @@ export default class Entity implements EntityInterface {
     return ancestors;
   }
 
-  takeChild(entity: Entity) {
-    entity.parent?._removeChild(entity);
-    this._addChild(entity);
+  takeChild(entity: EntityInterface) {
+    entity.parent = this;
   }
 }
