@@ -45,7 +45,7 @@ export interface Entity {
    * parent) will be last in the Array.
    */
   ancestors(): Array<Entity>;
-  
+
   /**
    * Transfer the ownership of the Entity from its parent to this Entity.
    */
@@ -69,6 +69,11 @@ export interface Entity {
   ):
     | null
     | (ReturnType<Func> extends {} ? ReturnType<Func> & Component : Component);
+
+  /**
+   * Whether this Entity is currently "enabled".
+   */
+  isEnabled: boolean;
 
   /**
    * Enable all components on this Entity and its children

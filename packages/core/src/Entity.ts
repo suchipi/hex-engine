@@ -27,27 +27,6 @@ function destroy(entity: Entity) {
   entity._isDestroying = false;
 }
 
-function enable(entity: Entity) {
-  for (const component of entity.components) {
-    if (!component.isEnabled) {
-      component.enable();
-    }
-  }
-  for (const child of entity.children) {
-    enable(child);
-  }
-}
-
-function disable(entity: Entity) {
-  for (const component of entity.components) {
-    if (component.isEnabled) {
-      component.disable();
-    }
-  }
-  for (const child of entity.children) {
-    disable(child);
-  }
-}
 
 function gatherDescendants(ent: Entity, descendants: Array<Entity> = []) {
   for (const child of ent.children) {
@@ -71,6 +50,7 @@ export default class Entity implements EntityInterface {
   id: number = -1;
   rootComponent: any;
 
+  _isEnabled: boolean = false;
   _isDestroying: boolean = false;
 
   static _create<T>(
@@ -121,12 +101,27 @@ export default class Entity implements EntityInterface {
     return maybeComponent ?? null;
   }
 
+  get isEnabled(): boolean {
+    return this._isEnabled;
+  }
+  set isEnabled(nextVal: boolean) {
+    //if (this.isEnabled === nextVal) return;
+
+    for (const component of this.components) {
+      component.isEnabled = nextVal;
+    }
+
+    for (const child of this.children) {
+      child.isEnabled = nextVal;
+    }
+  }
+
   enable() {
-    enable(this);
+    this.isEnabled = true;
   }
 
   disable() {
-    disable(this);
+    this.isEnabled = false;
   }
 
   destroy() {
