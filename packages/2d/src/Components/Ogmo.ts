@@ -16,7 +16,7 @@ import { useDraw } from "../Hooks";
  * The data that describes an entity inside of an Ogmo level.
  * This shape comes directly from the level json.
  */
-type OgmoEntityData = {
+export type OgmoEntityData = {
   name: string;
   id: number;
   _eid: string;
@@ -36,7 +36,7 @@ type OgmoEntityData = {
  * The data that describes a decal inside of an Ogmo level.
  * This shape comes directly from the level json.
  */
-type OgmoDecalData = {
+export type OgmoDecalData = {
   x: number;
   y: number;
   scaleX?: number;
@@ -46,14 +46,14 @@ type OgmoDecalData = {
   values?: { [key: string]: any };
 };
 
-type OgmoTileset = {
+export type OgmoTileset = {
   label: string;
   path: string;
   tileSize: Vector;
   tileSeparation: Vector;
 };
 
-type OgmoProjectTileLayer = {
+export type OgmoProjectTileLayer = {
   definition: "tile";
   name: string;
   gridSize: Vector;
@@ -63,7 +63,7 @@ type OgmoProjectTileLayer = {
   defaultTileset: OgmoTileset;
 };
 
-type OgmoProjectGridLayer = {
+export type OgmoProjectGridLayer = {
   definition: "grid";
   name: string;
   gridSize: Vector;
@@ -74,7 +74,7 @@ type OgmoProjectGridLayer = {
   };
 };
 
-type OgmoProjectEntityLayer = {
+export type OgmoProjectEntityLayer = {
   definition: "entity";
   name: string;
   gridSize: Vector;
@@ -83,7 +83,7 @@ type OgmoProjectEntityLayer = {
   excludedTags: Array<string>;
 };
 
-type OgmoProjectDecalLayer = {
+export type OgmoProjectDecalLayer = {
   definition: "decal";
   name: string;
   gridSize: Vector;
@@ -94,13 +94,13 @@ type OgmoProjectDecalLayer = {
   values: Array<any>;
 };
 
-type OgmoProjectLayer =
+export type OgmoProjectLayer =
   | OgmoProjectTileLayer
   | OgmoProjectGridLayer
   | OgmoProjectEntityLayer
   | OgmoProjectDecalLayer;
 
-type OgmoProjectApi = {
+export type OgmoProjectApi = {
   createEntity: (data: OgmoEntityData) => Entity;
   createDecal: (data: OgmoDecalData) => Entity;
   tilesets: Array<OgmoTileset>;
@@ -150,29 +150,37 @@ function OgmoDecal(decalData: OgmoDecalData) {
 
 Object.defineProperty(OgmoDecal, "name", { value: "Ogmo.Decal" });
 
-type OgmoLevelLayer =
-  | {
-      definition: "tile";
-      projectLayer: OgmoProjectTileLayer;
-      data: Grid<number>;
-    }
-  | {
-      definition: "grid";
-      projectLayer: OgmoProjectGridLayer;
-      grid: Grid<string>;
-    }
-  | {
-      definition: "entity";
-      projectLayer: OgmoProjectEntityLayer;
-      entities: Array<OgmoEntityData>;
-    }
-  | {
-      definition: "decal";
-      projectLayer: OgmoProjectDecalLayer;
-      decals: Array<OgmoDecalData>;
-    };
+export type OgmoLevelTileLayer = {
+  definition: "tile";
+  projectLayer: OgmoProjectTileLayer;
+  data: Grid<number>;
+};
 
-type OgmoLevelApi = {
+export type OgmoLevelGridLayer = {
+  definition: "grid";
+  projectLayer: OgmoProjectGridLayer;
+  grid: Grid<string>;
+};
+
+export type OgmoLevelEntityLayer = {
+  definition: "entity";
+  projectLayer: OgmoProjectEntityLayer;
+  entities: Array<OgmoEntityData>;
+};
+
+export type OgmoLevelDecalLayer = {
+  definition: "decal";
+  projectLayer: OgmoProjectDecalLayer;
+  decals: Array<OgmoDecalData>;
+};
+
+export type OgmoLevelLayer =
+  | OgmoLevelTileLayer
+  | OgmoLevelGridLayer
+  | OgmoLevelEntityLayer
+  | OgmoLevelDecalLayer;
+
+export type OgmoLevelApi = {
   /** The size of the level, in pixels. */
   size: Vector;
 
