@@ -1,6 +1,6 @@
 {
   "name": "create-hex-engine-game",
-  "version": "0.2.0",
+  "version": "0.4.1",
   "license": "MIT",
   "main": "dist/index.js",
   "bin": "dist/cli.js",
@@ -10,6 +10,7 @@
     "@types/shelljs": "^0.8.6",
     "chalk": "^3.0.0",
     "core-js": "^3.6.4",
+    "ora": "^4.0.3",
     "regenerator-runtime": "^0.13.3",
     "shelljs": "^0.8.3"
   }

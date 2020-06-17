@@ -321,6 +321,24 @@ export default class Vector {
     return this;
   }
 
+  /** Return the dot product with the other vector. If it's negative, they are in opposite directions */
+  dotProduct(other: Vector): number {
+    return other.x * this.x + other.y * this.y;
+  }
+
+  /** Return a vector perpendicular to this one with the same magnitude */
+  perpendicular(): Vector {
+    // Rotates clockwise, assuming y points down
+    return new Vector(-this.y, this.x);
+  }
+
+  /** Rotates this vector to become perpendicular to its former self */
+  perpendicularMutate(): this {
+    // Rotates clockwise, assuming y points down
+    [this.x, this.y] = [-this.y, this.x];
+    return this;
+  }
+
   /** Create a DOMPoint with the same x and y values as this Point. */
   asDOMPoint(): DOMPoint {
     if (window.DOMPoint) {

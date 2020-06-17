@@ -19,7 +19,7 @@ export default function Drag() {
         present: true;
         ent: Entity;
         geometry: ReturnType<typeof Geometry>;
-        physics?: ReturnType<typeof Physics.Body>;
+        physics?: null | ReturnType<typeof Physics.Body>;
         originalStatic: boolean;
       }
     | {

@@ -1,5 +1,25 @@
 # Changelog
 
+# 0.4.2
+
+Fixed type errors when using package with TypeScript 3.9.
+
+# 0.4.0, 0.4.1
+
+Added support for Ogmo Editor and added a testing framework.
+
+# 0.3.4
+
+## The result of `useEntitiesAtPoint` is now cached for the duration of each frame.
+
+This improves performance, because calling `useEntitiesAtPoint` many times per frame is common (when using many entities with `Geometry` components (since those `Geometry` comonents add `Mouse` components, which add `MousePosition` components, which call `useEntitiesAtPoint` once per entity per frame), and under most cases, it should return the same value (within the same frame).
+
+Do note, though, that this means that `useEntitiesAtPoint` could return outdated data for a portion of a frame, if you move an entity within a `useUpdate` callback, and that movement causes it to be under the cursor (or no longer under the cursor). However, the data will be correct on the next frame.
+
+## Upgraded `@hex-engine/inspector` to 0.3.4 (non-breaking change)
+
+This inspector version includes new features and bugfixes.
+
 # 0.3.3
 
 ## Upgraded `@hex-engine/inspector` to 0.3.3 (non-breaking change)

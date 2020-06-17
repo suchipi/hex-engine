@@ -66,14 +66,7 @@ export default function RunLoop() {
   }
 
   function step() {
-    if (frameRequest != null) {
-      cancelAnimationFrame(frameRequest);
-    }
-
-    frameRequest = requestAnimationFrame((timestamp: number) => {
-      lastTimestamp = timestamp;
-      runFrameCallbacks(16.667);
-    });
+    runFrameCallbacks(16.667);
   }
 
   function resume() {

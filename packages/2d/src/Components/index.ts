@@ -17,6 +17,7 @@ import Keyboard from "./Keyboard";
 import Label from "./Label";
 import LowLevelMouse, { HexMouseEvent } from "./LowLevelMouse";
 import Mouse from "./Mouse";
+import Ogmo from "./Ogmo";
 import Physics from "./Physics";
 import ProceduralSfx from "./ProceduralSfx";
 import SpriteSheet from "./SpriteSheet";
@@ -46,6 +47,7 @@ export {
   LowLevelMouse,
   HexMouseEvent,
   Mouse,
+  Ogmo,
   Physics,
   ProceduralSfx,
   SpriteSheet,

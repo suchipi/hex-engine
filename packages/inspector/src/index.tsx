@@ -32,11 +32,20 @@ interface StateHolder {
   toggleSelectMode: () => void;
   getSelectedEntity: () => null | Entity;
   selectEntity: (entity: Entity) => void;
+  collapseTree: () => void;
 }
 
-const initialInspectorTree = localStorage.inspectorTree
-  ? JSON.parse(localStorage.inspectorTree)
-  : { root: {} };
+// Chrome throws an error when localStorage is not available, even if all you do
+// is check if it's undefined. So this approach is needed.
+const initialInspectorTree = (() => {
+  try {
+    return localStorage.inspectorTree
+      ? JSON.parse(localStorage.inspectorTree)
+      : { root: {} };
+  } catch (err) {
+    return { root: {} };
+  }
+})();
 
 function saveTree(tree: any) {
   localStorage.inspectorTree = JSON.stringify(tree);
@@ -85,6 +94,7 @@ function Root({
       toggleOpen={stateHolder.toggleOpen}
       isSelectMode={stateHolder.getSelectMode()}
       toggleSelectMode={stateHolder.toggleSelectMode}
+      collapseTree={stateHolder.collapseTree}
     />
   );
 }
@@ -124,9 +134,9 @@ export default function Inspector() {
         const key = path.pop();
 
         // lodash.get(obj, []) does not return obj. We need to test if we
-        // reached the root and manually delete it.
+        // reached the root and manually collapse it
         if (key === "root") {
-          delete tree.root;
+          stateHolder.collapseTree();
         } else {
           const subtree = get(tree, path);
           delete subtree[key!];
@@ -137,6 +147,9 @@ export default function Inspector() {
     },
     getExpanded: (path: Array<string | number>) => {
       return get(tree, path) !== undefined;
+    },
+    collapseTree: () => {
+      tree.root = {};
     },
     err: null,
     forceUpdate: null,
@@ -217,6 +230,12 @@ export default function Inspector() {
 
   return {
     ...inspectorSelectApi,
+    hide() {
+      el.style.visibility = "hidden";
+    },
+    show() {
+      el.style.visibility = "";
+    },
   };
 }
 

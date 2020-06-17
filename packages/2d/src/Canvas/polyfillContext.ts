@@ -112,7 +112,7 @@ export default function polyfillContext(context: CanvasRenderingContext2D) {
 
     resetTransform() {
       matrix = createSVGMatrix();
-      if (super.resetTransform) {
+      if (typeof super.resetTransform === "function") {
         super.resetTransform();
       } else {
         // Identity matrix

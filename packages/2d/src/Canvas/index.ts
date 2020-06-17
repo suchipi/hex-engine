@@ -36,6 +36,7 @@ export default Object.assign(
       canvas = document.createElement("canvas");
       document.body.appendChild(canvas);
       canvas.style.userSelect = "none";
+      // @ts-ignore this property was removed in TypeScript 3.9
       canvas.style.msUserSelect = "none";
       canvas.style.webkitUserSelect = "none";
     }
