@@ -130,6 +130,8 @@ export default function LowLevelMouse() {
   }
 
   let pendingMove: null | (() => void) = null;
+  let pendingOver: null | (() => void) = null;
+  let pendingOut: null | (() => void) = null;
   let pendingDown: null | (() => void) = null;
   let pendingUp: null | (() => void) = null;
 
@@ -140,6 +142,23 @@ export default function LowLevelMouse() {
       storage.moveCallbacks.forEach((callback) => callback(event));
     };
   };
+
+  const handleMouseOver = ({ clientX, clientY, buttons }: MouseEvent) => {
+    pendingOver = () => {
+      pendingOver = null;
+      updateEvent({ clientX, clientY, buttons });
+      storage.overCallbacks.forEach((callback) => callback(event));
+    };
+  };
+
+  const handleMouseOut = ({ clientX, clientY, buttons }: MouseEvent) => {
+    pendingOut = () => {
+      pendingOut = null;
+      updateEvent({ clientX, clientY, buttons });
+      storage.outCallbacks.forEach((callback) => callback(event));
+    };
+  };
+
   const handleMouseDown = ({ clientX, clientY, button }: MouseEvent) => {
     if (!firstClickHasHappened) {
       firstClickHasHappened = true;
@@ -155,27 +174,12 @@ export default function LowLevelMouse() {
       storage.downCallbacks.forEach((callback) => callback(event));
     };
   };
+
   const handleMouseUp = ({ clientX, clientY, button }: MouseEvent) => {
     pendingUp = () => {
       pendingUp = null;
       updateEvent({ clientX, clientY, button });
       storage.upCallbacks.forEach((callback) => callback(event));
-    };
-  };
-
-  const handleMouseOut = ({ clientX, clientY, buttons }: MouseEvent) => {
-    pendingMove = () => {
-      pendingMove = null;
-      updateEvent({ clientX, clientY, buttons });
-      storage.outCallbacks.forEach((callback) => callback(event));
-    };
-  };
-
-  const handleMouseOver = ({ clientX, clientY, buttons }: MouseEvent) => {
-    pendingMove = () => {
-      pendingMove = null;
-      updateEvent({ clientX, clientY, buttons });
-      storage.overCallbacks.forEach((callback) => callback(event));
     };
   };
 
@@ -242,6 +246,8 @@ export default function LowLevelMouse() {
   useUpdate(() => {
     // Very important that we process move before down/up, so that touch screens work
     if (pendingMove) pendingMove();
+    if (pendingOver) pendingOver();
+    if (pendingOut) pendingOut();
     if (pendingDown) pendingDown();
     if (pendingUp) pendingUp();
   });
@@ -286,23 +292,23 @@ export default function LowLevelMouse() {
 
   return {
     /** Registers the provided function to be called when the mouse cursor moves. */
-    onMouseMove: (callback: Set<(event: HexMouseEvent) => void>) => {
+    onMouseMove: (callback: (event: HexMouseEvent) => void) => {
       storage.moveCallbacks.add(useCallbackAsCurrent(callback));
     },
     /** Registers the provided function to be called when any button on the mouse is pressed down. */
-    onMouseDown: (callback: Set<(event: HexMouseEvent) => void>) => {
+    onMouseDown: (callback: (event: HexMouseEvent) => void) => {
       storage.downCallbacks.add(useCallbackAsCurrent(callback));
     },
     /** Registers the provided function to be called when any button on the mouse is released. */
-    onMouseUp: (callback: Set<(event: HexMouseEvent) => void>) => {
+    onMouseUp: (callback: (event: HexMouseEvent) => void) => {
       storage.upCallbacks.add(useCallbackAsCurrent(callback));
     },
     /** Registers the provided function to be called when the mouse exits the canvas. */
-    onCanvasLeave: (callback: Set<(event: HexMouseEvent) => void>) => {
+    onCanvasLeave: (callback: (event: HexMouseEvent) => void) => {
       storage.outCallbacks.add(useCallbackAsCurrent(callback));
     },
     /** Registers the provided function to be called when the mouse enters the canvas. */
-    onCanvasEnter: (callback: Set<(event: HexMouseEvent) => void>) => {
+    onCanvasEnter: (callback: (event: HexMouseEvent) => void) => {
       storage.overCallbacks.add(useCallbackAsCurrent(callback));
     },
   };
