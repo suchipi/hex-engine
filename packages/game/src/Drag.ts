@@ -74,6 +74,7 @@ export default function Drag() {
     }
   }
   mouse.onMouseUp(handleUp);
+  mouse.onCanvasLeave(handleUp);
 
   useDraw((context) => {
     if (target.present) {
