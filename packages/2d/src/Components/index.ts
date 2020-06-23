@@ -17,29 +17,13 @@ import Keyboard from "./Keyboard";
 import Label from "./Label";
 import LowLevelMouse, { HexMouseEvent } from "./LowLevelMouse";
 import Mouse from "./Mouse";
-import Ogmo, {
-  OgmoDecalData,
-  OgmoEntityData,
-  OgmoLevelAPI,
-  OgmoLevelDecalLayer,
-  OgmoLevelEntityLayer,
-  OgmoLevelGridLayer,
-  OgmoLevelLayer,
-  OgmoLevelTileLayer,
-  OgmoProjectAPI,
-  OgmoProjectDecalLayer,
-  OgmoProjectEntityLayer,
-  OgmoProjectGridLayer,
-  OgmoProjectLayer,
-  OgmoProjectTileLayer,
-  OgmoTileset,
-} from "./Ogmo";
+import * as Ogmo from "./Ogmo";
 import Physics from "./Physics";
 import ProceduralSfx from "./ProceduralSfx";
 import SpriteSheet from "./SpriteSheet";
 import SystemFont from "./SystemFont";
 import TextBox from "./TextBox";
-import Tiled from "./Tiled";
+import * as Tiled from "./Tiled";
 import TileMap from "./TileMap";
 import Timer from "./Timer";
 
@@ -66,21 +50,6 @@ export {
   HexMouseEvent,
   Mouse,
   Ogmo,
-  OgmoDecalData /* @babel-remove-prev-node */,
-  OgmoEntityData /* @babel-remove-prev-node */,
-  OgmoLevelAPI /* @babel-remove-prev-node */,
-  OgmoLevelDecalLayer /* @babel-remove-prev-node */,
-  OgmoLevelEntityLayer /* @babel-remove-prev-node */,
-  OgmoLevelGridLayer /* @babel-remove-prev-node */,
-  OgmoLevelLayer /* @babel-remove-prev-node */,
-  OgmoLevelTileLayer /* @babel-remove-prev-node */,
-  OgmoProjectAPI /* @babel-remove-prev-node */,
-  OgmoProjectDecalLayer /* @babel-remove-prev-node */,
-  OgmoProjectEntityLayer /* @babel-remove-prev-node */,
-  OgmoProjectGridLayer /* @babel-remove-prev-node */,
-  OgmoProjectLayer /* @babel-remove-prev-node */,
-  OgmoProjectTileLayer /* @babel-remove-prev-node */,
-  OgmoTileset /* @babel-remove-prev-node */,
   Physics,
   ProceduralSfx,
   SpriteSheet,

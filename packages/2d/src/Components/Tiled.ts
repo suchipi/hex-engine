@@ -152,41 +152,49 @@ function Layer(layer: XMLSourceLoader.Element) {
   };
 }
 
-type TiledProperty = {
+export type Property = {
   name: string;
   value: string;
   type: "bool" | "color" | "float" | "file" | "int" | "string";
 };
-type BaseTiledObjectApi = {
+export type ObjectAPIBase = {
   object: XMLSourceLoader.Element;
   id: string;
   name: string;
   location: Vector;
   size?: Vector;
-  properties: Array<TiledProperty>;
+  properties: Array<Property>;
 };
-type TiledObjectApi =
-  | {
-      kind: "string";
-      object: string;
-    }
-  | ({
-      kind: "unknown";
-    } & BaseTiledObjectApi)
-  | ({
-      kind: "point";
-    } & BaseTiledObjectApi)
-  | ({
-      kind: "ellipse";
-    } & BaseTiledObjectApi)
-  | ({
-      kind: "text";
-    } & BaseTiledObjectApi)
-  | ({
-      kind: "polygon";
-      points: Array<Vector>;
-    } & BaseTiledObjectApi);
-function makeTiledObject(object: XMLSourceLoader.Element): TiledObjectApi {
+export type ObjectAPIString = {
+  kind: "string";
+  object: string;
+};
+export type ObjectAPIUnknown = {
+  kind: "unknown";
+} & ObjectAPIBase;
+export type ObjectAPIPoint = {
+  kind: "point";
+} & ObjectAPIBase;
+export type ObjectAPIEllipse = {
+  kind: "ellipse";
+} & ObjectAPIBase;
+export type ObjectAPIText = {
+  kind: "text";
+} & ObjectAPIBase;
+export type ObjectAPIPolygon = {
+  kind: "polygon";
+  points: Array<Vector>;
+} & ObjectAPIBase;
+
+export type ObjectAPI =
+  | ObjectAPIString
+  | ObjectAPIUnknown
+  | ObjectAPIPoint
+  | ObjectAPIEllipse
+  | ObjectAPIText
+  | ObjectAPIPolygon;
+
+function makeTiledObject(object: XMLSourceLoader.Element): ObjectAPI {
   useType(TiledMap);
 
   if (typeof object === "string") {
@@ -196,7 +204,7 @@ function makeTiledObject(object: XMLSourceLoader.Element): TiledObjectApi {
     };
   }
 
-  const api: BaseTiledObjectApi = {
+  const api: ObjectAPIBase = {
     id: object.attributes.id,
     name: object.attributes.name,
     location: new Vector(
@@ -366,27 +374,4 @@ Object.defineProperty(Tileset, "name", { value: "Tiled.Tileset" });
 Object.defineProperty(Layer, "name", { value: "Tiled.Layer" });
 Object.defineProperty(TiledMap, "name", { value: "Tiled.Map" });
 
-/** This Object has Components on it that help you work with maps and tilesets from Tiled. */
-const Tiled = {
-  /**
-   * This Component loads data from a Tiled XML tileset file
-   * and creates a `SpriteSheet` Component out of it.
-   */
-  Tileset,
-
-  /**
-   * This Component represents the data for a single layer within a Tiled map XML file.
-   *
-   * You'll rarely create it directly; instead, you'll get it from a Tiled.Map.
-   */
-  Layer,
-
-  /**
-   * This Component loads data from a Tiled map XML file and creates
-   * SpriteSheet and TileMap Components that you can use to draw the
-   * map into the canvas.
-   */
-  Map: TiledMap,
-};
-
-export default Tiled;
+export { Tileset, Layer, TiledMap as Map };

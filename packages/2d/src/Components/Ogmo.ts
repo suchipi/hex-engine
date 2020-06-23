@@ -16,7 +16,7 @@ import { useDraw } from "../Hooks";
  * The data that describes an entity inside of an Ogmo level.
  * This shape comes directly from the level json.
  */
-export type OgmoEntityData = {
+export type EntityData = {
   name: string;
   id: number;
   _eid: string;
@@ -36,7 +36,7 @@ export type OgmoEntityData = {
  * The data that describes a decal inside of an Ogmo level.
  * This shape comes directly from the level json.
  */
-export type OgmoDecalData = {
+export type DecalData = {
   x: number;
   y: number;
   scaleX?: number;
@@ -46,24 +46,24 @@ export type OgmoDecalData = {
   values?: { [key: string]: any };
 };
 
-export type OgmoTileset = {
+export type Tileset = {
   label: string;
   path: string;
   tileSize: Vector;
   tileSeparation: Vector;
 };
 
-export type OgmoProjectTileLayer = {
+export type ProjectTileLayer = {
   definition: "tile";
   name: string;
   gridSize: Vector;
   exportID: string;
   exportMode: number;
   arrayMode: number;
-  defaultTileset: OgmoTileset;
+  defaultTileset: Tileset;
 };
 
-export type OgmoProjectGridLayer = {
+export type ProjectGridLayer = {
   definition: "grid";
   name: string;
   gridSize: Vector;
@@ -74,7 +74,7 @@ export type OgmoProjectGridLayer = {
   };
 };
 
-export type OgmoProjectEntityLayer = {
+export type ProjectEntityLayer = {
   definition: "entity";
   name: string;
   gridSize: Vector;
@@ -83,7 +83,7 @@ export type OgmoProjectEntityLayer = {
   excludedTags: Array<string>;
 };
 
-export type OgmoProjectDecalLayer = {
+export type ProjectDecalLayer = {
   definition: "decal";
   name: string;
   gridSize: Vector;
@@ -94,17 +94,17 @@ export type OgmoProjectDecalLayer = {
   values: Array<any>;
 };
 
-export type OgmoProjectLayer =
-  | OgmoProjectTileLayer
-  | OgmoProjectGridLayer
-  | OgmoProjectEntityLayer
-  | OgmoProjectDecalLayer;
+export type ProjectLayer =
+  | ProjectTileLayer
+  | ProjectGridLayer
+  | ProjectEntityLayer
+  | ProjectDecalLayer;
 
-export type OgmoProjectAPI = {
-  createEntity: (data: OgmoEntityData) => Entity;
-  createDecal: (data: OgmoDecalData) => Entity;
-  tilesets: Array<OgmoTileset>;
-  layers: Array<OgmoProjectLayer>;
+export type ProjectAPI = {
+  createEntity: (data: EntityData) => Entity;
+  createDecal: (data: DecalData) => Entity;
+  tilesets: Array<Tileset>;
+  layers: Array<ProjectLayer>;
 };
 
 /**
@@ -118,8 +118,8 @@ export type OgmoProjectAPI = {
  * one, then you can override it when you create the Ogmo.Project by passing
  * a custom function as its `decalFactory` parameter.
  */
-function OgmoDecal(decalData: OgmoDecalData) {
-  useType(OgmoDecal);
+function Decal(decalData: DecalData) {
+  useType(Decal);
 
   const geometry = useNewComponent(() =>
     Geometry({
@@ -148,39 +148,39 @@ function OgmoDecal(decalData: OgmoDecalData) {
   });
 }
 
-Object.defineProperty(OgmoDecal, "name", { value: "Ogmo.Decal" });
+Object.defineProperty(Decal, "name", { value: "Ogmo.Decal" });
 
-export type OgmoLevelTileLayer = {
+export type LevelTileLayer = {
   definition: "tile";
-  projectLayer: OgmoProjectTileLayer;
+  projectLayer: ProjectTileLayer;
   data: Grid<number>;
 };
 
-export type OgmoLevelGridLayer = {
+export type LevelGridLayer = {
   definition: "grid";
-  projectLayer: OgmoProjectGridLayer;
+  projectLayer: ProjectGridLayer;
   grid: Grid<string>;
 };
 
-export type OgmoLevelEntityLayer = {
+export type LevelEntityLayer = {
   definition: "entity";
-  projectLayer: OgmoProjectEntityLayer;
-  entities: Array<OgmoEntityData>;
+  projectLayer: ProjectEntityLayer;
+  entities: Array<EntityData>;
 };
 
-export type OgmoLevelDecalLayer = {
+export type LevelDecalLayer = {
   definition: "decal";
-  projectLayer: OgmoProjectDecalLayer;
-  decals: Array<OgmoDecalData>;
+  projectLayer: ProjectDecalLayer;
+  decals: Array<DecalData>;
 };
 
-export type OgmoLevelLayer =
-  | OgmoLevelTileLayer
-  | OgmoLevelGridLayer
-  | OgmoLevelEntityLayer
-  | OgmoLevelDecalLayer;
+export type LevelLayer =
+  | LevelTileLayer
+  | LevelGridLayer
+  | LevelEntityLayer
+  | LevelDecalLayer;
 
-export type OgmoLevelAPI = {
+export type LevelAPI = {
   /** The size of the level, in pixels. */
   size: Vector;
 
@@ -191,7 +191,7 @@ export type OgmoLevelAPI = {
   values: { [key: string]: any };
 
   /** An array of the layers in the level. */
-  layers: Array<OgmoLevelLayer>;
+  layers: Array<LevelLayer>;
 };
 
 /**
@@ -204,10 +204,10 @@ export type OgmoLevelAPI = {
  *
  * You cannot create these manually; instead, use the `useLevel` method on Ogmo.Project.
  */
-function OgmoLevel(project: OgmoProjectAPI, levelData: any): OgmoLevelAPI {
-  useType(OgmoLevel);
+function Level(project: ProjectAPI, levelData: any): LevelAPI {
+  useType(Level);
 
-  const layers: Array<OgmoLevelLayer> = (levelData.layers as Array<any>).map(
+  const layers: Array<LevelLayer> = (levelData.layers as Array<any>).map(
     (layer, index) => {
       const projectLayer = project.layers.find(
         (projectLayer) => projectLayer.exportID === layer._eid
@@ -315,10 +315,10 @@ function OgmoLevel(project: OgmoProjectAPI, levelData: any): OgmoLevelAPI {
   };
 }
 
-Object.defineProperty(OgmoLevel, "name", { value: "Ogmo.Level" });
+Object.defineProperty(Level, "name", { value: "Ogmo.Level" });
 
-function defaultDecalFactory(decalData: OgmoDecalData): Entity {
-  return useChild(() => OgmoDecal(decalData));
+function defaultDecalFactory(decalData: DecalData): Entity {
+  return useChild(() => Decal(decalData));
 }
 
 /**
@@ -329,17 +329,17 @@ function defaultDecalFactory(decalData: OgmoDecalData): Entity {
  * construct entities in Ogmo levels, by name; for example: { player: (entData) => useChild(() => Player(entData)) }
  * @param decalFactory An optional function that will be called to construct entities for decals. The default implementation uses Ogmo.Decal.
  */
-function OgmoProject(
+function Project(
   projectData: any,
   entityFactories: {
-    [name: string]: (entityData: OgmoEntityData) => Entity;
+    [name: string]: (entityData: EntityData) => Entity;
   } = {},
-  decalFactory?: (decalData: OgmoDecalData) => Entity
+  decalFactory?: (decalData: DecalData) => Entity
 ) {
-  useType(OgmoProject);
+  useType(Project);
 
-  const project: OgmoProjectAPI = {
-    createEntity: (data: OgmoEntityData) => {
+  const project: ProjectAPI = {
+    createEntity: (data: EntityData) => {
       const factoryForName = entityFactories[data.name];
       if (factoryForName) {
         return factoryForName(data);
@@ -407,7 +407,7 @@ function OgmoProject(
     layers: project.layers,
 
     /**
-     * Create a new OgmoLevel component for the given level data,
+     * Create a new Level component for the given level data,
      * and add it to the current component's Entity.
      *
      * ```ts
@@ -416,16 +416,10 @@ function OgmoProject(
      * ```
      */
     useLevel(levelData: any) {
-      return useNewComponent(() => OgmoLevel(project, levelData));
+      return useNewComponent(() => Level(project, levelData));
     },
   };
 }
-Object.defineProperty(OgmoProject, "name", { value: "Ogmo.Project" });
+Object.defineProperty(Project, "name", { value: "Ogmo.Project" });
 
-const Ogmo = {
-  Project: OgmoProject,
-  Level: OgmoLevel,
-  Decal: OgmoDecal,
-};
-
-export default Ogmo;
+export { Project, Level, Decal };
