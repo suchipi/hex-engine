@@ -100,7 +100,7 @@ export type OgmoProjectLayer =
   | OgmoProjectEntityLayer
   | OgmoProjectDecalLayer;
 
-export type OgmoProjectApi = {
+export type OgmoProjectAPI = {
   createEntity: (data: OgmoEntityData) => Entity;
   createDecal: (data: OgmoDecalData) => Entity;
   tilesets: Array<OgmoTileset>;
@@ -180,7 +180,7 @@ export type OgmoLevelLayer =
   | OgmoLevelEntityLayer
   | OgmoLevelDecalLayer;
 
-export type OgmoLevelApi = {
+export type OgmoLevelAPI = {
   /** The size of the level, in pixels. */
   size: Vector;
 
@@ -204,7 +204,7 @@ export type OgmoLevelApi = {
  *
  * You cannot create these manually; instead, use the `useLevel` method on Ogmo.Project.
  */
-function OgmoLevel(project: OgmoProjectApi, levelData: any): OgmoLevelApi {
+function OgmoLevel(project: OgmoProjectAPI, levelData: any): OgmoLevelAPI {
   useType(OgmoLevel);
 
   const layers: Array<OgmoLevelLayer> = (levelData.layers as Array<any>).map(
@@ -338,7 +338,7 @@ function OgmoProject(
 ) {
   useType(OgmoProject);
 
-  const project: OgmoProjectApi = {
+  const project: OgmoProjectAPI = {
     createEntity: (data: OgmoEntityData) => {
       const factoryForName = entityFactories[data.name];
       if (factoryForName) {
