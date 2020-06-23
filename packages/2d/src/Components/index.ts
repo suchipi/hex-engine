@@ -18,7 +18,7 @@ import Label from "./Label";
 import LowLevelMouse, { HexMouseEvent } from "./LowLevelMouse";
 import Mouse from "./Mouse";
 import * as Ogmo from "./Ogmo";
-import Physics from "./Physics";
+import * as Physics from "./Physics";
 import ProceduralSfx from "./ProceduralSfx";
 import SpriteSheet from "./SpriteSheet";
 import SystemFont from "./SystemFont";

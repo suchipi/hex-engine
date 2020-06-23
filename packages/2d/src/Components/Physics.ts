@@ -511,29 +511,22 @@ function PhysicsConstraint(
 }
 
 /**
- * An assortment of Components that you can use to add simulated 2D physics to your game.
+ * A Component that should be placed on the root Entity if you want to use physics in your game.
+ *
+ * Hex Engine's Physics are provided by [Matter.js](https://brm.io/matter-js/).
  */
-const Physics = {
-  /**
-   * A Component that should be placed on the root Entity if you want to use physics in your game.
-   *
-   * Hex Engine's Physics are provided by [Matter.js](https://brm.io/matter-js/).
-   */
-  Engine: name("Physics.Engine", PhysicsEngine),
+export const Engine = name("Physics.Engine", PhysicsEngine);
 
-  /**
-   * A Component that should be added to any Entity that will participate in the physics simulation.
-   *
-   * Hex Engine's Physics are provided by [Matter.js](https://brm.io/matter-js/).
-   */
-  Body: name("Physics.Body", PhysicsBody),
+/**
+ * A Component that should be added to any Entity that will participate in the physics simulation.
+ *
+ * Hex Engine's Physics are provided by [Matter.js](https://brm.io/matter-js/).
+ */
+export const Body = name("Physics.Body", PhysicsBody);
 
-  /**
-   * A Component that connects two Physics.Body Components together using a rope, spring, nail, etc.
-   *
-   * Hex Engine's Physics are provided by [Matter.js](https://brm.io/matter-js/).
-   */
-  Constraint: name("Physics.Constraint", PhysicsConstraint),
-};
-
-export default Physics;
+/**
+ * A Component that connects two Physics.Body Components together using a rope, spring, nail, etc.
+ *
+ * Hex Engine's Physics are provided by [Matter.js](https://brm.io/matter-js/).
+ */
+export const Constraint = name("Physics.Constraint", PhysicsConstraint);
