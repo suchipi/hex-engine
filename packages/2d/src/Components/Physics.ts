@@ -21,11 +21,11 @@ function name<T>(name: string, fn: T): T {
   return fn;
 }
 
-type CollisionListener = (other: {
+export type CollisionEventInfo = {
   kind: "start" | "end";
   body: Matter.Body;
   entity: null | Entity;
-}) => void;
+};
 
 /**
  * A Component that should be placed on the root Entity if you want to use physics in your game.
@@ -65,9 +65,12 @@ function PhysicsEngine({
   engine.world.gravity.x = gravity.x;
   engine.world.gravity.y = gravity.y;
 
-  const collisionListeners = new WeakMap<Entity, CollisionListener>();
+  const collisionListeners = new WeakMap<
+    Entity,
+    (other: CollisionEventInfo) => void
+  >();
 
-  function addCollisionListener(callback: CollisionListener) {
+  function addCollisionListener(callback: (other: CollisionEventInfo) => void) {
     const entity = useEntity();
     collisionListeners.set(entity, useCallbackAsCurrent(callback));
   }
