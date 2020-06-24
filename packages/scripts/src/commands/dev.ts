@@ -9,18 +9,35 @@ import {
 } from "react-dev-utils/WebpackDevServerUtils";
 import makeWebpackConfig from "../makeWebpackConfig";
 
-export default async function dev() {
+export default async function dev(options: {
+  lib?: string;
+  port?: number;
+  title?: string;
+}) {
   process.env.BABEL_ENV = "development";
   process.env.NODE_ENV = "development";
 
   const isInteractive = process.stdout.isTTY;
 
-  const port = await choosePort("localhost", 8080);
+  const port = await choosePort("localhost", options.port || 8080);
   if (!port) return;
 
   const urls = prepareUrls("http", "localhost", port);
 
-  const webpackConfig = makeWebpackConfig("development");
+  const webpackConfig = options.lib
+    ? makeWebpackConfig({
+        mode: "development",
+        srcFile: "lib",
+        outDir: "lib",
+        library: options.lib,
+        title: options.title,
+      })
+    : makeWebpackConfig({
+        mode: "development",
+        srcFile: "index",
+        outDir: "dist",
+        title: options.title,
+      });
 
   const devSocket = {
     warnings: (warnings: any): any =>
@@ -34,7 +51,7 @@ export default async function dev() {
   // Create a webpack compiler that is configured with custom messages.
   // @ts-ignore
   const compiler = createCompiler({
-    appName: "hex-engine game",
+    appName: options.title || "hex-engine game",
     // @ts-ignore
     config: webpackConfig,
     devSocket,

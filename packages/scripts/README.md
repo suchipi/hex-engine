@@ -3,7 +3,8 @@
 This package provides a CLI for your [Hex Engine](https://github.com/suchipi/hex-engine) game that can do the following:
 
 - Run a development server
-- Make a production build of your game for redistribution
+- Make a production build of your code for distribution
+- Run your tests
 
 It's automatically installed and set up when you use [`create-hex-engine-game`](https://github.com/suchipi/hex-engine/tree/master/packages/create).
 

@@ -14,24 +14,58 @@ const packageDir = (...parts: Array<string>) =>
 const localDir = (...parts: Array<string>) =>
   path.resolve(process.cwd(), ...parts);
 
-const htmlWebpackPluginOptions: { [key: string]: any } = {
-  title: process.env.HEX_ENGINE_GAME_NAME || "hex-engine game",
+const findSrc = (name: string) => {
+  const withExtension = (ext: string) => localDir(`./src/${name}.${ext}`);
+
+  if (fs.existsSync(withExtension("ts"))) {
+    return withExtension("ts");
+  } else if (fs.existsSync(withExtension("tsx"))) {
+    return withExtension("tsx");
+  } else if (fs.existsSync(withExtension("jsx"))) {
+    return withExtension("jsx");
+  } else if (fs.existsSync(withExtension("js"))) {
+    return withExtension("js");
+  } else {
+    throw new Error(
+      `Could not find file named either '${name}.ts', '${name}.js', '${name}.tsx', or '${name}.jsx' in '${localDir(
+        "src"
+      )}'. Please create a file with one of those names.`
+    );
+  }
 };
 
-if (fs.existsSync(localDir("src/index.html"))) {
-  htmlWebpackPluginOptions.template = localDir("src/index.html");
-}
+const makeWebpackConfig = ({
+  mode,
+  srcFile,
+  outDir,
+  library,
+  title,
+}: {
+  mode: "production" | "development" | "test";
+  srcFile: string;
+  outDir: string;
+  library?: string;
+  title?: string;
+}) => {
+  const htmlWebpackPluginOptions: { [key: string]: any } = {
+    title: title || "hex-engine game",
+  };
 
-export default (mode: "production" | "development" | "test") => {
+  if (fs.existsSync(localDir("src/index.html"))) {
+    htmlWebpackPluginOptions.template = localDir("src/index.html");
+  }
+
   return {
     context: localDir(),
     devtool: mode === "development" ? "eval-source-map" : undefined,
 
     mode: mode === "test" ? "development" : mode,
 
-    entry: [packageDir("./src/polyfills"), localDir("./src/index.ts")],
+    entry: [packageDir("./src/polyfills"), findSrc(srcFile)],
     output: {
-      path: localDir("dist"),
+      path: localDir(outDir),
+      library,
+      libraryTarget: library ? "umd" : "var",
     },
 
     resolve: {
@@ -101,7 +135,9 @@ export default (mode: "production" | "development" | "test") => {
       new webpack.DefinePlugin({
         "process.env.NODE_ENV": JSON.stringify(mode),
       }),
-      mode === "test" ? null : new HtmlWebpackPlugin(htmlWebpackPluginOptions),
+      mode === "test" || (library && mode !== "development")
+        ? null
+        : new HtmlWebpackPlugin(htmlWebpackPluginOptions),
 
       mode === "test"
         ? null
@@ -132,3 +168,5 @@ export default (mode: "production" | "development" | "test") => {
     },
   };
 };
+
+export default makeWebpackConfig;
