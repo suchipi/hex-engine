@@ -16,7 +16,7 @@
   },
   "workspace-builder": "@workspace-builder/shell-command",
   "@workspace-builder/shell-command": {
-    "build": "node ../scripts/dist/cli.js build",
-    "watch": "node ../scripts/dist/cli.js dev"
+    "build": "node ../scripts/dist/cli.js build --title 'Test Game' && node ../scripts/dist/cli.js build --lib testGame --title 'Test Game'",
+    "watch": "node ../scripts/dist/cli.js dev --title 'Test Game'"
   }
 }

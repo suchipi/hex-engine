@@ -3,25 +3,27 @@ import webpack from "webpack";
 import formatWebpackMessages from "react-dev-utils/formatWebpackMessages";
 import makeWebpackConfig from "../makeWebpackConfig";
 
-export default async function build() {
+export default async function build(options: { lib?: string; title?: string }) {
   process.env.BABEL_ENV = "production";
   process.env.NODE_ENV = "production";
 
-  // We used to support resolving modules according to `NODE_PATH`.
-  // This now has been deprecated in favor of jsconfig/tsconfig.json
-  // This lets you use absolute paths in imports inside large monorepos:
-  if (process.env.NODE_PATH) {
-    console.log(
-      chalk.yellow(
-        "Setting NODE_PATH to resolve modules absolutely has been deprecated in favor of setting baseUrl in jsconfig.json (or tsconfig.json if you are using TypeScript) and will be removed in a future major release of create-react-app."
-      )
-    );
-    console.log();
-  }
-
   console.log("Creating an optimized production build...");
 
-  const webpackConfig = makeWebpackConfig("production");
+  const webpackConfig = options.lib
+    ? makeWebpackConfig({
+        mode: "production",
+        srcFile: "lib",
+        outDir: "lib",
+        library: options.lib,
+        title: options.title,
+      })
+    : makeWebpackConfig({
+        mode: "production",
+        srcFile: "index",
+        outDir: "dist",
+        title: options.title,
+      });
+
   // @ts-ignore
   const compiler = webpack(webpackConfig);
   return new Promise<void>((resolve, reject) => {
@@ -68,9 +70,15 @@ export default async function build() {
 
       console.log(chalk.yellow(messages.warnings.join("\n\n")));
 
-      console.log(
-        "Build complete! To deploy your game, upload the contents of the 'dist' folder to a web server."
-      );
+      if (options.lib) {
+        console.log(
+          "Build complete! The library bundle is in the 'lib' folder."
+        );
+      } else {
+        console.log(
+          "Build complete! To deploy your game, upload the contents of the 'dist' folder to a web server."
+        );
+      }
       resolve();
     });
   });
