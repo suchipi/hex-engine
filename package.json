@@ -23,13 +23,16 @@
     "@workspace-builder/shell-command": "^1.0.0",
     "babel-eslint": "^10.0.3",
     "babel-plugin-remove-prev-node": "^1.0.2",
+    "chalk": "^4.1.0",
     "eslint": "^6.8.0",
     "eslint-config-unobtrusive": "^1.2.5",
     "eslint-plugin-import": "^2.20.0",
     "eslint-plugin-react": "^7.18.0",
     "prettier": "^1.19.1",
+    "shelljs": "^0.8.4",
     "typescript": "^3.9.2",
-    "workspace-builder": "^1.0.0"
+    "workspace-builder": "^1.0.0",
+    "yargs-parser": "^18.1.3"
   },
   "scripts": {
     "clean": "workspace-builder clean",

@@ -1,6 +1,7 @@
 import path from "path";
 import ora from "ora";
 import { cp, cd, exec } from "shelljs";
+import versions from "../versions.json";
 
 const spinner = ora();
 const templateDir = path.resolve(__dirname, "..", "template");
@@ -19,9 +20,9 @@ export default async function makeIt(targetDirectory: string) {
 
   spinner.start("Installing dependencies...");
 
-  await execAsync("npm install --save @hex-engine/2d@latest");
-  await execAsync("npm install --save-dev hex-engine-scripts@latest");
-  await execAsync("npm install --save-dev typescript@latest");
+  await execAsync(`npm install --save @hex-engine/2d@${versions.hex}`);
+  await execAsync(`npm install --save-dev hex-engine-scripts@${versions.hex}`);
+  await execAsync(`npm install --save-dev typescript@${versions.typescript}`);
 
   spinner.succeed("Dependencies installed!");
 
