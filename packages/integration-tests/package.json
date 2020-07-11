@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@hex-engine/2d": "0.4.2",
-    "@hex-engine/core": "0.4.1",
-    "@hex-engine/inspector": "0.4.1"
+    "@hex-engine/2d": "0.5.0",
+    "@hex-engine/core": "0.5.0",
+    "@hex-engine/inspector": "0.5.0"
   }
 }

@@ -126,11 +126,11 @@ Use the [`useEnableDisable`] hook to specify what happens when a [`Component`] i
 
 ##### takeChild
 
-> Available since version: Unreleased
+> Available since version: 0.5.0
 
 `takeChild(entity: Entity)`
 
-Transfer the ownership of `entity` to this Entity, so that it becomes the 
+Transfer the ownership of `entity` to this Entity, so that it becomes the
 [parent][`entity.parent`] of `entity`.
 
 ##### destroy

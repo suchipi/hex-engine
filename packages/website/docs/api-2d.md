@@ -597,7 +597,7 @@ Mutate this Vector by rotating it the specified amount (in radians), clockwise.
 
 ##### dotProduct
 
-> Available since version: Unreleased
+> Available since version: 0.5.0
 
 `dotProduct(other: Vector): number`
 
@@ -606,7 +606,7 @@ opposite directions, and 0 if they are perpendicular.
 
 ##### perpendicular
 
-> Available since version: Unreleased
+> Available since version: 0.5.0
 
 `perpendicular(): Vector`
 
@@ -614,7 +614,7 @@ Returns a vector perpendicular to this vector, with the same magnitude.
 
 ##### perpendicularMutate
 
-> Available since version: Unreleased
+> Available since version: 0.5.0
 
 `perpendicularMutate(): this`
 
@@ -2086,7 +2086,7 @@ function LowLevelMouse(): {
 	/**
 	 * Registers the provided function to be called when the mouse exits the canvas.
 	 *
-	 * Available since version: Unreleased
+	 * Available since version: 0.5.0
 	 */
 	onCanvasLeave: (callback: Set<(event: HexMouseEvent) => void>) => {
 		storage.outCallbacks.add(useCallbackAsCurrent(callback));
@@ -2095,7 +2095,7 @@ function LowLevelMouse(): {
 	/**
 	 * Registers the provided function to be called when the mouse enters the canvas.
 	 *
-	 * Available since version: Unreleased
+	 * Available since version: 0.5.0
 	 */
 	onCanvasEnter: (callback: Set<(event: HexMouseEvent) => void>) => {
 		storage.overCallbacks.add(useCallbackAsCurrent(callback));
