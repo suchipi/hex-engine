@@ -8,7 +8,7 @@ interface GIFInterface extends AnimationAPI<HTMLImageElement> {
 }
 
 /**
- * A component which able you to play and manipulate gifs into hex-engine.
+ * A component which enables you to play and manipulate gifs in Hex Engine.
  * @example
  * import someGifFile from "./your.gif";
  *
