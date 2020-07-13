@@ -1881,6 +1881,28 @@ function Image(options: {
       targetHeight?: undefined | number;
     }
   ): void;
+
+  /**
+   * Creates a CanvasPattern for the Image, using the provided context.
+   *
+   * Available since version: Unreleased
+   *
+   * The primary use of a CanvasPattern is as a fillStyle or strokeStyle on a
+   * canvas context.
+   *
+   * @param context The context you're going to render onto.
+   * @param repetition Whether to repeat the image, and along which axes. Valid
+   * values are "repeat", "repeat-x", "repeat-y", or "no-repeat". Defaults to
+   * "repeat", meaning repeat across both axes.
+   * @param fallbackStyle A string, CanvasGradient, or CanvasPattern to use as
+   * a fallback if the image is not yet loaded, or if the pattern cannot be
+   * created. Defaults to "magenta".
+   */
+  asPattern(
+    context: CanvasRenderingContext2D,
+    repetition: "repeat" | "repeat-x" | "repeat-y" | "no-repeat" = "repeat",
+    fallbackStyle: string | CanvasGradient | CanvasPattern = "magenta"
+  ): string | CanvasGradient | CanvasPattern;
 };
 ```
 

@@ -8,6 +8,10 @@ class Image {
   _loadingPromise: Promise<void> | null = null;
   loaded: boolean = false;
   data: HTMLImageElement | null = null;
+  _patterns: WeakMap<
+    CanvasRenderingContext2D,
+    string | CanvasPattern | CanvasGradient
+  > = new WeakMap();
 
   constructor(config: { url: string }) {
     this.url = config.url;
@@ -49,6 +53,36 @@ class Image {
     });
 
     return this._loadingPromise;
+  }
+
+  /**
+   * Creates a CanvasPattern for the Image, using the provided context.
+   *
+   * The primary use of a CanvasPattern is as a fillStyle or strokeStyle on a canvas context.
+   *
+   * @param context The context you're going to render onto.
+   * @param repetition Whether to repeat the image, and along which axes. Valid values are "repeat", "repeat-x", "repeat-y", or "no-repeat". Defaults to "repeat", meaning repeat across both axes.
+   * @param fallbackStyle A string, CanvasGradient, or CanvasPattern to use as a fallback if the image is not yet loaded, or if the pattern cannot be created. Defaults to "magenta".
+   */
+  asPattern(
+    context: CanvasRenderingContext2D,
+    repetition: "repeat" | "repeat-x" | "repeat-y" | "no-repeat" = "repeat",
+    fallbackStyle: string | CanvasGradient | CanvasPattern = "magenta"
+  ): string | CanvasGradient | CanvasPattern {
+    if (this.loaded) {
+      const maybeCached = this._patterns.get(context);
+      if (maybeCached != null) return maybeCached;
+
+      const result = context.createPattern(this.data!, repetition);
+      if (result == null) {
+        return fallbackStyle;
+      } else {
+        this._patterns.set(context, result);
+        return result;
+      }
+    } else {
+      return fallbackStyle;
+    }
   }
 
   /** Draw the Image into the provided canvas context, if it has been loaded. */
