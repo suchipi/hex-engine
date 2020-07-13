@@ -1,6 +1,7 @@
 import { AnimationAPI, AnimationFrame } from './Animation';
 import { useType } from '@hex-engine/core';
 import gifken, { Gif } from 'gifken';
+import { Preloader } from '..';
 
 interface GIFInterface extends AnimationAPI<HTMLImageElement> {
   getGif(): Gif,
@@ -43,7 +44,7 @@ export default function GIF(options: {
   let play: boolean = false;
   let currentFrameIndex: number = 0;
 
-  load(options.url).then(async arrayBuffer => {
+  const loadPromise = load(options.url).then(async arrayBuffer => {
     gif = gifken.Gif.parse(arrayBuffer);
     frames = await getFrames({
         gif,
@@ -61,6 +62,8 @@ export default function GIF(options: {
       }
     }, 1000 / (options.fps || 25))
   })
+
+  Preloader.addTask(() => loadPromise);
 
   return {
     getGif() {
