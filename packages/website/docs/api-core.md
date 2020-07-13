@@ -104,6 +104,36 @@ and returns the first one found. If none are found, it returns null.
 Note that in order to be found by this function, the Component _must_
 have registered its type using [`useType`].
 
+##### hasComponent
+
+> Available since version: Unreleased
+
+`hasComponent(componentFunc: Function): boolean`
+
+Searches the entity for a [`Component`] with the type specified by `componentFunc`,
+and returns true if one is found. If none are found, it returns false.
+
+Note that in order to be found by this function, the Component _must_
+have registered its type using [`useType`].
+
+##### addComponent
+
+> Available since version: Unreleased
+
+`addComponent(componentFunc: Function): Component`
+
+Creates a new Component and adds it to the entity. Returns the component instance for the created component.
+
+This behaves the same as `useNewComponent`, but can be used to add a Component later in an Entity's lifecycle.
+
+##### removeComponent
+
+> Available since version: Unreleased
+
+`removeComponent(component: Component): void`
+
+Removes a component instance from the entity. The component will be disabled prior to being removed. To define what should happen when your Component is disabled, use [`useEnableDisable`][`useenabledisable`].
+
 ##### enable
 
 > Available since version: 0.0.0
@@ -786,6 +816,9 @@ function MyComponent() {
 [`entity.descendants`]: #descendants
 [`entity.ancestors`]: #ancestors
 [`entity.getcomponent`]: #getcomponent
+[`entity.hascomponent`]: #hascomponent
+[`entity.addcomponent`]: #addcomponent
+[`entity.removecomponent`]: #removecomponent
 [`entity.enable`]: #enable
 [`entity.disable`]: #disable
 [`entity.destroy`]: #destroy

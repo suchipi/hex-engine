@@ -45,7 +45,7 @@ export interface Entity {
    * parent) will be last in the Array.
    */
   ancestors(): Array<Entity>;
-  
+
   /**
    * Transfer the ownership of the Entity from its parent to this Entity.
    */
@@ -69,6 +69,37 @@ export interface Entity {
   ):
     | null
     | (ReturnType<Func> extends {} ? ReturnType<Func> & Component : Component);
+
+  /**
+   * Searches the entity for a Component with this type, and returns true if one is found.
+   *
+   * Note that in order to be found by this function, the component *must*
+   * have registered its type using `useType`.
+   * @param componentType
+   */
+  hasComponent<Func extends (...args: any[]) => any>(
+    componentType: Func
+  ): boolean;
+
+  /**
+   * Creates a new component on the entity. Returns the component instance for the created component.
+   *
+   * This behaves the same as `useNewComponent`, but can be used to add a Component later in an Entity's lifecycle.
+   *
+   * @param componentFactory
+   */
+  addComponent<T>(
+    componentFactory: () => T
+  ): T extends {} ? T & Component : Component;
+
+  /**
+   * Removes a component instance from the entity. The component will be
+   * disabled prior to being removed. To define what should happen when your
+   * Component is disabled, use `useEnableDisable`.
+   *
+   * @param componentInstance
+   */
+  removeComponent(componentInstance: Component): void;
 
   /**
    * Enable all components on this Entity and its children

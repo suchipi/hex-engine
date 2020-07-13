@@ -121,6 +121,30 @@ export default class Entity implements EntityInterface {
     return maybeComponent ?? null;
   }
 
+  hasComponent<Func extends (...args: any[]) => any>(
+    componentType: Func
+  ): boolean {
+    const maybeComponent = this._componentsByType().get(componentType);
+    return Boolean(maybeComponent);
+  }
+
+  addComponent<T>(
+    componentFactory: () => T
+  ): T extends {} ? T & ComponentInterface : ComponentInterface {
+    const component = instantiate(componentFactory, this);
+
+    this.components.add(component);
+
+    return component;
+  }
+
+  removeComponent(componentInstance: ComponentInterface): void {
+    if (!this.components.has(componentInstance)) return;
+
+    componentInstance.disable();
+    this.components.delete(componentInstance);
+  }
+
   enable() {
     enable(this);
   }
