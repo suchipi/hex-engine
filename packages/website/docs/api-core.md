@@ -106,7 +106,7 @@ have registered its type using [`useType`].
 
 ##### hasComponent
 
-> Available since version: Unreleased
+> Available since version: 0.5.2
 
 `hasComponent(componentFunc: Function): boolean`
 
@@ -118,7 +118,7 @@ have registered its type using [`useType`].
 
 ##### addComponent
 
-> Available since version: Unreleased
+> Available since version: 0.5.2
 
 `addComponent(componentFunc: Function): Component`
 
@@ -128,7 +128,7 @@ This behaves the same as `useNewComponent`, but can be used to add a Component l
 
 ##### removeComponent
 
-> Available since version: Unreleased
+> Available since version: 0.5.2
 
 `removeComponent(component: Component): void`
 

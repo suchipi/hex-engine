@@ -1,8 +1,17 @@
 # Changelog
 
+## 0.5.2
+
+- Added `Entity#hasComponent`, `Entity#addComponent`, and `Entity#removeComponent` (@suchipi)
+
+## 0.5.1
+
+Re-publish 0.5.0, because not all features were included (on accident)
+
 ## 0.5.0
 
 - Versions are now consistent across all packages; from now on:
+
   - If there's a version of one package (eg 0.5.0), every package will have a 0.5.0
   - `npx create-hex-engine-app@0.5.0 my-game` will create a repo that points to the specified version, instead of the latest version
   - Changelogs will all be combined in one place
