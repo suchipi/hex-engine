@@ -1,7 +1,7 @@
 import { AnimationAPI, AnimationFrame } from './Animation';
 import { useType } from '@hex-engine/core';
 import gifken, { Gif } from 'gifken';
-import { Preloader } from '..';
+import Preloader from '../Preloader';
 
 interface GIFInterface extends AnimationAPI<HTMLImageElement> {
   getGif(): Gif,
