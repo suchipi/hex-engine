@@ -71,6 +71,10 @@ const makeWebpackConfig = ({
     resolve: {
       mainFields: ["browser", "main"],
       extensions: [".mjs", ".js", ".jsx", ".ts", ".tsx", ".json"],
+      alias:
+        mode === "production"
+          ? { "@hex-engine/inspector$": "@hex-engine/inspector/dist/stub" }
+          : {},
     },
 
     module: {
