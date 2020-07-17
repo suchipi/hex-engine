@@ -8,10 +8,10 @@ class Image {
   _loadingPromise: Promise<void> | null = null;
   loaded: boolean = false;
   data: HTMLImageElement | null = null;
-  _patterns: WeakMap<
-    CanvasRenderingContext2D,
-    string | CanvasPattern | CanvasGradient
-  > = new WeakMap();
+  _patterns: Map<
+    string,
+    WeakMap<CanvasRenderingContext2D, string | CanvasPattern | CanvasGradient>
+  > = new Map();
 
   constructor(config: { url: string }) {
     this.url = config.url;
@@ -70,14 +70,25 @@ class Image {
     fallbackStyle: string | CanvasGradient | CanvasPattern = "magenta"
   ): string | CanvasGradient | CanvasPattern {
     if (this.loaded) {
-      const maybeCached = this._patterns.get(context);
+      let cache: WeakMap<
+        CanvasRenderingContext2D,
+        string | CanvasPattern | CanvasGradient
+      >;
+      if (this._patterns.has(repetition)) {
+        cache = this._patterns.get(repetition)!;
+      } else {
+        cache = new WeakMap();
+        this._patterns.set(repetition, cache);
+      }
+
+      const maybeCached = cache.get(context);
       if (maybeCached != null) return maybeCached;
 
       const result = context.createPattern(this.data!, repetition);
       if (result == null) {
         return fallbackStyle;
       } else {
-        this._patterns.set(context, result);
+        cache.set(context, result);
         return result;
       }
     } else {
