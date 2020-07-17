@@ -12,7 +12,8 @@
       "guides",
       "hex-engine-for-react-devs",
       "tic-tac-toe-example",
-      "testing"
+      "testing",
+      "systems"
     ],
     "API Reference": ["api-reference", "api-2d", "api-core", "api-inspector"]
   }
