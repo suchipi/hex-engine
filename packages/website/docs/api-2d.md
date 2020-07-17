@@ -1885,7 +1885,7 @@ function Image(options: {
   /**
    * Creates a CanvasPattern for the Image, using the provided context.
    *
-   * Available since version: Unreleased
+   * Available since version: 0.5.3
    *
    * The primary use of a CanvasPattern is as a fillStyle or strokeStyle on a
    * canvas context.
