@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.5.3
+
+- Inspector is now stubbed out in production builds (@suchipi)
+- Add Image#asPattern (@suchipi)
+
 ## 0.5.2
 
 - Added `Entity#hasComponent`, `Entity#addComponent`, and `Entity#removeComponent` (@suchipi)
