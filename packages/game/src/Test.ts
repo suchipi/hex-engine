@@ -6,10 +6,20 @@ import {
   Circle,
   Geometry,
   Vector,
+  Tiled
 } from "@hex-engine/2d";
+import EmbeddedTiledMap from "./tiledmaps/map-embedded-tileset.xml";
+import XMLENcodedMap from "./tiledmaps/map-xml-encoded.xml";
+import CSVEncodedMap from "./tiledmaps/map-csv-encoded.xml";
+import Base64TiledMap from "./tiledmaps/map-base64-encoded.xml";
 
 export default function Test(position: Vector) {
   useType(Test);
+
+  const csvEncodedMap = Tiled.Map(CSVEncodedMap);
+  const xmlEncodedMap = Tiled.Map(XMLENcodedMap);
+  const embeddedMap = Tiled.Map(EmbeddedTiledMap);
+  // const base64EncodedMap = Tiled.Map(Base64TiledMap); // Should error because not supported
 
   const geometry = useNewComponent(() =>
     Geometry({

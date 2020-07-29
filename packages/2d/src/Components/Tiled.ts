@@ -124,27 +124,49 @@ function Layer(layer: XMLSourceLoader.Element) {
   }
 
   const dataEl = getElementByTagName(layer, "data")!;
+  let layerFormat: 'xml' | 'csv' = 'xml';
+
   if (!dataEl || typeof dataEl === "string") {
     throw new Error(
       "`data` element not found in XML data passed to Tiled.Layer"
     );
   }
 
-  if (dataEl.attributes.encoding !== "csv") {
-    throw new Error(
-      "XML layer data passed to Tiled.Layer does not use csv encoding. Only csv encoding is supported at this time."
-    );
+  // Layer formatting in tiled is XML by default and all other formats have the `encoding` attr
+  if (dataEl.attributes.hasOwnProperty('encoding')) {
+    if (dataEl.attributes.encoding === 'csv') {
+      layerFormat = 'csv';
+    } else {
+      throw new Error(
+        "Unexpected layer data passed to Tiled.Layer. Only XML and CSV encoding is supported at this time."
+      )
+    }
   }
 
   const grid = new Grid(width, height, 0);
+  let numbers: number[] = [];
+
   if (dataEl.children) {
-    const csv = dataEl.children.join(" ");
-    const numbers = csv
-      .split(",")
-      .map((cell) => Number(cell.trim()))
-      .map((tileIndex) => tileIndex - 1);
-    grid.setData(numbers);
+    if (layerFormat === 'xml') {
+      const tileEls = getElementsByTagName(dataEl, 'tile');
+
+      for (const tileEl of tileEls) {
+        if (tileEl.attributes.hasOwnProperty('gid')) {
+          numbers.push(tileEl.attributes.gid);
+        } else {
+          numbers.push(0);
+        }
+      }
+    } else if (layerFormat === 'csv') {
+      const csv = dataEl.children.join(" ");
+      numbers = csv
+        .split(",")
+        .map((cell) => Number(cell.trim()))
+        .map((tileIndex) => tileIndex - 1);
+    }
   }
+
+  grid.setData(numbers);
 
   return {
     grid,
@@ -298,7 +320,9 @@ function TiledMap(data: XMLSourceLoader.Element) {
     throw new Error("tileset not found in XML data passed to Tiled.Map");
   }
 
-  const tileset = useNewComponent(() => Tileset(tilesetEl.attributes.source));
+  // Assign source based on if tileset is embedded or not
+  let tilesetSource = tilesetEl?.children?.length ? tilesetEl : tilesetEl.attributes.source;
+  const tileset = useNewComponent(() => Tileset(tilesetSource));
 
   const layerEls = data.children
     ? data.children.filter(
