@@ -321,7 +321,7 @@ function TiledMap(data: XMLSourceLoader.Element) {
   }
 
   // Assign source based on if tileset is embedded or not
-  let tilesetSource = tilesetEl?.children?.length ? tilesetEl : tilesetEl.attributes.source;
+  const tilesetSource = tilesetEl?.children?.length ? tilesetEl : tilesetEl.attributes.source;
   const tileset = useNewComponent(() => Tileset(tilesetSource));
 
   const layerEls = data.children

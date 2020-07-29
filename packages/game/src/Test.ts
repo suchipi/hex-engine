@@ -5,7 +5,7 @@ import {
   useDraw,
   Circle,
   Geometry,
-  Vector
+  Vector,
 } from "@hex-engine/2d";
 
 export default function Test(position: Vector) {
