@@ -64,8 +64,8 @@ export default function TextBox({
 
       let lineHeight = receivedLineHeight!;
       if (lineHeight == null) {
-        const metrics = font.measureText("hi");
-        lineHeight = metrics.height + metrics.descender;
+        const metrics = font.measureText("AaBbGgJjYyあい。");
+        lineHeight = metrics.height;
       }
 
       const tokens = textToTokens(text);
@@ -112,6 +112,7 @@ export default function TextBox({
 
       lines.forEach((line, index) => {
         const lineOffset = lineHeight * index;
+        context.textBaseline = "top";
         font.drawText(context, line, { x, y: y + lineOffset });
       });
 

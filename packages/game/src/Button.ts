@@ -64,7 +64,7 @@ export default function Button({
           : "#eee";
       const rect = currentSize.round();
       context.fillRect(0, 0, rect.x, rect.y);
-      label.draw(context, { x: padding, y: padding });
+      label.draw(context, { x: padding, y: padding, baseline: "top" });
     },
     { roundToNearestPixel: true }
   );

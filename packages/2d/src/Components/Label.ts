@@ -24,7 +24,7 @@ export default function Label({
   function updateSize() {
     const metrics = font.measureText(state.text);
     size.x = metrics.width;
-    size.y = metrics.height + metrics.descender;
+    size.y = metrics.height;
   }
 
   updateSize();
@@ -40,13 +40,15 @@ export default function Label({
       {
         x = 0,
         y = 0,
+        baseline = undefined,
       }: {
         x?: number | undefined;
         y?: number | undefined;
+        baseline?: CanvasTextBaseline;
       } = {}
     ) {
       if (!font.readyToDraw()) return;
-      font.drawText(context, state.text, { x, y });
+      font.drawText(context, state.text, { x, y, baseline });
     },
 
     /** The text to render. You can change this to change what to render. */

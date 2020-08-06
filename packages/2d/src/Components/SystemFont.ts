@@ -35,7 +35,12 @@ export default function SystemFont({
     },
     drawText(context, text, options = {}) {
       prepareContext(context);
+      const oldBaseline = context.textBaseline;
+      if (options.baseline) {
+        context.textBaseline = options.baseline;
+      }
       context.fillText(text, options.x ?? 0, options.y ?? 0);
+      context.textBaseline = oldBaseline;
     },
     getFontSize() {
       return state.size;
@@ -52,12 +57,6 @@ export default function SystemFont({
   const fontApi: FontImplementation = {
     ...baseApi,
     measureText: fontMetrics.measureText,
-    drawText(context, text, options = {}) {
-      baseApi.drawText(context, text, {
-        x: options.x ?? 0,
-        y: (options.y ?? 0) + fontMetrics.measureText(text).baseline,
-      });
-    },
   };
 
   useNewComponent(() => Font(fontApi));

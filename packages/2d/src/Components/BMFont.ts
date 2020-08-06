@@ -75,14 +75,37 @@ export default function BMFont(data: BMFontLoader.Font) {
       {
         x = 0,
         y = 0,
+        baseline = undefined,
       }: {
         x?: number | undefined;
         y?: number | undefined;
-      }
+        baseline?: CanvasTextBaseline;
+      } = {}
     ) {
+      const measurements = fontMetrics.measureText(text);
+
+      const yOffset = {
+        alphabetic: 0,
+        bottom: -Math.max(
+          measurements.baselineToDescentLine,
+          measurements.baselineToCJKBottom
+        ),
+        hanging:
+          measurements.baselineToMeanLine +
+          measurements.baselineToAscentLine / 2.5, // guesstimate cause I don't get hanging
+        ideographic: measurements.baselineToCJKBottom,
+        middle:
+          -measurements.baselineToDescentLine +
+          measurements.descentLineToAscentLine / 2,
+        top: Math.max(
+          measurements.baselineToAscentLine,
+          measurements.baselineToCJKTop
+        ),
+      }[baseline || context.textBaseline];
+
       api.drawText(context, text, {
         x,
-        y: y + fontMetrics.measureText(text).height,
+        y: y + yOffset,
       });
     },
     measureText: fontMetrics.measureText,

@@ -34,6 +34,6 @@ export default function FPS() {
   });
 
   useDraw((context) => {
-    label.draw(context, { x: 1 });
+    label.draw(context, { x: 1, baseline: "top" });
   });
 }
