@@ -1,5 +1,12 @@
 # Changelog
 
+### 0.6.0
+
+- Support for modified text baseline
+  - Previously, it was wrongly assumed that `context.textBaseline` would always be set to `"alphabetic"`, and that the desired effective baseline for printing text would behave as if `context.textBaseline` was set to `"top"`. Now, `SystemFont`, `BMFont`, and `Label` all support `context.textBaseline` properly, and also allow passing a baseline via their options argument.
+  - In order to support this change, the return type for `FontMetrics` was changed.
+  - If you are upgrading your game from an older version and find that text is now being rendered incorrectly, try passing `baseline: "top"` as an argument to your text drawing method(s), to emulate the old behavior.
+
 ### 0.5.3
 
 - Inspector is now stubbed out in production builds (@suchipi)
@@ -94,34 +101,34 @@ This fixes a bug where Components could not be re-disabled after they were disab
 const FRUITS = Symbol("FRUITS");
 
 function MyComponent() {
-	// To persist state per-MyComponent:
-	const fruits = useStateAccumulator<string>(FRUITS);
-	// Or, to persist state per-entity:
-	const fruits = useEntity().stateAccumulator<string>(FRUITS);
-	// Or, to persist state in the root entity:
-	const fruits = useRootEntity().stateAccumulator<string>(FRUITS);
+  // To persist state per-MyComponent:
+  const fruits = useStateAccumulator<string>(FRUITS);
+  // Or, to persist state per-entity:
+  const fruits = useEntity().stateAccumulator<string>(FRUITS);
+  // Or, to persist state in the root entity:
+  const fruits = useRootEntity().stateAccumulator<string>(FRUITS);
 
-	// Do something with fruits
+  // Do something with fruits
 }
 
 // After
 function FruitStorage() {
-	useType(FruitStorage);
+  useType(FruitStorage);
 
-	return {
-		fruits: new Set<string>();
-	}
+  return {
+    fruits: new Set<string>();
+  }
 }
 
 function MyComponent() {
-	// To persist state per-MyComponent:
-	const {fruits} = useNewComponent(FruitStorage);
-	// Or, to persist state per-entity:
-	const {fruits} = useEntity().getComponent(FruitStorage) || useNewComponent(FruitStorage);
-	// Or, to persist state in the root entity:
-	const {fruits} = useRootEntity().getComponent(FruitStorage) || useNewRootComponent(FruitStorage);
+  // To persist state per-MyComponent:
+  const {fruits} = useNewComponent(FruitStorage);
+  // Or, to persist state per-entity:
+  const {fruits} = useEntity().getComponent(FruitStorage) || useNewComponent(FruitStorage);
+  // Or, to persist state in the root entity:
+  const {fruits} = useRootEntity().getComponent(FruitStorage) || useNewRootComponent(FruitStorage);
 
-	// Do something with fruits
+  // Do something with fruits
 }
 ```
 
@@ -180,34 +187,34 @@ Use `useEnableDisable().isEnabled` instead.
 const FRUITS = Symbol("FRUITS");
 
 function MyComponent() {
-	// To persist state per-MyComponent:
-	const fruits = useStateAccumulator<string>(FRUITS);
-	// Or, to persist state per-entity:
-	const fruits = useEntity().stateAccumulator<string>(FRUITS);
-	// Or, to persist state in the root entity:
-	const fruits = useRootEntity().stateAccumulator<string>(FRUITS);
+  // To persist state per-MyComponent:
+  const fruits = useStateAccumulator<string>(FRUITS);
+  // Or, to persist state per-entity:
+  const fruits = useEntity().stateAccumulator<string>(FRUITS);
+  // Or, to persist state in the root entity:
+  const fruits = useRootEntity().stateAccumulator<string>(FRUITS);
 
-	// Do something with fruits
+  // Do something with fruits
 }
 
 // After
 function FruitStorage() {
-	useType(FruitStorage);
+  useType(FruitStorage);
 
-	return {
-		fruits: new Set<string>();
-	}
+  return {
+    fruits: new Set<string>();
+  }
 }
 
 function MyComponent() {
-	// To persist state per-MyComponent:
-	const {fruits} = useNewComponent(FruitStorage);
-	// Or, to persist state per-entity:
-	const {fruits} = useEntity().getComponent(FruitStorage) || useNewComponent(FruitStorage);
-	// Or, to persist state in the root entity:
-	const {fruits} = useRootEntity().getComponent(FruitStorage) || useNewRootComponent(FruitStorage);
+  // To persist state per-MyComponent:
+  const {fruits} = useNewComponent(FruitStorage);
+  // Or, to persist state per-entity:
+  const {fruits} = useEntity().getComponent(FruitStorage) || useNewComponent(FruitStorage);
+  // Or, to persist state in the root entity:
+  const {fruits} = useRootEntity().getComponent(FruitStorage) || useNewRootComponent(FruitStorage);
 
-	// Do something with fruits
+  // Do something with fruits
 }
 ```
 
