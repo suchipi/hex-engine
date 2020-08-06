@@ -1,8 +1,13 @@
 # Changelog
 
+### 0.6.1
+
+- Adds support for embedded tilesets in Tiled maps (@mmahandev)
+- Adds support for xml encoding in Tiled map data (@mmahandev)
+
 ### 0.6.0
 
-- Support for modified text baseline
+- Support for modified text baseline (@suchipi)
   - Previously, it was wrongly assumed that `context.textBaseline` would always be set to `"alphabetic"`, and that the desired effective baseline for printing text would behave as if `context.textBaseline` was set to `"top"`. Now, `SystemFont`, `BMFont`, and `Label` all support `context.textBaseline` properly, and also allow passing a baseline via their options argument.
   - In order to support this change, the return type for `FontMetrics` was changed.
   - If you are upgrading your game from an older version and find that text is now being rendered incorrectly, try passing `baseline: "top"` as an argument to your text drawing method(s), to emulate the old behavior.
