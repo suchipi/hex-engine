@@ -19,15 +19,68 @@ export type DrawableFont = {
 
 // See FontMetrics-ReferenceImage.png
 export type VerticalFontMeasurements = {
+  /**
+   * The length of a vertical line drawn from the baseline to the mean line.
+   *
+   * In layman's terms: the height of lowercase letters like a, e, x, o, etc.
+   */
   baselineToMeanLine: number;
+
+  /**
+   * The length of a vertical line drawn from the baseline to the cap line.
+   *
+   * In layman's terms: the height of uppercase letters.
+   */
   baselineToCapLine: number;
+
+  /**
+   * The length of a vertical line drawn from the baseline to the descent line.
+   *
+   * In layman's terms: the height of the little tails that hang off the
+   * bottom of the baseline in lowercase letters like q, p, y, j, g, etc.
+   */
   baselineToDescentLine: number;
+
+  /**
+   * The length of a vertical line drawn from the baseline to the ascent line.
+   *
+   * In layman's terms: the height of "tall" lowercase letters, like l, f, etc.
+   */
   baselineToAscentLine: number;
+
+  /**
+   * The length of a vertical line drawn from the descent line to the ascent line.
+   */
   descentLineToAscentLine: number;
-  baselineToCJKTop: number;
+
+  /**
+   * The length of a vertical line drawn from the baseline to the bottom of
+   * Chinese, Japanese, and Korean characters.
+   */
   baselineToCJKBottom: number;
+
+  /**
+   * The length of a vertical line drawn from the baseline to the top of
+   * Chinese, Japanese, and Korean characters.
+   */
+  baselineToCJKTop: number;
+
+  /**
+   * The length of a vertical line drawn from the baseline to the bottom of
+   * Chinese, Japanese, and Korean characters.
+   */
   CJKTopToCJKBottom: number;
+
+  /**
+   * The maximum amount of vertical space this text will take up, if it were
+   * printed all on one line.
+   */
   height: number;
+};
+
+export type FontMeasurements = VerticalFontMeasurements & {
+  /** The amount of horizontal space this text will take up if printed. */
+  width: number;
 };
 
 /**
@@ -116,7 +169,7 @@ export default function FontMetrics(impl: DrawableFont) {
 
   return {
     measureText: mem(
-      (text: string): VerticalFontMeasurements & { width: number } => {
+      (text: string): FontMeasurements => {
         if (!impl.readyToDraw()) {
           return {
             baselineToMeanLine: 0,

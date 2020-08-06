@@ -1549,62 +1549,78 @@ function BMFont(
    * See https://en.wikipedia.org/wiki/Typeface#Font_metrics
    *
    * Available since version: 0.0.0
+   * Return value shape changed in version: 0.6.0
    */
   measureText: (
     text: string
   ) => {
     /**
-     * The length of a vertical line drawn from the ascent to the baseline.
+     * The length of a vertical line drawn from the baseline to the mean line.
      *
-     * Available since version: 0.0.0
+     * In layman's terms: the height of lowercase letters like a, e, x, o, etc.
+     *
+     * Available since version: 0.6.0
      */
-    baseline: number;
+    baselineToMeanLine: number;
 
     /**
-     * The length of a vertical line drawn from the median to the baseline.
+     * The length of a vertical line drawn from the baseline to the cap line.
      *
-     * Available since version: 0.0.0
+     * In layman's terms: the height of uppercase letters.
+     *
+     * Available since version: 0.6.0
      */
-    median: number;
+    baselineToCapLine: number;
 
     /**
-     * The length of a vertical line drawn from the baseline to the descender.
+     * The length of a vertical line drawn from the baseline to the descent line.
      *
-     * Available since version: 0.0.0
+     * In layman's terms: the height of the little tails that hang off the
+     * bottom of the baseline in lowercase letters like q, p, y, j, g, etc.
+     *
+     * Available since version: 0.6.0
      */
-    descender: number;
+    baselineToDescentLine: number;
 
     /**
-     * The length of a vertical line drawn from the baseline to the ascender.
+     * The length of a vertical line drawn from the baseline to the ascent line.
      *
-     * Available since version: 0.0.0
+     * In layman's terms: the height of "tall" lowercase letters, like l, f, etc.
+     *
+     * Available since version: 0.6.0
      */
-    ascender: number;
+    baselineToAscentLine: number;
 
     /**
-     * The length of a vertical line drawn from the baseline to the cap height.
+     * The length of a vertical line drawn from the descent line to the ascent line.
      *
-     * Available since version: 0.0.0
+     * Available since version: 0.6.0
      */
-    capHeight: number;
+    descentLineToAscentLine: number;
 
     /**
-     * The length of a vertical line drawn from the baseline to *either* the
-     * cap height or the ascender, whichever is higher (usually the ascender).
+     * The length of a vertical line drawn from the baseline to the bottom of
+     * Chinese, Japanese, and Korean characters.
      *
-     * Available since version: 0.0.0
+     * Available since version: 0.6.0
      */
-    ascent: number;
+    baselineToCJKBottom: number;
 
     /**
-     * The length of a vertical line drawn from the descender to *either* the
-     * cap height or the ascender, whichever is higher (usually the ascender).
+     * The length of a vertical line drawn from the baseline to the top of
+     * Chinese, Japanese, and Korean characters.
      *
-     * This length covers the entire height of the printed text.
-     *
-     * Available since version: 0.0.0
+     * Available since version: 0.6.0
      */
-    height: number;
+    baselineToCJKTop: number;
+
+    /**
+     * The length of a vertical line drawn from the baseline to the bottom of
+     * Chinese, Japanese, and Korean characters.
+     *
+     * Available since version: 0.6.0
+     */
+    CJKTopToCJKBottom: number;
 
     /**
      * The horizontal length of a line drawn from the leftmost pixel of printed
@@ -1614,6 +1630,14 @@ function BMFont(
      * Available since version: 0.0.0
      */
     width: number;
+
+    /**
+     * The maximum amount of vertical space this text will take up, if it were
+     * printed all on one line.
+     *
+     * Available since version: 0.6.0
+     */
+    height: number;
   };
 };
 ```
@@ -2038,6 +2062,7 @@ function Label(options: {
     options?: {
       x?: number | undefined;
       y?: number | undefined;
+      baseline?: CanvasTextBaseline; // Added in 0.6.0
     }
   ): void;
 
@@ -3081,6 +3106,7 @@ function SystemFont(options: {
     options?: {
       x?: number | undefined;
       y?: number | undefined;
+      baseline?: CanvasTextBaseline | undefined; // Added in version 0.6.0.
     }
   ): void;
 
@@ -3089,62 +3115,78 @@ function SystemFont(options: {
    * See https://en.wikipedia.org/wiki/Typeface#Font_metrics
    *
    * Available since version: 0.0.0
+   * Return value shape changed in version: 0.6.0
    */
   measureText: (
     text: string
   ) => {
     /**
-     * The length of a vertical line drawn from the ascent to the baseline.
+     * The length of a vertical line drawn from the baseline to the mean line.
      *
-     * Available since version: 0.0.0
+     * In layman's terms: the height of lowercase letters like a, e, x, o, etc.
+     *
+     * Available since version: 0.6.0
      */
-    baseline: number;
+    baselineToMeanLine: number;
 
     /**
-     * The length of a vertical line drawn from the median to the baseline.
+     * The length of a vertical line drawn from the baseline to the cap line.
      *
-     * Available since version: 0.0.0
+     * In layman's terms: the height of uppercase letters.
+     *
+     * Available since version: 0.6.0
      */
-    median: number;
+    baselineToCapLine: number;
 
     /**
-     * The length of a vertical line drawn from the baseline to the descender.
+     * The length of a vertical line drawn from the baseline to the descent line.
      *
-     * Available since version: 0.0.0
+     * In layman's terms: the height of the little tails that hang off the
+     * bottom of the baseline in lowercase letters like q, p, y, j, g, etc.
+     *
+     * Available since version: 0.6.0
      */
-    descender: number;
+    baselineToDescentLine: number;
 
     /**
-     * The length of a vertical line drawn from the baseline to the ascender.
+     * The length of a vertical line drawn from the baseline to the ascent line.
      *
-     * Available since version: 0.0.0
+     * In layman's terms: the height of "tall" lowercase letters, like l, f, etc.
+     *
+     * Available since version: 0.6.0
      */
-    ascender: number;
+    baselineToAscentLine: number;
 
     /**
-     * The length of a vertical line drawn from the baseline to the cap height.
+     * The length of a vertical line drawn from the descent line to the ascent line.
      *
-     * Available since version: 0.0.0
+     * Available since version: 0.6.0
      */
-    capHeight: number;
+    descentLineToAscentLine: number;
 
     /**
-     * The length of a vertical line drawn from the baseline to *either* the
-     * cap height or the ascender, whichever is higher (usually the ascender).
+     * The length of a vertical line drawn from the baseline to the bottom of
+     * Chinese, Japanese, and Korean characters.
      *
-     * Available since version: 0.0.0
+     * Available since version: 0.6.0
      */
-    ascent: number;
+    baselineToCJKBottom: number;
 
     /**
-     * The length of a vertical line drawn from the descender to *either* the
-     * cap height or the ascender, whichever is higher (usually the ascender).
+     * The length of a vertical line drawn from the baseline to the top of
+     * Chinese, Japanese, and Korean characters.
      *
-     * This length covers the entire height of the printed text.
-     *
-     * Available since version: 0.0.0
+     * Available since version: 0.6.0
      */
-    height: number;
+    baselineToCJKTop: number;
+
+    /**
+     * The length of a vertical line drawn from the baseline to the bottom of
+     * Chinese, Japanese, and Korean characters.
+     *
+     * Available since version: 0.6.0
+     */
+    CJKTopToCJKBottom: number;
 
     /**
      * The horizontal length of a line drawn from the leftmost pixel of printed
@@ -3154,6 +3196,14 @@ function SystemFont(options: {
      * Available since version: 0.0.0
      */
     width: number;
+
+    /**
+     * The maximum amount of vertical space this text will take up, if it were
+     * printed all on one line.
+     *
+     * Available since version: 0.6.0
+     */
+    height: number;
   };
 };
 ```
@@ -3212,6 +3262,7 @@ export default function TextBox(options: {
     location?: {
       x?: number;
       y?: number;
+      baseline?: CanvasTextBaseline | undefined; // Added in version 0.6.0.
     }
   ): {
       /**
