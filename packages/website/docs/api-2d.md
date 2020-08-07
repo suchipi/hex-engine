@@ -1126,13 +1126,6 @@ function Canvas(options: {
   context: CanvasRenderingContext2D;
 
   /**
-   * The "backstage" canvas context, as returned by `useBackstage`.
-   *
-   * Available since version: 0.0.0
-   */
-  backstage: CanvasRenderingContext2D;
-
-  /**
    * Sets how the contents of the canvas should be scaled when
    * the canvas width and height does not exactly match the screen
    * output width and height. If you pass `true` to this function,
@@ -3570,20 +3563,6 @@ function Timer(): {
 
 `@hex-engine/2d` comes with several hook functions you can use within your own Component functions.
 
-### useBackstage
-
-> Available since version: 0.0.0
-
-```ts
-import { useBackstage } from "@hex-engine/2d";
-```
-
-`useBackstage(): CanvasRenderingContext2D`
-
-Returns a "backstage" canvas context that gets cleared between every component draw.
-The canvas associated with this backstage context is never shown to the user.
-You can use this backstage context as a working space to render into, if needed.
-
 ### useContext
 
 > Available since version: 0.0.0
@@ -3606,7 +3585,7 @@ This is the same context that gets passed into `useDraw`'s callback.
 import { useDraw } from "@hex-engine/2d";
 ```
 
-`export default function useDraw(onDraw: (context: CanvasRenderingContext2D, backstage: CanvasRenderingContext2D) => void, { roundToNearestPixel: boolean }?): void`
+`export default function useDraw(onDraw: (context: CanvasRenderingContext2D) => void, { roundToNearestPixel: boolean }?): void`
 
 Register a function to be called once per frame, after all `useUpdate` functions have been called.
 
@@ -3707,7 +3686,7 @@ This function does nothing in release builds.
 import { useRawDraw } from "@hex-engine/2d";
 ```
 
-`useRawDraw(callback: (context: CanvasRenderingContext2D, backstage: CanvasRenderingContext2D) => void): void`
+`useRawDraw(callback: (context: CanvasRenderingContext2D): void`
 
 Registers a function to be called once a frame, after all `useUpdate` functions have been called.
 

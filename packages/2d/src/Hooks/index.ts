@@ -1,4 +1,3 @@
-import useBackstage from "./useBackstage";
 import useContext from "./useContext";
 import useCanvasSize from "./useCanvasSize";
 import useDraw from "./useDraw";
@@ -20,7 +19,6 @@ import { useFirstKey } from "../Components/Keyboard";
 import { useAudioContext } from "../Components/AudioContext";
 
 export {
-  useBackstage,
   useContext,
   useCanvasSize,
   useDraw,

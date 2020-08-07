@@ -14,7 +14,6 @@ import polyfillContext from "./polyfillContext";
 import useCanvasSize from "../Hooks/useCanvasSize";
 import useWindowSize from "../Hooks/useWindowSize";
 import { setContext } from "../Hooks/useContext";
-import { setBackstage } from "../Hooks/useBackstage";
 
 /** The built-in Canvas component that should be placed on your root Entity in order to render everything in your game. */
 export default Object.assign(
@@ -50,18 +49,6 @@ export default Object.assign(
     polyfillContext(context);
 
     setContext(context);
-
-    const backstageCanvas = document.createElement("canvas");
-    backstageCanvas.width = canvas.width;
-    backstageCanvas.height = canvas.height;
-
-    const backstageContext = backstageCanvas.getContext("2d");
-    if (backstageContext == null) {
-      throw new Error("2d drawing context type not supported by browser");
-    }
-    polyfillContext(backstageContext);
-
-    setBackstage(backstageContext);
 
     useNewComponent(RunLoop);
     useNewComponent(() =>
@@ -122,7 +109,6 @@ export default Object.assign(
     return {
       element: canvas,
       context,
-      backstage: backstageContext,
 
       setPixelated,
 

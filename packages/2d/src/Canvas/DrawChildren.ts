@@ -11,12 +11,8 @@ import {
 } from "@hex-engine/core";
 import { useCanvasDrawOrderSort } from "./DrawOrder";
 import useContext from "../Hooks/useContext";
-import useBackstage from "../Hooks/useBackstage";
 
-type DrawCallback = (
-  context: CanvasRenderingContext2D,
-  backstage: CanvasRenderingContext2D
-) => void;
+type DrawCallback = (context: CanvasRenderingContext2D) => void;
 
 function StorageForDrawChildren() {
   useType(StorageForDrawChildren);
@@ -60,7 +56,6 @@ export function DrawChildren({ backgroundColor }: { backgroundColor: string }) {
   useType(DrawChildren);
 
   const context = useContext();
-  const backstage = useBackstage();
 
   const storage = useNewComponent(StorageForDrawChildren);
 
@@ -71,7 +66,7 @@ export function DrawChildren({ backgroundColor }: { backgroundColor: string }) {
       );
       if (maybeStorageForComponent) {
         for (const drawCallback of maybeStorageForComponent) {
-          drawCallback(context, backstage);
+          drawCallback(context);
         }
       }
     }
@@ -92,12 +87,6 @@ export function DrawChildren({ backgroundColor }: { backgroundColor: string }) {
     const components = sort(ents);
 
     for (const component of components) {
-      backstage.clearRect(
-        0,
-        0,
-        backstage.canvas.width,
-        backstage.canvas.height
-      );
       drawComponent(component);
     }
   });

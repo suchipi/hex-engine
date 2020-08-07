@@ -8,7 +8,6 @@ import {
 import { useUpdate } from ".";
 import useWindowSize from "./useWindowSize";
 import useContext from "./useContext";
-import useBackstage from "./useBackstage";
 import { Vector } from "../Models";
 
 function StorageForCanvasSize(): {
@@ -24,7 +23,6 @@ function StorageForCanvasSize(): {
   useType(StorageForCanvasSize);
 
   const context = useContext();
-  const backstage = useBackstage();
 
   const listeners = new Set<() => void>();
   const size = new Vector(context.canvas.width, context.canvas.height);
@@ -65,9 +63,6 @@ function StorageForCanvasSize(): {
       typeof realWidth === "number" ? realWidth + "px" : realWidth;
     context.canvas.style.height =
       typeof realHeight === "number" ? realHeight + "px" : realHeight;
-
-    backstage.canvas.width = pixelWidth;
-    backstage.canvas.height = pixelHeight;
 
     size.x = pixelWidth;
     size.y = pixelHeight;

@@ -9,10 +9,7 @@ import useEntityTransforms from "./useEntityTransforms";
  * corner of the current Entity, so in most cases, you will not need to worry about x/y positioning.
  */
 export default function useDraw(
-  onDraw: (
-    context: CanvasRenderingContext2D,
-    backstage: CanvasRenderingContext2D
-  ) => void,
+  onDraw: (context: CanvasRenderingContext2D) => void,
   {
     roundToNearestPixel = false,
   }: {
@@ -22,7 +19,7 @@ export default function useDraw(
 ) {
   const transforms = useEntityTransforms();
 
-  useRawDraw((context, backstage) => {
+  useRawDraw((context) => {
     context.save();
 
     const matrix = transforms.matrixForDrawPosition(roundToNearestPixel);
@@ -34,7 +31,7 @@ export default function useDraw(
       matrix.e,
       matrix.f
     );
-    onDraw(context, backstage);
+    onDraw(context);
 
     context.restore();
   });

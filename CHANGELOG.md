@@ -1,5 +1,17 @@
 # Changelog
 
+### Unreleased
+
+#### Remove backstage (@suchipi)
+
+Unfortunately, `clearRect` is really slow on Firefox, and the idea of backstage is that it gets cleared between every component.
+
+I built backstage to reduce memory usage (since different components would be able to share one scratchpad buffer), but it's _really_ hurting CPU usage in Firefox. So I've decided to remove it.
+
+Considering so few people are using it, I don't think it's worth hurting everyone's CPU usage (more significantly so on non-Chrome) to make it easier to use less memory for the few people who use backstage.
+
+If you need something like backstage in your components, you can create your own canvas element and use `useCanvasSize` to keep your canvas element's size in sync with the game's canvas element.
+
 ### 0.6.1
 
 - Adds support for embedded tilesets in Tiled maps (@mmahandev)
