@@ -2105,7 +2105,7 @@ function LowLevelMouse(options?: {
   /**
    * Determines what the pos property on the HexMouseEvents from this component should be relative to. Defaults to "owning-entity".
    *
-   * Available since version: Unreleased
+   * Available since version: 0.7.1
    */
   positionsRelativeTo?: "owning-entity" | "world" | "screen";
 }): {
