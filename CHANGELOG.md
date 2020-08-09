@@ -1,5 +1,10 @@
 # Changelog
 
+### Unreleased
+
+- Fixes a bug where mouse positions were reported inaccurately if you modified the canvas's transformation matrix (ie. with a Camera component you made). (@suchipi)
+- Adds an option to `LowLevelMouse` that makes it report world or screen positions instead of entity positions. (@suchipi)
+
 ### 0.7.0
 
 #### Remove backstage (@suchipi)

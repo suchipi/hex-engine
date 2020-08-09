@@ -65,7 +65,12 @@ export function useFirstClick(handler: () => void) {
  * For click events, information about whether the cursor is within an Entity's geometry,
  * and clean separation between left-click, right-click, and middle-click events, use `Mouse` instead.
  */
-export default function LowLevelMouse() {
+export default function LowLevelMouse({
+  positionsRelativeTo = "owning-entity",
+}: {
+  /** Determines what the pos property on the HexMouseEvents from this component should be relative to. */
+  positionsRelativeTo?: "owning-entity" | "world" | "screen";
+} = {}) {
   useType(LowLevelMouse);
 
   const storage = {
@@ -89,12 +94,33 @@ export default function LowLevelMouse() {
     const x = (clientX - rect.left) / scaleX;
     const y = (clientY - rect.top) / scaleY;
 
-    const untransformedPoint = new Vector(x, y);
+    const point = new Vector(x, y);
 
-    return transforms
-      .matrixForWorldPosition()
-      .inverse()
-      .transformPoint(untransformedPoint);
+    switch (positionsRelativeTo) {
+      case "screen": {
+        return point;
+      }
+      case "world": {
+        // screen -> world
+        const canvasTransform = context.getTransform();
+        point.transformUsingMatrixMutate(canvasTransform.inverse());
+
+        return point;
+      }
+      case "owning-entity": {
+        // screen -> world
+        const canvasTransform = context.getTransform();
+        point.transformUsingMatrixMutate(canvasTransform.inverse());
+
+        // world -> ent
+        transforms
+          .matrixForWorldPosition()
+          .inverse()
+          .transformPointMutate(point);
+
+        return point;
+      }
+    }
   }
 
   let lastPos = new Vector(0, 0);

@@ -2076,7 +2076,7 @@ function Label(options: {
 import { LowLevelMouse } from "@hex-engine/2d";
 ```
 
-A low-level Mouse Component. It provides an interface for mousemove, mousedown, mouseup, mouseover, and mouseout events on the canvas. The positions on these events are in Entity-local space; they're not "world positions".
+A low-level Mouse Component. It provides an interface for mousemove, mousedown, mouseup, mouseover, and mouseout events on the canvas. The positions on these events can be reported either relative to the entity, relative to the world, or relative to the screen, depending on what is desired. Use the `positionsRelativeTo` option when constructing the component to choose.
 
 For click events, information about whether the cursor is within an Entity's geometry,
 and clean separation between left-click, right-click, and middle-click events, use `Mouse` instead.
@@ -2101,7 +2101,14 @@ and clean separation between left-click, right-click, and middle-click events, u
 > In versions prior to 0.0.1, this component was called `Mouse`.
 
 ```ts
-function LowLevelMouse(): {
+function LowLevelMouse(options?: {
+  /**
+   * Determines what the pos property on the HexMouseEvents from this component should be relative to. Defaults to "owning-entity".
+   *
+   * Available since version: Unreleased
+   */
+  positionsRelativeTo?: "owning-entity" | "world" | "screen";
+}): {
   /**
    * Registers the provided function to be called when the mouse cursor moves.
    *
