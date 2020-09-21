@@ -9,6 +9,7 @@ Guides:
 - [Tic Tac Toe Example](/docs/tic-tac-toe-example)
 - [Testing](/docs/testing)
 - [Where are the Systems?](/docs/systems)
+- [Storage Components](/docs/storage-components)
 
 Coming Soon:
 

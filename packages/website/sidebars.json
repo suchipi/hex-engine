@@ -13,7 +13,8 @@
       "hex-engine-for-react-devs",
       "tic-tac-toe-example",
       "testing",
-      "systems"
+      "systems",
+      "storage-components"
     ],
     "API Reference": ["api-reference", "api-2d", "api-core", "api-inspector"]
   }
