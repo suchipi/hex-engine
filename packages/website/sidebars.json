@@ -14,7 +14,8 @@
       "tic-tac-toe-example",
       "testing",
       "systems",
-      "storage-components"
+      "storage-components",
+      "using-aseprite"
     ],
     "API Reference": ["api-reference", "api-2d", "api-core", "api-inspector"]
   }
