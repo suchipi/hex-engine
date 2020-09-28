@@ -126,6 +126,7 @@ function PhysicsEngine({
     } else {
       Matter.Engine.update(engine, delta);
     }
+    lastDelta = delta;
   });
 
   const state = {
