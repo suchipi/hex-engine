@@ -2397,7 +2397,7 @@ function OgmoProject(
    * to override the component used to render the level's tile
    * layers. By default, Ogmo.TileRenderer is used.
    *
-   * Available since version: 0.4.1. tileRenderer parameter added in Unreleased.
+   * Available since version: 0.4.1. tileRenderer parameter added in 0.8.0.
    */
   useLevel(
     levelData: any,
@@ -2473,7 +2473,7 @@ a custom function as its `decalFactory` parameter.
 
 ### Ogmo.TileRenderer
 
-> Available since version: Unreleased
+> Available since version: 0.8.0
 
 ```ts
 import { Ogmo } from "@hex-engine/2d";
@@ -2491,7 +2491,7 @@ parameter.
 
 ### Ogmo.TileLayerParser
 
-> Available since version: Unreleased
+> Available since version: 0.8.0
 
 ```ts
 import { Ogmo } from "@hex-engine/2d";
