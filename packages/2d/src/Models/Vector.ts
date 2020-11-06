@@ -34,12 +34,12 @@ export default class Vector {
     this.y = y;
   }
 
-  /** Create a Point from any object with an x property and a y property. */
+  /** Create a Vector from any object with an x property and a y property. */
   static from({ x, y }: { x: number; y: number }): Vector {
     return new Vector(x, y);
   }
 
-  /** Create a Point from an angle and magnitude. */
+  /** Create a Vector from an angle and magnitude. */
   static fromAngleAndMagnitude(angle: number, magnitude: number): Vector {
     const point = new Vector(1, 1);
     point.angle = angle;
@@ -47,24 +47,24 @@ export default class Vector {
     return point;
   }
 
-  /** Create a new Point with the same x and y values as this one. */
+  /** Create a new Vector with the same x and y values as this one. */
   clone(): Vector {
     return new Vector(this.x, this.y);
   }
 
-  /** Create a new Point whose x and y values have the opposite sign as this one's. */
+  /** Create a new Vector whose x and y values have the opposite sign as this one's. */
   opposite(): Vector {
     return new Vector(-this.x, -this.y);
   }
 
-  /** Mutate this Point so that its x and y values have the opposite sign. */
+  /** Mutate this Vector so that its x and y values have the opposite sign. */
   oppositeMutate(): this {
     this.x = -this.x;
     this.y = -this.y;
     return this;
   }
 
-  /** Create a new Point whose x and y values are equivalent to this one's, but with the specified value added. */
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with the specified value added. */
   add(other: Vector | number): Vector {
     if (typeof other === "number") {
       return new Vector(this.x + other, this.y + other);
@@ -73,7 +73,7 @@ export default class Vector {
     }
   }
 
-  /** Mutate this Point by adding the specified value to its x and y values. */
+  /** Mutate this Vector by adding the specified value to its x and y values. */
   addMutate(other: Vector | number): this {
     if (typeof other === "number") {
       this.x += other;
@@ -85,29 +85,29 @@ export default class Vector {
     return this;
   }
 
-  /** Create a new Point whose x and y values are equivalent to this one's, but with the specified value added to the x value. */
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with the specified value added to the x value. */
   addX(amount: number): Vector {
     return new Vector(this.x + amount, this.y);
   }
 
-  /** Mutate this Point by adding the specified value to its x value. */
+  /** Mutate this Vector by adding the specified value to its x value. */
   addXMutate(amount: number): this {
     this.x += amount;
     return this;
   }
 
-  /** Create a new Point whose x and y values are equivalent to this one's, but with the specified value added to the y value. */
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with the specified value added to the y value. */
   addY(amount: number): Vector {
     return new Vector(this.x, this.y + amount);
   }
 
-  /** Mutate this Point by adding the specified value to its y value. */
+  /** Mutate this Vector by adding the specified value to its y value. */
   addYMutate(amount: number): this {
     this.y += amount;
     return this;
   }
 
-  /** Create a new Point whose x and y values are equivalent to this one's, but with the specified value subtracted. */
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with the specified value subtracted. */
   subtract(other: Vector | number): Vector {
     if (typeof other === "number") {
       return new Vector(this.x - other, this.y - other);
@@ -116,7 +116,7 @@ export default class Vector {
     }
   }
 
-  /** Mutate this Point by subtracting the specified value from its x and y values. */
+  /** Mutate this Vector by subtracting the specified value from its x and y values. */
   subtractMutate(other: Vector | number): this {
     if (typeof other === "number") {
       this.x -= other;
@@ -128,29 +128,29 @@ export default class Vector {
     return this;
   }
 
-  /** Create a new Point whose x and y values are equivalent to this one's, but with the specified value subtracted from the x value. */
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with the specified value subtracted from the x value. */
   subtractX(amount: number): Vector {
     return new Vector(this.x - amount, this.y);
   }
 
-  /** Mutate this Point by subtracting the specified value from its x value. */
+  /** Mutate this Vector by subtracting the specified value from its x value. */
   subtractXMutate(amount: number): this {
     this.x -= amount;
     return this;
   }
 
-  /** Create a new Point whose x and y values are equivalent to this one's, but with the specified value subtracted from the y value. */
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with the specified value subtracted from the y value. */
   subtractY(amount: number): Vector {
     return new Vector(this.x, this.y - amount);
   }
 
-  /** Mutate this Point by subtracting the specified value from its y value. */
+  /** Mutate this Vector by subtracting the specified value from its y value. */
   subtractYMutate(amount: number): this {
     this.y -= amount;
     return this;
   }
 
-  /** Create a new Point whose x and y values are equivalent to this one's, but with each multiplied by the specified value. */
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with each multiplied by the specified value. */
   multiply(other: Vector | number): Vector {
     if (typeof other === "number") {
       return new Vector(this.x * other, this.y * other);
@@ -159,7 +159,7 @@ export default class Vector {
     }
   }
 
-  /** Mutate this Point by multiplying its x and y values with the specified value. */
+  /** Mutate this Vector by multiplying its x and y values with the specified value. */
   multiplyMutate(other: Vector | number): this {
     if (typeof other === "number") {
       this.x *= other;
@@ -171,29 +171,29 @@ export default class Vector {
     return this;
   }
 
-  /** Create a new Point whose x and y values are equivalent to this one's, but with the x value multiplied by the specified value. */
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with the x value multiplied by the specified value. */
   multiplyX(amount: number): Vector {
     return new Vector(this.x * amount, this.y);
   }
 
-  /** Mutate this Point by multiplying its x value by the specified value. */
+  /** Mutate this Vector by multiplying its x value by the specified value. */
   multiplyXMutate(amount: number): this {
     this.x *= amount;
     return this;
   }
 
-  /** Create a new Point whose x and y values are equivalent to this one's, but with the y value multiplied by the specified value. */
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with the y value multiplied by the specified value. */
   multiplyY(amount: number): Vector {
     return new Vector(this.x, this.y * amount);
   }
 
-  /** Mutate this Point by multiplying its y value by the specified value. */
+  /** Mutate this Vector by multiplying its y value by the specified value. */
   multiplyYMutate(amount: number): this {
     this.y *= amount;
     return this;
   }
 
-  /** Create a new Point whose x and y values are equivalent to this one's, but with each divided by the specified value. */
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with each divided by the specified value. */
   divide(other: Vector | number): Vector {
     if (typeof other === "number") {
       return new Vector(this.x / other, this.y / other);
@@ -202,7 +202,7 @@ export default class Vector {
     }
   }
 
-  /** Mutate this Point by dividing its x and y values by the specified value. */
+  /** Mutate this Vector by dividing its x and y values by the specified value. */
   divideMutate(other: Vector | number): this {
     if (typeof other === "number") {
       this.x /= other;
@@ -214,83 +214,83 @@ export default class Vector {
     return this;
   }
 
-  /** Create a new Point whose x and y values are equivalent to this one's, but with its x value divided by the specified value. */
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with its x value divided by the specified value. */
   divideX(amount: number): Vector {
     return new Vector(this.x / amount, this.y);
   }
 
-  /** Mutate this Point by dividing its x value by the specified value. */
+  /** Mutate this Vector by dividing its x value by the specified value. */
   divideXMutate(amount: number): this {
     this.x /= amount;
     return this;
   }
 
-  /** Create a new Point whose x and y values are equivalent to this one's, but with its y value divided by the specified value. */
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with its y value divided by the specified value. */
   divideY(amount: number): Vector {
     return new Vector(this.x, this.y / amount);
   }
 
-  /** Mutate this Point by dividing its y value by the specified value. */
+  /** Mutate this Vector by dividing its y value by the specified value. */
   divideYMutate(amount: number): this {
     this.y /= amount;
     return this;
   }
 
-  /** Check if this Point and another Point have the same x and y values. */
+  /** Check if this Vector and another Vector have the same x and y values. */
   equals(other: Vector): boolean {
     return this.x === other.x && this.y === other.y;
   }
 
-  /** Measure the distance between this Point and another Point. */
+  /** Measure the distance between this Vector and another Vector. */
   distanceTo(other: Vector): number {
     return Math.sqrt(
       Math.pow(other.x - this.x, 2) + Math.pow(other.y - this.y, 2)
     );
   }
 
-  /** Return a new Point that is the same as this Point, but with its x and y values rounded to the nearest integer. */
+  /** Return a new Vector that is the same as this Vector, but with its x and y values rounded to the nearest integer. */
   round(): Vector {
     return new Vector(Math.round(this.x), Math.round(this.y));
   }
 
-  /** Mutate this Point by rounding its x and y values to the nearest integer. */
+  /** Mutate this Vector by rounding its x and y values to the nearest integer. */
   roundMutate(): this {
     this.x = Math.round(this.x);
     this.y = Math.round(this.y);
     return this;
   }
 
-  /** Return a new Point that is the same as this Point, but with its x and y values rounded down to the nearest integer. */
+  /** Return a new Vector that is the same as this Vector, but with its x and y values rounded down to the nearest integer. */
   roundDown(): Vector {
     return new Vector(Math.floor(this.x), Math.floor(this.y));
   }
 
-  /** Mutate this Point by rounding its x and y values down to the nearest integer. */
+  /** Mutate this Vector by rounding its x and y values down to the nearest integer. */
   roundDownMutate(): this {
     this.x = Math.floor(this.x);
     this.y = Math.floor(this.y);
     return this;
   }
 
-  /** Return a new Point that is the same as this Point, but with its x and y values rounded up to the nearest integer. */
+  /** Return a new Vector that is the same as this Vector, but with its x and y values rounded up to the nearest integer. */
   roundUp(): Vector {
     return new Vector(Math.ceil(this.x), Math.ceil(this.y));
   }
 
-  /** Mutate this Point by rounding its x and y values up to the nearest integer. */
+  /** Mutate this Vector by rounding its x and y values up to the nearest integer. */
   roundUpMutate(): this {
     this.x = Math.ceil(this.x);
     this.y = Math.ceil(this.y);
     return this;
   }
 
-  /** Mutate this Point by setting its x and y values to the values found on the provided object. */
+  /** Mutate this Vector by setting its x and y values to the values found on the provided object. */
   mutateInto(other: { x: number; y: number }) {
     this.x = other.x;
     this.y = other.y;
   }
 
-  /** Create a new Point by normalizing the magnitude of this one. */
+  /** Create a new Vector by normalizing the magnitude of this one. */
   normalize(): Vector {
     const existingMagnitude = this.magnitude;
     const normalizedX = this.x / existingMagnitude;
@@ -308,14 +308,14 @@ export default class Vector {
     return this;
   }
 
-  /** Create a new Point equivalent to this one but rotated by the specified amount (in radians), clockwise. */
+  /** Create a new Vector equivalent to this one but rotated by the specified amount (in radians), clockwise. */
   rotate(radians: number): Vector {
     const nextPoint = this.clone();
     nextPoint.angle += radians;
     return nextPoint;
   }
 
-  /** Mutate this Point by rotating it the specified amount (in radians), clockwise. */
+  /** Mutate this Vector by rotating it the specified amount (in radians), clockwise. */
   rotateMutate(radians: number): this {
     this.angle += radians;
     return this;
@@ -339,7 +339,7 @@ export default class Vector {
     return this;
   }
 
-  /** Create a DOMPoint with the same x and y values as this Point. */
+  /** Create a DOMPoint with the same x and y values as this Vector. */
   asDOMPoint(): DOMPoint {
     if (window.DOMPoint) {
       return new DOMPoint(this.x, this.y);
@@ -356,14 +356,14 @@ export default class Vector {
     }
   }
 
-  /** Create a new Point by transforming this Point using the provided DOMMatrix. */
+  /** Create a new Vector by transforming this Vector using the provided DOMMatrix. */
   transformUsingMatrix(matrix: DOMMatrix): Vector {
     const domPoint = this.asDOMPoint();
     const transformed = domPoint.matrixTransform(matrix);
     return new Vector(transformed.x, transformed.y);
   }
 
-  /** Mutate this Point by transforming its x and y values using the provided DOMMatrix. */
+  /** Mutate this Vector by transforming its x and y values using the provided DOMMatrix. */
   transformUsingMatrixMutate(matrix: DOMMatrix): this {
     const domPoint = this.asDOMPoint();
     const transformed = domPoint.matrixTransform(matrix);
