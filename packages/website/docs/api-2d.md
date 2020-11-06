@@ -2393,10 +2393,15 @@ function OgmoProject(
    * ogmo.useLevel(levelData);
    * ```
    *
-   * Available since version: 0.4.1
+   * You may pass a component function as the second argument
+   * to override the component used to render the level's tile
+   * layers. By default, Ogmo.TileRenderer is used.
+   *
+   * Available since version: 0.4.1. tileRenderer parameter added in Unreleased.
    */
   useLevel(
-    levelData: any
+    levelData: any,
+    tileRenderer?: (layer: LevelTileLayer, levelData: any) => any
   ): Component & {
     /**
      * The size of the level, in pixels.
@@ -2465,6 +2470,42 @@ and scale specified by the decal data in the level.
 If you want to use a different component to render decals, instead of this
 one, then you can override it when you create the Ogmo.Project by passing
 a custom function as its `decalFactory` parameter.
+
+### Ogmo.TileRenderer
+
+> Available since version: Unreleased
+
+```ts
+import { Ogmo } from "@hex-engine/2d";
+Ogmo.TileRenderer;
+```
+
+The default Ogmo tile renderer component, used to draw the [tile layers](https://ogmo-editor-3.github.io/docs/#/manual/tile-layers.md) of an Ogmo level.
+
+It uses [`Ogmo.TileLayerParser`](#ogmotilelayerparser) to create a [`TileMap`](#tilemap) for the layer, then draws the layer offset such that its center will be at 0, 0.
+
+If you want to use a different component to render tile layers, instead of this
+one, then you can override it when you call [`Ogmo.Project`](#ogmoproject)'s
+`useLevel` method by passing a component function as its `tileRenderer`
+parameter.
+
+### Ogmo.TileLayerParser
+
+> Available since version: Unreleased
+
+```ts
+import { Ogmo } from "@hex-engine/2d";
+Ogmo.TileLayerParser;
+```
+
+A component that creates a [`TileMap`](#tilemap) component for a tile layer from
+an Ogmo level.
+
+This component is used by [`Ogmo.TileRenderer`](#ogmotilerenderer) which is the default
+implementation for rendering tile layers from Ogmo levels. You may find
+`Ogmo.TileLayerParser` useful if you are overriding the default TileRenderer
+with a different implementation. To override it, pass a component function
+to [`Ogmo.Project`](#ogmoproject)'s `useLevel` method as its `tileRenderer` parameter.
 
 ### Physics.Engine
 

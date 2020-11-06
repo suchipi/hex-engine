@@ -195,6 +195,58 @@ export type LevelAPI = {
 };
 
 /**
+ * A component that creates a TileMap component for a tile layer from
+ * an Ogmo level.
+ *
+ * This component is used by Ogmo.TileRenderer which is the default
+ * implementation for rendering tile layers from Ogmo levels. You may find
+ * Ogmo.TileLayerParser useful if you are overriding the default TileRenderer
+ * with a different implementation. To override it, pass a component function
+ * to `useLevel` as its `tileRenderer` parameter.
+ */
+export function TileLayerParser(layer: LevelTileLayer) {
+  useType(TileLayerParser);
+
+  const tileset = layer.projectLayer.defaultTileset;
+
+  const spriteSheet = useNewComponent(() =>
+    SpriteSheet({
+      url: tileset.path,
+      tileWidth: tileset.tileSize.x,
+      tileHeight: tileset.tileSize.y,
+    })
+  );
+
+  const tilemap = useNewComponent(() => TileMap(spriteSheet, layer.data));
+
+  return {
+    tilemap,
+  };
+}
+Object.defineProperty(TileLayerParser, "name", {
+  value: "Ogmo.TileLayerParser",
+});
+
+/**
+ * The default tile renderer implementation used when loading level data with
+ * Ogmo.Project's useLevel method. You can pass an additional argument to
+ * useLevel to use a different component. If you do, you may wish to use
+ * Ogmo.TileLayerParser like this component does.
+ */
+export function TileRenderer(layer: LevelTileLayer, levelData: any) {
+  useType(TileRenderer);
+
+  const { tilemap } = useNewComponent(() => TileLayerParser(layer));
+
+  const sizeInPixels = new Vector(levelData.width, levelData.height);
+  useDraw((context) => {
+    context.translate(-sizeInPixels.x / 2, -sizeInPixels.y / 2);
+    tilemap.draw(context);
+  });
+}
+Object.defineProperty(TileRenderer, "name", { value: "Ogmo.TileRenderer" });
+
+/**
  * A component representing a single Ogmo level. When created, it will loop over all the
  * layers, decals, tiles, entities, and grids in the level, and create appropriate objects
  * to represent each.
@@ -204,7 +256,11 @@ export type LevelAPI = {
  *
  * You cannot create these manually; instead, use the `useLevel` method on Ogmo.Project.
  */
-function Level(project: ProjectAPI, levelData: any): LevelAPI {
+function Level(
+  project: ProjectAPI,
+  levelData: any,
+  tileRenderer: (layer: LevelTileLayer, levelData: any) => any
+): LevelAPI {
   useType(Level);
 
   const layers: Array<LevelLayer> = (levelData.layers as Array<any>).map(
@@ -261,24 +317,7 @@ function Level(project: ProjectAPI, levelData: any): LevelAPI {
 
       switch (layer.definition) {
         case "tile": {
-          const tileset = layer.projectLayer.defaultTileset;
-
-          const spriteSheet = useNewComponent(() =>
-            SpriteSheet({
-              url: tileset.path,
-              tileWidth: tileset.tileSize.x,
-              tileHeight: tileset.tileSize.y,
-            })
-          );
-
-          const tilemap = useNewComponent(() =>
-            TileMap(spriteSheet, layer.data)
-          );
-
-          useDraw((context) => {
-            tilemap.draw(context);
-          });
-
+          useNewComponent(() => tileRenderer(layer, levelData));
           break;
         }
         case "grid": {
@@ -407,16 +446,26 @@ function Project(
     layers: project.layers,
 
     /**
-     * Create a new Level component for the given level data,
+     * Create a new OgmoLevel component for the given level data,
      * and add it to the current component's Entity.
      *
      * ```ts
      * import levelData from "./level.json";
      * ogmo.useLevel(levelData);
      * ```
+     *
+     * You may pass a component function as the second argument
+     * to override the component used to render the level's tile
+     * layers. By default, Ogmo.TileRenderer is used.
      */
-    useLevel(levelData: any) {
-      return useNewComponent(() => Level(project, levelData));
+    useLevel(
+      levelData: any,
+      tileRenderer: (
+        layer: LevelTileLayer,
+        levelData: any
+      ) => any = TileRenderer
+    ) {
+      return useNewComponent(() => Level(project, levelData, tileRenderer));
     },
   };
 }
