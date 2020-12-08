@@ -127,6 +127,9 @@ export default (mode: "production" | "development" | "test") => {
             formatter: mode === "production" ? typescriptFormatter : undefined,
           }),
     ].filter(Boolean),
+    performance: {
+      hints: false
+    },
     optimization: {
       usedExports: true,
     },
