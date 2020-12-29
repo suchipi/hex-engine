@@ -1,5 +1,15 @@
 # Changelog
 
+### 0.8.1
+
+- Disabled performance hints (size, etc) for production webpack builds, since they are considered errors when the env var `CI` is true (@PxlBuzzard)
+
+### 0.8.0
+
+- Fixes a bug where changes in framerate over time were not properly handled by the physics engine (@suchipi)
+- Fixes some comments that still referred to the Vector class as "Point" (its old name) (@suchipi)
+- Change default tile rendering behavior for Ogmo tile layers and make the behaviour customizable via new `tileRenderer` option in `useLevel` (@suchipi)
+
 ### 0.7.1
 
 - Fixes a bug where mouse positions were reported inaccurately if you modified the canvas's transformation matrix (ie. with a Camera component you made). (@suchipi)
