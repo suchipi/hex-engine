@@ -4,17 +4,53 @@ import {
   useChild,
   useType,
   Vector,
-  Physics,
-  AudioContext,
-  useCanvasSize,
+  Ogmo,
+  Aseprite,
+  useDraw,
+  useRawDraw,
+  Geometry,
 } from "@hex-engine/2d";
-import Button from "./Button";
-import FPS from "./FPS";
-import Hex from "./Hex";
-import Scene from "./Scene";
-import Controls from "./Controls";
-import CustomDrawOrder from "./CustomDrawOrder";
-import Test from "./Test";
+import player from "./player.aseprite";
+import floppy from "./floppy.aseprite";
+import ogmoProject from "./project.ogmo";
+import ogmoLevel from "./level.json";
+
+function Player(info: Ogmo.EntityFactoryInfo) {
+  useType(Player);
+
+  const geometry = useNewComponent(() => Geometry(info));
+  const sprite = useNewComponent(() => Aseprite(player));
+
+  useDraw((context) => {
+    sprite.draw(context);
+  });
+}
+
+function Floppy(info: Ogmo.EntityFactoryInfo) {
+  useType(Floppy);
+
+  const geometry = useNewComponent(() => Geometry(info));
+  const sprite = useNewComponent(() => Aseprite(floppy));
+
+  useDraw((context) => {
+    sprite.draw(context);
+  });
+}
+
+function Level() {
+  const project = useNewComponent(() =>
+    Ogmo.Project(ogmoProject, {
+      player: (info) => useChild(() => Player(info)),
+      floppy: (info) => useChild(() => Floppy(info)),
+    })
+  );
+
+  useRawDraw((context) => {
+    context.translate(128, 128);
+  });
+
+  project.useLevel(ogmoLevel);
+}
 
 export default function Root() {
   useType(Root);
@@ -23,32 +59,5 @@ export default function Root() {
   canvas.setPixelated(true);
   canvas.fullscreen({ pixelZoom: 2 });
 
-  useNewComponent(CustomDrawOrder);
-
-  useNewComponent(AudioContext);
-  useNewComponent(Physics.Engine);
-  useNewComponent(FPS);
-  useNewComponent(Controls);
-
-  const scene = useChild(Scene).rootComponent;
-
-  useChild(() => {
-    Button({
-      calcPosition: (size) =>
-        new Vector(0, canvas.element.height)
-          .subtractYMutate(size.y / 2)
-          .addXMutate(size.x / 2)
-          .roundMutate(),
-      text: "Create Hex",
-      onClick: () => {
-        const randomX = Math.random() * canvas.element.width;
-
-        scene.useChild(() => Hex({ position: new Vector(randomX, 0) }));
-      },
-    });
-  });
-
-  const { canvasSize } = useCanvasSize();
-
-  useChild(() => Test(canvasSize.divide(2)));
+  useChild(Level);
 }

@@ -1,0 +1,151 @@
+{
+  "name": "test project",
+  "ogmoVersion": "3.3.0",
+  "levelPaths": ["."],
+  "backgroundColor": "#282c34ff",
+  "gridColor": "#3c4049cc",
+  "anglesRadians": true,
+  "directoryDepth": 5,
+  "layerGridDefaultSize": {"x": 8, "y": 8},
+  "levelDefaultSize": {"x": 320, "y": 240},
+  "levelMinSize": {"x": 128, "y": 128},
+  "levelMaxSize": {"x": 4096, "y": 4096},
+  "levelValues": [],
+  "defaultExportMode": ".json",
+  "compactExport": false,
+  "externalScript": "",
+  "playCommand": "",
+  "entityTags": ["humans"],
+  "layers": [
+    {
+      "definition": "decal",
+      "name": "decals_above",
+      "gridSize": {"x": 8, "y": 8},
+      "exportID": "22351558",
+      "folder": "",
+      "includeImageSequence": true,
+      "scaleable": false,
+      "rotatable": false,
+      "values": []
+    },
+    {
+      "definition": "entity",
+      "name": "entities",
+      "gridSize": {"x": 8, "y": 8},
+      "exportID": "22341594",
+      "requiredTags": [],
+      "excludedTags": []
+    },
+    {
+      "definition": "decal",
+      "name": "decals_below",
+      "gridSize": {"x": 8, "y": 8},
+      "exportID": "22355278",
+      "folder": "",
+      "includeImageSequence": true,
+      "scaleable": false,
+      "rotatable": false,
+      "values": []
+    },
+    {
+      "definition": "grid",
+      "name": "grid",
+      "gridSize": {"x": 8, "y": 8},
+      "exportID": "22353583",
+      "arrayMode": 0,
+      "legend": {"0": "#00000000", "1": "#ff0000ff"}
+    },
+    {
+      "definition": "tile",
+      "name": "tiles",
+      "gridSize": {"x": 8, "y": 8},
+      "exportID": "22344953",
+      "exportMode": 0,
+      "arrayMode": 0,
+      "defaultTileset": "world"
+    }
+  ],
+  "entities": [
+    {
+      "exportID": "22355574",
+      "name": "player",
+      "limit": -1,
+      "size": {"x": 8, "y": 8},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#ffff00ff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 8, "y": 8},
+      "resizeableX": false,
+      "resizeableY": false,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": ["humans"],
+      "values": [
+        {"name": "something", "definition": "Boolean", "defaults": false}
+      ],
+      "texture": "player.png",
+      "textureImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAAEhJREFUGJVjZECA/wyogBFOMDAw/P/9yQxFlpXvFAMDAwMjE0wSKgCXhGr4zwQTRDYBmc2ErAsbmwVZF0wC2QSCjmREEsPqTQDzKx0wuem/zAAAAABJRU5ErkJggg=="
+    },
+    {
+      "exportID": "22874433",
+      "name": "floppy",
+      "limit": -1,
+      "size": {"x": 8, "y": 8},
+      "origin": {"x": 4, "y": 4},
+      "originAnchored": false,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#006fffff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 16, "y": 16},
+      "resizeableX": false,
+      "resizeableY": false,
+      "rotatable": true,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": [],
+      "texture": "floppy.png",
+      "textureImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAAFVJREFUGJVjjM57+J+BgYFBU2AZAwMDA8P1D1EMmgLLGK5/iGJgYGBgYGIgADAUwEyCARYYA2YkOmBhYGBgWDJRDqtkTP4jMtyADhhh3sQGlk6SZwQABh4SvFD/8SsAAAAASUVORK5CYII="
+    }
+  ],
+  "tilesets": [
+    {"label": "world", "path": "tileset.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAICAYAAACYhf2vAAAAAXNSR0IArs4c6QAAAINJREFUOI1jZCAAvDP1/+OTXxyVjVd/9uQdeOWZCDmAgYGBgf3RV2KU4QTaGqYoNMkO+CnHTVDNwskLccpdvXGaQVvDFE6T7ABiQHxuPF75qzdOo9AUOYCYKMEXImQ5ANlSYqIEV4igpweiHYDPUmJ9i5wOYFFBURqAhQqh+IcBbOkAAALRMO74DvgVAAAAAElFTkSuQmCC", "tileWidth": 8, "tileHeight": 8, "tileSeparationX": 0, "tileSeparationY": 0}
+  ]
+}
