@@ -9,6 +9,7 @@
 - Fixes a bug where changes in framerate over time were not properly handled by the physics engine (@suchipi)
 - Fixes some comments that still referred to the Vector class as "Point" (its old name) (@suchipi)
 - Change default tile rendering behavior for Ogmo tile layers and make the behaviour customizable via new `tileRenderer` option in `useLevel` (@suchipi)
+- Ogmo tile layers will now be drawn as if their origin was at the center of the level, to make drawing behaviour consistent with how normal entities behave. In 0.7.1, they were drawn as if their origin was at the top-left. (@suchipi)
 
 ### 0.7.1
 
