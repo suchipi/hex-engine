@@ -22,7 +22,7 @@ export default Object.assign(
     element?: HTMLCanvasElement;
 
     /** The background color to set the canvas to prior to drawing each frame. */
-    backgroundColor: string;
+    backgroundColor: string | null;
   }) {
     useType(Canvas);
 

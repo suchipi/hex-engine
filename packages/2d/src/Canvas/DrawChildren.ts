@@ -52,7 +52,11 @@ export function useRawDraw(callback: DrawCallback) {
  * draw callbacks, in the order specified by the Canvas.DrawOrder component
  * on the root Entity, or a default order if there is no such component.
  */
-export function DrawChildren({ backgroundColor }: { backgroundColor: string }) {
+export function DrawChildren({
+  backgroundColor,
+}: {
+  backgroundColor: string | null;
+}) {
   useType(DrawChildren);
 
   const context = useContext();
@@ -77,8 +81,10 @@ export function DrawChildren({ backgroundColor }: { backgroundColor: string }) {
     context.resetTransform();
 
     // Clear canvas
-    context.fillStyle = backgroundColor;
-    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+    if (backgroundColor != null) {
+      context.fillStyle = backgroundColor;
+      context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+    }
 
     const sort = useCanvasDrawOrderSort();
 

@@ -1105,10 +1105,12 @@ function Canvas(options: {
 
   /**
    * The background color to set the canvas to prior to drawing each frame.
+   * If you pass `null`, the canvas will not be cleared prior to drawing each frame.
    *
    * Available since version: 0.0.0
+   * `null` supported since version: Unreleased
    */
-  backgroundColor: string;
+  backgroundColor: string | null;
 }): {
   /**
    * The canvas element; either the one you passed in,
