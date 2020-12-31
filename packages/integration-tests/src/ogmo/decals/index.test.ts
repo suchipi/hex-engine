@@ -8,6 +8,10 @@ import {
   Label,
   useDraw,
   Entity,
+  Preloader,
+  useRawDraw,
+  useCallbackAsCurrent,
+  Geometry,
 } from "@hex-engine/2d";
 import useBitmapFont from "../../useBitmapFont";
 import Inspector from "@hex-engine/inspector";
@@ -28,10 +32,17 @@ it("renders correctly", async () => {
     canvas.fullscreen();
 
     const ogmo = useNewComponent(() => Ogmo.Project(project, {}));
+
+    // Move level into visible area (since its origin is at the center)
+    useRawDraw((context) => {
+      context.translate(128, 128);
+    });
     ogmo.useLevel(level);
   });
   const inspector = rootEnt.getComponent(Inspector)!;
   inspector.hide();
+
+  await Preloader.load();
 
   expect(await TestIt.captureScreenshot()).toMatchImageSnapshot({
     maxDifferentPixels: 10,
@@ -44,23 +55,39 @@ it("renders correctly - custom decals", async () => {
     canvas.fullscreen();
 
     const ogmo = useNewComponent(() =>
-      Ogmo.Project(project, {}, (decalData) =>
+      Ogmo.Project(project, {}, (info) =>
         useChild(() => {
           const font = useBitmapFont();
           const label = useNewComponent(() => Label({ font }));
 
+          let loaded = false;
+          info.geometryPromise.then(
+            useCallbackAsCurrent((result) => {
+              loaded = true;
+              useNewComponent(() => Geometry(result));
+            })
+          );
+
           useDraw((context) => {
-            label.text = JSON.stringify(decalData);
-            label.draw(context, { x: decalData.x, y: decalData.y });
+            if (!loaded) return;
+
+            label.text = JSON.stringify(info.data);
+            label.draw(context);
           });
         })
       )
     );
 
+    // Move level into visible area (since its origin is at the center)
+    useRawDraw((context) => {
+      context.translate(128, 128);
+    });
     ogmo.useLevel(level);
   });
   const inspector = rootEnt.getComponent(Inspector)!;
   inspector.hide();
+
+  await Preloader.load();
 
   expect(await TestIt.captureScreenshot()).toMatchImageSnapshot();
 });
