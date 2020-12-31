@@ -387,22 +387,48 @@ function defaultDecalFactory(info: DecalFactoryInfo): Entity {
 
 /**
  * The object passed to an entity factory function as passed into Ogmo.Project.
+ *
+ * Generally, all you'll do with this is pass it into the geometry constructor:
+ * ```ts
+ * // Given that `info` is an `Ogmo.EntityFactoryInfo`:
+ * useNewComponent(() => Geometry(info));
+ * ```
+ *
+ * However, if you use Ogmo's "custom values" feature, then you can find your values and their defaults in the `data` and `projectData` properties.
+ *
+ * @property `shape` - A `Shape` derived from the size of the entity in the level json or ogmo project, suitable for passing into the `Geometry` component.
+ * @property `position` - A position `Vector` derived from the position of the entity in the level json, suitable for passing into the `Geometry` component.
+ * @property `rotation` - The rotation (in radians) derived from the rotation of the entity in the level json, suitable for passing into the `Geometry` component.
+ * @property `scale` - The X and Y scale components of derived from the scale of the entity in the level json, suitable for passing into the `Geometry` component.
+ * @property `data` - The raw data object for this entity as found in the level json. Note that positions, rotations, sizes, and etc in this object are not normalized into Hex Engine's coordinate system.
+ * @property `projectData` - The raw metadata object for this entity as found in the ogmo project. Note that positions, rotations, sizes, and etc in this object are not normalized into Hex Engine's coordinate system.
  */
 export type EntityFactoryInfo = {
-  /** A `Shape` derived from the size of the entity in the level json or ogmo project, suitable for passing into the `Geometry` component. */
   shape: Shape;
-  /** A position `Vector` derived from the position of the entity in the level json, suitable for passing into the `Geometry` component. */
   position: Vector;
-  /** The rotation (in radians) derived from the rotation of the entity in the level json, suitable for passing into the `Geometry` component. */
   rotation: number;
-  /** The X and Y scale components of derived from the scale of the entity in the level json, suitable for passing into the `Geometry` component. */
   scale: Vector;
-  /** The raw data object for this entity as found in the level json. Note that positions, rotations, sizes, and etc in this object are not normalized into Hex Engine's coordinate system. */
   data: EntityData;
-  /** The raw metadata object for this entity as found in the ogmo project. Note that positions, rotations, sizes, and etc in this object are not normalized into Hex Engine's coordinate system. */
   projectData: EntityProjectData;
 };
 
+/**
+ * The object passed to a decal factory function (as optionally passed into Ogmo.Project).
+ *
+ * Generally, all you'll do with this is pass the result of the `geometryPromise` into the geometry constructor:
+ * ```ts
+ * // Given that `info` is an `Ogmo.DecalFactoryInfo`:
+ * info.geometryPromise.then(
+ *   useCallbackAsCurrent(
+ *     (result) => useNewComponent(() => Geometry(result))
+ *   )
+ * );
+ * ```
+ *
+ * @property `geometryPromise` - A `Promise` that resolves into an object with `shape`, `position`, `rotation`, and `scale` properties, suitable for passing into the `Geometry` component.
+ * @property `image` - The `Image` component for the underlying image this decal uses.
+ * @property `data` - The raw data object for this decal as found in the level JSON. Note that positions, rotations, sizes, and etc in this object are not normalized into Hex Engine's coordinate system.
+ */
 export type DecalFactoryInfo = {
   geometryPromise: Promise<{
     shape: Shape;
