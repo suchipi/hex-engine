@@ -5,7 +5,7 @@ sidebar_label: Overview
 
 Hello! This document will help you get started using Hex Engine to create a 2D game for the browser.
 
-This guide assumes you are already with JavaScript.
+This guide assumes you are already familiar with JavaScript.
 
 To begin, you'll first need to install these prerequisites:
 
