@@ -11,6 +11,7 @@ Guides:
 - [Where are the Systems?](/docs/systems)
 - [Storage Components](/docs/storage-components)
 - [Using Aseprite with Hex Engine](/docs/using-aseprite)
+- [Deploying Your Game Online](/docs/deploying-your-game-online)
 
 Coming Soon:
 

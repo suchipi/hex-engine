@@ -15,7 +15,8 @@
       "testing",
       "systems",
       "storage-components",
-      "using-aseprite"
+      "using-aseprite",
+      "deploying-your-game-online"
     ],
     "API Reference": ["api-reference", "api-2d", "api-core", "api-inspector"]
   }

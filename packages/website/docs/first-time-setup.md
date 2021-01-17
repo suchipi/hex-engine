@@ -2,6 +2,8 @@
 title: First Time Setup
 ---
 
+## Creating the Project
+
 To quickly scaffold out a template game using Hex Engine, you can use the npm package `create-hex-engine-game`. Pick a directory where you want to make your game, then run the following in a terminal emulator or command prompt:
 
 ```
@@ -11,6 +13,8 @@ npx create-hex-engine-game@latest my-game
 You can change `my-game` to whatever you want; that's the name of the folder where it's going to put everything.
 
 It will run some tasks, and then let you know when it's done. Once it is, go open up that `my-game` directory (or whatever else you named it- for the rest of this tutorial, we'll assume you named it `my-game`, though).
+
+## Exploring the Project
 
 Inside the directory, you'll see a structure like this:
 
@@ -43,6 +47,8 @@ When you do, you'll see something like this:
 ![Screenshot of the default game created by create-hex-engine-game. A red box is sitting on a grey platform, set against a white background.](/img/template-post-create.png)
 
 You can click and drag on the red box to move it around. When you let it go, it will fall back down.
+
+## The Inspector Bar
 
 You may also notice the inspector bar in the upper-right:
 
