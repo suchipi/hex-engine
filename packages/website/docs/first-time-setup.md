@@ -58,9 +58,9 @@ If you click the "Expand" button on the right, the inspector overlay pane will o
 
 ![Screenshot of the inspector overlay pane, showing that the Root Entity has two children and 9 components.](/img/inspector-overlay-pane.png)
 
-Try expanding `root` > `children` > `1` > `components` > `0`. This is the `Geometry` component for the red box. It's not important right now what a Geometry component is; for now, try dragging the box around with the inspector pane open. You should see the `position` property on the `Geometry` component update. Pretty cool, eh?
+Try expanding `root` > `children` > `1` > `components` > `6`. This is the `Geometry` component for the red box. It's not important right now what a Geometry component is; for now, try dragging the box around with the inspector pane open. You should see the `position` property on the `Geometry` component update. Pretty cool, eh?
 
-Now try expanding `root` > `children` > `0` > `components` > `0`. This is the `Geometry` component for the gray floor. Expand its `position` property and find its `x` and `y` properties. Try editing the properties; you should see the gray floor move around.
+Now try expanding `root` > `children` > `0` > `components` > `6`. This is the `Geometry` component for the gray floor. Expand its `position` property and find its `x` and `y` properties. Try editing the properties; you should see the gray floor move around.
 
 The inspector bar and inspector overlay pane are both invaluable tools not just for understanding what's going on in your game, but also for playing around with it.
 
