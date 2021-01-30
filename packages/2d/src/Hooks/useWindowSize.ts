@@ -6,10 +6,7 @@ import {
   useNewRootComponent,
 } from "@hex-engine/core";
 import { useUpdate, useContext } from ".";
-import {
-  Vector,
-  ReadOnlyVector /* @babel-remove-prev-node */,
-} from "../Models";
+import { Vector, ReadOnlyVector } from "../Models";
 
 function StorageForWindowSize() {
   useType(StorageForWindowSize);

@@ -8,7 +8,7 @@ import {
 } from "../Hooks";
 
 /**
- * This Component provides information about the shape, position, rotation, and scale
+ * This Component provides information about the shape, position, rotation, origin, and scale
  * of the current Entity. It is used by `useDraw` and `Physics.Body`, among other things.
  *
  * You should only have one `Geometry` component per `Entity`.
@@ -18,11 +18,13 @@ function Geometry<S extends Shape>({
   position = new Vector(0, 0),
   rotation = 0,
   scale = new Vector(1, 1),
+  origin = undefined,
 }: {
   shape: S;
   position?: Vector | undefined;
   rotation?: number | undefined;
   scale?: Vector | undefined;
+  origin?: Vector | undefined;
 }) {
   useType(Geometry);
 
@@ -33,6 +35,7 @@ function Geometry<S extends Shape>({
     position,
     rotation,
     scale,
+    origin: origin || new Vector(0, 0),
     worldPosition() {
       const matrix = transforms.matrixForWorldPosition();
       return new Vector(matrix.e, matrix.f);

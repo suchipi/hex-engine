@@ -11,6 +11,7 @@ function getEntityTransformMatrix(entity: Entity) {
   }
 
   matrix.translateMutate(geometry.position);
+  matrix.translateMutate(geometry.origin);
   matrix.rotateMutate(geometry.rotation);
   matrix.scaleMutate(geometry.scale, new Vector(0, 0));
 
@@ -28,26 +29,30 @@ function getEntityTransformMatrixForContext(
     return matrix;
   }
 
-  if (roundToNearestPixel) {
-    matrix.translateMutate(geometry.position.round());
-  } else {
-    matrix.translateMutate(geometry.position);
-  }
+  matrix.translateMutate(geometry.position);
   matrix.rotateMutate(geometry.rotation);
 
   // It's easier to draw things from the top-left, so move
   // the canvas there instead of to the center.
+
+  // HACK: To avoid allocating a new vector, we mutate the origin and then mutate it right back.
+  geometry.origin.oppositeMutate();
+  matrix.translateMutate(geometry.origin);
+  geometry.origin.oppositeMutate();
+
   const topLeft = new Vector(
     geometry.shape.width / 2,
     geometry.shape.height / 2
   ).oppositeMutate();
 
-  if (roundToNearestPixel) {
-    topLeft.roundMutate();
-  }
   matrix.translateMutate(topLeft);
 
   matrix.scaleMutate(geometry.scale, topLeft.opposite());
+
+  if (roundToNearestPixel) {
+    matrix.e = Math.round(matrix.e);
+    matrix.f = Math.round(matrix.f);
+  }
 
   return matrix;
 }
