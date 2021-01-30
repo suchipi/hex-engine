@@ -372,3 +372,85 @@ export default class Vector {
     return this;
   }
 }
+
+export interface ReadOnlyVector {
+  readonly x: number;
+  readonly y: number;
+  readonly magnitude: number;
+  readonly angle: number;
+
+  /** Create a new Vector with the same x and y values as this one. */
+  clone(): Vector;
+
+  /** Create a new Vector whose x and y values have the opposite sign as this one's. */
+  opposite(): Vector;
+
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with the specified value added. */
+  add(other: Vector | number): Vector;
+
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with the specified value added to the x value. */
+  addX(amount: number): Vector;
+
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with the specified value added to the y value. */
+  addY(amount: number): Vector;
+
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with the specified value subtracted. */
+  subtract(other: Vector | number): Vector;
+
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with the specified value subtracted from the x value. */
+  subtractX(amount: number): Vector;
+
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with the specified value subtracted from the y value. */
+  subtractY(amount: number): Vector;
+
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with each multiplied by the specified value. */
+  multiply(other: Vector | number): Vector;
+
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with the x value multiplied by the specified value. */
+  multiplyX(amount: number): Vector;
+
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with the y value multiplied by the specified value. */
+  multiplyY(amount: number): Vector;
+
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with each divided by the specified value. */
+  divide(other: Vector | number): Vector;
+
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with its x value divided by the specified value. */
+  divideX(amount: number): Vector;
+
+  /** Create a new Vector whose x and y values are equivalent to this one's, but with its y value divided by the specified value. */
+  divideY(amount: number): Vector;
+
+  /** Check if this Vector and another Vector have the same x and y values. */
+  equals(other: Vector): boolean;
+
+  /** Measure the distance between this Vector and another Vector. */
+  distanceTo(other: Vector): number;
+
+  /** Return a new Vector that is the same as this Vector, but with its x and y values rounded to the nearest integer. */
+  round(): Vector;
+
+  /** Return a new Vector that is the same as this Vector, but with its x and y values rounded down to the nearest integer. */
+  roundDown(): Vector;
+
+  /** Return a new Vector that is the same as this Vector, but with its x and y values rounded up to the nearest integer. */
+  roundUp(): Vector;
+
+  /** Create a new Vector by normalizing the magnitude of this one. */
+  normalize(): Vector;
+
+  /** Create a new Vector equivalent to this one but rotated by the specified amount (in radians), clockwise. */
+  rotate(radians: number): Vector;
+
+  /** Return the dot product with the other vector. If it's negative, they are in opposite directions */
+  dotProduct(other: Vector): number;
+
+  /** Return a vector perpendicular to this one with the same magnitude */
+  perpendicular(): Vector;
+
+  /** Create a DOMPoint with the same x and y values as this Vector. */
+  asDOMPoint(): DOMPoint;
+
+  /** Create a new Vector by transforming this Vector using the provided DOMMatrix. */
+  transformUsingMatrix(matrix: DOMMatrix): Vector;
+}
