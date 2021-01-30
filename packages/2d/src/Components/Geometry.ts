@@ -7,6 +7,7 @@ import {
   useDebugOverlayDrawTime,
 } from "../Hooks";
 
+const TAU = 2 * Math.PI;
 /**
  * This Component provides information about the shape, position, rotation, origin, and scale
  * of the current Entity. It is used by `useDraw` and `Physics.Body`, among other things.
@@ -30,10 +31,23 @@ function Geometry<S extends Shape>({
 
   const transforms = useEntityTransforms();
 
+  let rotationVal = rotation;
+  if (rotationVal > TAU) {
+    rotationVal = rotationVal % TAU;
+  }
+
   const geometry = {
     shape,
     position,
-    rotation,
+    get rotation() {
+      return rotationVal;
+    },
+    set rotation(newVal) {
+      if (newVal > TAU) {
+        newVal = newVal % TAU;
+      }
+      rotationVal = newVal;
+    },
     scale,
     origin: origin || new Vector(0, 0),
     worldPosition() {
