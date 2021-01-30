@@ -6,7 +6,10 @@ import {
   useNewRootComponent,
 } from "@hex-engine/core";
 import { useUpdate, useContext } from ".";
-import { Vector } from "../Models";
+import {
+  Vector,
+  ReadOnlyVector /* @babel-remove-prev-node */,
+} from "../Models";
 
 function StorageForWindowSize() {
   useType(StorageForWindowSize);
@@ -48,7 +51,7 @@ function StorageForWindowSize() {
 
 /**
  * Returns an object with two properties on it:
- * - `windowSize: Vector`: A Vector that will get mutated such that it always equals the window size
+ * - `windowSize: ReadOnlyVector`: A Vector that will get mutated such that it always equals the window size (so you shouldn't mutate it yourself)
  * - `onWindowResize(() => void): void`: A function that lets you register
  * a function to be run every time the window size changes.
  */
@@ -58,7 +61,7 @@ export default function useWindowSize() {
     useNewRootComponent(StorageForWindowSize);
 
   return {
-    windowSize: storage.size,
+    windowSize: storage.size as ReadOnlyVector,
     onWindowResize: (callback: () => void) => {
       const component = useCurrentComponent();
       const wrapped = useCallbackAsCurrent(callback);
