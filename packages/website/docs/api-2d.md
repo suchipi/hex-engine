@@ -644,6 +644,20 @@ Create a new Vector by transforming this Vector using the provided DOMMatrix.
 
 Mutate this Vector by transforming its x and y values using the provided DOMMatrix.
 
+### ReadOnlyVector
+
+> Available since version: Unreleased
+
+```ts
+import { ReadOnlyVector } from "@hex-engine/2d";
+```
+
+A TypeScript interface representing a [`Vector`] instance with all its writable properties and mutating methods removed.
+
+If you want to provide a Vector to other parts of the code but do not want it to be mutated, you can use this interface.
+
+Note that even though it's called ReadOnlyVector, the real underlying instance at runtime is still a normal, mutable Vector. This is just a TypeScript interface intended for documentation/warning purposes so that consumers can understand whether they are allowed to mutate a received Vector or not.
+
 ### Polygon
 
 > Available since version: 0.0.1
@@ -3844,7 +3858,7 @@ import { useWindowSize } from "@hex-engine/2d";
 
 Returns an object with two properties on it:
 
-- `windowSize: Vector`: A Vector that will get mutated such that it always equals the window size
+- `windowSize: ReadOnlyVector`: A Vector that will get mutated such that it always equals the window size (so you shouldn't mutate it)
 - `onWindowResize(() => void): void`: A function that lets you register
   a function to be run every time the window size changes.
 
