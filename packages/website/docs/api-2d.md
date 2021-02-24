@@ -646,7 +646,7 @@ Mutate this Vector by transforming its x and y values using the provided DOMMatr
 
 ### ReadOnlyVector
 
-> Available since version: Unreleased
+> Available since version: 0.9.0
 
 ```ts
 import { ReadOnlyVector } from "@hex-engine/2d";
@@ -1122,7 +1122,7 @@ function Canvas(options: {
    * If you pass `null`, the canvas will not be cleared prior to drawing each frame.
    *
    * Available since version: 0.0.0
-   * `null` supported since version: Unreleased
+   * `null` supported since version: 0.9.0
    */
   backgroundColor: string | null;
 }): {
@@ -2373,7 +2373,7 @@ function OgmoProject(
    * { player: (entData) => useChild(() => Player(entData)) }
    *
    * Available since version: 0.4.1
-   * Changed to receive Ogmo.EntityFactoryInfo in version: Unreleased
+   * Changed to receive Ogmo.EntityFactoryInfo in version: 0.9.0
    */
   entityFactories: {
     [name: string]: (info: Ogmo.EntityFactoryInfo) => Entity;
@@ -2384,7 +2384,7 @@ function OgmoProject(
    * The default implementation uses Ogmo.Decal.
    *
    * Available since version: 0.4.1
-   * Changed to receive Ogmo.DecalFactoryInfo in version: Unreleased
+   * Changed to receive Ogmo.DecalFactoryInfo in version: 0.9.0
    */
   decalFactory?: (info: Ogmo.DecalFactoryInfo) => Entity
 ): {
