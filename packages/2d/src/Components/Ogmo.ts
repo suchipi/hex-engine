@@ -4,12 +4,13 @@ import {
   Entity,
   useChild,
   useEntityName,
+  useCallbackAsCurrent,
 } from "@hex-engine/core";
 import Geometry from "./Geometry";
 import Image from "./Image";
 import SpriteSheet from "./SpriteSheet";
 import TileMap from "./TileMap";
-import { Grid, Vector, Polygon } from "../Models";
+import { Grid, Vector, Polygon, Shape } from "../Models";
 import { useDraw } from "../Hooks";
 
 /**
@@ -101,10 +102,47 @@ export type ProjectLayer =
   | ProjectDecalLayer;
 
 export type ProjectAPI = {
-  createEntity: (data: EntityData) => Entity;
-  createDecal: (data: DecalData) => Entity;
+  createEntity: (data: EntityData, levelSizeInPixels: Vector) => Entity;
+  createDecal: (data: DecalData, levelSizeInPixels: Vector) => Entity;
   tilesets: Array<Tileset>;
   layers: Array<ProjectLayer>;
+};
+
+/** Metadata concerning an entity as defined in the project's .ogmo file. */
+export type EntityProjectData = {
+  exportID: string;
+  name: string;
+  limit: number;
+  size: { x: number; y: number };
+  origin: { x: number; y: number };
+  originAnchored: boolean;
+  shape: {
+    label: string;
+    points: Array<{ x: number; y: number }>;
+  };
+  color: string;
+  tileX: boolean;
+  tileY: boolean;
+  tileSize: { x: number; y: number };
+  resizeableX: boolean;
+  resizeableY: boolean;
+  rotatable: boolean;
+  rotationDegrees: number; // in degrees
+  canFlipX: boolean;
+  canFlipY: boolean;
+  canSetColor: boolean;
+  hasNodes: boolean;
+  nodeLimit: number;
+  nodeDisplay: number;
+  nodeGhost: boolean;
+  tags: Array<string>;
+  values: Array<{
+    name: string;
+    definition: string;
+    defaults: any;
+  }>;
+  texture: string; // filepath
+  textureImage: string; // data URL
 };
 
 /**
@@ -118,32 +156,20 @@ export type ProjectAPI = {
  * one, then you can override it when you create the Ogmo.Project by passing
  * a custom function as its `decalFactory` parameter.
  */
-function Decal(decalData: DecalData) {
+function Decal({ geometryPromise, image }: DecalFactoryInfo) {
   useType(Decal);
 
-  const geometry = useNewComponent(() =>
-    Geometry({
-      shape: Polygon.rectangle(1, 1),
-      position: new Vector(decalData.x, decalData.y),
-      // Note: looks like at time of writing, decal rotation is always in radians,
-      // regardless of the angle export setting of the project
-      rotation: decalData.rotation,
-      scale: new Vector(decalData.scaleX ?? 1, decalData.scaleY ?? 1),
+  let loaded = false;
+  geometryPromise.then(
+    useCallbackAsCurrent((geomInit) => {
+      useNewComponent(() => Geometry(geomInit));
+      loaded = true;
     })
   );
 
-  const image = useNewComponent(() => Image({ url: decalData.texture }));
-
-  image.load().then(() => {
-    const { data } = image;
-    if (!data) return;
-    const { width, height } = data;
-    if (!width || !height) return;
-
-    geometry.shape = Polygon.rectangle(width, height);
-  });
-
   useDraw((context) => {
+    if (!loaded) return;
+
     image.draw(context, { x: 0, y: 0 });
   });
 }
@@ -233,14 +259,12 @@ Object.defineProperty(TileLayerParser, "name", {
  * useLevel to use a different component. If you do, you may wish to use
  * Ogmo.TileLayerParser like this component does.
  */
-export function TileRenderer(layer: LevelTileLayer, levelData: any) {
+export function TileRenderer(layer: LevelTileLayer, _levelData: any) {
   useType(TileRenderer);
 
   const { tilemap } = useNewComponent(() => TileLayerParser(layer));
 
-  const sizeInPixels = new Vector(levelData.width, levelData.height);
   useDraw((context) => {
-    context.translate(-sizeInPixels.x / 2, -sizeInPixels.y / 2);
     tilemap.draw(context);
   });
 }
@@ -263,8 +287,9 @@ function Level(
 ): LevelAPI {
   useType(Level);
 
-  const layers: Array<LevelLayer> = (levelData.layers as Array<any>).map(
-    (layer, index) => {
+  const layers: Array<LevelLayer> = [...(levelData.layers as Array<any>)]
+    .reverse()
+    .map((layer, index) => {
       const projectLayer = project.layers.find(
         (projectLayer) => projectLayer.exportID === layer._eid
       );
@@ -308,12 +333,19 @@ function Level(
           };
         }
       }
-    }
-  );
+    });
+
+  const levelSizeInPixels = new Vector(levelData.width, levelData.height);
 
   layers.forEach((layer) => {
     useChild(() => {
       useEntityName(layer.projectLayer.name);
+
+      useNewComponent(() =>
+        Geometry({
+          shape: Polygon.rectangle(levelSizeInPixels),
+        })
+      );
 
       switch (layer.definition) {
         case "tile": {
@@ -326,20 +358,13 @@ function Level(
         }
         case "entity": {
           layer.entities.forEach((entData) => {
-            project.createEntity({
-              ...entData,
-              // Note: looks like at time of writing, entity rotation is always in degrees,
-              // regardless of the angle export setting of the project
-              rotation: entData.rotation
-                ? entData.rotation * (Math.PI / 180)
-                : 0,
-            });
+            project.createEntity(entData, levelSizeInPixels);
           });
           break;
         }
         case "decal": {
           layer.decals.forEach((decalData) => {
-            project.createDecal(decalData);
+            project.createDecal(decalData, levelSizeInPixels);
           });
         }
       }
@@ -356,37 +381,173 @@ function Level(
 
 Object.defineProperty(Level, "name", { value: "Ogmo.Level" });
 
-function defaultDecalFactory(decalData: DecalData): Entity {
-  return useChild(() => Decal(decalData));
+function defaultDecalFactory(info: DecalFactoryInfo): Entity {
+  return useChild(() => Decal(info));
 }
+
+/**
+ * The object passed to an entity factory function as passed into Ogmo.Project.
+ *
+ * Generally, all you'll do with this is pass it into the geometry constructor:
+ * ```ts
+ * // Given that `info` is an `Ogmo.EntityFactoryInfo`:
+ * useNewComponent(() => Geometry(info));
+ * ```
+ *
+ * However, if you use Ogmo's "custom values" feature, then you can find your values and their defaults in the `data` and `projectData` properties.
+ *
+ * @property `shape` - A `Shape` derived from the size of the entity in the level json or ogmo project, suitable for passing into the `Geometry` component.
+ * @property `position` - A position `Vector` derived from the position of the entity in the level json, suitable for passing into the `Geometry` component.
+ * @property `rotation` - The rotation (in radians) derived from the rotation of the entity in the level json, suitable for passing into the `Geometry` component.
+ * @property `scale` - The X and Y scale components of derived from the scale of the entity in the level json, suitable for passing into the `Geometry` component.
+ * @property `data` - The raw data object for this entity as found in the level json. Note that positions, rotations, sizes, and etc in this object are not normalized into Hex Engine's coordinate system.
+ * @property `projectData` - The raw metadata object for this entity as found in the ogmo project. Note that positions, rotations, sizes, and etc in this object are not normalized into Hex Engine's coordinate system.
+ */
+export type EntityFactoryInfo = {
+  shape: Shape;
+  position: Vector;
+  rotation: number;
+  scale: Vector;
+  data: EntityData;
+  projectData: EntityProjectData;
+};
+
+/**
+ * The object passed to a decal factory function (as optionally passed into Ogmo.Project).
+ *
+ * Generally, all you'll do with this is pass the result of the `geometryPromise` into the geometry constructor:
+ * ```ts
+ * // Given that `info` is an `Ogmo.DecalFactoryInfo`:
+ * info.geometryPromise.then(
+ *   useCallbackAsCurrent(
+ *     (result) => useNewComponent(() => Geometry(result))
+ *   )
+ * );
+ * ```
+ *
+ * @property `geometryPromise` - A `Promise` that resolves into an object with `shape`, `position`, `rotation`, and `scale` properties, suitable for passing into the `Geometry` component.
+ * @property `image` - The `Image` component for the underlying image this decal uses.
+ * @property `data` - The raw data object for this decal as found in the level JSON. Note that positions, rotations, sizes, and etc in this object are not normalized into Hex Engine's coordinate system.
+ */
+export type DecalFactoryInfo = {
+  geometryPromise: Promise<{
+    shape: Shape;
+    position: Vector;
+    rotation: number;
+    scale: Vector;
+  }>;
+  image: ReturnType<typeof Image>;
+  data: DecalData;
+};
 
 /**
  * A Component that provides an interface for working with an [Ogmo Editor](https://ogmo-editor-3.github.io/) project.
  *
  * @param projectData The imported *.ogmo file
  * @param entityFactories An object map of functions that will be used to
- * construct entities in Ogmo levels, by name; for example: { player: (entData) => useChild(() => Player(entData)) }
+ * construct entities in Ogmo levels, by name; for example: `{ player: (info) => useChild(() => Player(info)) }`. The type of the `info` parameter is a superset of the type required by the `Geometry` component, so you can pass it in directly to set up the entity's geometry.
  * @param decalFactory An optional function that will be called to construct entities for decals. The default implementation uses Ogmo.Decal.
  */
 function Project(
   projectData: any,
   entityFactories: {
-    [name: string]: (entityData: EntityData) => Entity;
+    [name: string]: (info: EntityFactoryInfo) => Entity;
   } = {},
-  decalFactory?: (decalData: DecalData) => Entity
+  decalFactory: (info: DecalFactoryInfo) => Entity = defaultDecalFactory
 ) {
   useType(Project);
 
   const project: ProjectAPI = {
-    createEntity: (data: EntityData) => {
-      const factoryForName = entityFactories[data.name];
+    createEntity: (entData: EntityData, levelSizeInPixels: Vector) => {
+      const factoryForName = entityFactories[entData.name];
       if (factoryForName) {
-        return factoryForName(data);
+        const entProjectData: EntityProjectData | undefined = (
+          projectData.entities || []
+        ).find((info: EntityProjectData) => info.name === entData.name);
+
+        const size = new Vector(
+          entData.width ?? entProjectData?.size?.x ?? 0,
+          entData.height ?? entProjectData?.size?.y ?? 0
+        );
+
+        const position = new Vector(entData.x, entData.y)
+          .subtractMutate(levelSizeInPixels.divide(2))
+          .addMutate(size.divide(2));
+
+        if (
+          entProjectData?.origin &&
+          entProjectData?.origin?.x &&
+          entProjectData?.origin?.y
+        ) {
+          position.subtractXMutate(entProjectData.origin.x);
+          position.subtractYMutate(entProjectData.origin.y);
+        }
+
+        // Note: looks like at time of writing, entity rotation is always in degrees,
+        // regardless of the angle export setting of the project
+        const rotation = entData.rotation
+          ? entData.rotation * (Math.PI / 180)
+          : 0;
+        const scale = new Vector(1, 1); // TODO
+
+        return factoryForName({
+          shape: Polygon.rectangle(size), // TODO support non-rectangle
+          position,
+          rotation,
+          scale,
+          data: entData,
+          projectData: entProjectData!,
+        });
       } else {
-        throw new Error(`No Ogmo entity factory defined for: ${data.name}`);
+        throw new Error(`No Ogmo entity factory defined for: ${entData.name}`);
       }
     },
-    createDecal: decalFactory || defaultDecalFactory,
+    createDecal: (decalData: DecalData, levelSizeInPixels: Vector) => {
+      const image = useNewComponent(() => Image({ url: decalData.texture }));
+
+      const geometryPromise = image.load().then(() => {
+        const { data } = image;
+        if (!data) {
+          return {
+            shape: Polygon.rectangle(1, 1),
+            position: new Vector(0, 0),
+            rotation: 0,
+            scale: new Vector(1, 1),
+          };
+        }
+        const { width, height } = data;
+        if (!width || !height) {
+          return {
+            shape: Polygon.rectangle(1, 1),
+            position: new Vector(0, 0),
+            rotation: 0,
+            scale: new Vector(1, 1),
+          };
+        }
+
+        const shape = Polygon.rectangle(width, height);
+        const position = new Vector(decalData.x, decalData.y).subtractMutate(
+          levelSizeInPixels.divide(2)
+        );
+        // Note: looks like at time of writing, decal rotation is always in radians,
+        // regardless of the angle export setting of the project
+        const rotation = decalData.rotation ?? 0;
+        const scale = new Vector(decalData.scaleX ?? 1, decalData.scaleY ?? 1);
+
+        return {
+          shape,
+          position,
+          rotation,
+          scale,
+        };
+      });
+
+      return decalFactory({
+        geometryPromise,
+        image,
+        data: decalData,
+      });
+    },
     tilesets: [],
     layers: [],
   };

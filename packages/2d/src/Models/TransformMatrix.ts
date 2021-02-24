@@ -5,7 +5,6 @@ export function createSVGMatrix(): DOMMatrix {
     ? new DOMMatrix()
     : document.createElementNS("http://www.w3.org/2000/svg", "g").getCTM();
   if (matrix == null) {
-    debugger;
     throw new Error(
       "Unable to create transformation matrix. Maybe try using a newer browser?"
     );
@@ -243,6 +242,9 @@ export default class TransformMatrix {
   get a() {
     return this._matrix.a;
   }
+  set a(newValue) {
+    this._matrix.a = newValue;
+  }
 
   /**
    * Returns the `b` component of this TransformMatrix, where this TransformMatrix's components can be represented as follows:
@@ -257,6 +259,9 @@ export default class TransformMatrix {
    */
   get b() {
     return this._matrix.b;
+  }
+  set b(newValue) {
+    this._matrix.b = newValue;
   }
 
   /**
@@ -273,6 +278,9 @@ export default class TransformMatrix {
   get c() {
     return this._matrix.c;
   }
+  set c(newValue) {
+    this._matrix.c = newValue;
+  }
 
   /**
    * Returns the `d` component of this TransformMatrix, where this TransformMatrix's components can be represented as follows:
@@ -287,6 +295,9 @@ export default class TransformMatrix {
    */
   get d() {
     return this._matrix.d;
+  }
+  set d(newValue) {
+    this._matrix.d = newValue;
   }
 
   /**
@@ -303,6 +314,9 @@ export default class TransformMatrix {
   get e() {
     return this._matrix.e;
   }
+  set e(newValue) {
+    this._matrix.e = newValue;
+  }
 
   /**
    * Returns the `f` component of this TransformMatrix, where this TransformMatrix's components can be represented as follows:
@@ -317,5 +331,8 @@ export default class TransformMatrix {
    */
   get f() {
     return this._matrix.f;
+  }
+  set f(newValue) {
+    this._matrix.f = newValue;
   }
 }

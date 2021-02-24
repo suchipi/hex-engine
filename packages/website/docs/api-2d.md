@@ -644,6 +644,20 @@ Create a new Vector by transforming this Vector using the provided DOMMatrix.
 
 Mutate this Vector by transforming its x and y values using the provided DOMMatrix.
 
+### ReadOnlyVector
+
+> Available since version: Unreleased
+
+```ts
+import { ReadOnlyVector } from "@hex-engine/2d";
+```
+
+A TypeScript interface representing a [`Vector`] instance with all its writable properties and mutating methods removed.
+
+If you want to provide a Vector to other parts of the code but do not want it to be mutated, you can use this interface.
+
+Note that even though it's called ReadOnlyVector, the real underlying instance at runtime is still a normal, mutable Vector. This is just a TypeScript interface intended for documentation/warning purposes so that consumers can understand whether they are allowed to mutate a received Vector or not.
+
 ### Polygon
 
 > Available since version: 0.0.1
@@ -2359,9 +2373,10 @@ function OgmoProject(
    * { player: (entData) => useChild(() => Player(entData)) }
    *
    * Available since version: 0.4.1
+   * Changed to receive Ogmo.EntityFactoryInfo in version: Unreleased
    */
   entityFactories: {
-    [name: string]: (entityData: OgmoEntityData) => Entity;
+    [name: string]: (info: Ogmo.EntityFactoryInfo) => Entity;
   } = {},
 
   /**
@@ -2369,8 +2384,9 @@ function OgmoProject(
    * The default implementation uses Ogmo.Decal.
    *
    * Available since version: 0.4.1
+   * Changed to receive Ogmo.DecalFactoryInfo in version: Unreleased
    */
-  decalFactory?: (decalData: OgmoDecalData) => Entity
+  decalFactory?: (info: Ogmo.DecalFactoryInfo) => Entity
 ): {
   /**
    * All of the tilesets specified in the Ogmo project.
@@ -2460,7 +2476,7 @@ You cannot create these manually; instead, use the `useLevel` method on [Ogmo.Pr
 
 ```ts
 import { Ogmo } from "@hex-engine/2d";
-Ogmo.Entity;
+Ogmo.Decal;
 ```
 
 The default Ogmo decal component, used in the creation of decal entities
@@ -3844,7 +3860,7 @@ import { useWindowSize } from "@hex-engine/2d";
 
 Returns an object with two properties on it:
 
-- `windowSize: Vector`: A Vector that will get mutated such that it always equals the window size
+- `windowSize: ReadOnlyVector`: A Vector that will get mutated such that it always equals the window size (so you shouldn't mutate it)
 - `onWindowResize(() => void): void`: A function that lets you register
   a function to be run every time the window size changes.
 

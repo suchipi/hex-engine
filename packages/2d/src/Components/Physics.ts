@@ -303,6 +303,12 @@ function PhysicsBody(
 ) {
   useType(PhysicsBody);
 
+  if (geometry.origin.x !== 0 || geometry.origin.y !== 0) {
+    throw new Error(
+      `Physics bodies only work with geometries whose origin is at 0, 0. You attempted to create a Physics Body using a geometry with origin ${geometry.origin.x}, ${geometry.origin.y}.`
+    );
+  }
+
   const engine = useEngine();
   const addCollisionListener = useCollisionListener();
 
