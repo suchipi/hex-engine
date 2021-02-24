@@ -341,7 +341,7 @@ function Level(
     useChild(() => {
       useEntityName(layer.projectLayer.name);
 
-      const geometry = useNewComponent(() =>
+      useNewComponent(() =>
         Geometry({
           shape: Polygon.rectangle(levelSizeInPixels),
         })
