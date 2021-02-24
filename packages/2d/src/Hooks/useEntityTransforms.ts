@@ -2,7 +2,7 @@ import { useCallbackAsCurrent, useEntity, Entity } from "@hex-engine/core";
 import { Vector, TransformMatrix } from "../Models";
 import { Geometry } from "../Components";
 
-function getEntityTransformMatrix(entity: Entity) {
+function getEntityTransformMatrix(entity: Entity, includeOrigin: boolean) {
   const matrix = new TransformMatrix();
 
   const geometry = entity.getComponent(Geometry);
@@ -11,7 +11,9 @@ function getEntityTransformMatrix(entity: Entity) {
   }
 
   matrix.translateMutate(geometry.position);
-  matrix.translateMutate(geometry.origin);
+  if (includeOrigin) {
+    matrix.translateMutate(geometry.origin);
+  }
   matrix.rotateMutate(geometry.rotation);
   matrix.scaleMutate(geometry.scale, new Vector(0, 0));
 
@@ -20,6 +22,7 @@ function getEntityTransformMatrix(entity: Entity) {
 
 function getEntityTransformMatrixForContext(
   entity: Entity,
+  includeOrigin: boolean,
   roundToNearestPixel: boolean
 ) {
   const matrix = new TransformMatrix();
@@ -35,10 +38,12 @@ function getEntityTransformMatrixForContext(
   // It's easier to draw things from the top-left, so move
   // the canvas there instead of to the center.
 
-  // HACK: To avoid allocating a new vector, we mutate the origin and then mutate it right back.
-  geometry.origin.oppositeMutate();
-  matrix.translateMutate(geometry.origin);
-  geometry.origin.oppositeMutate();
+  if (includeOrigin) {
+    // HACK: To avoid allocating a new vector, we mutate the origin and then mutate it right back.
+    geometry.origin.oppositeMutate();
+    matrix.translateMutate(geometry.origin);
+    geometry.origin.oppositeMutate();
+  }
 
   const topLeft = new Vector(
     geometry.shape.width / 2,
@@ -68,9 +73,9 @@ export default function useEntityTransforms(entity = useEntity()) {
 
       const matrix = new TransformMatrix();
       for (const ancestor of ancestors) {
-        matrix.multiplyMutate(getTransform(ancestor));
+        matrix.multiplyMutate(getTransform(ancestor, false));
       }
-      matrix.multiplyMutate(getTransform(entity));
+      matrix.multiplyMutate(getTransform(entity, true));
 
       return matrix;
     }
@@ -89,10 +94,11 @@ export default function useEntityTransforms(entity = useEntity()) {
           if (someEnt === entity) {
             return getEntityTransformMatrixForContext(
               someEnt,
+              true,
               roundToNearestPixel
             );
           } else {
-            return getEntityTransformMatrix(someEnt);
+            return getEntityTransformMatrix(someEnt, false);
           }
         });
       }
