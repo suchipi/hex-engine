@@ -70,7 +70,7 @@ export default function Root() {
 
   const canvas = useNewComponent(() => Canvas({ backgroundColor: "white" }));
   canvas.setPixelated(true);
-  canvas.fullscreen({ pixelZoom: 3 });
+  canvas.fullscreen();
 
   const green2 = useChild(() =>
     CircleThing({
