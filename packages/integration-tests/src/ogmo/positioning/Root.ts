@@ -17,7 +17,7 @@ import ogmoLevel from "./level.json";
 function Player(info: Ogmo.EntityFactoryInfo) {
   useType(Player);
 
-  const geometry = useNewComponent(() => Geometry(info));
+  useNewComponent(() => Geometry(info));
   const sprite = useNewComponent(() => Aseprite(player));
 
   useDraw((context) => {
@@ -28,7 +28,7 @@ function Player(info: Ogmo.EntityFactoryInfo) {
 function Floppy(info: Ogmo.EntityFactoryInfo) {
   useType(Floppy);
 
-  const geometry = useNewComponent(() => Geometry(info));
+  useNewComponent(() => Geometry(info));
   const sprite = useNewComponent(() => Aseprite(floppy));
 
   useDraw((context) => {
