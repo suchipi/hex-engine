@@ -2373,9 +2373,10 @@ function OgmoProject(
    * { player: (entData) => useChild(() => Player(entData)) }
    *
    * Available since version: 0.4.1
+   * Changed to receive Ogmo.EntityFactoryInfo in version: Unreleased
    */
   entityFactories: {
-    [name: string]: (entityData: OgmoEntityData) => Entity;
+    [name: string]: (info: Ogmo.EntityFactoryInfo) => Entity;
   } = {},
 
   /**
@@ -2383,8 +2384,9 @@ function OgmoProject(
    * The default implementation uses Ogmo.Decal.
    *
    * Available since version: 0.4.1
+   * Changed to receive Ogmo.DecalFactoryInfo in version: Unreleased
    */
-  decalFactory?: (decalData: OgmoDecalData) => Entity
+  decalFactory?: (info: Ogmo.DecalFactoryInfo) => Entity
 ): {
   /**
    * All of the tilesets specified in the Ogmo project.
@@ -2474,7 +2476,7 @@ You cannot create these manually; instead, use the `useLevel` method on [Ogmo.Pr
 
 ```ts
 import { Ogmo } from "@hex-engine/2d";
-Ogmo.Entity;
+Ogmo.Decal;
 ```
 
 The default Ogmo decal component, used in the creation of decal entities
