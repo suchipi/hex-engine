@@ -76,7 +76,7 @@ export default function Animation<T>(
   };
 
   useUpdate(() => {
-    if (timer.hasReachedSetTime()) {
+    if (timer.alpha === 1) {
       if (currentFrameIndex === frames.length - 1) {
         if (state.loop) {
           currentFrameIndex = 0;
@@ -127,12 +127,7 @@ export default function Animation<T>(
     },
 
     get currentFrameCompletion() {
-      const currentFrame = getCurrentFrame();
-      if (currentFrame.duration === 0) {
-        return 1;
-      }
-
-      return 1 - timer.distanceFromSetTime() / getCurrentFrame().duration;
+      return timer.alpha;
     },
 
     pause() {

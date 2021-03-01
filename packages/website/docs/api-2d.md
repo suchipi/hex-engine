@@ -3587,12 +3587,91 @@ function TileMap(
 ### Timer
 
 > Available since version: 0.0.0
+> Return type changed in version: Unreleased
 
 ```ts
 import { Timer } from "@hex-engine/2d";
 ```
 
-This Component can be used to check how far the current time is from some desired time in the future.
+This Component can be used to measure time.
+
+```ts
+// Create a timer
+const timer = useNewComponent(Timer);
+// Set it to some time in the future
+timer.setToTimeFromNow(100);
+// Use its `alpha` property to get a number from zero to one
+// representing how close the current time is to the set time:
+timer.alpha; // 0
+// If you wait 50ms and then check again...
+timer.alpha; // 0.5
+// And 50 more ms...
+timer.alpha; // 1
+```
+
+The `alpha` property is clamped from 0 to 1. If you want the "raw"
+value, that goes above 1 after you've gone beyond the set time, use the
+`unclampedAlpha` property instead:
+
+```ts
+const timer = useNewComponent(Timer);
+timer.setToTimeFromNow(100);
+timer.alpha; // 0
+timer.unclampedAlpha; // 0
+// If you wait 100ms and then check again...
+timer.alpha; // 1
+timer.unclampedAlpha; // 1
+// And 50 more ms...
+timer.alpha; // 1
+timer.unclampedAlpha; // 1.5
+// And 50 more ms...
+timer.alpha; // 1
+timer.unclampedAlpha; // 2
+```
+
+You can use `unclampedAlpha` to measure time elapsed in milliseconds:
+
+```ts
+const timer = useNewComponent(Timer);
+timer.setToTimeFromNow(1);
+timer.unclampedAlpha; // 0
+// If you wait one ms and then check again:
+timer.unclampedAlpha; // 1
+// and, after waiting another ms:
+timer.unclampedAlpha; // 2
+```
+
+Or, you can use `unclampedAlpha` to measure time elapsed in _seconds_:
+
+```ts
+const timer = useNewComponent(Timer);
+timer.setToTimeFromNow(1000); // Pass 1000 here instead of 1
+timer.unclampedAlpha; // 0
+// If you wait one second and then check again:
+timer.unclampedAlpha; // 1
+// and, after waiting another second:
+timer.unclampedAlpha; // 2
+```
+
+To pause a Timer, call its component `disable` function:
+
+```ts
+const timer = useNewComponent(Timer);
+timer.disable(); // Pause the timer
+```
+
+While disabled, the Timer won't count time.
+
+To resume a paused Timer, call its component `enable` function:
+
+```ts
+const timer = useNewComponent(Timer);
+timer.disable(); // Pause the timer
+// And then later:
+timer.enable(); // Resume the timer
+```
+
+To reset the Timer's set time to a new time, call `setToTimeFromNow` again.
 
 ```ts
 function Timer(): {
@@ -3607,21 +3686,22 @@ function Timer(): {
   setToTimeFromNow(msFromNow: number): void;
 
   /**
-   * Returns how many milliseconds away the current time is from the target time.
+   * A number between 0 and 1 representing how close the current time is to
+   * the set time. Immediately after calling `setToTimeFromNow`, it will
+   * have the value 0. Once the amount of time passed into `setToTimeFromNow`
+   * has elapsed, it will have the value 1. In the time in-between, its value
+   * will be between 0 and 1.
    *
-   * If the target time has not yet been reached, this number will be negative.
-   *
-   * Available since version: 0.0.1
+   * After the set time has elapsed, its value will remain at 1. For a value
+   * that continues to grow above 1, use `unclampedAlpha`.
    */
-  distanceFromSetTime(): number;
+  alpha: number;
 
   /**
-   * Returns a boolean indicating whether the target time set by `setToTimeFromNow`
-   * has been reached.
-   *
-   * Available since version: 0.0.1
+   * Like `alpha`, but its value continues to grow beyond 1 after the set
+   * time has elapsed.
    */
-  hasReachedSetTime(): boolean;
+  unclampedAlpha: number;
 };
 ```
 
