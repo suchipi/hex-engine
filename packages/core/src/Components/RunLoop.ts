@@ -65,8 +65,8 @@ export default function RunLoop() {
     isPaused = true;
   }
 
-  function step() {
-    runFrameCallbacks(16.667);
+  function step(amount: number = 16.667) {
+    runFrameCallbacks(amount);
   }
 
   function resume() {
