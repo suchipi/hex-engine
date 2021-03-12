@@ -31,7 +31,7 @@
     "ogmo-level-json-loader": "^0.2.0",
     "ogmo-project-loader": "^0.2.0",
     "on-exit": "^1.0.1",
-    "react-dev-utils": "^10.0.0",
+    "react-dev-utils": "^11.0.4",
     "regenerator-runtime": "^0.13.3",
     "resolve": "^1.14.2",
     "style-loader": "^1.1.3",
