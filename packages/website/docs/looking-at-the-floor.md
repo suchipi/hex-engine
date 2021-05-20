@@ -63,7 +63,7 @@ Next, we define the `Floor` Component function. As you may have expected, this i
 
 ```ts
 // This Floor component receives a Vector as its first argument,
-// indicating the position where it sould be created.
+// indicating the position where it should be created.
 export default function Floor(position: Vector) {
   // We have to call useType as the first thing in every Component function we write.
   useType(Floor);
