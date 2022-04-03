@@ -33,6 +33,14 @@ export default function Mouse({
 } = {}) {
   useType(Mouse);
 
+  if (process.env.NODE_ENV !== "production") {
+    if (!geometry) {
+      console.warn(
+        "Attempted to create a Mouse component with no associated Geometry. This Mouse component will not be useful.\nPlease either add a Geometry to the Entity before constructing the Mouse component, pass a Geometry into the Mouse component function, or use LowLevelMouse instead (which doesn't rely on Geometry).\nThis message will not be logged in production."
+      );
+    }
+  }
+
   const storage = {
     onDownCallbacks: new Set<Callback>(),
     onUpCallbacks: new Set<Callback>(),
