@@ -47,7 +47,34 @@ export interface Entity {
   ancestors(): Array<Entity>;
 
   /**
-   * Transfer the ownership of the Entity from its parent to this Entity.
+   * Constructs a new Entity using the provided component factory,
+   * then adds it to this Entity.
+   *
+   * This is the same as `useChild`, but instead of being bound to the current
+   * Entity, it adds it to the Entity you call `createChild` on.
+   *
+   * @param componentFactory The function that calls the Component, same as you would pass into `useChild`.
+   */
+  createChild<T>(
+    componentFactory: () => T
+  ): Entity & {
+    rootComponent: T extends {} ? Component & T : Component;
+  };
+
+  /**
+   * Adds a child Entity to this Entity.
+   * @param child The child Entity to add.
+   */
+  addChild(child: Entity): void;
+
+  /**
+   * Removes a child Entity from this Entity.
+   * @param child The child Entity to remove.
+   */
+  removeChild(child: Entity): void;
+
+  /**
+   * Transfers the ownership of the Entity from its parent to this Entity.
    */
   takeChild(entity: Entity): void;
 

@@ -21,10 +21,11 @@ function destroy(entity: Entity) {
   }
 
   if (entity.parent) {
-    entity.parent._removeChild(entity);
+    entity.parent.removeChild(entity);
   }
 
   entity._isDestroying = false;
+  entity._isDestroyed = true;
 }
 
 function enable(entity: Entity) {
@@ -72,6 +73,7 @@ export default class Entity implements EntityInterface {
   rootComponent: any;
 
   _isDestroying: boolean = false;
+  _isDestroyed: boolean = false;
 
   static _create<T>(
     componentFactory: () => T,
@@ -84,7 +86,7 @@ export default class Entity implements EntityInterface {
     id++;
 
     if (parent) {
-      parent._addChild(ent);
+      parent.addChild(ent);
     }
 
     const component = instantiate(componentFactory, ent);
@@ -98,15 +100,6 @@ export default class Entity implements EntityInterface {
     return new Map(
       [...this.components].map((component) => [component.type, component])
     );
-  }
-
-  _addChild(child: Entity): void {
-    this.children.add(child);
-    child.parent = this;
-  }
-  _removeChild(child: Entity): void {
-    this.children.delete(child);
-    child.parent = null;
   }
 
   getComponent<Func extends (...args: any[]) => any>(
@@ -173,8 +166,50 @@ export default class Entity implements EntityInterface {
     return ancestors;
   }
 
+  createChild<T>(
+    componentFactory: () => T
+  ): Entity & {
+    rootComponent: T extends {} ? ComponentInterface & T : ComponentInterface;
+  } {
+    const child = Entity._create(componentFactory, this);
+    return child;
+  }
+
+  addChild(child: Entity): void {
+    if (child.parent !== null) {
+      throw new Error(
+        "The child passed into addChild already had a parent. Either remove it from its parent before calling addChild, or call takeChild instead."
+      );
+    }
+
+    this.children.add(child);
+    child.parent = this;
+  }
+
+  removeChild(child: Entity): void {
+    if (child.parent !== this) {
+      throw new Error(
+        "Attempted to remove a child from this Entity, but this Entity wasn't the child's parent."
+      );
+    }
+
+    this.children.delete(child);
+    child.parent = null;
+
+    if (process.env.NODE_ENV !== "production") {
+      setTimeout(() => {
+        if (!child._isDestroyed) {
+          console.warn(
+            "A child was removed from its parent, but wasn't destroyed within 1 second. This can cause memory leaks.\nWhen removing a child entity, either destroy it or give it a new parent.\nThis message will not be logged in production.\n",
+            child
+          );
+        }
+      }, 1000);
+    }
+  }
+
   takeChild(entity: Entity) {
-    entity.parent?._removeChild(entity);
-    this._addChild(entity);
+    entity.parent?.removeChild(entity);
+    this.addChild(entity);
   }
 }

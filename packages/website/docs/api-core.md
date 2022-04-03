@@ -48,7 +48,7 @@ whenever you create an Entity.
 `children: Set<Entity>`
 
 This Entity's child [entities][`entity`]. These get here from components on
-this Entity calling [`useChild`].
+this Entity calling [`useChild`], or from code anywhere calling [`Entity.createChild`], [`Entity.addChild`], or [`Entity.takeChild`].
 
 ##### parent
 
@@ -91,6 +91,39 @@ until there aren't any parents left. Then return the list as an Array.
 The Array will be ordered such that the earliest ancestor (the root
 entity) is first in the Array, and the most-recent ancestor (this Entity's
 parent) will be last in the Array.
+
+##### createChild
+
+> Available since version: Unreleased
+
+`createChild(componentFunction: Function): Entity`
+
+Constructs a new Entity using the provided component function,
+then adds it to this Entity.
+
+This is the same as [`useChild`], but instead of being bound to the current Entity, it adds it to the Entity you call `createChild` on.
+
+##### addChild
+
+> Available since version: Unreleased
+
+`addChild(child: Entity): void`
+
+Adds a child Entity to this Entity.
+
+If the child already has a parent, an Error will be thrown. You might want to call [`Entity.takeChild`] in that situation instead.
+
+##### removeChild
+
+> Available since version: Unreleased
+
+`removeChild(child: Entity): void`
+
+Removes a child Entity from this Entity.
+
+If the child is not a child of this Entity, an Error will be thrown.
+
+NOTE: If you are not going to move this child to a new parent, then you MUST call [`Entity.destroy`] on it, or else any destroy callbacks registered by its components (via [`useDestroy`]) will not be called.
 
 ##### getComponent
 
@@ -815,6 +848,11 @@ function MyComponent() {
 [`entity.components`]: #components
 [`entity.descendants`]: #descendants
 [`entity.ancestors`]: #ancestors
+[`entity.createchild`]: #createchild
+[`entity.addchild`]: #addchild
+[`entity.removechild`]: #removechild
+[`entity.ancestors`]: #ancestors
+[`entity.takechild`]: #takechild
 [`entity.getcomponent`]: #getcomponent
 [`entity.hascomponent`]: #hascomponent
 [`entity.addcomponent`]: #addcomponent

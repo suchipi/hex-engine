@@ -7,6 +7,7 @@ import {
   Geometry,
   Vector,
 } from "@hex-engine/2d";
+import Unparent from "./Unparent";
 
 export default function Test(position: Vector) {
   useType(Test);
@@ -17,6 +18,8 @@ export default function Test(position: Vector) {
       position,
     })
   );
+
+  useNewComponent(Unparent);
 
   useDraw((context) => {
     context.lineWidth = 1;
@@ -31,6 +34,8 @@ export default function Test(position: Vector) {
       })
     );
 
+    useNewComponent(Unparent);
+
     useDraw((context) => {
       context.lineWidth = 1;
       context.strokeStyle = "blue";
@@ -44,6 +49,8 @@ export default function Test(position: Vector) {
         })
       );
 
+      useNewComponent(Unparent);
+
       useDraw((context) => {
         context.lineWidth = 1;
         context.strokeStyle = "blue";
@@ -56,6 +63,8 @@ export default function Test(position: Vector) {
             shape: new Circle(50),
           })
         );
+
+        useNewComponent(Unparent);
 
         useDraw((context) => {
           context.lineWidth = 1;
