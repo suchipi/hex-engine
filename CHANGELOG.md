@@ -1,5 +1,14 @@
 # Changelog
 
+### 0.9.1
+
+- Adds `createChild`, `addChild`, and `removeChild` methods to Entity.
+- Prints a warning in non-production builds when attempting to use a `Mouse` component without any associated Geometry.
+
+### 0.9.0
+
+- Fixes several bugs related to Ogmo project and level importing (@suchipi).
+
 ### 0.8.1
 
 - Disabled performance hints (size, etc) for production webpack builds, since they are considered errors when the env var `CI` is true (@PxlBuzzard)

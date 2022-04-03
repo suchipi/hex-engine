@@ -1,6 +1,6 @@
 {
   "name": "hex-engine-scripts",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "main": "dist/index.js",
   "bin": "dist/cli.js",
   "license": "MIT",
@@ -46,6 +46,6 @@
     "@types/mime-types": "^2.1.0"
   },
   "peerDependencies": {
-    "@hex-engine/2d": "0.9.0"
+    "@hex-engine/2d": "0.9.1"
   }
 }

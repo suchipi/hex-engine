@@ -94,7 +94,7 @@ parent) will be last in the Array.
 
 ##### createChild
 
-> Available since version: Unreleased
+> Available since version: 0.9.1
 
 `createChild(componentFunction: Function): Entity`
 
@@ -105,7 +105,7 @@ This is the same as [`useChild`], but instead of being bound to the current Enti
 
 ##### addChild
 
-> Available since version: Unreleased
+> Available since version: 0.9.1
 
 `addChild(child: Entity): void`
 
@@ -115,7 +115,7 @@ If the child already has a parent, an Error will be thrown. You might want to ca
 
 ##### removeChild
 
-> Available since version: Unreleased
+> Available since version: 0.9.1
 
 `removeChild(child: Entity): void`
 
