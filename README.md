@@ -54,7 +54,7 @@ export default function MyComponent() {
 }
 ```
 
-Hex Engine was created by yours truly, Lily Scott. I am known throughout the JavaScript Open-Source community as one of the core maintainers of [Prettier](https://prettier.io/), and I have also contributed to a myriad of other well-known projects, including [Babel](https://babeljs.io/) and [React DevTools](https://github.com/facebook/react-devtools).
+Hex Engine was created by yours truly, Lily Skye. I am known throughout the JavaScript Open-Source community as one of the core maintainers of [Prettier](https://prettier.io/), and I have also contributed to a myriad of other well-known projects, including [Babel](https://babeljs.io/) and [React DevTools](https://github.com/facebook/react-devtools).
 
 I built Hex Engine because I felt that the browser game engine space could benefit a lot from technologies and patterns found in the open-source JavaScript frontend and tooling communities.
 
