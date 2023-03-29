@@ -7,7 +7,7 @@
   "dependencies": {
     "@hex-engine/2d": "0.9.2",
     "@types/lodash": "^4.14.149",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "safety-match": "^0.1.1"
   },
   "devDependencies": {
