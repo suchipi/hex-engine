@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.9.2
+
+- Bumped TypeScript version to 4.9.5 to work around an issue in a dependency.
+
 ### 0.9.1
 
 - Adds `createChild`, `addChild`, and `removeChild` methods to Entity.
