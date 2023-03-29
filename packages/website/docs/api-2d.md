@@ -3587,7 +3587,7 @@ function TileMap(
 ### Timer
 
 > Available since version: 0.0.0
-> Return type changed in version: Unreleased
+> Type changed in version: 0.10.0
 
 ```ts
 import { Timer } from "@hex-engine/2d";
