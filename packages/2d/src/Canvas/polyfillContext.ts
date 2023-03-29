@@ -3,13 +3,15 @@ import { createSVGMatrix } from "../Models/TransformMatrix";
 // Based on code from https://stackoverflow.com/a/7397026/868460
 // polyfills resetTransform and getTransform on the context
 export default function polyfillContext(context: CanvasRenderingContext2D) {
+  // @ts-ignore condition is always true
   if (context.resetTransform && context.getTransform) return;
 
   let matrix = createSVGMatrix();
   // the stack of saved matrices
   let savedMatrices = [matrix];
 
-  const CanvasRenderingContext2DClass = context.constructor as typeof CanvasRenderingContext2D;
+  const CanvasRenderingContext2DClass =
+    context.constructor as typeof CanvasRenderingContext2D;
   class PolyfilledCanvasRenderingContext2D extends CanvasRenderingContext2DClass {
     save() {
       savedMatrices.push(matrix);

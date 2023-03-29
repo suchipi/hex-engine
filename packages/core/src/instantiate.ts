@@ -33,7 +33,8 @@ export default function instantiate<T>(
   const ret: unknown = HooksSystem.withInstance(instance, () => {
     try {
       return componentFunction();
-    } catch (error) {
+    } catch (_error) {
+      const error = _error as any;
       Object.defineProperty(error, "message", {
         value: `Failed to instantiate ${entity.name || "unnamed entity"}: ${
           error.message

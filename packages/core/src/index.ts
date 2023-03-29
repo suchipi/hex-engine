@@ -1,6 +1,12 @@
 import Entity from "./Entity";
+// Note: these eslint disables are here so that they can end up in the
+// generated dist code, to prevent the user-facing eslint config from
+// complaining that these things aren't importable (since they're
+// types, not values).
 import {
+  // eslint-disable-next-line
   Entity as EntityInterface,
+  // eslint-disable-next-line
   Component as ComponentInterface,
 } from "./Interface";
 import HooksSystem from "./HooksSystem";

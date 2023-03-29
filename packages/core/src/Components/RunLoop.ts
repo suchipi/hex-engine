@@ -38,7 +38,8 @@ export default function RunLoop() {
     for (const onFrameCallback of onFrameCallbacks) {
       try {
         onFrameCallback(delta);
-      } catch (err) {
+      } catch (_err) {
+        const err = _err as any;
         ErrorBoundary.runHandlers(ent, err);
       }
     }

@@ -26,7 +26,7 @@ class Audio {
     if (this.loaded) return Promise.resolve();
     if (this._loadingPromise) return this._loadingPromise;
 
-    this._loadingPromise = new Promise((resolve, reject) => {
+    this._loadingPromise = new Promise<void>((resolve, reject) => {
       const image = document.createElement("audio");
       image.oncanplaythrough = () => {
         this.loaded = true;

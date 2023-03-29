@@ -41,7 +41,8 @@ function runHandlers(ent: Entity, error: Error) {
     if (errorHandler) {
       try {
         errorHandler.onError(currentError);
-      } catch (newError) {
+      } catch (_newError) {
+        const newError = _newError as any;
         // If this error handler threw, then keep looking for a parent error handler to handle the error that *it* threw
         currentError = newError;
         errorHandler = null;

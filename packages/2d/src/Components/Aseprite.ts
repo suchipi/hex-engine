@@ -29,7 +29,9 @@ const LAYER_BLEND_MODES: { [mode: number]: string } = {
   18: "Divide",
 };
 
-const CANVAS_COMPOSITE_OPERATIONS_BY_BLEND_MODE: { [mode: number]: string } = {
+const CANVAS_COMPOSITE_OPERATIONS_BY_BLEND_MODE: {
+  [mode: number]: GlobalCompositeOperation;
+} = {
   0: "source-over",
   1: "multiply",
   2: "screen",
@@ -117,8 +119,9 @@ export default function Aseprite(data: AsepriteLoader.Data) {
         return `rgba(0, 0, 0, 0)`;
       }
 
-      return `rgba(${color.red}, ${color.green}, ${color.blue}, ${color.alpha /
-        255})`;
+      return `rgba(${color.red}, ${color.green}, ${color.blue}, ${
+        color.alpha / 255
+      })`;
     } else if (data.colorDepth === 16) {
       // grayscale
       const offset = 2 * (x + cel.w * y);
@@ -169,8 +172,9 @@ export default function Aseprite(data: AsepriteLoader.Data) {
         } else {
           const blendModeNiceName = LAYER_BLEND_MODES[blendMode];
           throw new Error(
-            `Unsupported Aseprite layer blending mode: ${blendModeNiceName ||
-              blendMode}`
+            `Unsupported Aseprite layer blending mode: ${
+              blendModeNiceName || blendMode
+            }`
           );
         }
       }
@@ -208,12 +212,7 @@ export default function Aseprite(data: AsepriteLoader.Data) {
     if (tag.animDirection === "Reverse") {
       frames.reverse();
     } else if (tag.animDirection === "Ping-pong") {
-      frames = frames.concat(
-        frames
-          .slice(1)
-          .reverse()
-          .slice(1)
-      );
+      frames = frames.concat(frames.slice(1).reverse().slice(1));
     }
 
     animations[tag.name] = useNewComponent(() =>
