@@ -11,6 +11,7 @@ import Font from "./Font";
 import FontMetrics from "./FontMetrics";
 import Gamepad from "./Gamepad";
 import Geometry from "./Geometry";
+import GIF from "./GIF";
 import Image from "./Image";
 import ImageFilter from "./ImageFilter";
 import Keyboard from "./Keyboard";
@@ -42,6 +43,7 @@ export {
   FontMetrics,
   Gamepad,
   Geometry,
+  GIF,
   Image,
   ImageFilter,
   Keyboard,

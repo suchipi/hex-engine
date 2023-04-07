@@ -4194,6 +4194,11 @@ brorand@^1.0.1, brorand@^1.1.0:
   resolved "https://registry.yarnpkg.com/brorand/-/brorand-1.1.0.tgz#12c25efe40a45e3c323eb8675a0a0ce57b22371f"
   integrity sha1-EsJe/kCkXjwyPrhnWgoM5XsiNx8=
 
+browser-or-node@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/browser-or-node/-/browser-or-node-1.2.1.tgz#cd65172da6a7fd689c7a650d326bd2ad145419a7"
+  integrity sha512-sVIA0cysIED0nbmNOm7sZzKfgN1rpFmrqvLZaFWspaBAftfQcezlC81G6j6U2RJf4Lh66zFxrCeOsvkUXIcPWg==
+
 browser-resolve@^1.11.3:
   version "1.11.3"
   resolved "https://registry.yarnpkg.com/browser-resolve/-/browser-resolve-1.11.3.tgz#9b7cbb3d0f510e4cb86bdbd796124d28b5890af6"
@@ -6659,6 +6664,13 @@ getpass@^0.1.1:
   integrity sha1-Xv+OPmhNVprkyysSgmBOi6YhSfo=
   dependencies:
     assert-plus "^1.0.0"
+
+gifken@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/gifken/-/gifken-2.1.1.tgz#24ce88dbcb43f557bb17ae1e2d91d5633b71041b"
+  integrity sha512-q8uBypvYwFfoJhNm+4xjKkj5AZiF8PtXW2VsddS3YpCdXtLa6nJRVQ6Aj0R51iWv4dl1Y3qqe1t+wz9viNhfVQ==
+  dependencies:
+    browser-or-node "^1.2.1"
 
 github-slugger@^1.0.0, github-slugger@^1.2.1:
   version "1.2.1"
