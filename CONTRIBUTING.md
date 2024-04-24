@@ -37,22 +37,16 @@ Once you have forked the repo, use the following command to clone it onto your l
 git clone https://github.com/<your-github-user-name>/hex-engine.git
 ```
 
-Afterwards, `cd` into the newly-created `hex-engine` folder, and install the dependencies. Hex Engine use _yarn_ to manage dependencies. If you don't have _yarn_, you can install it with this command:
+Afterwards, `cd` into the newly-created `hex-engine` folder, and install the dependencies. You can install the dependencies with this command:
 
 ```
-npm install -g yarn
-```
-
-And then you can install the dependencies with this command:
-
-```
-yarn install
+npm install
 ```
 
 Now you can run the Hex Engine project with the following command:
 
 ```
-yarn start
+npm start
 ```
 
 ### Project Structure
@@ -75,11 +69,11 @@ This project is separated as multiple packages which you can find in the _packag
 <!-- prettier-ignore -->
 | Command  | Function  |
 | -------- | --------- |
-| `yarn start`         | Builds all packages, watches them for changes, and rebuilds on change. Also, runs the sample game at port 8080, and the website at port 3000. |
-| `yarn watch`         | Same as `yarn start`. |
-| `yarn clean`         | Cleans all package build artifacts. |
-| `yarn build`         | Builds all packages in a way that is suitable for production distribution. |
-| `yarn typecheck`     | Runs TypeScript across the repo. |
-| `yarn test-it`       | Runs [Test-It](https://github.com/suchipi/test-it) on the repo. |
-| `yarn test`          | Runs `yarn typecheck` and then `yarn test-it`. |
-| `yarn build-website` | Builds the website. The website is also built as part of `yarn build`, but this builds _only_ the website. This script is used to deploy the website. |
+| `npm start`         | Builds all packages, watches them for changes, and rebuilds on change. Also, runs the sample game at port 8080, and the website at port 3000. |
+| `npm run watch`         | Same as `npm start`. |
+| `npm run clean`         | Cleans all package build artifacts. |
+| `npm run build`         | Builds all packages in a way that is suitable for production distribution. |
+| `npm run typecheck`     | Runs TypeScript across the repo. |
+| `npm run test-it`       | Runs [Test-It](https://github.com/suchipi/test-it) on the repo. |
+| `npm test`          | Runs `npm run typecheck` and then `npm run test-it`. |
+| `npm run build-website` | Builds the website. The website is also built as part of `npm run build`, but this builds _only_ the website. This script is used to deploy the website. |

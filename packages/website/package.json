@@ -32,7 +32,7 @@
   },
   "workspace-builder": "@workspace-builder/shell-command",
   "@workspace-builder/shell-command": {
-    "build": "yarn build",
-    "watch": "yarn start"
+    "build": "npm run build",
+    "watch": "npm start"
   }
 }

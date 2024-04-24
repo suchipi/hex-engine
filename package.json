@@ -38,11 +38,11 @@
     "clean": "workspace-builder clean",
     "build": "workspace-builder",
     "watch": "workspace-builder watch",
-    "start": "yarn watch",
+    "start": "npm run watch",
     "typecheck": "tsc --noEmit",
     "test-it": "node ./packages/scripts/dist/cli.js test './packages/*/src/**/*.test.{ts,js,tsx,jsx}' '!**/node_modules/**'",
-    "test": "yarn typecheck && yarn test-it",
-    "build-website": "cd packages/website && yarn build"
+    "test": "npm run typecheck && npm run test-it",
+    "build-website": "cd packages/website && npm run build"
   },
   "dependencies": {
     "core-js": "^3.6.1",

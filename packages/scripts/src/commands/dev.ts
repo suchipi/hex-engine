@@ -56,7 +56,6 @@ export default async function dev(options: {
     config: webpackConfig,
     devSocket,
     urls,
-    useYarn: true,
     useTypeScript: true,
     tscCompileOnError: false,
     webpack,
