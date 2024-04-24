@@ -3,7 +3,7 @@
     "./node_modules/aseprite-loader/index.d.ts",
     "./node_modules/xml-source-loader/index.d.ts",
     "./node_modules/bmfont-loader/index.d.ts",
-    "./node_modules/@test-it/core/globals.d.ts",
+    "./packages/scripts/node_modules/@test-it/core/globals.d.ts",
     "./ts-webpack.ts"
   ],
   "include": ["./packages/**/*.ts", "./packages/**/*.tsx"],

@@ -26,7 +26,7 @@ function runSimpleWebpackLoader(
   }
 }
 
-export default function defaultLoader(filename: string): string {
+export function load(filename: string): string {
   const extension = path.extname(filename);
 
   switch (extension) {
