@@ -7,6 +7,7 @@ module.exports = {
   url: "https://hex-engine.dev/",
   baseUrl: "/",
   favicon: "favicon.ico",
+  trailingSlash: false,
 
   organizationName: "suchipi",
   projectName: "hex-engine",
@@ -25,7 +26,7 @@ module.exports = {
         alt: "Hex Engine logo",
         src: "img/hex.png",
       },
-      links: [
+      items: [
         { to: "docs/getting-started", label: "Docs", position: "left" },
         { to: "docs/api-reference", label: "API", position: "left" },
         { to: "docs/examples", label: "Examples", position: "left" },
@@ -47,6 +48,7 @@ module.exports = {
     },
 
     algolia: {
+      appId: "Q9XGV9R56F",
       apiKey: "3d7810edc3f8e62e8f4bd29c2a06a284",
       indexName: "hex-engine",
     },

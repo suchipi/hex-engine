@@ -40,7 +40,7 @@ Before we dig into the code, let's start up a local development server and see w
 npm start
 ```
 
-This will start a local web server running on your computer that you can use to develop your game. To connect to it, open up your browser to <http://localhost:8080>.
+This will start a local web server running on your computer that you can use to develop your game. To connect to it, open up your browser to [http://localhost:8080](http://localhost:8080).
 
 When you do, you'll see something like this:
 
