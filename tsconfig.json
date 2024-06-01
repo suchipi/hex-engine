@@ -15,7 +15,7 @@
 
   "compilerOptions": {
     "lib": ["es2019", "dom"],
-    "target": "es5",
+    "target": "es2015",
     "module": "ES2015",
     "outDir": "./dist",
 
