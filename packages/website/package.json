@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "./in-docker.sh 'npm install && npx docusaurus start'",
+    "start": "./in-docker.sh 'npm install && npx docusaurus start --host 0.0.0.0'",
     "build": "./in-docker.sh 'npm install && npx docusaurus build'"
   },
   "dependencies": {
