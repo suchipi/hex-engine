@@ -1,4 +1,4 @@
-import React from "react";
+import { createElement } from "preact";
 
 export function PaneRightIcon({
   width = 16,

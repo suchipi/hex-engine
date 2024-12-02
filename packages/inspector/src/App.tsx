@@ -1,4 +1,4 @@
-import React from "react";
+import { createElement } from "preact";
 import { Entity, RunLoop } from "@hex-engine/core";
 import Tree from "./Tree";
 import Controls from "./Controls";

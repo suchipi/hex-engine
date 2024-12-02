@@ -35,6 +35,8 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
 
-    "jsx": "react"
+    "jsx": "react",
+    "jsxFactory": "createElement",
+    "jsxFragmentFactory": "Fragment"
   }
 }

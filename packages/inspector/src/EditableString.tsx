@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+import { createElement, Fragment } from "preact";
+import { useState, useRef, useEffect } from "preact/hooks";
 
 export default function EditableString({
   color,
@@ -55,21 +56,26 @@ export default function EditableString({
           setIsEditing(true);
         }}
         onChange={(
-          event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+          event: createElement.JSX.TargetedEvent<
+            HTMLInputElement | HTMLTextAreaElement
+          >
         ) => {
           if (!expanded && measureWidthRef.current) {
-            event.target.style.width =
+            event.currentTarget.style.width =
               measureWidthRef.current.getBoundingClientRect().width + "px";
           }
 
-          setEditedValue(event.target.value);
-          onChange(event.target.value);
+          setEditedValue(event.currentTarget.value);
+          onChange(event.currentTarget.value);
         }}
         onBlur={() => {
           setIsEditing(false);
         }}
         onKeyDown={(
-          event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+          event: createElement.JSX.TargetedEvent<
+            HTMLInputElement | HTMLTextAreaElement,
+            KeyboardEvent
+          >
         ) => {
           if (String(Number(currentValue)) !== currentValue) return;
 

@@ -1,5 +1,4 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import { createElement, render } from "preact";
 import {
   Entity,
   useRootEntity,
@@ -200,26 +199,24 @@ export default function Inspector() {
     if (stateHolder.forceUpdate) stateHolder.forceUpdate();
   });
 
-  ReactDOM.render(
+  render(
     <Root entity={rootEntity} runLoop={runLoop} stateHolder={stateHolder} />,
-    el,
-    useCallbackAsCurrent(() => {
-      const tick = useCallbackAsCurrent(() => {
-        if (runLoop && pauseOnStart && !hasPausedOnStart) {
-          runLoop.pause();
-          hasPausedOnStart = true;
-        }
-
-        if (stateHolder.forceUpdate != null) {
-          stateHolder.forceUpdate();
-        }
-
-        requestAnimationFrame(tick);
-      });
-
-      tick();
-    })
+    el
   );
+
+  const tick = useCallbackAsCurrent(() => {
+    if (runLoop && pauseOnStart && !hasPausedOnStart) {
+      runLoop.pause();
+      hasPausedOnStart = true;
+    }
+
+    if (stateHolder.forceUpdate != null) {
+      stateHolder.forceUpdate();
+    }
+
+    requestAnimationFrame(tick);
+  });
+  tick();
 
   const { getSelectMode, toggleSelectMode, selectEntity } = stateHolder;
   const inspectorSelectApi = {

@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import { createElement, ComponentChild } from "preact";
+import { useRef, useEffect } from "preact/hooks";
 import Button from "./Button";
 
 export default function Expandable({
@@ -14,17 +15,23 @@ export default function Expandable({
   onMouseLeave,
   onContextMenu,
 }: {
-  label?: React.ReactNode;
-  preview?: React.ReactNode;
-  className: React.ReactNode;
-  children: React.ReactNode;
+  label?: ComponentChild;
+  preview?: ComponentChild;
+  className: ComponentChild;
+  children: ComponentChild;
   hasContent: boolean;
   expanded: boolean;
   isSelected: boolean;
   onExpand: () => void;
-  onMouseEnter?: (event: React.MouseEvent) => void;
-  onMouseLeave?: (event: React.MouseEvent) => void;
-  onContextMenu?: (event: React.MouseEvent) => void;
+  onMouseEnter?: (
+    event: createElement.JSX.TargetedMouseEvent<HTMLElement>
+  ) => void;
+  onMouseLeave?: (
+    event: createElement.JSX.TargetedMouseEvent<HTMLElement>
+  ) => void;
+  onContextMenu?: (
+    event: createElement.JSX.TargetedMouseEvent<HTMLElement>
+  ) => void;
 }) {
   const elementRef = useRef<HTMLDivElement>(null);
 

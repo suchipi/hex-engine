@@ -1,6 +1,10 @@
-import React from "react";
+import { createElement, ComponentProps } from "preact";
 
-export default function Button(props: React.ComponentProps<"button">) {
+export default function Button(
+  props: Omit<ComponentProps<"button">, "style"> & {
+    style?: Partial<createElement.JSX.CSSProperties>;
+  }
+) {
   return (
     <button
       {...props}

@@ -1,5 +1,5 @@
 import { Entity, Component } from "@hex-engine/core";
-import React from "react";
+import { createElement, Fragment, ComponentChild } from "preact";
 import Expandable from "./Expandable";
 import Button from "./Button";
 import EditableString from "./EditableString";
@@ -45,8 +45,8 @@ export default function Tree({
 }) {
   let className = "";
   let hasContent = false;
-  let preview: React.ReactNode = "";
-  let content: React.ReactNode = "";
+  let preview: ComponentChild = "";
+  let content: ComponentChild = "";
   let onMouseEnter: undefined | (() => void);
   let onMouseLeave: undefined | (() => void);
 
@@ -54,7 +54,7 @@ export default function Tree({
     parent[name] = newValue;
   };
 
-  const color = (clr: string, str: React.ReactNode) => (
+  const color = (clr: string, str: ComponentChild) => (
     <span style={{ color: clr }}>{str}</span>
   );
 
@@ -287,9 +287,8 @@ export default function Tree({
             StorageForInspectorHover
           );
           if (!storageForEntity) return;
-          const storageForComponent = storageForEntity.beginCallbacks.get(
-            component
-          );
+          const storageForComponent =
+            storageForEntity.beginCallbacks.get(component);
           if (!storageForComponent) return;
 
           storageForComponent.forEach((callback: () => void) => callback());
@@ -302,9 +301,8 @@ export default function Tree({
             StorageForInspectorHover
           );
           if (!storageForEntity) return;
-          const storageForComponent = storageForEntity.endCallbacks.get(
-            component
-          );
+          const storageForComponent =
+            storageForEntity.endCallbacks.get(component);
           if (!storageForComponent) return;
 
           storageForComponent.forEach((callback: () => void) => callback());

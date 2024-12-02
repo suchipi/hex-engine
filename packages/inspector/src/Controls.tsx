@@ -1,4 +1,4 @@
-import React from "react";
+import { createElement, Fragment } from "preact";
 import { RunLoop } from "@hex-engine/core";
 import Button from "./Button";
 import {
