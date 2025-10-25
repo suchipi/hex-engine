@@ -38,10 +38,10 @@ popd
 
 echo "===== packages/game ====="
 pushd packages/game
-  npm run watch &
+  npm run watch # &
 popd
 
 echo "===== packages/website ====="
 pushd packages/website
-  npm run watch &
+  # npm run watch &
 popd

@@ -43,5 +43,5 @@ popd
 
 echo "===== packages/website ====="
 pushd packages/website
-  npm run build
+  # npm run build
 popd
