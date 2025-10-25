@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-import "./polyfills";
-
 import chalk from "chalk";
 import yargsParser from "yargs-parser";
 import run from "./index";
