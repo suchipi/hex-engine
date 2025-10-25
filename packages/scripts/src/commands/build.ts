@@ -40,9 +40,19 @@ export default async function build(options: { lib?: string; title?: string }) {
           warnings: [],
         });
       } else {
-        messages = formatWebpackMessages(
-          stats.toJson({ all: false, warnings: true, errors: true })
-        );
+        const statsJson = stats.toJson({
+          all: false,
+          warnings: true,
+          errors: true,
+        });
+        messages = formatWebpackMessages({
+          errors: statsJson.errors
+            .filter(Boolean)
+            .map((message: any) => message.message || String(message)),
+          warnings: statsJson.warnings
+            .filter(Boolean)
+            .map((message: any) => message.message || String(message)),
+        });
       }
       if (messages.errors.length) {
         // Only keep the first error. Others are often indicative

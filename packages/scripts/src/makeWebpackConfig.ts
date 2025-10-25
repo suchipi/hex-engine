@@ -55,6 +55,14 @@ const makeWebpackConfig = ({
     htmlWebpackPluginOptions.template = localDir("src/index.html");
   }
 
+  const output: any = {
+    path: localDir(outDir),
+  };
+  if (library) {
+    output.library = library;
+    output.libraryTarget = "umd";
+  }
+
   return {
     context: localDir(),
     devtool: mode === "development" ? "eval-source-map" : undefined,
@@ -62,11 +70,7 @@ const makeWebpackConfig = ({
     mode: mode === "test" ? "development" : mode,
 
     entry: [packageDir("./src/polyfills"), findSrc(srcFile)],
-    output: {
-      path: localDir(outDir),
-      library,
-      libraryTarget: library ? "umd" : "var",
-    },
+    output,
 
     resolve: {
       mainFields: ["browser", "main"],
@@ -168,7 +172,7 @@ const makeWebpackConfig = ({
           }),
     ].filter(Boolean),
     performance: {
-      hints: false
+      hints: false,
     },
     optimization: {
       usedExports: true,
