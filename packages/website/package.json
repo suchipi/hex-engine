@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "watch": "npm start",
     "start": "./in-docker.sh 'npm install && npx docusaurus start --host 0.0.0.0'",
     "build": "./in-docker.sh 'npm install && npx docusaurus build'"
   },
@@ -27,10 +28,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "workspace-builder": "@workspace-builder/shell-command",
-  "@workspace-builder/shell-command": {
-    "build": "npm run build",
-    "watch": "npm start"
   }
 }

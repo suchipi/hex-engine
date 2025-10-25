@@ -14,8 +14,7 @@
     "hex-engine-scripts": "0.9.2",
     "typescript": "^3.9.2"
   },
-  "workspace-builder": "@workspace-builder/shell-command",
-  "@workspace-builder/shell-command": {
+  "scripts": {
     "build": "node ../scripts/dist/cli.js build --title 'Test Game' && node ../scripts/dist/cli.js build --lib testGame --title 'Test Game'",
     "watch": "node ../scripts/dist/cli.js dev --title 'Test Game'"
   }

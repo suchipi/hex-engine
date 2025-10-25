@@ -7,7 +7,7 @@ cd (dirname (status --current-filename))
 
 set -l rm_and_tty_arg '--rm'
 if isatty 0 # stdin
-  set rm_and_tty_arg '--rm -it'
+  set -a rm_and_tty_arg '-it'
 end
 
 set -l node_version (string replace 'v' '' (cat ../../.node-version))

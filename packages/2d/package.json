@@ -14,6 +14,5 @@
     "mem": "^6.0.1",
     "modal-synthesis": "^0.1.2",
     "poly-decomp": "^0.3.0"
-  },
-  "workspace-builder": "@workspace-builder/babel"
+  }
 }

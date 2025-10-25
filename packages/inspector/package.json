@@ -18,6 +18,5 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "use-force-update": "^1.0.7"
-  },
-  "workspace-builder": "@workspace-builder/babel"
+  }
 }

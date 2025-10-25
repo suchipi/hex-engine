@@ -8,6 +8,5 @@
   "sideEffects": false,
   "dependencies": {
     "concubine": "^1.0.2"
-  },
-  "workspace-builder": "@workspace-builder/babel"
+  }
 }

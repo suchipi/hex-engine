@@ -5,7 +5,6 @@
   "main": "dist/index.js",
   "bin": "dist/cli.js",
   "repository": "suchipi/hex-engine",
-  "workspace-builder": "@workspace-builder/babel",
   "dependencies": {
     "@types/shelljs": "^0.8.6",
     "chalk": "^3.0.0",
