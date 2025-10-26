@@ -92,12 +92,7 @@ const makeWebpackConfig = ({
               ],
               require("@babel/preset-react").default,
             ],
-            plugins: [
-              require("@babel/plugin-proposal-class-properties").default,
-              require("@babel/plugin-proposal-nullish-coalescing-operator")
-                .default,
-              require("@babel/plugin-proposal-optional-chaining").default,
-            ],
+            plugins: [],
           },
         },
         {

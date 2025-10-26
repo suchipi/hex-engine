@@ -85,12 +85,7 @@ export function load(filename: string): string {
             "@babel/preset-typescript",
             "@babel/preset-react",
           ],
-          plugins: [
-            "@babel/plugin-proposal-class-properties",
-            "@babel/plugin-proposal-nullish-coalescing-operator",
-            "@babel/plugin-proposal-optional-chaining",
-            "@babel/plugin-transform-modules-commonjs",
-          ],
+          plugins: ["@babel/plugin-transform-modules-commonjs"],
           filename,
         };
       }
