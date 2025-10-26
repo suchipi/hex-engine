@@ -1,6 +1,5 @@
 import chalk from "chalk";
 import webpack from "webpack";
-import formatWebpackMessages from "react-dev-utils/formatWebpackMessages";
 import makeWebpackConfig from "../makeWebpackConfig";
 
 export default async function build(options: { lib?: string; title?: string }) {
@@ -29,45 +28,31 @@ export default async function build(options: { lib?: string; title?: string }) {
   return new Promise<void>((resolve, reject) => {
     compiler.run((err: any, stats: any) => {
       let messages;
-      if (err) {
-        if (!err.message) {
-          return reject(err);
-        }
-
-        // @ts-ignore
-        messages = formatWebpackMessages({
-          errors: [err.message],
+      if (err != null) {
+        messages = {
+          errors: [err],
           warnings: [],
-        });
+        };
       } else {
-        const statsJson = stats.toJson({
+        messages = stats.toJson({
           all: false,
           warnings: true,
           errors: true,
         });
-        messages = formatWebpackMessages({
-          errors: statsJson.errors
-            .filter(Boolean)
-            .map((message: any) => message.message || String(message)),
-          warnings: statsJson.warnings
-            .filter(Boolean)
-            .map((message: any) => message.message || String(message)),
-        });
       }
-      if (messages.errors.length) {
-        // Only keep the first error. Others are often indicative
-        // of the same problem, but confuse the reader with noise.
-        if (messages.errors.length > 1) {
-          messages.errors.length = 1;
+
+      if (messages.errors.length > 0) {
+        for (const error of messages.errors) {
+          console.error(chalk.red(error));
         }
-        return reject(new Error(messages.errors.join("\n\n")));
+        return reject(new Error("Compilation failed"));
       }
 
       if (
         process.env.CI &&
         (typeof process.env.CI !== "string" ||
           process.env.CI.toLowerCase() !== "false") &&
-        messages.warnings.length
+        messages.warnings.length > 0
       ) {
         console.log(
           chalk.yellow(
@@ -75,10 +60,11 @@ export default async function build(options: { lib?: string; title?: string }) {
               "Most CI servers set it automatically.\n"
           )
         );
-        return reject(new Error(messages.warnings.join("\n\n")));
+        for (const warning of messages.warnings) {
+          console.error(chalk.yellow(warning));
+        }
+        return reject(new Error("Compilation failed"));
       }
-
-      console.log(chalk.yellow(messages.warnings.join("\n\n")));
 
       if (options.lib) {
         console.log(

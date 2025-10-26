@@ -2,15 +2,7 @@ import fs from "fs";
 import path from "path";
 import webpack from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
-// @ts-ignore
-import ForkTsCheckerWebpackPlugin from "react-dev-utils/ForkTsCheckerWebpackPlugin";
-// @ts-ignore
-import resolve from "resolve";
-// @ts-ignore
-import typescriptFormatter from "react-dev-utils/typescriptFormatter";
 
-const packageDir = (...parts: Array<string>) =>
-  path.resolve(__dirname, "..", ...parts);
 const localDir = (...parts: Array<string>) =>
   path.resolve(process.cwd(), ...parts);
 
@@ -146,30 +138,6 @@ const makeWebpackConfig = ({
       mode === "test" || (library && mode !== "development")
         ? null
         : new HtmlWebpackPlugin(htmlWebpackPluginOptions),
-
-      mode === "test"
-        ? null
-        : new ForkTsCheckerWebpackPlugin({
-            typescript: resolve.sync("typescript", {
-              basedir: localDir(),
-            }),
-            async: mode === "development",
-            useTypescriptIncrementalApi: true,
-            checkSyntacticErrors: true,
-            tsconfig: fs.existsSync(localDir("tsconfig.json"))
-              ? localDir("tsconfig.json")
-              : packageDir("tsconfig.json"),
-            reportFiles: [
-              "**",
-              "!**/__tests__/**",
-              "!**/?(*.)(spec|test).*",
-              "!**/src/setupTests.*",
-            ],
-            silent: false,
-
-            // The formatter is invoked directly in react-dev-utils/WebpackDevServerUtils during development
-            formatter: mode === "production" ? typescriptFormatter : undefined,
-          }),
     ].filter(Boolean),
     performance: {
       hints: false,
