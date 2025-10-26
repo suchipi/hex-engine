@@ -222,7 +222,7 @@ export default function Tree({
           }}
           title="Run function"
           style={{
-            fontFamily: "initial",
+            fontFamily: "inherit",
             cursor: "pointer",
             paddingLeft: 4,
             filter: "hue-rotate(-75deg)",

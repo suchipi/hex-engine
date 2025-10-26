@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== "production") {
+  require("preact/debug");
+}
+
 import React, { useState, useCallback } from "preact/compat";
 import ReactDOM from "preact/compat";
 import {
