@@ -69,7 +69,7 @@ const makeWebpackConfig = ({
 
     mode: mode === "test" ? "development" : mode,
 
-    entry: [packageDir("./src/polyfills"), findSrc(srcFile)],
+    entry: [findSrc(srcFile)],
     output,
 
     resolve: {
