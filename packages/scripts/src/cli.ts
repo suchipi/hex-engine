@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import chalk from "chalk";
+import kleur from "kleur";
 import yargsParser from "yargs-parser";
 import run from "./index";
 
@@ -96,6 +96,6 @@ hex-engine-scripts test
 }
 
 main().catch((err) => {
-  console.error(chalk.red(err && err.stack ? err.stack : err));
+  console.error(kleur.red(err && err.stack ? err.stack : err));
   process.exitCode = 1;
 });

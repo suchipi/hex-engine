@@ -6,10 +6,9 @@
   "bin": "dist/cli.js",
   "repository": "suchipi/hex-engine",
   "dependencies": {
-    "@types/shelljs": "^0.8.6",
-    "chalk": "^3.0.0",
-    "ora": "^4.0.3",
-    "shelljs": "^0.8.3"
+    "kleur": "^4.1.5",
+    "ora": "^6.3.1",
+    "shelljs": "^0.10.0"
   },
   "scripts": {
     "build": "babel --config-file ../../babel.config.js --extensions '.ts,.tsx,.js,.jsx' src -d dist --ignore '*.test.*'",

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import path from "path";
-import chalk from "chalk";
+import kleur from "kleur";
 import run from "./index";
 
 async function main() {
@@ -24,6 +24,6 @@ create-hex-engine-game <dir>
 }
 
 main().catch((err) => {
-  console.error(chalk.red(err && err.stack ? err.stack : err));
+  console.error(kleur.red(err && err.stack ? err.stack : err));
   process.exitCode = 1;
 });

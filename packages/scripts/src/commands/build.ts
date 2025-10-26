@@ -1,5 +1,6 @@
-import chalk from "chalk";
+import kleur from "kleur";
 import webpack from "webpack";
+import util from "node:util";
 import makeWebpackConfig from "../makeWebpackConfig";
 
 export default async function build(options: { lib?: string; title?: string }) {
@@ -23,11 +24,11 @@ export default async function build(options: { lib?: string; title?: string }) {
         title: options.title,
       });
 
-  const compiler = webpack(webpackConfig);
+  const compiler = webpack(webpackConfig)!;
   return new Promise<void>((resolve, reject) => {
     compiler.run((err, stats) => {
       if (err != null) {
-        console.error(chalk.red(err));
+        console.error(kleur.red(util.inspect(err)));
         return reject(err);
       }
 
@@ -39,7 +40,7 @@ export default async function build(options: { lib?: string; title?: string }) {
 
       if (messages.errors && messages.errors.length > 0) {
         for (const error of messages.errors) {
-          console.error(chalk.red(error));
+          console.error(kleur.red(util.inspect(error)));
         }
         return reject(new Error("Compilation failed"));
       }
@@ -52,13 +53,13 @@ export default async function build(options: { lib?: string; title?: string }) {
         messages.warnings.length > 0
       ) {
         console.log(
-          chalk.yellow(
+          kleur.yellow(
             "\nTreating warnings as errors because process.env.CI = true.\n" +
               "Most CI servers set it automatically.\n"
           )
         );
         for (const warning of messages.warnings) {
-          console.error(chalk.yellow(warning));
+          console.error(kleur.yellow(util.inspect(warning)));
         }
         return reject(new Error("Compilation failed"));
       }

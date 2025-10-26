@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import kleur from "kleur";
 import webpack from "webpack";
 import WebpackDevServer from "webpack-dev-server";
 import makeWebpackConfig from "../makeWebpackConfig";
@@ -45,10 +45,10 @@ export default async function dev(options: {
       },
       port,
     },
-    compiler
+    compiler!
   );
 
-  console.log(chalk.cyan("Starting the development server...\n"));
+  console.log(kleur.cyan("Starting the development server...\n"));
   await devServer.start();
 
   return new Promise<void>((resolve, reject) => {

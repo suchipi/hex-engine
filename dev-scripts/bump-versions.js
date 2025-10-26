@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const prettier = require("prettier");
-const chalk = require("chalk");
+const kleur = require("kleur");
 const yargsParser = require("yargs-parser");
 
 function mutateJsonFile(path, cb) {
@@ -84,5 +84,5 @@ async function main() {
 
 main().catch((err) => {
   process.exitCode = 1;
-  console.error(chalk.red(err.stack));
+  console.error(kleur.red(err.stack));
 });
