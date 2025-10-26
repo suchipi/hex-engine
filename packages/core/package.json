@@ -8,5 +8,9 @@
   "sideEffects": false,
   "dependencies": {
     "concubine": "^1.0.2"
+  },
+  "scripts": {
+    "build": "babel --config-file ../../babel.config.js --extensions '.ts,.tsx,.js,.jsx' src -d dist --ignore '*.test.*'",
+    "watch": "babel -w --config-file ../../babel.config.js --extensions '.ts,.tsx,.js,.jsx' src -d dist --ignore '*.test.*'"
   }
 }

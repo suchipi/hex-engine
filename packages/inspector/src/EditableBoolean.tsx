@@ -1,4 +1,4 @@
-import React from "react";
+import React from "preact/compat";
 
 export default function EditableBoolean({
   color,
@@ -15,7 +15,7 @@ export default function EditableBoolean({
         type="checkbox"
         checked={value}
         onChange={(event) => {
-          onChange(event.target.checked);
+          onChange(event.currentTarget.checked);
         }}
       />
       <span style={{ color }}>{String(value)}</span>

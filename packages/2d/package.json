@@ -14,5 +14,9 @@
     "mem": "^6.0.1",
     "modal-synthesis": "^0.1.2",
     "poly-decomp": "^0.3.0"
+  },
+  "scripts": {
+    "build": "babel --config-file ../../babel.config.js --extensions '.ts,.tsx,.js,.jsx' src -d dist --ignore '*.test.*'",
+    "watch": "babel -w --config-file ../../babel.config.js --extensions '.ts,.tsx,.js,.jsx' src -d dist --ignore '*.test.*'"
   }
 }

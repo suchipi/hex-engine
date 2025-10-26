@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "preact/compat";
 
 export default function EditableString({
   color,
@@ -54,16 +54,18 @@ export default function EditableString({
           setEditedValue(value);
           setIsEditing(true);
         }}
-        onChange={(
-          event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+        onInput={(
+          event: React.JSX.TargetedInputEvent<
+            HTMLTextAreaElement | HTMLInputElement
+          >
         ) => {
           if (!expanded && measureWidthRef.current) {
-            event.target.style.width =
+            event.currentTarget.style.width =
               measureWidthRef.current.getBoundingClientRect().width + "px";
           }
 
-          setEditedValue(event.target.value);
-          onChange(event.target.value);
+          setEditedValue(event.currentTarget.value);
+          onChange(event.currentTarget.value);
         }}
         onBlur={() => {
           setIsEditing(false);

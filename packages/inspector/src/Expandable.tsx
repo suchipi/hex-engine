@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "preact/compat";
 import Button from "./Button";
 
 export default function Expandable({
@@ -22,9 +22,9 @@ export default function Expandable({
   expanded: boolean;
   isSelected: boolean;
   onExpand: () => void;
-  onMouseEnter?: (event: React.MouseEvent) => void;
-  onMouseLeave?: (event: React.MouseEvent) => void;
-  onContextMenu?: (event: React.MouseEvent) => void;
+  onMouseEnter?: (event: MouseEvent) => void;
+  onMouseLeave?: (event: MouseEvent) => void;
+  onContextMenu?: (event: MouseEvent) => void;
 }) {
   const elementRef = useRef<HTMLDivElement>(null);
 

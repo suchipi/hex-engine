@@ -1,5 +1,5 @@
 import { Entity, Component } from "@hex-engine/core";
-import React from "react";
+import React from "preact/compat";
 import Expandable from "./Expandable";
 import Button from "./Button";
 import EditableString from "./EditableString";
@@ -287,9 +287,8 @@ export default function Tree({
             StorageForInspectorHover
           );
           if (!storageForEntity) return;
-          const storageForComponent = storageForEntity.beginCallbacks.get(
-            component
-          );
+          const storageForComponent =
+            storageForEntity.beginCallbacks.get(component);
           if (!storageForComponent) return;
 
           storageForComponent.forEach((callback: () => void) => callback());
@@ -302,9 +301,8 @@ export default function Tree({
             StorageForInspectorHover
           );
           if (!storageForEntity) return;
-          const storageForComponent = storageForEntity.endCallbacks.get(
-            component
-          );
+          const storageForComponent =
+            storageForEntity.endCallbacks.get(component);
           if (!storageForComponent) return;
 
           storageForComponent.forEach((callback: () => void) => callback());

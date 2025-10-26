@@ -1,47 +1,42 @@
 #!/usr/bin/env bash
-set -ex
+set -e
 
 # move to root dir
 cd $(dirname "$BASH_SOURCE")
 cd ..
 
-BABEL_CONFIG_PATH="$(realpath ./babel.config.js)"
-
-function run_babel() {
-  npx --no-install babel --config-file "$BABEL_CONFIG_PATH" --extensions ".ts,.tsx,.js,.jsx" src -d dist --ignore '*.test.js'
-}
-
 echo "===== packages/2d ====="
-pushd packages/2d
-  run_babel
-popd
+pushd packages/2d > /dev/null
+  npm run build
+popd > /dev/null
 
 echo "===== packages/core ====="
-pushd packages/core
-  run_babel
-popd
+pushd packages/core > /dev/null
+  npm run build
+popd > /dev/null
 
 echo "===== packages/create ====="
-pushd packages/create
-  run_babel
-popd
+pushd packages/create > /dev/null
+  npm run build
+popd > /dev/null
 
 echo "===== packages/inspector ====="
-pushd packages/inspector
-  run_babel
-popd
+pushd packages/inspector > /dev/null
+  npm run build
+popd > /dev/null
 
 echo "===== packages/scripts ====="
-pushd packages/scripts
-  run_babel
-popd
+pushd packages/scripts > /dev/null
+  npm run build
+popd > /dev/null
 
 echo "===== packages/game ====="
-pushd packages/game
+pushd packages/game > /dev/null
   npm run build
-popd
+popd > /dev/null
 
 echo "===== packages/website ====="
-pushd packages/website
+pushd packages/website > /dev/null
   # npm run build
-popd
+  echo skipping...
+popd > /dev/null

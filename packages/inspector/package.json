@@ -15,8 +15,10 @@
     "lodash.debounce": "^4.0.8",
     "lodash.get": "^4.4.2",
     "lodash.setwith": "^4.3.2",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "use-force-update": "^1.0.7"
+    "preact": "^10.27.2"
+  },
+  "scripts": {
+    "build": "babel --config-file ../../babel.config.js --extensions '.ts,.tsx,.js,.jsx' src -d dist --ignore '*.test.*'",
+    "watch": "babel -w --config-file ../../babel.config.js --extensions '.ts,.tsx,.js,.jsx' src -d dist --ignore '*.test.*'"
   }
 }

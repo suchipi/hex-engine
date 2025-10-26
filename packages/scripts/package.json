@@ -37,5 +37,9 @@
   },
   "peerDependencies": {
     "@hex-engine/2d": "0.9.2"
+  },
+  "scripts": {
+    "build": "babel --config-file ../../babel.config.js --extensions '.ts,.tsx,.js,.jsx' src -d dist --ignore '*.test.*'",
+    "watch": "babel -w --config-file ../../babel.config.js --extensions '.ts,.tsx,.js,.jsx' src -d dist --ignore '*.test.*'"
   }
 }

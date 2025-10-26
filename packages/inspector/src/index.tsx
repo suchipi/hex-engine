@@ -1,5 +1,5 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React, { useState, useCallback } from "preact/compat";
+import ReactDOM from "preact/compat";
 import {
   Entity,
   useRootEntity,
@@ -12,7 +12,6 @@ import {
 import debounce from "lodash.debounce";
 import setWith from "lodash.setwith";
 import get from "lodash.get";
-import useForceUpdate from "use-force-update";
 import App from "./App";
 import useInspectorHover from "./useInspectorHover";
 import useInspectorSelect from "./useInspectorSelect";
@@ -77,7 +76,8 @@ function Root({
   runLoop: RunLoopAPI | null;
   stateHolder: StateHolder;
 }) {
-  const forceUpdate = useForceUpdate();
+  const [, updateState] = useState({});
+  const forceUpdate = useCallback(() => updateState({}), []);
 
   stateHolder.forceUpdate = forceUpdate;
 
