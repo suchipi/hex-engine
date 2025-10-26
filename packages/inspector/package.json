@@ -1,12 +1,12 @@
 {
   "name": "@hex-engine/inspector",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "src/index.tsx",
   "sideEffects": false,
   "dependencies": {
-    "@hex-engine/core": "0.11.0",
+    "@hex-engine/core": "0.11.1",
     "lodash": "^4.17.21",
     "preact": "^10.27.2"
   },
