@@ -17,7 +17,7 @@ module.exports = {
 
   themeConfig: {
     footer: {
-      copyright: `Copyright © ${new Date().getFullYear()} Lily Scott`,
+      copyright: `Copyright © 2020 - ${new Date().getFullYear()} Lily Skye`,
     },
 
     navbar: {
