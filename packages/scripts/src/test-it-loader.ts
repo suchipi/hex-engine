@@ -66,19 +66,6 @@ export function load(filename: string): string {
     case ".tsx": {
       let config;
       if (filename.match(/node_modules/)) {
-        // We need to always compile ESM to CJS, because @hex-engine
-        // packages are published with ESM, but test-it can't run
-        // ESM unless the loader compiles it to CJS. Its default loader
-        // compiles ESM to CJS, but not for node_modules (for speed).
-        //
-        // The reason @hex-engine packages are published with ESM
-        // is because it allows webpack to treeshake unused named
-        // exports, which reduces the size of published games
-        // drastically, because it removes unused component functions.
-        //
-        // We could relax this to only compile node_modules/@hex-engine,
-        // but I want third-party hex-engine component libraries to be
-        // able to benefit from tree-shaking, too.
         config = {
           compact: true,
           plugins: ["@babel/plugin-transform-modules-commonjs"],

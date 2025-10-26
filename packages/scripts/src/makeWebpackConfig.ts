@@ -38,7 +38,7 @@ const makeWebpackConfig = ({
   outDir: string;
   library?: string;
   title?: string;
-}) => {
+}): webpack.Configuration => {
   const htmlWebpackPluginOptions: { [key: string]: any } = {
     title: title || "hex-engine game",
   };

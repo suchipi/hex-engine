@@ -13,7 +13,6 @@
     "@test-it/cli": "^0.8.0",
     "@test-it/core": "^0.8.0",
     "@types/lodash.debounce": "^4.0.9",
-    "@types/webpack": "^5.28.5",
     "aseprite-loader": "^0.1.3",
     "babel-loader": "^9.1.3",
     "bmfont-loader": "^0.2.0",

@@ -23,25 +23,21 @@ export default async function build(options: { lib?: string; title?: string }) {
         title: options.title,
       });
 
-  // @ts-ignore
   const compiler = webpack(webpackConfig);
   return new Promise<void>((resolve, reject) => {
-    compiler.run((err: any, stats: any) => {
-      let messages;
+    compiler.run((err, stats) => {
       if (err != null) {
-        messages = {
-          errors: [err],
-          warnings: [],
-        };
-      } else {
-        messages = stats.toJson({
-          all: false,
-          warnings: true,
-          errors: true,
-        });
+        console.error(chalk.red(err));
+        return reject(err);
       }
 
-      if (messages.errors.length > 0) {
+      const messages = stats!.toJson({
+        all: false,
+        warnings: true,
+        errors: true,
+      });
+
+      if (messages.errors && messages.errors.length > 0) {
         for (const error of messages.errors) {
           console.error(chalk.red(error));
         }
@@ -52,6 +48,7 @@ export default async function build(options: { lib?: string; title?: string }) {
         process.env.CI &&
         (typeof process.env.CI !== "string" ||
           process.env.CI.toLowerCase() !== "false") &&
+        messages.warnings &&
         messages.warnings.length > 0
       ) {
         console.log(
