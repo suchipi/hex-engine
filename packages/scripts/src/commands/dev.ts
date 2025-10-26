@@ -61,23 +61,26 @@ export default async function dev(options: {
     webpack,
   });
 
-  const devServer = new WebpackDevServer(compiler, {
-    compress: true,
-    clientLogLevel: "none",
-    hot: true,
-    publicPath: "/",
-    quiet: true,
-    overlay: true,
-
-    historyApiFallback: {
-      // Paths with dots should still use the history fallback.
-      // See https://github.com/facebook/create-react-app/issues/387.
-      disableDotRule: true,
+  const devServer = new WebpackDevServer(
+    {
+      compress: true,
+      client: {
+        logging: "none",
+        overlay: true,
+      },
+      hot: true,
+      historyApiFallback: {
+        // Paths with dots should still use the history fallback.
+        // See https://github.com/facebook/create-react-app/issues/387.
+        disableDotRule: true,
+      },
+      port,
     },
-  });
+    compiler
+  );
 
-  return new Promise((resolve, reject) => {
-    devServer.listen(port, (err) => {
+  return new Promise<void>((resolve, reject) => {
+    devServer.startCallback((err) => {
       if (err) {
         reject(err);
       }
@@ -89,13 +92,11 @@ export default async function dev(options: {
       console.log(chalk.cyan("Starting the development server...\n"));
 
       process.on("SIGINT", () => {
-        devServer.close();
-        resolve();
+        devServer.stop().then(resolve, reject);
       });
 
       process.on("SIGTERM", () => {
-        devServer.close();
-        resolve();
+        devServer.stop().then(resolve, reject);
       });
     });
   });
