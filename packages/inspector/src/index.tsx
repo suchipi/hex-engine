@@ -9,9 +9,9 @@ import {
   useNewComponent,
   ErrorBoundary,
 } from "@hex-engine/core";
-import debounce from "lodash.debounce";
-import setWith from "lodash.setwith";
-import get from "lodash.get";
+import debounce from "lodash/debounce";
+import setWith from "lodash/setwith";
+import get from "lodash/get";
 import App from "./App";
 import useInspectorHover from "./useInspectorHover";
 import useInspectorSelect from "./useInspectorSelect";
