@@ -7,11 +7,7 @@
     "./ts-webpack.ts"
   ],
   "include": ["./packages/**/*.ts", "./packages/**/*.tsx"],
-  "exclude": [
-    "./packages/**/*.test.ts",
-    "./packages/scripts/**/*",
-    "./packages/create/template/**/*"
-  ],
+  "exclude": ["./packages/scripts/**/*", "./packages/create/template/**/*"],
 
   "compilerOptions": {
     "lib": ["es2019", "dom"],
