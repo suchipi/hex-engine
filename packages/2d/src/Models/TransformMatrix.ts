@@ -14,6 +14,8 @@ export function createSVGMatrix(): DOMMatrix {
 
 /** Represents a 2-dimensional transformation matrix. */
 export default class TransformMatrix {
+  static IDENTITY = new TransformMatrix();
+
   _matrix: DOMMatrix;
 
   /** Create a TransformMatrix from a DOMMatrix of SVGMatrix. */

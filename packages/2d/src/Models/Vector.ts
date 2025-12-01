@@ -4,6 +4,8 @@
  * A two-dimensional vector, used to represent points, sizes, and more.
  */
 export default class Vector {
+  static ZERO: ReadOnlyVector = new Vector(0, 0);
+
   x: number;
   y: number;
 
