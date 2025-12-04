@@ -54,7 +54,7 @@ test("dynamic remove", () => {
   const ent = createRoot(Root);
   const toRemove = ent.getComponent(DynamicallyRemoved);
   expect(toRemove).not.toBe(null);
-  ent.removeComponent(toRemove);
+  ent.removeComponent(toRemove!);
   expect(ent.getComponent(DynamicallyRemoved)).toBe(null);
 });
 
@@ -75,6 +75,6 @@ test("dynamic add with enable disable", () => {
 
   const ent = createRoot(Root);
   const toRemove = ent.getComponent(DynamicallyRemoved);
-  ent.removeComponent(toRemove);
+  ent.removeComponent(toRemove!);
   expect(messages).toEqual(["enabled", "disabled"]);
 });

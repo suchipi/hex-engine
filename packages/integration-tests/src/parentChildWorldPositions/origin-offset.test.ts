@@ -72,7 +72,7 @@ export default function Root() {
   canvas.setPixelated(true);
   canvas.fullscreen();
 
-  const green2 = useChild(() =>
+  /* const green2 = */ useChild(() =>
     CircleThing({
       color: "green",
       radius: 20,
