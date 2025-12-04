@@ -1,6 +1,6 @@
 {
   "name": "hex-engine-scripts",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "main": "dist/index.js",
   "bin": "dist/cli.js",
   "license": "MIT",
@@ -39,7 +39,7 @@
     "@nwjs-binaries/linux-x64": "0.87.0-sdk"
   },
   "peerDependencies": {
-    "@hex-engine/2d": "0.11.1"
+    "@hex-engine/2d": "0.11.2"
   },
   "scripts": {
     "build": "babel --config-file ../../babel.config.js --extensions '.ts,.tsx,.js,.jsx' src -d dist --ignore '*.test.*'",
