@@ -205,6 +205,16 @@ A two-dimensional vector, used to represent points, sizes, and more.
 > In versions prior to 0.0.1, this class was called `Vec2`.
 > In versions >= 0.0.1 but prior to 0.2.0, this class was called `Point`.
 
+#### Static Properties
+
+##### ZERO
+
+> Available since version: 0.11.2
+
+`ZERO: Vector`
+
+A Vector with x and y of 0. Do NOT mutate this.
+
 #### Static Methods
 
 ##### constructor
@@ -779,6 +789,16 @@ Draws this polygon onto a canvas context, using the current stroke or fill style
 ```ts
 import { TransformMatrix } from "@hex-engine/2d";
 ```
+
+#### Static Properties
+
+##### IDENTITY
+
+> Available since version: 0.11.2
+
+`IDENTITY: TransformMatrix`
+
+An identity TransformMatrix, ie. one that has no effect when applied. Do NOT mutate this.
 
 #### Static Methods
 
