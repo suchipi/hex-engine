@@ -167,35 +167,42 @@ export default function FontMetrics(impl: DrawableFont) {
     };
   }
 
+  const measureTextNonMemoized = (text: string): FontMeasurements => {
+    if (!impl.readyToDraw()) {
+      return {
+        baselineToMeanLine: 0,
+        baselineToCapLine: 0,
+        baselineToDescentLine: 0,
+        baselineToAscentLine: 0,
+        descentLineToAscentLine: 0,
+        baselineToCJKBottom: 0,
+        baselineToCJKTop: 0,
+        CJKTopToCJKBottom: 0,
+        width: 0,
+        height: 0,
+      };
+    }
+
+    const width = impl.measureWidth(text);
+    const metrics = getMeasurements();
+
+    return {
+      ...metrics,
+      width,
+    };
+  };
+
   return {
-    measureText: mem(
-      (text: string): FontMeasurements => {
-        if (!impl.readyToDraw()) {
-          return {
-            baselineToMeanLine: 0,
-            baselineToCapLine: 0,
-            baselineToDescentLine: 0,
-            baselineToAscentLine: 0,
-            descentLineToAscentLine: 0,
-            baselineToCJKBottom: 0,
-            baselineToCJKTop: 0,
-            CJKTopToCJKBottom: 0,
-            width: 0,
-            height: 0,
-          };
-        }
-
-        const width = impl.measureWidth(text);
-        const metrics = getMeasurements();
-
-        return {
-          ...metrics,
-          width,
-        };
-      },
-      {
+    measureText: Object.assign(
+      mem(measureTextNonMemoized, {
         cacheKey: (args) => {
           return `${impl.readyToDraw()}${impl.getFontSize()}${args[0]}`;
+        },
+      }),
+      {
+        withoutMemoization: measureTextNonMemoized,
+        clearMemoizationCache() {
+          mem.clear(measureTextNonMemoized);
         },
       }
     ),
