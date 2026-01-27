@@ -1,5 +1,5 @@
 import { Entity, Component } from "@hex-engine/core";
-import React from "preact/compat";
+import React from "inferno-compat";
 import Expandable from "./Expandable";
 import Button from "./Button";
 import EditableString from "./EditableString";
@@ -39,7 +39,7 @@ export default function Tree({
   data: any;
   parent: any;
   path: Array<string | number>;
-  onExpand: (path: Array<string | number>, expand) => void;
+  onExpand: (path: Array<string | number>, expand: boolean) => void;
   getExpanded: (path: Array<string | number>) => boolean;
   getSelectedEntity: () => null | Entity;
 }) {
@@ -130,7 +130,7 @@ export default function Tree({
           );
         })}
         {propsToRender !== sortedProperties ? (
-          <div style={{ paddingLeft: 8, paddingTop: 2 }}>
+          <div style={{ "padding-left": "8px", "padding-top": "2px" }}>
             ...and {sortedProperties.length - propsToRender.length} more
             properties not shown.
           </div>
@@ -153,6 +153,7 @@ export default function Tree({
     preview = color("rgb(28, 0, 207)", String(data) + "n");
   } else if (typeof data === "number") {
     preview = (
+      // @ts-expect-error 'EditableString' cannot be used as a JSX component.
       <EditableString
         expanded={false}
         color="rgb(28, 0, 207)"
@@ -164,6 +165,7 @@ export default function Tree({
     );
     hasContent = true;
     content = (
+      // @ts-expect-error 'EditableString' cannot be used as a JSX component.
       <EditableString
         expanded={true}
         color="rgb(28, 0, 207)"
@@ -177,6 +179,7 @@ export default function Tree({
     preview = (
       <span>
         "
+        {/* @ts-expect-error 'EditableString' cannot be used as a JSX component. */}
         <EditableString
           expanded={false}
           color="rgb(196, 26, 22)"
@@ -190,6 +193,7 @@ export default function Tree({
     );
     hasContent = true;
     content = (
+      // @ts-expect-error 'EditableString' cannot be used as a JSX component.
       <EditableString
         expanded={true}
         color="rgb(196, 26, 22)"
@@ -222,9 +226,9 @@ export default function Tree({
           }}
           title="Run function"
           style={{
-            fontFamily: "inherit",
+            "font-family": "inherit",
             cursor: "pointer",
-            paddingLeft: 4,
+            "padding-left": "4px",
             filter: "hue-rotate(-75deg)",
           }}
         >
@@ -254,7 +258,7 @@ export default function Tree({
     hasContent = true;
     content = (
       <div>
-        <img style={{ maxWidth: "100%" }} src={data.src} />
+        <img style={{ "max-width": "100%" }} src={data.src} />
         {entriesForProperties(gatherPropertyNames(data))}
       </div>
     );
@@ -345,6 +349,7 @@ export default function Tree({
           {data.data.map((row: Array<number>, xIndex: number) => (
             <div key={xIndex}>
               {row.map((gridValue, yIndex) => (
+                // @ts-expect-error 'EditableString' cannot be used as a JSX component.
                 <EditableString
                   key={yIndex}
                   expanded={false}
@@ -368,6 +373,7 @@ export default function Tree({
           {data.data.map((row: Array<string>, xIndex: number) => (
             <div key={xIndex}>
               {row.map((gridValue, yIndex) => (
+                // @ts-expect-error 'EditableString' cannot be used as a JSX component.
                 <EditableString
                   expanded={false}
                   color="rgb(196, 26, 22)"
@@ -439,6 +445,7 @@ export default function Tree({
   const selectedEntity = getSelectedEntity();
 
   return (
+    // @ts-expect-error 'Expandable' cannot be used as a JSX component.
     <Expandable
       className={className}
       label={name}

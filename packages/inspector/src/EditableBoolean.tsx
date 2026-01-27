@@ -1,4 +1,4 @@
-import React from "preact/compat";
+import React from "inferno-compat";
 
 export default function EditableBoolean({
   color,

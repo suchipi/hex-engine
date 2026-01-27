@@ -1,4 +1,4 @@
-import React from "preact/compat";
+import React from "inferno-compat";
 import { RunLoop } from "@hex-engine/core";
 import Button from "./Button";
 import { ResumeIcon } from "./Icons";
@@ -13,8 +13,8 @@ export default function PausedOverlay({ runLoop }: { runLoop: RunLoopAPI }) {
         top: "calc(50vh - 64px)",
         left: "calc(50vw - 64px)",
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        "align-items": "center",
+        "justify-content": "center",
       }}
     >
       <div
@@ -22,12 +22,12 @@ export default function PausedOverlay({ runLoop }: { runLoop: RunLoopAPI }) {
           width: "128px",
           height: "128px",
           display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          "align-items": "center",
+          "justify-content": "center",
 
-          boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
-          backgroundColor: "rgba(238, 238, 238)",
-          borderRadius: "16px",
+          "box-shadow": "0px 0px 10px rgba(0, 0, 0, 0.5)",
+          "background-color": "rgba(238, 238, 238)",
+          "border-radius": "16px",
         }}
       >
         <Button

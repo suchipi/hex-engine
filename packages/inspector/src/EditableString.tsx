@@ -1,100 +1,138 @@
-import React, { useState, useRef, useEffect } from "preact/compat";
+import React from "inferno-compat";
 
-export default function EditableString({
-  color,
-  value,
-  onChange,
-  expanded,
-}: {
+export type EditableStringProps = {
   color: string;
   value: string;
   onChange: (value: string) => void;
   expanded: boolean;
-}) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedValue, setEditedValue] = useState(value);
-  const measureWidthRef = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
+};
 
-  const TagName = expanded ? "textarea" : "input";
+export type EditableStringState = {
+  isEditing: boolean;
+  editedValue: string;
+};
 
-  useEffect(() => {
-    if (expanded) return;
+export default class EditableString extends React.Component<
+  EditableStringProps,
+  EditableStringState
+> {
+  state = {
+    isEditing: false,
+    editedValue: this.props.value,
+  };
 
-    const measureWidth = measureWidthRef.current;
-    const input = inputRef.current;
+  measureWidthRef = React.createRef<HTMLSpanElement>();
+  inputRef = React.createRef<HTMLInputElement | HTMLTextAreaElement>();
 
-    if (!measureWidth) return;
-    if (!input) return;
+  _isMounted: boolean = false;
+  componentDidMount(): void {
+    this._isMounted = true;
+  }
+  componentWillUnmount(): void {
+    this._isMounted = false;
+  }
 
-    measureWidth.style.display = "inline";
-    const rect = measureWidth.getBoundingClientRect();
-    measureWidth.style.display = "none";
+  componentDidUpdate(
+    prevProps: EditableStringProps,
+    prevState: typeof this.state
+  ) {
+    if (
+      prevProps.expanded !== this.props.expanded ||
+      prevProps.value !== this.props.value ||
+      prevState.editedValue !== this.state.editedValue
+    ) {
+      if (this.props.expanded) return;
 
-    input.style.width = rect.width + "px";
-  }, [editedValue, value]);
+      const measureWidth = this.measureWidthRef.current;
+      const input = this.inputRef.current;
 
-  const currentValue = isEditing ? editedValue : value;
+      if (!measureWidth) return;
+      if (!input) return;
 
-  return (
-    <>
-      <span
-        style={{ display: "none" }}
-        ref={measureWidthRef}
-        className="measure-width"
-      >
-        {currentValue}
-      </span>
-      <TagName
-        // @ts-ignore
-        ref={inputRef}
-        style={{ color, font: "inherit", maxWidth: "200px" }}
-        value={currentValue}
-        onFocus={() => {
-          setEditedValue(value);
-          setIsEditing(true);
-        }}
-        onInput={(
-          event: React.JSX.TargetedInputEvent<
-            HTMLTextAreaElement | HTMLInputElement
-          >
-        ) => {
-          if (!expanded && measureWidthRef.current) {
-            event.currentTarget.style.width =
-              measureWidthRef.current.getBoundingClientRect().width + "px";
-          }
+      measureWidth.style.display = "inline";
+      const rect = measureWidth.getBoundingClientRect();
+      measureWidth.style.display = "none";
 
-          setEditedValue(event.currentTarget.value);
-          onChange(event.currentTarget.value);
-        }}
-        onBlur={() => {
-          setIsEditing(false);
-        }}
-        onKeyDown={(
-          event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
-        ) => {
-          if (String(Number(currentValue)) !== currentValue) return;
+      input.style.width = rect.width + "px";
+    }
+  }
 
-          let delta = 0;
-          if (event.key === "ArrowDown") {
-            delta = -1;
-          } else if (event.key === "ArrowUp") {
-            delta = 1;
-          }
+  render() {
+    const { color, value, expanded } = this.props;
+    const { isEditing, editedValue } = this.state;
 
-          if (event.shiftKey && event.altKey) {
-            delta *= Math.PI / 16;
-          } else if (event.shiftKey) {
-            delta *= 10;
-          } else if (event.altKey) {
-            delta *= 0.1;
-          }
+    const TagName = expanded ? "textarea" : "input";
 
-          const newValue = String(Number(currentValue) + delta);
-          setEditedValue(newValue);
-          onChange(newValue);
-        }}
-      />
-    </>
-  );
+    const currentValue = isEditing ? editedValue : value;
+
+    return (
+      <>
+        <span
+          style={{ display: "none" }}
+          ref={this.measureWidthRef}
+          className="measure-width"
+        >
+          {currentValue}
+        </span>
+        <TagName
+          ref={this.inputRef as any}
+          style={{ color, font: "inherit", "max-width": "200px" }}
+          value={currentValue}
+          onFocus={() => {
+            this.setState({
+              isEditing: true,
+              editedValue: value,
+            });
+          }}
+          onInput={(event: {
+            currentTarget: HTMLTextAreaElement | HTMLInputElement;
+          }) => {
+            if (!expanded && this.measureWidthRef.current) {
+              event.currentTarget.style.width =
+                this.measureWidthRef.current.getBoundingClientRect().width +
+                "px";
+            }
+
+            this.setState({ editedValue: event.currentTarget.value }, () => {
+              if (this._isMounted) {
+                this.props.onChange(event.currentTarget.value);
+              }
+            });
+          }}
+          onBlur={() => {
+            this.setState({ isEditing: false });
+          }}
+          onKeyDown={(
+            event: KeyboardEvent & {
+              currentTarget: HTMLInputElement | HTMLTextAreaElement;
+            }
+          ) => {
+            if (String(Number(currentValue)) !== currentValue) return;
+
+            let delta = 0;
+            if (event.key === "ArrowDown") {
+              delta = -1;
+            } else if (event.key === "ArrowUp") {
+              delta = 1;
+            }
+
+            if (event.shiftKey && event.altKey) {
+              delta *= Math.PI / 16;
+            } else if (event.shiftKey) {
+              delta *= 10;
+            } else if (event.altKey) {
+              delta *= 0.1;
+            }
+
+            const newValue = String(Number(currentValue) + delta);
+            this.setState({ editedValue: newValue }, () => {
+              if (this._isMounted) {
+                this.props.onChange(newValue);
+              }
+            });
+          }}
+        />
+      </>
+    );
+  }
 }

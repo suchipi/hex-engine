@@ -1,4 +1,4 @@
-import React from "preact/compat";
+import React from "inferno-compat";
 import { RunLoop } from "@hex-engine/core";
 import Button from "./Button";
 import {
@@ -34,8 +34,8 @@ export default function Controls({
     <div
       style={{
         display: "flex",
-        backgroundColor: error ? "#ff9a9a" : "#eee",
-        padding: 2,
+        "background-color": error ? "#ff9a9a" : "#eee",
+        padding: "2px",
       }}
     >
       <Button
@@ -43,7 +43,10 @@ export default function Controls({
         onClick={toggleSelectMode!}
       >
         <span
-          style={{ padding: 4, color: `${isSelectMode ? "#008eff" : "#222"}` }}
+          style={{
+            padding: "4px",
+            color: `${isSelectMode ? "#008eff" : "#222"}`,
+          }}
         >
           <PickEntityIcon />
         </span>
@@ -52,7 +55,7 @@ export default function Controls({
         <Button title="Collapse Inspector Tree" onClick={collapseTree}>
           <span
             style={{
-              padding: 4,
+              padding: "4px",
               color: "#222",
             }}
           >
@@ -69,7 +72,7 @@ export default function Controls({
             }}
             title="Resume execution"
           >
-            <span style={{ padding: 4, color: "#008eff" }}>
+            <span style={{ padding: "4px", color: "#008eff" }}>
               <ResumeIcon />
             </span>
           </Button>
@@ -79,7 +82,7 @@ export default function Controls({
             }}
             title="Run one frame"
           >
-            <span style={{ padding: 4, color: "#222" }}>
+            <span style={{ padding: "4px", color: "#222" }}>
               <StepIcon />
             </span>
           </Button>
@@ -92,15 +95,15 @@ export default function Controls({
           }}
           title="Pause execution"
         >
-          <span style={{ padding: 4, color: "#222" }}>
+          <span style={{ padding: "4px", color: "#222" }}>
             <PauseIcon />
           </span>
         </Button>
       )}
 
-      <div style={{ flexGrow: 1 }} />
+      <div style={{ "flex-grow": 1 }} />
 
-      <div style={{ padding: 4 }}>
+      <div style={{ padding: "4px" }}>
         {runLoop.isPaused()
           ? error
             ? `Paused due to ${error.name}: ${error.message} (check console for more info)`
@@ -110,13 +113,13 @@ export default function Controls({
 
       {isOpen ? (
         <Button onClick={toggleOpen} title="Hide inspector pane">
-          <span style={{ padding: 6, color: "#222" }}>
+          <span style={{ padding: "6px", color: "#222" }}>
             <PaneRightIcon />
           </span>
         </Button>
       ) : (
         <Button onClick={toggleOpen} title="Show inspector pane">
-          <span style={{ padding: 6, color: "#222" }}>
+          <span style={{ padding: "6px", color: "#222" }}>
             <PaneLeftIcon />
           </span>
         </Button>

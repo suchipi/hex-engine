@@ -1,4 +1,4 @@
-import React from "preact/compat";
+import React from "inferno-compat";
 import { Entity, RunLoop } from "@hex-engine/core";
 import Tree from "./Tree";
 import Controls from "./Controls";
@@ -38,8 +38,8 @@ export default function App({
   return (
     <div
       style={{
-        fontFamily: "Menlo, monospace",
-        fontSize: 11,
+        "font-family": "Menlo, monospace",
+        "font-size": "11",
       }}
     >
       <div
@@ -47,13 +47,13 @@ export default function App({
           position: "fixed",
           top: 0,
           right: 0,
-          borderBottomLeftRadius: "4px",
+          "border-bottom-left-radius": "4px",
           overflow: "hidden",
-          boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
+          "box-shadow": "0px 0px 10px rgba(0, 0, 0, 0.5)",
           ...(isHovered
             ? {
-                outlineStyle: "auto",
-                outlineColor: "magenta",
+                "outline-style": "auto",
+                "outline-color": "magenta",
               }
             : null),
         }}
@@ -81,17 +81,17 @@ export default function App({
             right: 0,
             bottom: 0,
             width: "33vw",
-            backgroundColor: "rgba(255, 255, 255, 0.75)",
-            boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
+            "background-color": "rgba(255, 255, 255, 0.75)",
+            "box-shadow": "0px 0px 10px rgba(0, 0, 0, 0.5)",
             display: "flex",
-            flexDirection: "column",
+            "flex-direction": "column",
             height: "100%",
-            boxSizing: "border-box",
+            "box-sizing": "border-box",
 
             ...(isHovered
               ? {
-                  outlineStyle: "auto",
-                  outlineColor: "magenta",
+                  "outline-style": "auto",
+                  "outline-color": "magenta",
                 }
               : null),
           }}
@@ -107,7 +107,7 @@ export default function App({
               collapseTree={collapseTree}
             />
           ) : null}
-          <div style={{ flexBasis: "100%", overflowY: "auto" }}>
+          <div style={{ "flex-basis": "100%", "overflow-y": "auto" }}>
             <Tree
               name="root"
               data={ent}

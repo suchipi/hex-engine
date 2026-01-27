@@ -7,8 +7,9 @@
   "sideEffects": false,
   "dependencies": {
     "@hex-engine/core": "0.11.2",
-    "lodash": "^4.17.21",
-    "preact": "^10.27.2"
+    "inferno": "^9.0.10",
+    "inferno-compat": "^9.0.10",
+    "lodash": "^4.17.21"
   },
   "scripts": {
     "build": "babel --config-file ../../babel.config.js --extensions '.ts,.tsx,.js,.jsx' src -d dist --ignore '*.test.*'",

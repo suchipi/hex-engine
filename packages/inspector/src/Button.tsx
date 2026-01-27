@@ -1,13 +1,13 @@
-import React from "preact/compat";
+import React from "inferno-compat";
 
-const baseStyle: React.JSX.CSSProperties = {
-  fontFamily: "inherit",
-  fontSize: "inherit",
-  backgroundColor: "transparent",
+const baseStyle: import("csstype").PropertiesHyphen = {
+  "font-family": "inherit",
+  "font-size": "inherit",
+  "background-color": "transparent",
   border: "none",
   padding: "0",
   margin: "0",
-  textAlign: "left",
+  "text-align": "left",
   cursor: "pointer",
 };
 

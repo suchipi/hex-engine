@@ -1,9 +1,5 @@
-if (process.env.NODE_ENV !== "production") {
-  require("preact/debug");
-}
-
-import React, { useState, useCallback } from "preact/compat";
-import ReactDOM from "preact/compat";
+import React from "inferno-compat";
+import ReactDOM from "inferno-compat";
 import {
   Entity,
   useRootEntity,
@@ -71,38 +67,38 @@ function getRootToEntityPath(entity: Entity): Array<string | number> {
   return path;
 }
 
-function Root({
-  entity,
-  runLoop,
-  stateHolder,
-}: {
+type RootProps = {
   entity: Entity;
   runLoop: RunLoopAPI | null;
   stateHolder: StateHolder;
-}) {
-  const [, updateState] = useState({});
-  const forceUpdate = useCallback(() => updateState({}), []);
+};
 
-  stateHolder.forceUpdate = forceUpdate;
+class Root extends React.Component<RootProps> {
+  boundForceUpdate = this.forceUpdate.bind(this);
 
-  return (
-    <App
-      entity={entity}
-      getSelectedEntity={stateHolder.getSelectedEntity}
-      runLoop={runLoop}
-      error={stateHolder.err}
-      getExpanded={stateHolder.getExpanded}
-      onExpand={stateHolder.setExpanded}
-      isHovered={stateHolder.isHovered}
-      isOpen={stateHolder.getIsOpen()}
-      toggleOpen={stateHolder.toggleOpen}
-      isSelectMode={stateHolder.getSelectMode()}
-      toggleSelectMode={stateHolder.toggleSelectMode}
-      collapseTree={stateHolder.collapseTree}
-    />
-  );
+  render() {
+    const { entity, runLoop, stateHolder } = this.props;
+
+    stateHolder.forceUpdate = this.boundForceUpdate;
+
+    return (
+      <App
+        entity={entity}
+        getSelectedEntity={stateHolder.getSelectedEntity}
+        runLoop={runLoop}
+        error={stateHolder.err}
+        getExpanded={stateHolder.getExpanded}
+        onExpand={stateHolder.setExpanded}
+        isHovered={stateHolder.isHovered}
+        isOpen={stateHolder.getIsOpen()}
+        toggleOpen={stateHolder.toggleOpen}
+        isSelectMode={stateHolder.getSelectMode()}
+        toggleSelectMode={stateHolder.toggleSelectMode}
+        collapseTree={stateHolder.collapseTree}
+      />
+    );
+  }
 }
-
 /**
  * A Component function that renders an Inspector overlay onto the page,
  * that shows you information about the current Entity tree, and allows you
@@ -145,6 +141,10 @@ export default function Inspector() {
           const subtree = get(tree, path);
           delete subtree[key!];
         }
+      }
+
+      if (stateHolder.forceUpdate) {
+        stateHolder.forceUpdate();
       }
 
       debouncedSaveTree(tree);
@@ -205,25 +205,27 @@ export default function Inspector() {
   });
 
   ReactDOM.render(
+    // @ts-expect-error 'Root' cannot be used as a JSX component.
     <Root entity={rootEntity} runLoop={runLoop} stateHolder={stateHolder} />,
-    el,
-    useCallbackAsCurrent(() => {
-      const tick = useCallbackAsCurrent(() => {
-        if (runLoop && pauseOnStart && !hasPausedOnStart) {
-          runLoop.pause();
-          hasPausedOnStart = true;
-        }
-
-        if (stateHolder.forceUpdate != null) {
-          stateHolder.forceUpdate();
-        }
-
-        requestAnimationFrame(tick);
-      });
-
-      tick();
-    })
+    el
   );
+
+  useCallbackAsCurrent(() => {
+    const tick = useCallbackAsCurrent(() => {
+      if (runLoop && pauseOnStart && !hasPausedOnStart) {
+        runLoop.pause();
+        hasPausedOnStart = true;
+      }
+
+      if (stateHolder.forceUpdate != null) {
+        stateHolder.forceUpdate();
+      }
+
+      requestAnimationFrame(tick);
+    });
+
+    tick();
+  });
 
   const { getSelectMode, toggleSelectMode, selectEntity } = stateHolder;
   const inspectorSelectApi = {
