@@ -38,6 +38,6 @@
     "test-it": "node ./packages/scripts/dist/cli.js test './packages/*/src/**/*.test.{ts,js,tsx,jsx}' '!**/node_modules/**'",
     "test": "npm run typecheck && npm run test-it",
     "build-website": "cd packages/website && npm run build",
-    "netlify": "apt-get install -y fish && npm run build-website"
+    "netlify": "export PATH=\"$PATH:./netlify-bin\" && npm run build-website"
   }
 }
