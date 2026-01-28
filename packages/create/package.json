@@ -1,6 +1,6 @@
 {
   "name": "create-hex-engine-game",
-  "version": "0.11.2",
+  "version": "0.11.3",
   "license": "MIT",
   "main": "dist/index.js",
   "bin": "dist/cli.js",

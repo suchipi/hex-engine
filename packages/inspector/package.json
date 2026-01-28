@@ -1,12 +1,12 @@
 {
   "name": "@hex-engine/inspector",
-  "version": "0.11.2",
+  "version": "0.11.3",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "src/index.tsx",
   "sideEffects": false,
   "dependencies": {
-    "@hex-engine/core": "0.11.2",
+    "@hex-engine/core": "0.11.3",
     "inferno": "^9.0.10",
     "inferno-compat": "^9.0.10",
     "lodash": "^4.17.21"
