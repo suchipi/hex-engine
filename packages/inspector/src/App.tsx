@@ -39,7 +39,7 @@ export default function App({
     <div
       style={{
         "font-family": "Menlo, monospace",
-        "font-size": "11",
+        "font-size": "11px",
       }}
     >
       <div
