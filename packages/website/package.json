@@ -5,7 +5,8 @@
   "scripts": {
     "watch": "npm start",
     "start": "./in-docker.sh 'npm install && npx docusaurus start --host 0.0.0.0'",
-    "build": "./in-docker.sh 'npm install && npx docusaurus build'"
+    "build": "./in-docker.sh 'npm install && npx docusaurus build'",
+    "build-no-docker": "npm install && npx docusaurus build"
   },
   "dependencies": {
     "@docusaurus/core": "^3.0.0",
