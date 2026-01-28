@@ -1,6 +1,7 @@
 import * as React from "react";
 import dedent from "dedent";
-import marked from "marked";
+// eslint-disable-next-line import/namespace
+import * as marked from "marked";
 // eslint-disable-next-line import/no-unresolved
 import Layout from "@theme/Layout";
 import siteConfig from "../../docusaurus.config";
@@ -74,7 +75,9 @@ function Index() {
         >
           <h3>{props.title}</h3>
           <div
-            dangerouslySetInnerHTML={{ __html: marked(props.content || "") }}
+            dangerouslySetInnerHTML={{
+              __html: marked.parse(props.content || "", { async: false }),
+            }}
           />
         </div>
         {props.imageAlign === "right" ? (
