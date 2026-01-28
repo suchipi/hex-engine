@@ -18,3 +18,6 @@ jobs:
 
       - name: Run tests
         run: ./in-docker.sh 'npm install && npm run build && npm test'
+
+      # Future Lily: Looking for website deploys? Check
+      # https://app.netlify.com/projects/hex-engine/overview
