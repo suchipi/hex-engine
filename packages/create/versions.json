@@ -1,1 +1,5 @@
-{ "hex": "0.11.2", "typescript": "5.9.3" }
+{
+  "hex": "0.11.2",
+  "typescript": "5.9.3",
+  "baseline-browser-mapping": "latest"
+}

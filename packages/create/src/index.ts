@@ -23,6 +23,9 @@ export default async function makeIt(targetDirectory: string) {
   await execAsync(`npm install --save @hex-engine/2d@${versions.hex}`);
   await execAsync(`npm install --save-dev hex-engine-scripts@${versions.hex}`);
   await execAsync(`npm install --save-dev typescript@${versions.typescript}`);
+  await execAsync(
+    `npm install --save-dev baseline-browser-mapping@${versions["baseline-browser-mapping"]}`
+  );
 
   spinner.succeed("Dependencies installed!");
 
