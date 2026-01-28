@@ -61,6 +61,7 @@ export function load(filename: string): string {
     }
     case ".js":
     case ".jsx":
+    case ".cjs":
     case ".mjs":
     case ".ts":
     case ".tsx": {
@@ -68,12 +69,15 @@ export function load(filename: string): string {
       if (filename.match(/node_modules/)) {
         config = {
           compact: true,
-          plugins: ["@babel/plugin-transform-modules-commonjs"],
+          plugins:
+            extension === ".cjs"
+              ? []
+              : ["@babel/plugin-transform-modules-commonjs"],
         };
       } else {
         config = {
           compact: false,
-          sourceType: "unambiguous" as "unambiguous",
+          sourceType: "unambiguous" as const,
           presets: [
             [
               "@babel/preset-env",
@@ -85,7 +89,10 @@ export function load(filename: string): string {
             "@babel/preset-typescript",
             "@babel/preset-react",
           ],
-          plugins: ["@babel/plugin-transform-modules-commonjs"],
+          plugins:
+            extension === ".cjs"
+              ? []
+              : ["@babel/plugin-transform-modules-commonjs"],
           filename,
         };
       }
