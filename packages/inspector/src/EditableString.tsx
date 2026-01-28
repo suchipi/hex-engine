@@ -21,12 +21,13 @@ export default class EditableString extends React.Component<
     editedValue: this.props.value,
   };
 
-  measureWidthRef = React.createRef<HTMLSpanElement>();
-  inputRef = React.createRef<HTMLInputElement | HTMLTextAreaElement>();
+  private _measureWidthSpan: HTMLSpanElement | null = null;
+  private _inputEl: HTMLInputElement | HTMLTextAreaElement | null = null;
 
-  _isMounted: boolean = false;
+  private _isMounted: boolean = false;
   componentDidMount(): void {
     this._isMounted = true;
+    this._updateWidth();
   }
   componentWillUnmount(): void {
     this._isMounted = false;
@@ -41,20 +42,24 @@ export default class EditableString extends React.Component<
       prevProps.value !== this.props.value ||
       prevState.editedValue !== this.state.editedValue
     ) {
-      if (this.props.expanded) return;
-
-      const measureWidth = this.measureWidthRef.current;
-      const input = this.inputRef.current;
-
-      if (!measureWidth) return;
-      if (!input) return;
-
-      measureWidth.style.display = "inline";
-      const rect = measureWidth.getBoundingClientRect();
-      measureWidth.style.display = "none";
-
-      input.style.width = rect.width + "px";
+      this._updateWidth();
     }
+  }
+
+  private _updateWidth() {
+    if (this.props.expanded) return;
+
+    const measureWidthSpan = this._measureWidthSpan;
+    const inputEl = this._inputEl;
+
+    if (!measureWidthSpan) return;
+    if (!inputEl) return;
+
+    measureWidthSpan.style.display = "inline";
+    const rect = measureWidthSpan.getBoundingClientRect();
+    measureWidthSpan.style.display = "none";
+
+    inputEl.style.width = rect.width + "px";
   }
 
   render() {
@@ -69,13 +74,17 @@ export default class EditableString extends React.Component<
       <>
         <span
           style={{ display: "none" }}
-          ref={this.measureWidthRef}
+          ref={(el) => {
+            this._measureWidthSpan = el;
+          }}
           className="measure-width"
         >
           {currentValue}
         </span>
         <TagName
-          ref={this.inputRef as any}
+          ref={(el: HTMLInputElement | HTMLTextAreaElement | null) => {
+            this._inputEl = el;
+          }}
           style={{ color, font: "inherit", "max-width": "200px" }}
           value={currentValue}
           onFocus={() => {
@@ -87,11 +96,7 @@ export default class EditableString extends React.Component<
           onInput={(event: {
             currentTarget: HTMLTextAreaElement | HTMLInputElement;
           }) => {
-            if (!expanded && this.measureWidthRef.current) {
-              event.currentTarget.style.width =
-                this.measureWidthRef.current.getBoundingClientRect().width +
-                "px";
-            }
+            this._updateWidth();
 
             this.setState({ editedValue: event.currentTarget.value }, () => {
               if (this._isMounted) {
