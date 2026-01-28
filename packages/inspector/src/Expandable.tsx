@@ -16,34 +16,6 @@ export type ExpandableProps = {
 };
 
 export default class Expandable extends React.Component<ExpandableProps> {
-  element: HTMLDivElement | null = null;
-  prevElement: HTMLDivElement | null = null;
-  elementRefCallback = (el: HTMLDivElement) => {
-    if (this.element) {
-      this.prevElement = this.element;
-    }
-    this.element = el;
-    this._scrollElementIntoViewIfChanged(this.props);
-  };
-
-  componentWillUnmount(): void {
-    this.element = null;
-    this.prevElement = null;
-  }
-
-  componentDidUpdate(prevProps: ExpandableProps) {
-    this._scrollElementIntoViewIfChanged(prevProps);
-  }
-
-  _scrollElementIntoViewIfChanged(prevProps: ExpandableProps) {
-    if (
-      this.props.isSelected !== prevProps.isSelected ||
-      this.element !== this.prevElement
-    ) {
-      this.element?.scrollIntoView({ block: "center" });
-    }
-  }
-
   render() {
     const {
       label,
@@ -61,7 +33,6 @@ export default class Expandable extends React.Component<ExpandableProps> {
 
     return (
       <div
-        ref={this.elementRefCallback}
         style={{
           position: "relative",
           "padding-left": "8px",

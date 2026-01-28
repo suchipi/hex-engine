@@ -210,22 +210,20 @@ export default function Inspector() {
     el
   );
 
-  useCallbackAsCurrent(() => {
-    const tick = useCallbackAsCurrent(() => {
-      if (runLoop && pauseOnStart && !hasPausedOnStart) {
-        runLoop.pause();
-        hasPausedOnStart = true;
-      }
+  const tick = useCallbackAsCurrent(() => {
+    if (runLoop && pauseOnStart && !hasPausedOnStart) {
+      runLoop.pause();
+      hasPausedOnStart = true;
+    }
 
-      if (stateHolder.forceUpdate != null) {
-        stateHolder.forceUpdate();
-      }
+    if (stateHolder.forceUpdate != null) {
+      stateHolder.forceUpdate();
+    }
 
-      requestAnimationFrame(tick);
-    });
-
-    tick();
+    requestAnimationFrame(tick);
   });
+
+  tick();
 
   const { getSelectMode, toggleSelectMode, selectEntity } = stateHolder;
   const inspectorSelectApi = {
