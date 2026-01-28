@@ -19,6 +19,8 @@ export default function test(): Promise<void> {
       require.resolve("@test-it/cli/dist/cli.js"),
       "--loader",
       require.resolve("../test-it-loader"),
+      "--resolver",
+      require.resolve("../test-it-resolver"),
       ...process.argv.slice(3),
     ],
     { stdio: "inherit" }
