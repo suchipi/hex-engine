@@ -4,9 +4,21 @@ import {
 } from "./Interface";
 import instantiate from "./instantiate";
 import { StorageForUseDestroy } from "./Hooks/useDestroy";
+import {
+  CoreEventPhase,
+  CoreEventType,
+  eventSystemSingleton,
+} from "./EventSystem";
 
 function destroy(entity: Entity) {
   if (entity._isDestroying) return;
+
+  eventSystemSingleton.emit({
+    eventType: CoreEventType.ENTITY_DESTROY,
+    eventPhase: CoreEventPhase.BEFORE,
+    entity,
+  });
+
   entity._isDestroying = true;
 
   for (const child of entity.children) {
@@ -26,9 +38,21 @@ function destroy(entity: Entity) {
 
   entity._isDestroying = false;
   entity._isDestroyed = true;
+
+  eventSystemSingleton.emit({
+    eventType: CoreEventType.ENTITY_DESTROY,
+    eventPhase: CoreEventPhase.AFTER,
+    entity,
+  });
 }
 
 function enable(entity: Entity) {
+  eventSystemSingleton.emit({
+    eventType: CoreEventType.ENTITY_ENABLE,
+    eventPhase: CoreEventPhase.BEFORE,
+    entity,
+  });
+
   for (const component of entity.components) {
     if (!component.isEnabled) {
       component.enable();
@@ -37,9 +61,21 @@ function enable(entity: Entity) {
   for (const child of entity.children) {
     enable(child);
   }
+
+  eventSystemSingleton.emit({
+    eventType: CoreEventType.ENTITY_ENABLE,
+    eventPhase: CoreEventPhase.AFTER,
+    entity,
+  });
 }
 
 function disable(entity: Entity) {
+  eventSystemSingleton.emit({
+    eventType: CoreEventType.ENTITY_DISABLE,
+    eventPhase: CoreEventPhase.BEFORE,
+    entity,
+  });
+
   for (const component of entity.components) {
     if (component.isEnabled) {
       component.disable();
@@ -48,6 +84,12 @@ function disable(entity: Entity) {
   for (const child of entity.children) {
     disable(child);
   }
+
+  eventSystemSingleton.emit({
+    eventType: CoreEventType.ENTITY_DISABLE,
+    eventPhase: CoreEventPhase.AFTER,
+    entity,
+  });
 }
 
 function gatherDescendants(ent: Entity, descendants: Array<Entity> = []) {
@@ -81,6 +123,13 @@ export default class Entity implements EntityInterface {
   ): Entity & {
     rootComponent: T extends {} ? ComponentInterface & T : ComponentInterface;
   } {
+    eventSystemSingleton.emit({
+      eventType: CoreEventType.ENTITY_CREATE,
+      eventPhase: CoreEventPhase.BEFORE,
+      componentFactory,
+      parent: parent ?? null,
+    });
+
     const ent: Entity = new Entity();
     ent.id = id;
     id++;
@@ -92,6 +141,14 @@ export default class Entity implements EntityInterface {
     const component = instantiate(componentFactory, ent);
     ent.rootComponent = component;
     ent.components.add(component);
+
+    eventSystemSingleton.emit({
+      eventType: CoreEventType.ENTITY_CREATE,
+      eventPhase: CoreEventPhase.AFTER,
+      componentFactory,
+      parent: parent ?? null,
+      entity: ent,
+    });
 
     return ent;
   }
@@ -126,7 +183,22 @@ export default class Entity implements EntityInterface {
   ): T extends {} ? T & ComponentInterface : ComponentInterface {
     const component = instantiate(componentFactory, this);
 
+    eventSystemSingleton.emit({
+      eventType: CoreEventType.ENTITY_ADD_COMPONENT,
+      eventPhase: CoreEventPhase.BEFORE,
+      componentFactory,
+      entity: this,
+    });
+
     this.components.add(component);
+
+    eventSystemSingleton.emit({
+      eventType: CoreEventType.ENTITY_ADD_COMPONENT,
+      eventPhase: CoreEventPhase.AFTER,
+      componentFactory,
+      entity: this,
+      component,
+    });
 
     return component;
   }
@@ -134,8 +206,22 @@ export default class Entity implements EntityInterface {
   removeComponent(componentInstance: ComponentInterface): void {
     if (!this.components.has(componentInstance)) return;
 
+    eventSystemSingleton.emit({
+      eventType: CoreEventType.ENTITY_REMOVE_COMPONENT,
+      eventPhase: CoreEventPhase.BEFORE,
+      component: componentInstance,
+      entity: this,
+    });
+
     componentInstance.disable();
     this.components.delete(componentInstance);
+
+    eventSystemSingleton.emit({
+      eventType: CoreEventType.ENTITY_REMOVE_COMPONENT,
+      eventPhase: CoreEventPhase.AFTER,
+      component: componentInstance,
+      entity: this,
+    });
   }
 
   enable() {
@@ -166,9 +252,7 @@ export default class Entity implements EntityInterface {
     return ancestors;
   }
 
-  createChild<T>(
-    componentFactory: () => T
-  ): Entity & {
+  createChild<T>(componentFactory: () => T): Entity & {
     rootComponent: T extends {} ? ComponentInterface & T : ComponentInterface;
   } {
     const child = Entity._create(componentFactory, this);
@@ -182,8 +266,22 @@ export default class Entity implements EntityInterface {
       );
     }
 
+    eventSystemSingleton.emit({
+      eventType: CoreEventType.ENTITY_ADD_CHILD,
+      eventPhase: CoreEventPhase.BEFORE,
+      parent: this,
+      child: child,
+    });
+
     this.children.add(child);
     child.parent = this;
+
+    eventSystemSingleton.emit({
+      eventType: CoreEventType.ENTITY_ADD_CHILD,
+      eventPhase: CoreEventPhase.AFTER,
+      parent: this,
+      child: child,
+    });
   }
 
   removeChild(child: Entity): void {
@@ -193,8 +291,22 @@ export default class Entity implements EntityInterface {
       );
     }
 
+    eventSystemSingleton.emit({
+      eventType: CoreEventType.ENTITY_REMOVE_CHILD,
+      eventPhase: CoreEventPhase.BEFORE,
+      parent: this,
+      child: child,
+    });
+
     this.children.delete(child);
     child.parent = null;
+
+    eventSystemSingleton.emit({
+      eventType: CoreEventType.ENTITY_REMOVE_CHILD,
+      eventPhase: CoreEventPhase.AFTER,
+      parent: this,
+      child: child,
+    });
 
     if (process.env.NODE_ENV !== "production") {
       setTimeout(() => {

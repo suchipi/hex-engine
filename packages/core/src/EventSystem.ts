@@ -25,13 +25,13 @@ export type CoreEvent =
       eventType: CoreEventType.ENTITY_CREATE;
       eventPhase: CoreEventPhase.BEFORE;
       componentFactory: () => any;
-      parent?: Entity;
+      parent: Entity | null;
     }
   | {
       eventType: CoreEventType.ENTITY_CREATE;
       eventPhase: CoreEventPhase.AFTER;
       componentFactory: () => any;
-      parent?: Entity;
+      parent: Entity | null;
       entity: Entity;
     }
   | {
@@ -41,6 +41,11 @@ export type CoreEvent =
     }
   | {
       eventType: CoreEventType.ENTITY_ENABLE;
+      eventPhase: CoreEventPhase;
+      entity: Entity;
+    }
+  | {
+      eventType: CoreEventType.ENTITY_DISABLE;
       eventPhase: CoreEventPhase;
       entity: Entity;
     }
@@ -150,4 +155,5 @@ export class EventSystem<
   }
 }
 
-export let eventSystemSingleton: EventSystem<any> | null = null;
+// Can be overridden to add different event types
+export let eventSystemSingleton = new EventSystem<CoreEvent>();

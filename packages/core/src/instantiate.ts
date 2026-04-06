@@ -6,6 +6,11 @@ import {
 } from "./Interface";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import proxyProperties from "./proxyProperties";
+import {
+  CoreEventPhase,
+  CoreEventType,
+  eventSystemSingleton,
+} from "./EventSystem";
 
 /**
  * Internal Component instantiation function. Takes care of
@@ -28,6 +33,13 @@ export default function instantiate<T>(
   componentFunction: () => T,
   entity: EntityInterface
 ): T extends {} ? T & ComponentInterface : ComponentInterface {
+  eventSystemSingleton.emit({
+    eventType: CoreEventType.COMPONENT_CREATE,
+    eventPhase: CoreEventPhase.BEFORE,
+    componentFactory: componentFunction,
+    entity,
+  });
+
   const instance = new Component(entity);
 
   const ret: unknown = HooksSystem.withInstance(instance, () => {
@@ -50,6 +62,14 @@ export default function instantiate<T>(
   if (typeof ret === "object" && ret != null) {
     proxyProperties(ret, instance);
   }
+
+  eventSystemSingleton.emit({
+    eventType: CoreEventType.COMPONENT_CREATE,
+    eventPhase: CoreEventPhase.AFTER,
+    componentFactory: componentFunction,
+    entity,
+    component: instance,
+  });
 
   // @ts-ignore
   return instance;

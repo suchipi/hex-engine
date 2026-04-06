@@ -5,13 +5,19 @@ import {
   Entity as EntityInterface,
 } from "./Interface";
 import instantiate from "./instantiate";
+import {
+  CoreEventPhase,
+  CoreEventType,
+  eventSystemSingleton,
+} from "./EventSystem";
 
 /**
  * The hooks system used by Hex Engine to associate hook functions
  * with the current Component instance.
  */
 const HooksSystem = makeHooksSystem<ComponentInterface>()({
-  useNewComponent: (instance) =>
+  useNewComponent:
+    (instance) =>
     /**
      * Create a new Component and add it to the current Component's Entity.
      * @param componentFunction The function that creates the new Component.
@@ -21,12 +27,29 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
       componentFunction: () => T
     ): T extends {} ? T & ComponentInterface : ComponentInterface => {
       const child = instantiate(componentFunction, instance.entity);
+
+      eventSystemSingleton.emit({
+        eventType: CoreEventType.ENTITY_ADD_COMPONENT,
+        eventPhase: CoreEventPhase.BEFORE,
+        componentFactory: componentFunction,
+        entity: instance.entity,
+      });
+
       instance.entity.components.add(child);
+
+      eventSystemSingleton.emit({
+        eventType: CoreEventType.ENTITY_ADD_COMPONENT,
+        eventPhase: CoreEventPhase.AFTER,
+        componentFactory: componentFunction,
+        entity: instance.entity,
+        component: child,
+      });
 
       return child;
     },
 
-  useType: (instance) =>
+  useType:
+    (instance) =>
     /**
      * Set the `type` of the current Component instance. This is *required*
      * for Component functions if you want to be able to find them using
@@ -41,19 +64,24 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
       }
     },
 
-  useEntity: (instance) =>
+  useEntity:
+    (instance) =>
     /**
      * Get the Entity that this Component belongs to.
      */
-    () => instance.entity,
+    () =>
+      instance.entity,
 
-  useCurrentComponent: (instance) =>
+  useCurrentComponent:
+    (instance) =>
     /**
      * Get the Component instance for the current Component function.
      */
-    () => instance,
+    () =>
+      instance,
 
-  useCallbackAsCurrent: (instance) =>
+  useCallbackAsCurrent:
+    (instance) =>
     /**
      * Wrap the provided callback such that if it is called in the future,
      * hook functions inside will be bound to the current Component instance.
@@ -82,7 +110,8 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
       return func;
     },
 
-  useChild: (instance) =>
+  useChild:
+    (instance) =>
     /**
      * Create a new Entity and add it as a child to the current Entity.
      *

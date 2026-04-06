@@ -3,6 +3,11 @@ import {
   Entity as EntityInterface,
 } from "./Interface";
 import { StorageForUseEnableDisable } from "./Hooks/useEnableDisable";
+import {
+  CoreEventPhase,
+  CoreEventType,
+  eventSystemSingleton,
+} from "./EventSystem";
 
 export default class Component implements ComponentInterface {
   _kind: "component" = "component";
@@ -33,6 +38,13 @@ export default class Component implements ComponentInterface {
 
   enable() {
     if (this._isEnabled || this._isEnabling) return;
+
+    eventSystemSingleton.emit({
+      eventType: CoreEventType.COMPONENT_ENABLE,
+      eventPhase: CoreEventPhase.BEFORE,
+      component: this,
+    });
+
     this._isEnabling = true;
 
     const storage = this.entity.getComponent(StorageForUseEnableDisable);
@@ -45,12 +57,25 @@ export default class Component implements ComponentInterface {
 
     this._isEnabling = false;
     this._isEnabled = true;
+
+    eventSystemSingleton.emit({
+      eventType: CoreEventType.COMPONENT_ENABLE,
+      eventPhase: CoreEventPhase.AFTER,
+      component: this,
+    });
   }
 
   _isDisabling: boolean = false;
 
   disable() {
     if (!this._isEnabled || this._isDisabling) return;
+
+    eventSystemSingleton.emit({
+      eventType: CoreEventType.COMPONENT_DISABLE,
+      eventPhase: CoreEventPhase.BEFORE,
+      component: this,
+    });
+
     this._isDisabling = true;
 
     const storage = this.entity.getComponent(StorageForUseEnableDisable);
@@ -63,5 +88,11 @@ export default class Component implements ComponentInterface {
 
     this._isDisabling = false;
     this._isEnabled = false;
+
+    eventSystemSingleton.emit({
+      eventType: CoreEventType.COMPONENT_DISABLE,
+      eventPhase: CoreEventPhase.AFTER,
+      component: this,
+    });
   }
 }
