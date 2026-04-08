@@ -1,16 +1,24 @@
-export interface Disposable {
+export interface IDisposable {
   dispose: () => void;
-  // [Symbol.dispose]: () => void;
+  [Symbol.dispose]: () => void;
 }
 
-export function makeDisposable(disposeFunction: () => void): Disposable {
-  const disposable = {
-    dispose: disposeFunction,
-  };
+// polyfill
+if (!Object.getOwnPropertyDescriptor(Symbol, "dispose")) {
+  Object.defineProperty(Symbol, "dispose", {
+    value: Symbol("Symbol.dispose"),
+    configurable: false,
+    writable: false,
+    enumerable: false,
+  });
+}
 
-  if ("dispose" in Symbol && typeof Symbol.dispose === "symbol") {
-    disposable[Symbol.dispose] = disposeFunction;
+export class Disposable implements IDisposable {
+  dispose: () => void;
+  [Symbol.dispose]!: () => void;
+
+  constructor(onDisposeCallback: () => void) {
+    this.dispose = onDisposeCallback;
+    this[Symbol.dispose] = onDisposeCallback;
   }
-
-  return disposable;
 }

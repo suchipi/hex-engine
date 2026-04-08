@@ -10,7 +10,7 @@
   "exclude": ["./packages/scripts/**/*", "./packages/create/template/**/*"],
 
   "compilerOptions": {
-    "lib": ["es2019", "dom"],
+    "lib": ["es2019", "dom", "esnext.disposable"],
     "target": "es2015",
     "module": "ES2015",
     "skipLibCheck": true,

@@ -1,4 +1,4 @@
-import { makeDisposable } from "./Disposable";
+import { Disposable } from "./Disposable";
 import { Component, Entity } from "./Interface";
 
 export enum CoreEventType {
@@ -127,7 +127,7 @@ export class EventSystem<
 
     listenersSet.add(listener as (event: Event) => void);
 
-    return makeDisposable(() => {
+    return new Disposable(() => {
       listenersSet.delete(listener as (event: Event) => void);
     });
   }
