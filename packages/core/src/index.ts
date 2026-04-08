@@ -50,3 +50,5 @@ export {
   useCurrentComponent,
 };
 export * from "./Hooks";
+export * from "./EventSystem";
+export * from "./Disposable";
