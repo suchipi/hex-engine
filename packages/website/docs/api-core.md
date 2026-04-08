@@ -302,7 +302,7 @@ A generic interface for an object with a `dispose` and `[Symbol.dispose]` method
 import { CoreEvent } from "@hex-engine/core";
 ```
 
-The type used as the [`Event` type parameter][`event`] for the [`EventSystem`] instance named [`events`], which emits events when various engine-level actions occur, such as [`Entity`] and [`Component`] creation, Component [`added/removed`][`usenewcomponent`], Entity or Component [`enabled/disabled`][`useenabledisable`], etc.
+The type used as the [`Event` type parameter][`event`] for the [`EventEmitter`] instance named [`events`], which emits events when various engine-level actions occur, such as [`Entity`] and [`Component`] creation, Component [`added/removed`][`usenewcomponent`], Entity or Component [`enabled/disabled`][`useenabledisable`], etc.
 
 The full list of emitted events and their types is as follows. Event Types are members of the [`CoreEventType` enum][`coreeventtype`], and Event Phases are members of the [`CoreEventPhase` enum][`coreeventphase`]. Note that some event types are listed twice because their additional properties vary depending on the event phase (before or after).
 
@@ -944,12 +944,12 @@ function MyComponent() {
 
 ## Classes
 
-### EventSystem
+### EventEmitter
 
 > Available since version: UNRELEASED
 
 ```ts
-import { EventSystem } from "@hex-engine/core";
+import { EventEmitter } from "@hex-engine/core";
 ```
 
 An event emitter. The [`events`] export is an instance of this class.
@@ -958,7 +958,7 @@ An event emitter. The [`events`] export is an instance of this class.
 
 ##### Event
 
-[`EventSystem`] is generic with one type parameter called "Event" which must be an object type assignable to:
+[`EventEmitter`] is generic with one type parameter called "Event" which must be an object type assignable to:
 
 ```ts
 type Event = {
@@ -967,7 +967,7 @@ type Event = {
 };
 ```
 
-This object type should be a union of all possible events that this EventSystem instance can emit. For instance, a hypothetical EventSystem modeling a door might use this for its Events type parameter:
+This object type should be a union of all possible events that this EventEmitter instance can emit. For instance, a hypothetical EventEmitter modeling a door might use this for its Events type parameter:
 
 ```ts
 type Event =
@@ -981,7 +981,7 @@ type Event =
     };
 ```
 
-The [`events`] object, which is an instance of EventSystem, uses [`CoreEvent`] as its [type parameter for `Event`][`event`].
+The [`events`] object, which is an instance of EventEmitter, uses [`CoreEvent`] as its [type parameter for `Event`][`event`].
 
 #### Methods
 
@@ -993,7 +993,7 @@ The [`events`] object, which is an instance of EventSystem, uses [`CoreEvent`] a
 
 Register a listener function to be called when an event of the specified `eventType` occurs. `eventPhase` is usually "BEFORE" or "AFTER", ie. whether to call the listener right before the event or right after it.
 
-The specific types for `eventType`, `eventPhase`, and `event` will vary depending on what this [`EventSystem`] instance's [Events type parameter][`Events`] is. For [`events`], an instance of EventSystem exported by `@hex-engine/core`, they are [`CoreEventType`], [`CoreEventPhase`], and [`CoreEvent`], respectively.
+The specific types for `eventType`, `eventPhase`, and `event` will vary depending on what this [`EventEmitter`] instance's [Events type parameter][`Events`] is. For [`events`], an instance of EventEmitter exported by `@hex-engine/core`, they are [`CoreEventType`], [`CoreEventPhase`], and [`CoreEvent`], respectively.
 
 To unregister the event listener such that your function no longer gets called when those events occur, call the `dispose` or `[Symbol.dispose]` method on the [`IDisposable`] returned by `register`.
 
@@ -1005,7 +1005,7 @@ To unregister the event listener such that your function no longer gets called w
 
 Calls all previously-registered listener functions for the specified event.
 
-The specific type for `event` will vary depending on what this [`EventSystem`] instance's [Events type parameter][`Events`] is. For [`events`], an instance of EventSystem exported by `@hex-engine/core`, the type parameter is [`CoreEventType`].
+The specific type for `event` will vary depending on what this [`EventEmitter`] instance's [Events type parameter][`Events`] is. For [`events`], an instance of EventEmitter exported by `@hex-engine/core`, the type parameter is [`CoreEventType`].
 
 ### Disposable
 
@@ -1037,9 +1037,9 @@ The Disposable class implements the [`IDisposable`] interface.
 
 ### events
 
-An instance of [`EventSystem`] with [`CoreEvent`] as its [`Event`] type parameter.
+An instance of [`EventEmitter`] with [`CoreEvent`] as its [`Event`] type parameter.
 
-This EventSystem emits events when various engine-level actions occur, such as [`Entity`] and [`Component`] creation, Component [`added/removed`][`usenewcomponent`], Entity or Component [`enabled/disabled`][`useenabledisable`], etc. See [`CoreEvent`] for a full list.
+This EventEmitter emits events when various engine-level actions occur, such as [`Entity`] and [`Component`] creation, Component [`added/removed`][`usenewcomponent`], Entity or Component [`enabled/disabled`][`useenabledisable`], etc. See [`CoreEvent`] for a full list.
 
 To register a function to be run when one of these events occurs, use
 
@@ -1090,10 +1090,9 @@ To register a function to be run when one of these events occurs, use
 [`usedraw`]: /docs/api-2d#usedraw
 [`disposable`]: #disposable
 [`idisposable`]: #idisposable
-[`eventsystem`]: #eventsystem
+[`eventemitter`]: #eventemitter
 [`event`]: #event
 [`events`]: #events
 [`coreevent`]: #coreevent
 [`coreeventtype`]: #coreeventtype
 [`coreeventphase`]: #coreeventphase
-[`eventsystem.register`]: #register

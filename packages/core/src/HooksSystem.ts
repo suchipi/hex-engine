@@ -5,7 +5,7 @@ import {
   Entity as EntityInterface,
 } from "./Interface";
 import instantiate from "./instantiate";
-import { CoreEventPhase, CoreEventType, events } from "./EventSystem";
+import { CoreEventPhase, CoreEventType, events } from "./CoreEvents";
 
 /**
  * The hooks system used by Hex Engine to associate hook functions

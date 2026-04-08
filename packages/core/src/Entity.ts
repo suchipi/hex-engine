@@ -4,7 +4,7 @@ import {
 } from "./Interface";
 import instantiate from "./instantiate";
 import { StorageForUseDestroy } from "./Hooks/useDestroy";
-import { CoreEventPhase, CoreEventType, events } from "./EventSystem";
+import { CoreEventPhase, CoreEventType, events } from "./CoreEvents";
 
 function destroy(entity: Entity) {
   if (entity._isDestroying) return;

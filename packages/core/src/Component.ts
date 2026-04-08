@@ -3,7 +3,7 @@ import {
   Entity as EntityInterface,
 } from "./Interface";
 import { StorageForUseEnableDisable } from "./Hooks/useEnableDisable";
-import { CoreEventPhase, CoreEventType, events } from "./EventSystem";
+import { CoreEventPhase, CoreEventType, events } from "./CoreEvents";
 
 export default class Component implements ComponentInterface {
   _kind: "component" = "component";

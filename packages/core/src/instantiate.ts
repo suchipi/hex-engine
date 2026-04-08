@@ -6,7 +6,7 @@ import {
 } from "./Interface";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import proxyProperties from "./proxyProperties";
-import { CoreEventPhase, CoreEventType, events } from "./EventSystem";
+import { CoreEventPhase, CoreEventType, events } from "./CoreEvents";
 
 /**
  * Internal Component instantiation function. Takes care of

@@ -1,4 +1,4 @@
-import { CoreEventPhase, CoreEventType, events } from "../EventSystem";
+import { CoreEventPhase, CoreEventType, events } from "../CoreEvents";
 import instantiate from "../instantiate";
 import { Component } from "../Interface";
 import useRootEntity from "./useRootEntity";
