@@ -271,6 +271,110 @@ Disable this Component.
 
 Use the [`useEnableDisable`] hook to specify what happens when a [`Component`] is enabled or disabled.
 
+### IDisposable
+
+> Available since version: UNRELEASED
+
+```ts
+interface IDisposable {
+  dispose: () => void;
+  [Symbol.dispose]: () => void;
+}
+```
+
+```ts
+import { IDisposable } from "@hex-engine/core";
+```
+
+A generic interface for an object with a `dispose` and `[Symbol.dispose]` method.
+
+> NOTE: `@hex-engine/core` includes a polyfill for `Symbol.dispose`.
+
+`@hex-engine/core` exports a class called [`Disposable`] which implements this interface.
+
+### CoreEvent
+
+> Available since version: UNRELEASED
+
+`type CoreEvent = { ... } | { ... } | ...`
+
+```ts
+import { CoreEvent } from "@hex-engine/core";
+```
+
+The type used as the [`Event` type parameter][`event`] for the [`EventSystem`] instance named [`events`], which emits events when various engine-level actions occur, such as [`Entity`] and [`Component`] creation, Component [`added/removed`][`usenewcomponent`], Entity or Component [`enabled/disabled`][`useenabledisable`], etc.
+
+The full list of emitted events and their types is as follows. Event Types are members of the [`CoreEventType` enum][`coreeventtype`], and Event Phases are members of the [`CoreEventPhase` enum][`coreeventphase`]. Note that some event types are listed twice because their additional properties vary depending on the event phase (before or after).
+
+| Event Type                              | Event Phase                                       | Additional Properties                                                   |
+| --------------------------------------- | ------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------- |
+| `CoreEventType.ENTITY_CREATE`           | `CoreEventPhase.BEFORE`                           | `{ componentFactory: () => any; parent: Entity                          | null }`                 |
+| `CoreEventType.ENTITY_CREATE`           | `CoreEventPhase.AFTER`                            | `{ componentFactory: () => any; parent: Entity                          | null; entity: Entity }` |
+| `CoreEventType.ENTITY_DESTROY`          | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ entity: Entity }`                                                    |
+| `CoreEventType.ENTITY_ENABLE`           | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ entity: Entity }`                                                    |
+| `CoreEventType.ENTITY_DISABLE`          | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ entity: Entity }`                                                    |
+| `CoreEventType.ENTITY_ADD_CHILD`        | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ parent: Entity; child: Entity }                                      |
+| `CoreEventType.ENTITY_REMOVE_CHILD`     | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ parent: Entity; child: Entity }`                                     |
+| `CoreEventType.ENTITY_ADD_COMPONENT`    | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ entity: Entity; componentFactory: () => any; component: Component }  |
+| `CoreEventType.ENTITY_REMOVE_COMPONENT` | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ entity: Entity; component: Component }                               |
+| `CoreEventType.COMPONENT_CREATE`        | `CoreEventPhase.BEFORE`                           | `{ componentFactory: () => any; entity: Entity }                        |
+| `CoreEventType.COMPONENT_CREATE`        | `CoreEventPhase.AFTER`                            | `{ componentFactory: () => any; entity: Entity; component: Component; } |
+| `CoreEventType.COMPONENT_ENABLE`        | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ component: Component; }                                              |
+| `CoreEventType.COMPONENT_DISABLE`       | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ component: Component; }                                              |
+
+## Enums
+
+### CoreEventType
+
+> Available since version: UNRELEASED
+
+`enum CoreEventType { ... }`
+
+```ts
+import { CoreEventType } from "@hex-engine/core";
+```
+
+A string enum whose values are used in the discriminated union [`CoreEvent`].
+
+List of enum members:
+
+| Enum                                  | Value                     |
+| ------------------------------------- | ------------------------- |
+| CoreEventType.ENTITY_CREATE           | "ENTITY_CREATE"           |
+| CoreEventType.ENTITY_DESTROY          | "ENTITY_DESTROY"          |
+| CoreEventType.ENTITY_DISABLE          | "ENTITY_DISABLE"          |
+| CoreEventType.ENTITY_ENABLE           | "ENTITY_ENABLE"           |
+| CoreEventType.ENTITY_ADD_CHILD        | "ENTITY_ADD_CHILD"        |
+| CoreEventType.ENTITY_REMOVE_CHILD     | "ENTITY_REMOVE_CHILD"     |
+| CoreEventType.ENTITY_ADD_COMPONENT    | "ENTITY_ADD_COMPONENT"    |
+| CoreEventType.ENTITY_REMOVE_COMPONENT | "ENTITY_REMOVE_COMPONENT" |
+| CoreEventType.COMPONENT_CREATE        | "COMPONENT_CREATE"        |
+| CoreEventType.COMPONENT_ENABLE        | "COMPONENT_ENABLE"        |
+| CoreEventType.COMPONENT_DISABLE       | "COMPONENT_DISABLE"       |
+
+See [`CoreEvent`] for more information.
+
+### CoreEventPhase
+
+> Available since version: UNRELEASED
+
+`enum CoreEventPhase { ... }`
+
+```ts
+import { CoreEventPhase } from "@hex-engine/core";
+```
+
+A string enum whose values are used in the discriminated union [`CoreEvent`].
+
+List of enum members:
+
+| Enum                  | Value    |
+| --------------------- | -------- |
+| CoreEventPhase.BEFORE | "BEFORE" |
+| CoreEventPhase.AFTER  | "AFTER"  |
+
+See [`CoreEvent`] for more information.
+
 ## Functions
 
 ### createRoot
@@ -838,6 +942,107 @@ function MyComponent() {
 }
 ```
 
+## Classes
+
+### EventSystem
+
+> Available since version: UNRELEASED
+
+```ts
+import { EventSystem } from "@hex-engine/core";
+```
+
+An event emitter. The [`events`] export is an instance of this class.
+
+#### Type Parameters
+
+##### Event
+
+[`EventSystem`] is generic with one type parameter called "Event" which must be an object type assignable to:
+
+```ts
+type Event = {
+  eventType: string;
+  eventPhase: string;
+};
+```
+
+This object type should be a union of all possible events that this EventSystem instance can emit. For instance, a hypothetical EventSystem modeling a door might use this for its Events type parameter:
+
+```ts
+type Event =
+  | {
+      eventType: "OPEN";
+      eventPhase: "BEFORE" | "AFTER";
+    }
+  | {
+      eventType: "CLOSE";
+      eventPhase: "BEFORE" | "AFTER";
+    };
+```
+
+The [`events`] object, which is an instance of EventSystem, uses [`CoreEvent`] as its [type parameter for `Event`][`event`].
+
+#### Methods
+
+##### register
+
+> Available since version: UNRELEASED
+
+`register(eventType: string, eventPhase: string, listener: (event: any) => void): IDisposable`
+
+Register a listener function to be called when an event of the specified `eventType` occurs. `eventPhase` is usually "BEFORE" or "AFTER", ie. whether to call the listener right before the event or right after it.
+
+The specific types for `eventType`, `eventPhase`, and `event` will vary depending on what this [`EventSystem`] instance's [Events type parameter][`Events`] is. For [`events`], an instance of EventSystem exported by `@hex-engine/core`, they are [`CoreEventType`], [`CoreEventPhase`], and [`CoreEvent`], respectively.
+
+To unregister the event listener such that your function no longer gets called when those events occur, call the `dispose` or `[Symbol.dispose]` method on the [`IDisposable`] returned by `register`.
+
+##### emit
+
+> Available since version: UNRELEASED
+
+`emit(event: any): void`
+
+Calls all previously-registered listener functions for the specified event.
+
+The specific type for `event` will vary depending on what this [`EventSystem`] instance's [Events type parameter][`Events`] is. For [`events`], an instance of EventSystem exported by `@hex-engine/core`, the type parameter is [`CoreEventType`].
+
+### Disposable
+
+> Available since version: UNRELEASED
+
+```ts
+class Disposable implements IDisposable {
+  dispose: () => void;
+  [Symbol.dispose]!: () => void;
+
+  constructor(onDisposeCallback: () => void) {
+    this.dispose = onDisposeCallback;
+    this[Symbol.dispose] = onDisposeCallback;
+  }
+}
+```
+
+```ts
+import { Disposable } from "@hex-engine/core";
+```
+
+An object that represents some future cleanup or removal work to eventually be called. Call its `"dispose"` or `[Symbol.dispose]` property (they're the same) to run it.
+
+> NOTE: `@hex-engine/core` includes a polyfill for `Symbol.dispose`.
+
+The Disposable class implements the [`IDisposable`] interface.
+
+## Other Values
+
+### events
+
+An instance of [`EventSystem`] with [`CoreEvent`] as its [`Event`] type parameter.
+
+This EventSystem emits events when various engine-level actions occur, such as [`Entity`] and [`Component`] creation, Component [`added/removed`][`usenewcomponent`], Entity or Component [`enabled/disabled`][`useenabledisable`], etc. See [`CoreEvent`] for a full list.
+
+To register a function to be run when one of these events occurs, use
+
 [`@hex-engine/2d`]: /docs/api-2d
 [`@hex-engine/inspector`]: /docs/api-inspector
 [`entity`]: #entity
@@ -883,3 +1088,12 @@ function MyComponent() {
 [`canvas`]: /docs/api-2d#canvas
 [`useupdate`]: /docs/api-2d#useupdate
 [`usedraw`]: /docs/api-2d#usedraw
+[`disposable`]: #disposable
+[`idisposable`]: #idisposable
+[`eventsystem`]: #eventsystem
+[`event`]: #event
+[`events`]: #events
+[`coreevent`]: #coreevent
+[`coreeventtype`]: #coreeventtype
+[`coreeventphase`]: #coreeventphase
+[`eventsystem.register`]: #register
