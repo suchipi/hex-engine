@@ -99,7 +99,7 @@ export type CoreEvent =
     };
 
 export class EventSystem<
-  Event extends { eventType: string; eventPhase: string } = CoreEvent
+  Event extends { eventType: string; eventPhase: string }
 > {
   listeners = new Map<
     Event["eventType"],
