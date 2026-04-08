@@ -6,11 +6,7 @@ import {
 } from "./Interface";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import proxyProperties from "./proxyProperties";
-import {
-  CoreEventPhase,
-  CoreEventType,
-  eventSystemSingleton,
-} from "./EventSystem";
+import { CoreEventPhase, CoreEventType, events } from "./EventSystem";
 
 /**
  * Internal Component instantiation function. Takes care of
@@ -33,7 +29,7 @@ export default function instantiate<T>(
   componentFunction: () => T,
   entity: EntityInterface
 ): T extends {} ? T & ComponentInterface : ComponentInterface {
-  eventSystemSingleton.emit({
+  events.emit({
     eventType: CoreEventType.COMPONENT_CREATE,
     eventPhase: CoreEventPhase.BEFORE,
     componentFactory: componentFunction,
@@ -63,7 +59,7 @@ export default function instantiate<T>(
     proxyProperties(ret, instance);
   }
 
-  eventSystemSingleton.emit({
+  events.emit({
     eventType: CoreEventType.COMPONENT_CREATE,
     eventPhase: CoreEventPhase.AFTER,
     componentFactory: componentFunction,

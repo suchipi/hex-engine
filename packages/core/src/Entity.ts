@@ -4,16 +4,12 @@ import {
 } from "./Interface";
 import instantiate from "./instantiate";
 import { StorageForUseDestroy } from "./Hooks/useDestroy";
-import {
-  CoreEventPhase,
-  CoreEventType,
-  eventSystemSingleton,
-} from "./EventSystem";
+import { CoreEventPhase, CoreEventType, events } from "./EventSystem";
 
 function destroy(entity: Entity) {
   if (entity._isDestroying) return;
 
-  eventSystemSingleton.emit({
+  events.emit({
     eventType: CoreEventType.ENTITY_DESTROY,
     eventPhase: CoreEventPhase.BEFORE,
     entity,
@@ -39,7 +35,7 @@ function destroy(entity: Entity) {
   entity._isDestroying = false;
   entity._isDestroyed = true;
 
-  eventSystemSingleton.emit({
+  events.emit({
     eventType: CoreEventType.ENTITY_DESTROY,
     eventPhase: CoreEventPhase.AFTER,
     entity,
@@ -47,7 +43,7 @@ function destroy(entity: Entity) {
 }
 
 function enable(entity: Entity) {
-  eventSystemSingleton.emit({
+  events.emit({
     eventType: CoreEventType.ENTITY_ENABLE,
     eventPhase: CoreEventPhase.BEFORE,
     entity,
@@ -62,7 +58,7 @@ function enable(entity: Entity) {
     enable(child);
   }
 
-  eventSystemSingleton.emit({
+  events.emit({
     eventType: CoreEventType.ENTITY_ENABLE,
     eventPhase: CoreEventPhase.AFTER,
     entity,
@@ -70,7 +66,7 @@ function enable(entity: Entity) {
 }
 
 function disable(entity: Entity) {
-  eventSystemSingleton.emit({
+  events.emit({
     eventType: CoreEventType.ENTITY_DISABLE,
     eventPhase: CoreEventPhase.BEFORE,
     entity,
@@ -85,7 +81,7 @@ function disable(entity: Entity) {
     disable(child);
   }
 
-  eventSystemSingleton.emit({
+  events.emit({
     eventType: CoreEventType.ENTITY_DISABLE,
     eventPhase: CoreEventPhase.AFTER,
     entity,
@@ -123,7 +119,7 @@ export default class Entity implements EntityInterface {
   ): Entity & {
     rootComponent: T extends {} ? ComponentInterface & T : ComponentInterface;
   } {
-    eventSystemSingleton.emit({
+    events.emit({
       eventType: CoreEventType.ENTITY_CREATE,
       eventPhase: CoreEventPhase.BEFORE,
       componentFactory,
@@ -142,7 +138,7 @@ export default class Entity implements EntityInterface {
     ent.rootComponent = component;
     ent.components.add(component);
 
-    eventSystemSingleton.emit({
+    events.emit({
       eventType: CoreEventType.ENTITY_CREATE,
       eventPhase: CoreEventPhase.AFTER,
       componentFactory,
@@ -183,7 +179,7 @@ export default class Entity implements EntityInterface {
   ): T extends {} ? T & ComponentInterface : ComponentInterface {
     const component = instantiate(componentFactory, this);
 
-    eventSystemSingleton.emit({
+    events.emit({
       eventType: CoreEventType.ENTITY_ADD_COMPONENT,
       eventPhase: CoreEventPhase.BEFORE,
       componentFactory,
@@ -193,7 +189,7 @@ export default class Entity implements EntityInterface {
 
     this.components.add(component);
 
-    eventSystemSingleton.emit({
+    events.emit({
       eventType: CoreEventType.ENTITY_ADD_COMPONENT,
       eventPhase: CoreEventPhase.AFTER,
       componentFactory,
@@ -207,7 +203,7 @@ export default class Entity implements EntityInterface {
   removeComponent(componentInstance: ComponentInterface): void {
     if (!this.components.has(componentInstance)) return;
 
-    eventSystemSingleton.emit({
+    events.emit({
       eventType: CoreEventType.ENTITY_REMOVE_COMPONENT,
       eventPhase: CoreEventPhase.BEFORE,
       component: componentInstance,
@@ -217,7 +213,7 @@ export default class Entity implements EntityInterface {
     componentInstance.disable();
     this.components.delete(componentInstance);
 
-    eventSystemSingleton.emit({
+    events.emit({
       eventType: CoreEventType.ENTITY_REMOVE_COMPONENT,
       eventPhase: CoreEventPhase.AFTER,
       component: componentInstance,
@@ -267,7 +263,7 @@ export default class Entity implements EntityInterface {
       );
     }
 
-    eventSystemSingleton.emit({
+    events.emit({
       eventType: CoreEventType.ENTITY_ADD_CHILD,
       eventPhase: CoreEventPhase.BEFORE,
       parent: this,
@@ -277,7 +273,7 @@ export default class Entity implements EntityInterface {
     this.children.add(child);
     child.parent = this;
 
-    eventSystemSingleton.emit({
+    events.emit({
       eventType: CoreEventType.ENTITY_ADD_CHILD,
       eventPhase: CoreEventPhase.AFTER,
       parent: this,
@@ -292,7 +288,7 @@ export default class Entity implements EntityInterface {
       );
     }
 
-    eventSystemSingleton.emit({
+    events.emit({
       eventType: CoreEventType.ENTITY_REMOVE_CHILD,
       eventPhase: CoreEventPhase.BEFORE,
       parent: this,
@@ -302,7 +298,7 @@ export default class Entity implements EntityInterface {
     this.children.delete(child);
     child.parent = null;
 
-    eventSystemSingleton.emit({
+    events.emit({
       eventType: CoreEventType.ENTITY_REMOVE_CHILD,
       eventPhase: CoreEventPhase.AFTER,
       parent: this,

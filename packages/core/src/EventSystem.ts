@@ -149,5 +149,4 @@ export class EventSystem<
   }
 }
 
-// Can be overridden to add different event types
-export let eventSystemSingleton = new EventSystem<CoreEvent>();
+export const events = new EventSystem<CoreEvent>();

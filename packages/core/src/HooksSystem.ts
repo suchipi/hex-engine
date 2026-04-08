@@ -5,11 +5,7 @@ import {
   Entity as EntityInterface,
 } from "./Interface";
 import instantiate from "./instantiate";
-import {
-  CoreEventPhase,
-  CoreEventType,
-  eventSystemSingleton,
-} from "./EventSystem";
+import { CoreEventPhase, CoreEventType, events } from "./EventSystem";
 
 /**
  * The hooks system used by Hex Engine to associate hook functions
@@ -28,7 +24,7 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
     ): T extends {} ? T & ComponentInterface : ComponentInterface => {
       const child = instantiate(componentFunction, instance.entity);
 
-      eventSystemSingleton.emit({
+      events.emit({
         eventType: CoreEventType.ENTITY_ADD_COMPONENT,
         eventPhase: CoreEventPhase.BEFORE,
         componentFactory: componentFunction,
@@ -38,7 +34,7 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
 
       instance.entity.components.add(child);
 
-      eventSystemSingleton.emit({
+      events.emit({
         eventType: CoreEventType.ENTITY_ADD_COMPONENT,
         eventPhase: CoreEventPhase.AFTER,
         componentFactory: componentFunction,

@@ -1,8 +1,4 @@
-import {
-  CoreEventPhase,
-  CoreEventType,
-  eventSystemSingleton,
-} from "../EventSystem";
+import { CoreEventPhase, CoreEventType, events } from "../EventSystem";
 import instantiate from "../instantiate";
 import { Component } from "../Interface";
 import useRootEntity from "./useRootEntity";
@@ -14,7 +10,7 @@ export default function useNewRootComponent<T>(
 
   const child = instantiate(componentFunction, rootEntity);
 
-  eventSystemSingleton.emit({
+  events.emit({
     eventType: CoreEventType.ENTITY_ADD_COMPONENT,
     eventPhase: CoreEventPhase.BEFORE,
     componentFactory: componentFunction,
@@ -24,7 +20,7 @@ export default function useNewRootComponent<T>(
 
   rootEntity.components.add(child);
 
-  eventSystemSingleton.emit({
+  events.emit({
     eventType: CoreEventType.ENTITY_ADD_COMPONENT,
     eventPhase: CoreEventPhase.AFTER,
     componentFactory: componentFunction,

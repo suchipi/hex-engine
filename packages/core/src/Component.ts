@@ -3,11 +3,7 @@ import {
   Entity as EntityInterface,
 } from "./Interface";
 import { StorageForUseEnableDisable } from "./Hooks/useEnableDisable";
-import {
-  CoreEventPhase,
-  CoreEventType,
-  eventSystemSingleton,
-} from "./EventSystem";
+import { CoreEventPhase, CoreEventType, events } from "./EventSystem";
 
 export default class Component implements ComponentInterface {
   _kind: "component" = "component";
@@ -39,7 +35,7 @@ export default class Component implements ComponentInterface {
   enable() {
     if (this._isEnabled || this._isEnabling) return;
 
-    eventSystemSingleton.emit({
+    events.emit({
       eventType: CoreEventType.COMPONENT_ENABLE,
       eventPhase: CoreEventPhase.BEFORE,
       component: this,
@@ -58,7 +54,7 @@ export default class Component implements ComponentInterface {
     this._isEnabling = false;
     this._isEnabled = true;
 
-    eventSystemSingleton.emit({
+    events.emit({
       eventType: CoreEventType.COMPONENT_ENABLE,
       eventPhase: CoreEventPhase.AFTER,
       component: this,
@@ -70,7 +66,7 @@ export default class Component implements ComponentInterface {
   disable() {
     if (!this._isEnabled || this._isDisabling) return;
 
-    eventSystemSingleton.emit({
+    events.emit({
       eventType: CoreEventType.COMPONENT_DISABLE,
       eventPhase: CoreEventPhase.BEFORE,
       component: this,
@@ -89,7 +85,7 @@ export default class Component implements ComponentInterface {
     this._isDisabling = false;
     this._isEnabled = false;
 
-    eventSystemSingleton.emit({
+    events.emit({
       eventType: CoreEventType.COMPONENT_DISABLE,
       eventPhase: CoreEventPhase.AFTER,
       component: this,
