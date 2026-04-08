@@ -188,6 +188,7 @@ export default class Entity implements EntityInterface {
       eventPhase: CoreEventPhase.BEFORE,
       componentFactory,
       entity: this,
+      component,
     });
 
     this.components.add(component);

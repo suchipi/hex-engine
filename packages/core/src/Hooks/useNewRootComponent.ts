@@ -19,6 +19,7 @@ export default function useNewRootComponent<T>(
     eventPhase: CoreEventPhase.BEFORE,
     componentFactory: componentFunction,
     entity: rootEntity,
+    component: child,
   });
 
   rootEntity.components.add(child);

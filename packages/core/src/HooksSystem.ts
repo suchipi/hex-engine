@@ -33,6 +33,7 @@ const HooksSystem = makeHooksSystem<ComponentInterface>()({
         eventPhase: CoreEventPhase.BEFORE,
         componentFactory: componentFunction,
         entity: instance.entity,
+        component: child,
       });
 
       instance.entity.components.add(child);

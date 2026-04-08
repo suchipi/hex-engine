@@ -63,13 +63,7 @@ export type CoreEvent =
     }
   | {
       eventType: CoreEventType.ENTITY_ADD_COMPONENT;
-      eventPhase: CoreEventPhase.BEFORE;
-      entity: Entity;
-      componentFactory: () => any;
-    }
-  | {
-      eventType: CoreEventType.ENTITY_ADD_COMPONENT;
-      eventPhase: CoreEventPhase.AFTER;
+      eventPhase: CoreEventPhase;
       entity: Entity;
       componentFactory: () => any;
       component: Component;
