@@ -79,7 +79,7 @@ export default class Polygon {
       .reduce((prev, curr) => prev.addMutate(curr), new Vector(0, 0))
       .divideMutate(points.length);
 
-    target._points = points.map((point) => centroid.subtract(point));
+    target._points = points.map((point) => point.subtract(centroid));
 
     const minX = target.points.reduce(
       (prev, point) => Math.min(point.x, prev),
