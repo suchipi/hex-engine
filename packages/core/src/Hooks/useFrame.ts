@@ -11,7 +11,10 @@ const { useCallbackAsCurrent } = HooksSystem.hooks;
  * If you are using `@hex-engine/2d`, you probably don't want to use this; use `useUpdate` or `useDraw` instead.
  * @param callback The function to be called once per frame.
  */
-export default function useFrame(callback: (delta: number) => void) {
+export default function useFrame(
+  callback: (delta: number) => void,
+  groupIndex: number = 0
+) {
   const root = useRootEntity();
   const runLoopApi = root.getComponent(RunLoop) || useNewRootComponent(RunLoop);
   const { addFrameCallback, removeFrameCallback } = runLoopApi;
@@ -20,10 +23,10 @@ export default function useFrame(callback: (delta: number) => void) {
 
   const { onDisabled, onEnabled } = useEnableDisable();
   onEnabled(() => {
-    addFrameCallback(wrappedCallback);
+    addFrameCallback(wrappedCallback, groupIndex);
   });
 
   onDisabled(() => {
-    removeFrameCallback(wrappedCallback);
+    removeFrameCallback(wrappedCallback, groupIndex);
   });
 }

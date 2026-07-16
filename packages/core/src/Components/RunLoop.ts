@@ -28,19 +28,24 @@ export default function RunLoop() {
   let frameNumber: number = 0;
   let frameRequest: number | null = null;
   let lastTimestamp: number | null = null;
-  let onFrameCallbacks: Set<(delta: number) => void> = new Set();
+  let orderedOnFrameCallbacks: Array<Set<(delta: number) => void>> = [];
   let isPaused = false;
 
   const { onEnabled, onDisabled } = useEnableDisable();
 
   function runFrameCallbacks(delta: number) {
     frameNumber++;
-    for (const onFrameCallback of onFrameCallbacks) {
-      try {
-        onFrameCallback(delta);
-      } catch (_err) {
-        const err = _err as any;
-        ErrorBoundary.runHandlers(ent, err);
+    for (const onFrameCallbacks of orderedOnFrameCallbacks) {
+      // In case of accidental holes, which are easy to introduce with an index-based API
+      if (onFrameCallbacks === undefined) continue;
+
+      for (const onFrameCallback of onFrameCallbacks) {
+        try {
+          onFrameCallback(delta);
+        } catch (_err) {
+          const err = _err as any;
+          ErrorBoundary.runHandlers(ent, err);
+        }
       }
     }
   }
@@ -99,7 +104,18 @@ export default function RunLoop() {
      * Adds a function that should be called every frame.
      * @param callback The function to call every frame.
      */
-    addFrameCallback(callback: (delta: number) => void) {
+    addFrameCallback(
+      callback: (delta: number) => void,
+      groupIndex: number = 0
+    ) {
+      let onFrameCallbacks: Set<(delta: number) => void>;
+      if (orderedOnFrameCallbacks[groupIndex]) {
+        onFrameCallbacks = orderedOnFrameCallbacks[groupIndex];
+      } else {
+        onFrameCallbacks = new Set();
+        orderedOnFrameCallbacks[groupIndex] = onFrameCallbacks;
+      }
+
       onFrameCallbacks.add(callback);
     },
     /**
@@ -107,7 +123,18 @@ export default function RunLoop() {
      * called every frame.
      * @param callback The function to no longer call every frame.
      */
-    removeFrameCallback(callback: (delta: number) => void) {
+    removeFrameCallback(
+      callback: (delta: number) => void,
+      groupIndex: number = 0
+    ) {
+      let onFrameCallbacks: Set<(delta: number) => void>;
+      if (orderedOnFrameCallbacks[groupIndex]) {
+        onFrameCallbacks = orderedOnFrameCallbacks[groupIndex];
+      } else {
+        onFrameCallbacks = new Set();
+        orderedOnFrameCallbacks[groupIndex] = onFrameCallbacks;
+      }
+
       onFrameCallbacks.delete(callback);
     },
 

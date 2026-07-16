@@ -11,6 +11,7 @@ import {
 } from "@hex-engine/core";
 import { useCanvasDrawOrderSort } from "./DrawOrder";
 import useContext from "../Hooks/useContext";
+import { USE_FRAME_GROUP_INDICES } from "../Hooks/USE_FRAME_GROUP_INDICES";
 
 type DrawCallback = (context: CanvasRenderingContext2D) => void;
 
@@ -95,5 +96,5 @@ export function DrawChildren({
     for (const component of components) {
       drawComponent(component);
     }
-  });
+  }, USE_FRAME_GROUP_INDICES.Draw);
 }

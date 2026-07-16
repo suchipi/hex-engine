@@ -9,6 +9,7 @@ import {
   useNewComponent,
   useNewRootComponent,
 } from "@hex-engine/core";
+import { USE_FRAME_GROUP_INDICES } from "./USE_FRAME_GROUP_INDICES";
 
 type UpdateCallback = (delta: number) => void;
 
@@ -46,7 +47,7 @@ function UpdateChildren() {
         }
       }
     }
-  });
+  }, USE_FRAME_GROUP_INDICES.Update);
 }
 
 /**

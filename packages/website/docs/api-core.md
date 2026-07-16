@@ -692,8 +692,9 @@ function MyComponent() {
 ### useFrame
 
 > Available since version: 0.0.0
+> `groupIndex` arg added in UNRELEASED
 
-`useFrame(frameCallback: (delta: number) => void): void`
+`useFrame(frameCallback: (delta: number) => void, groupIndex?: number): void`
 
 ```ts
 import { useFrame } from "@hex-engine/core";
@@ -714,6 +715,8 @@ function MyComponent() {
   });
 }
 ```
+
+`groupIndex` is a number which determines which "bucket" the frame callback will be placed in. All frame callbacks are called by bucket, starting with lower numbers. In `@hex-engine/2d`, a `groupIndex` of `1` is used for `useUpdate` calls, and a `groupIndex` of `2` is used for `useDraw` calls. `0` is reserved as unused in case the user needs to implement behavior that runs before all `useUpdate`/`useDraw` calls.
 
 ### useRootEntity
 
