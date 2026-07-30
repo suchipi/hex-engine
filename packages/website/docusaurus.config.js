@@ -47,15 +47,22 @@ module.exports = {
       ],
     },
 
-    algolia: {
-      appId: "Q9XGV9R56F",
-      apiKey: "3d7810edc3f8e62e8f4bd29c2a06a284",
-      indexName: "hex-engine",
-    },
-
     // meta tag
     image: "img/hex.png",
   },
+
+  themes: [
+    [
+      "@easyops-cn/docusaurus-search-local",
+      {
+        hashed: true,
+        indexDocs: true,
+        indexPages: true,
+        indexBlog: false,
+        docsRouteBasePath: "/docs",
+      },
+    ],
+  ],
 
   presets: [
     [
