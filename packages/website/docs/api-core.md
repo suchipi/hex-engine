@@ -306,21 +306,21 @@ The type used as the [`Event` type parameter][`event`] for the [`EventEmitter`] 
 
 The full list of emitted events and their types is as follows. Event Types are members of the [`CoreEventType` enum][`coreeventtype`], and Event Phases are members of the [`CoreEventPhase` enum][`coreeventphase`]. Note that some event types are listed twice because their additional properties vary depending on the event phase (before or after).
 
-| Event Type                              | Event Phase                                       | Additional Properties                                                   |
-| --------------------------------------- | ------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------- |
-| `CoreEventType.ENTITY_CREATE`           | `CoreEventPhase.BEFORE`                           | `{ componentFactory: () => any; parent: Entity                          | null }`                 |
-| `CoreEventType.ENTITY_CREATE`           | `CoreEventPhase.AFTER`                            | `{ componentFactory: () => any; parent: Entity                          | null; entity: Entity }` |
-| `CoreEventType.ENTITY_DESTROY`          | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ entity: Entity }`                                                    |
-| `CoreEventType.ENTITY_ENABLE`           | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ entity: Entity }`                                                    |
-| `CoreEventType.ENTITY_DISABLE`          | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ entity: Entity }`                                                    |
-| `CoreEventType.ENTITY_ADD_CHILD`        | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ parent: Entity; child: Entity }                                      |
-| `CoreEventType.ENTITY_REMOVE_CHILD`     | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ parent: Entity; child: Entity }`                                     |
-| `CoreEventType.ENTITY_ADD_COMPONENT`    | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ entity: Entity; componentFactory: () => any; component: Component }  |
-| `CoreEventType.ENTITY_REMOVE_COMPONENT` | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ entity: Entity; component: Component }                               |
-| `CoreEventType.COMPONENT_CREATE`        | `CoreEventPhase.BEFORE`                           | `{ componentFactory: () => any; entity: Entity }                        |
-| `CoreEventType.COMPONENT_CREATE`        | `CoreEventPhase.AFTER`                            | `{ componentFactory: () => any; entity: Entity; component: Component; } |
-| `CoreEventType.COMPONENT_ENABLE`        | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ component: Component; }                                              |
-| `CoreEventType.COMPONENT_DISABLE`       | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ component: Component; }                                              |
+| Event Type                              | Event Phase                                       | Additional Properties                                                     |
+| --------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------- |
+| `CoreEventType.ENTITY_CREATE`           | `CoreEventPhase.BEFORE`                           | `{ componentFactory: () => any; parent: Entity \| null }`                 |
+| `CoreEventType.ENTITY_CREATE`           | `CoreEventPhase.AFTER`                            | `{ componentFactory: () => any; parent: Entity \| null; entity: Entity }` |
+| `CoreEventType.ENTITY_DESTROY`          | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ entity: Entity }`                                                      |
+| `CoreEventType.ENTITY_ENABLE`           | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ entity: Entity }`                                                      |
+| `CoreEventType.ENTITY_DISABLE`          | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ entity: Entity }`                                                      |
+| `CoreEventType.ENTITY_ADD_CHILD`        | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ parent: Entity; child: Entity }`                                       |
+| `CoreEventType.ENTITY_REMOVE_CHILD`     | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ parent: Entity; child: Entity }`                                       |
+| `CoreEventType.ENTITY_ADD_COMPONENT`    | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ entity: Entity; componentFactory: () => any; component: Component }`   |
+| `CoreEventType.ENTITY_REMOVE_COMPONENT` | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ entity: Entity; component: Component }`                                |
+| `CoreEventType.COMPONENT_CREATE`        | `CoreEventPhase.BEFORE`                           | `{ componentFactory: () => any; entity: Entity }`                         |
+| `CoreEventType.COMPONENT_CREATE`        | `CoreEventPhase.AFTER`                            | `{ componentFactory: () => any; entity: Entity; component: Component; }`  |
+| `CoreEventType.COMPONENT_ENABLE`        | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ component: Component; }`                                               |
+| `CoreEventType.COMPONENT_DISABLE`       | `CoreEventPhase.BEFORE` or `CoreEventPhase.AFTER` | `{ component: Component; }`                                               |
 
 ## Enums
 
