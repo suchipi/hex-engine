@@ -9,8 +9,8 @@
     "build-no-docker": "npm install && npx docusaurus build"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.0.0",
-    "@docusaurus/preset-classic": "^3.0.0",
+    "@docusaurus/core": "^3.10.2",
+    "@docusaurus/preset-classic": "^3.10.2",
     "@mdx-js/react": "^3.0.1",
     "classnames": "^2.2.6",
     "dedent": "^0.7.0",
