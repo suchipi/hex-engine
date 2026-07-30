@@ -8,6 +8,7 @@ module.exports = {
   baseUrl: "/",
   favicon: "favicon.ico",
   trailingSlash: false,
+  onBrokenAnchors: "throw",
 
   organizationName: "suchipi",
   projectName: "hex-engine",
