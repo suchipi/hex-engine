@@ -33,7 +33,7 @@ import Root from "./Root";
 createRoot(Root);
 ```
 
-This code uses the [`createRoot`](/docs/api-core#createrootcomponentfunction-function) function to create the "root Entity". To define the behaviour of the root Entity, we pass in a Component function; in this case, `Root`.
+This code uses the [`createRoot`](/docs/api-core#createroot) function to create the "root Entity". To define the behaviour of the root Entity, we pass in a Component function; in this case, `Root`.
 
 To see what `Root` does, let's open up `src/Root.ts`.
 
@@ -83,9 +83,9 @@ import {
 
 First, we import a lot of stuff from [`@hex-engine/2d`](/docs/api-2d) that we're going to use:
 
-- [`useType`](/docs/api-core#usetypecomponentfunction-function-void) is a function we have to call inside every Component function we make.
-- [`useNewComponent`](/docs/api-core#usenewcomponentcomponentfunction-function-component) is a function we can call to add a new Component to the current Entity.
-- [`useChild`](/docs/api-core#usechildcomponentfunction-function-entity) is a function we can call to create a new Entity as a child of the current Entity.
+- [`useType`](/docs/api-core#usetype) is a function we have to call inside every Component function we make.
+- [`useNewComponent`](/docs/api-core#usenewcomponent) is a function we can call to add a new Component to the current Entity.
+- [`useChild`](/docs/api-core#usechild) is a function we can call to create a new Entity as a child of the current Entity.
 - [`Canvas`](/docs/api-2d#canvas) is a Component function exported by [`@hex-engine/2d`](/docs/api-2d) that renders children onto a HTML5 [Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) element.
 - [`Physics`](/docs/api-2d#physicsbody) is an Object with Component functions on it that make Entities behave like real physical objects.
 - [`Vector`](/docs/api-2d#vector) is a class that represents a 2D vector; either a point in space, a width and height, or a length and direction. It has an `x` property and a `y` property.

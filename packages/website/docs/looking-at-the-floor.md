@@ -51,8 +51,8 @@ import {
 
 First we import a bunch of stuff we're going to use:
 
-- [`useType`](/docs/api-core#usetypecomponentfunction-function-void) is a function we have to call inside every Component function we make.
-- [`useNewComponent`](/docs/api-core#usenewcomponentcomponentfunction-function-component) is a function we can call to add a new Component to the current Entity.
+- [`useType`](/docs/api-core#usetype) is a function we have to call inside every Component function we make.
+- [`useNewComponent`](/docs/api-core#usenewcomponent) is a function we can call to add a new Component to the current Entity.
 - [`Geometry`](/docs/api-2d#geometry) is a Component function that defines an Entity's shape and position in the world.
 - [`Polygon`](/docs/api-2d#polygon) is a class that can be used to represent a [polygon](https://en.wikipedia.org/wiki/Polygon).
 - [`Vector`](/docs/api-2d#vector) is a class that represents a 2D vector; either a point in space, a width and height, or a length and direction. It has an `x` property and a `y` property.
