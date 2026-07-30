@@ -10,6 +10,12 @@ module.exports = {
   trailingSlash: false,
   onBrokenAnchors: "throw",
 
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: "throw",
+    },
+  },
+
   organizationName: "suchipi",
   projectName: "hex-engine",
 
