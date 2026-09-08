@@ -232,7 +232,7 @@ test("Entity-relative positions account for rotation, scale, and origin", () => 
   expect(seen.rotated.x).toBeCloseTo(8, 10);
   expect(seen.rotated.y).toBeCloseTo(-20, 10);
   expect(seen.scaled).toEqual({ x: 10, y: 2 });
-  expect(seen.origined).toEqual({ x: 15, y: 1 });
+  expect(seen.origined).toEqual({ x: 25, y: 15 });
 });
 
 test("positions account for the canvas being displayed at a different size than its backing store", () => {
@@ -314,8 +314,8 @@ test("world positions undo whatever transform the canvas context was left in", (
   });
 });
 
-test("delta is measured from the previous event that Component processed", () => {
-  const deltas: Array<{ x: number; y: number }> = [];
+test("delta is measured from the previous event of the same type", () => {
+  const calls: Array<string> = [];
 
   startGame(() => {
     useChild(function Subject() {
@@ -324,11 +324,12 @@ test("delta is measured from the previous event that Component processed", () =>
       const mouse = useNewComponent(() =>
         LowLevelMouse({ positionsRelativeTo: "screen" })
       );
-      const record = (event: HexMouseEvent) => {
-        deltas.push(xy(event.delta));
+      const record = (name: string) => (event: HexMouseEvent) => {
+        const delta = xy(event.delta);
+        calls.push(`${name} ${delta.x},${delta.y}`);
       };
-      mouse.onMouseMove(record);
-      mouse.onMouseDown(record);
+      mouse.onMouseMove(record("move"));
+      mouse.onMouseDown(record("down"));
     });
   });
 
@@ -338,46 +339,52 @@ test("delta is measured from the previous event that Component processed", () =>
   step();
   mouseDown(35, 45);
   step();
+  mouseMove(40, 45);
+  step();
+  mouseDown(50, 45);
+  step();
 
-  expect(deltas).toEqual([
-    { x: 10, y: 20 },
-    { x: 20, y: 25 },
-    { x: 5, y: 0 },
+  expect(calls).toEqual([
+    "move 10,20",
+    "move 20,25",
+    "down 35,45",
+    // Measured from the move at (30, 45), not from the down at (35, 45).
+    "move 10,0",
+    "down 15,0",
   ]);
 });
 
-test("each LowLevelMouse Component tracks its own delta", () => {
+test("each LowLevelMouse Component tracks its own deltas", () => {
   const calls: Array<string> = [];
 
-  startGame(() => {
-    useChild(function Subject() {
-      useType(Subject);
+  const root = startGame(() => {
+    useChild(function First() {
+      useType(First);
 
-      const a = useNewComponent(() =>
+      useNewComponent(() =>
         LowLevelMouse({ positionsRelativeTo: "screen" })
-      );
-      const b = useNewComponent(() =>
-        LowLevelMouse({ positionsRelativeTo: "screen" })
-      );
-
-      a.onMouseMove((event) => calls.push(`a move ${xy(event.delta).x}`));
-      b.onMouseDown((event) => calls.push(`b down ${xy(event.delta).x}`));
+      ).onMouseMove((event) => calls.push(`first ${xy(event.delta).x}`));
     });
   });
 
-  mouseMove(50, 50);
-  step();
-  mouseMove(70, 50);
-  step();
-  mouseDown(70, 50);
+  mouseMove(50, 0);
   step();
 
-  // `b` never had a move callback, but it still processed the moves, so by the
-  // time it sees the down its own last position is already (70, 50).
-  expect(calls).toEqual(["a move 50", "a move 20", "b down 0"]);
+  root.createChild(function Second() {
+    useType(Second);
+
+    useNewComponent(() =>
+      LowLevelMouse({ positionsRelativeTo: "screen" })
+    ).onMouseMove((event) => calls.push(`second ${xy(event.delta).x}`));
+  });
+
+  mouseMove(70, 0);
+  step();
+
+  expect(calls).toEqual(["first 50", "first 20", "second 70"]);
 });
 
-test("only the last event of each type in a frame is delivered", () => {
+test("every event from a frame is delivered, in the order the browser produced them", () => {
   const calls: Array<string> = [];
 
   startGame(() => {
@@ -402,10 +409,18 @@ test("only the last event of each type in a frame is delivered", () => {
   mouseUp(34, 0);
   step();
 
-  expect(calls).toEqual(["move 30", "down 33", "up 34"]);
+  expect(calls).toEqual([
+    "move 10",
+    "move 20",
+    "move 30",
+    "down 31",
+    "up 32",
+    "down 33",
+    "up 34",
+  ]);
 });
 
-test("within a frame, events are delivered in the order move, enter, leave, down, up", () => {
+test("events within a frame are not reordered", () => {
   const calls: Array<string> = [];
 
   startGame(() => {
@@ -430,7 +445,7 @@ test("within a frame, events are delivered in the order move, enter, leave, down
   mouseMove(5, 5);
   step();
 
-  expect(calls).toEqual(["move", "canvasEnter", "canvasLeave", "down", "up"]);
+  expect(calls).toEqual(["up", "down", "canvasLeave", "canvasEnter", "move"]);
 });
 
 test("mouseover and mouseout drive onCanvasEnter and onCanvasLeave", () => {
@@ -590,7 +605,10 @@ test("touch events are reported as left-button down, move, and up", () => {
   touchEnd(70, 80);
   step();
 
+  // A touchstart reports where the touch landed before reporting the press, so
+  // that listeners which hit-test have a position to work from.
   expect(calls).toEqual([
+    "move 50,60 left=true",
     "down 50,60 left=true",
     "move 70,80 left=true",
     "up 70,80 left=true",
@@ -656,12 +674,21 @@ test("a disabled LowLevelMouse delivers no move, down, or up events", () => {
   step();
   expect(calls).toEqual(["move"]);
 
+  // Events that arrived before the component was disabled are dropped too,
+  // rather than waiting in the queue for it to come back.
   mouseMove(30, 30);
+  mouse.disable();
+  step();
+  mouse.enable();
+  step();
+  expect(calls).toEqual(["move"]);
+
+  mouseMove(40, 40);
   step();
   expect(calls).toEqual(["move", "move"]);
 });
 
-test("canvas enter and leave that arrive while disabled are delivered once re-enabled", () => {
+test("a disabled LowLevelMouse delivers no canvas enter or leave events", () => {
   const calls: Array<string> = [];
   let mouse!: ReturnType<typeof LowLevelMouse> & Component;
 
@@ -677,8 +704,6 @@ test("canvas enter and leave that arrive while disabled are delivered once re-en
     });
   });
 
-  // Known quirk: unbindListeners never removes the mouseover/mouseout
-  // listeners, so unlike move/down/up these keep queueing while disabled.
   mouse.disable();
   mouseOver(10, 10);
   mouseOut(20, 20);
@@ -687,7 +712,11 @@ test("canvas enter and leave that arrive while disabled are delivered once re-en
 
   mouse.enable();
   step();
-  expect(calls).toEqual(["enter", "leave"]);
+  expect(calls).toEqual([]);
+
+  mouseOver(30, 30);
+  step();
+  expect(calls).toEqual(["enter"]);
 });
 
 test("every LowLevelMouse in the Entity tree receives the same event", () => {

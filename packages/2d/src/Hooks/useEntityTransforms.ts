@@ -11,10 +11,13 @@ function getEntityTransformMatrix(entity: Entity, includeOrigin: boolean) {
   }
 
   matrix.translateMutate(geometry.position);
-  if (includeOrigin) {
-    matrix.translateMutate(geometry.origin);
-  }
   matrix.rotateMutate(geometry.rotation);
+  if (includeOrigin) {
+    // Must match the sign and ordering used by
+    // getEntityTransformMatrixForContext, or an Entity with a non-zero origin
+    // hit-tests somewhere other than where it draws.
+    matrix.translateMutate(-geometry.origin.x, -geometry.origin.y);
+  }
   matrix.scaleMutate(geometry.scale, new Vector(0, 0));
 
   return matrix;

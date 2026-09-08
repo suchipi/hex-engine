@@ -39,6 +39,8 @@ test("first-click handlers run once, synchronously, on the first mousedown", () 
   step();
   expect(calls).toEqual(["first", "second"]);
 
+  // Registering once the first click is already behind us runs the handler
+  // right away, rather than waiting for a click that will never be "first".
   root.createChild(function Late() {
     useType(Late);
 
@@ -47,8 +49,9 @@ test("first-click handlers run once, synchronously, on the first mousedown", () 
   });
 
   expect(late.firstClickHasHappened).toBe(true);
+  expect(calls).toEqual(["first", "second", "late"]);
 
   mouseDown(30, 30);
   step();
-  expect(calls).toEqual(["first", "second"]);
+  expect(calls).toEqual(["first", "second", "late"]);
 });

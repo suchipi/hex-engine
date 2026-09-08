@@ -18,6 +18,8 @@ import {
   mouseUp,
   startGame,
   step,
+  touchEnd,
+  touchStart,
   xy,
 } from "./mouseTestSetup";
 
@@ -151,6 +153,35 @@ test("onEnter and onLeave are edge-triggered, while onMove is not", () => {
   ]);
 });
 
+test("isInsideBounds is already up to date inside onEnter and onLeave", () => {
+  const seen: Array<string> = [];
+  let mouse!: MouseApi;
+
+  startGame(() => {
+    useChild(function Subject() {
+      useType(Subject);
+
+      useNewComponent(() =>
+        Geometry({
+          shape: Polygon.rectangle(40, 40),
+          position: new Vector(100, 100),
+        })
+      );
+
+      mouse = useNewComponent(Mouse);
+      mouse.onEnter(() => seen.push(`enter ${mouse.isInsideBounds}`));
+      mouse.onLeave(() => seen.push(`leave ${mouse.isInsideBounds}`));
+    });
+  });
+
+  mouseMove(100, 100);
+  step();
+  mouseMove(300, 300);
+  step();
+
+  expect(seen).toEqual(["enter true", "leave false"]);
+});
+
 test("the cursor leaving the canvas does not count as leaving the Entity", () => {
   const { mouse, calls } = startWithOneBox({ position: new Vector(100, 100) });
 
@@ -244,7 +275,7 @@ test("hit testing accounts for ancestor Entities' transforms", () => {
   expect(kid.isInsideBounds).toBe(false);
 });
 
-test("origin shifts the hit box along with the Entity's world position", () => {
+test("origin shifts the hit box to where the Entity draws", () => {
   const { mouse } = startWithOneBox({
     position: new Vector(100, 100),
     origin: new Vector(5, 7),
@@ -256,11 +287,14 @@ test("origin shifts the hit box along with the Entity's world position", () => {
     return mouse.isInsideBounds;
   };
 
-  expect(insideAt(105, 107)).toBe(true);
-  expect(insideAt(124, 107)).toBe(true);
-  expect(insideAt(126, 107)).toBe(false);
-  expect(insideAt(86, 107)).toBe(true);
-  expect(insideAt(84, 107)).toBe(false);
+  // origin moves the shape by -origin, so the box is centered on (95, 93).
+  expect(insideAt(95, 93)).toBe(true);
+  expect(insideAt(114, 93)).toBe(true);
+  expect(insideAt(116, 93)).toBe(false);
+  expect(insideAt(76, 93)).toBe(true);
+  expect(insideAt(74, 93)).toBe(false);
+  expect(insideAt(95, 112)).toBe(true);
+  expect(insideAt(95, 114)).toBe(false);
 });
 
 test("onDown fires only for the left button, and only inside bounds", () => {
@@ -404,22 +438,44 @@ test("isPressing flags track each button separately", () => {
   expect(pressing()).toEqual({ left: false, right: false, middle: false });
 });
 
-test("a press that lands in the same frame as the move that entered the bounds is ignored", () => {
+test("a press is handled after the move that entered the bounds in the same frame", () => {
   const { calls } = startWithOneBox({ position: new Vector(100, 100) });
 
-  // Mouse's own LowLevelMouse updates before the one inside MousePosition, so
-  // onDown still sees the previous frame's isInsideBounds.
   mouseMove(100, 100);
   mouseDown(100, 100, 0);
   step();
-  expect(calls).toEqual(["box move", "box enter"]);
+  expect(calls).toEqual(["box move", "box enter", "box down"]);
 
   mouseUp(100, 100, 0);
   step();
-  expect(calls).toEqual(["box move", "box enter", "box up"]);
+  expect(calls).toEqual([
+    "box move",
+    "box enter",
+    "box down",
+    "box click",
+    "box up",
+  ]);
 });
 
-test("bounds follow the Entity when it moves under a stationary cursor, without firing enter or leave", () => {
+test("a tap presses and clicks the Entity it landed on", () => {
+  const { calls } = startWithOneBox({ position: new Vector(100, 100) });
+
+  touchStart(100, 100);
+  step();
+  expect(calls).toEqual(["box move", "box enter", "box down"]);
+
+  touchEnd(100, 100);
+  step();
+  expect(calls).toEqual([
+    "box move",
+    "box enter",
+    "box down",
+    "box click",
+    "box up",
+  ]);
+});
+
+test("bounds follow the Entity when it moves under a stationary cursor", () => {
   const calls: Array<string> = [];
   let mouse!: MouseApi;
   let geometry!: ReturnType<typeof Geometry>;
@@ -457,7 +513,7 @@ test("bounds follow the Entity when it moves under a stationary cursor, without 
   expect(mouse.isInsideBounds).toBe(false);
   expect(xy(mouse.position)).toEqual({ x: 100, y: 0 });
 
-  expect(calls).toEqual(["move"]);
+  expect(calls).toEqual(["move", "enter", "leave"]);
 });
 
 test("a Mouse with no Geometry tracks position but is never inside bounds", () => {
@@ -531,13 +587,7 @@ test("a destroyed Entity's Mouse stops receiving events", () => {
   expect(calls).toEqual(["box move", "box enter"]);
 });
 
-// The following tests pin down hit-testing behavior that is arguably wrong, so
-// that a refactor cannot change it silently. `MousePosition.pointIsWithinBounds`
-// adds an Entity-local point to an Entity's world position as though the two
-// were in the same space, which only holds when the Entity is unrotated and
-// unscaled.
-
-test("known quirk: a scaled Entity's hit box is scaled twice", () => {
+test("hit testing accounts for scale", () => {
   const { mouse } = startWithOneBox({
     position: new Vector(200, 200),
     scale: new Vector(2, 2),
@@ -549,14 +599,15 @@ test("known quirk: a scaled Entity's hit box is scaled twice", () => {
     return mouse.isInsideBounds;
   };
 
-  // Drawn, the box spans x from 160 to 240. Hit testing instead spans 120 to 280.
+  // Doubling a 40x40 box centered on (200, 200) spans 160 to 240.
+  expect(insideAt(200, 200)).toBe(true);
   expect(insideAt(239, 200)).toBe(true);
-  expect(insideAt(260, 200)).toBe(true);
-  expect(insideAt(279, 200)).toBe(true);
-  expect(insideAt(281, 200)).toBe(false);
+  expect(insideAt(241, 200)).toBe(false);
+  expect(insideAt(200, 239)).toBe(true);
+  expect(insideAt(200, 241)).toBe(false);
 });
 
-test("known quirk: a rotated Entity's hit box is not rotated", () => {
+test("hit testing accounts for rotation", () => {
   const { mouse } = startWithOneBox({
     position: new Vector(200, 200),
     shape: Polygon.rectangle(40, 10),
@@ -569,13 +620,14 @@ test("known quirk: a rotated Entity's hit box is not rotated", () => {
     return mouse.isInsideBounds;
   };
 
-  // Drawn, the quarter-turned bar spans x from 195 to 205 and y from 180 to 220.
-  // Hit testing uses the unrotated span instead.
-  expect(insideAt(215, 200)).toBe(true);
-  expect(insideAt(200, 215)).toBe(false);
+  // A quarter turn puts the bar's long axis on y: x 195 to 205, y 180 to 220.
+  expect(insideAt(200, 215)).toBe(true);
+  expect(insideAt(200, 225)).toBe(false);
+  expect(insideAt(215, 200)).toBe(false);
+  expect(insideAt(203, 200)).toBe(true);
 });
 
-test("known quirk: bounds checks in one frame share a single cached hit test", () => {
+test("one Entity's bounds check does not affect another's in the same frame", () => {
   const insideAtWith = (extraBoxes: boolean) => {
     const calls: Array<string> = [];
     let scaled!: MouseApi;
@@ -596,15 +648,13 @@ test("known quirk: bounds checks in one frame share a single cached hit test", (
       });
     });
 
-    mouseMove(350, 100);
+    mouseMove(330, 100);
     step();
     const result = scaled.isInsideBounds;
     endGame();
     return result;
   };
 
-  // useEntitiesAtPoint caches one result per frame and ignores the point it is
-  // asked about, so an earlier Entity's differing query poisons the answer.
   expect(insideAtWith(false)).toBe(true);
-  expect(insideAtWith(true)).toBe(false);
+  expect(insideAtWith(true)).toBe(true);
 });

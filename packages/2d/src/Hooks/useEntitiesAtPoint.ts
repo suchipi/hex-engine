@@ -1,40 +1,8 @@
-import {
-  useType,
-  useRootEntity,
-  Entity,
-  useNewRootComponent,
-} from "@hex-engine/core";
+import { useRootEntity, Entity } from "@hex-engine/core";
 import { Vector } from "../Models";
 import Canvas, { useCanvasDrawOrderSort } from "../Canvas";
 import { Geometry } from "../Components";
 import useEntityTransforms from "./useEntityTransforms";
-import useUpdate from "./useUpdate";
-
-/**
- * Caches the result of useEntitiesAtPoint each frame, for the duration of
- * that frame, so that we don't have to calculate the result of useEntitiesAtPoint
- * every frame. This saves a lot of runtime when there are many entities onscreen.
- */
-function CacheForUseEntitiesAtPoint() {
-  useType(CacheForUseEntitiesAtPoint);
-
-  const result: {
-    valid: boolean;
-    ents: Array<Entity>;
-  } = {
-    valid: false,
-    ents: [],
-  };
-
-  useUpdate(() => {
-    // Invalidate cache every frame
-    result.valid = false;
-  });
-
-  return {
-    result,
-  };
-}
 
 /**
  * Get all the entities at the given world position,
@@ -43,13 +11,6 @@ function CacheForUseEntitiesAtPoint() {
  */
 export default function useEntitiesAtPoint(worldPos: Vector): Array<Entity> {
   const rootEnt = useRootEntity();
-  const cache =
-    rootEnt.getComponent(CacheForUseEntitiesAtPoint) ||
-    useNewRootComponent(CacheForUseEntitiesAtPoint);
-
-  if (cache.result.valid) {
-    return cache.result.ents;
-  }
 
   const rootsDescendants = rootEnt.descendants();
   const allEnts = [rootEnt, ...rootsDescendants];
@@ -64,8 +25,6 @@ export default function useEntitiesAtPoint(worldPos: Vector): Array<Entity> {
     return geometry.shape.containsPoint(transformedPos);
   });
   if (entsUnderCursor.length < 2) {
-    cache.result.ents = entsUnderCursor;
-    cache.result.valid = true;
     return entsUnderCursor;
   }
 
@@ -85,9 +44,6 @@ export default function useEntitiesAtPoint(worldPos: Vector): Array<Entity> {
       sortedEnts.push(ent);
     }
   }
-
-  cache.result.ents = sortedEnts;
-  cache.result.valid = true;
 
   return sortedEnts;
 }

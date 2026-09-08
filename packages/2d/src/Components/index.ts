@@ -15,7 +15,10 @@ import Image from "./Image";
 import ImageFilter from "./ImageFilter";
 import Keyboard from "./Keyboard";
 import Label from "./Label";
-import LowLevelMouse, { HexMouseEvent } from "./LowLevelMouse";
+import LowLevelMouse, {
+  HexMouseEvent,
+  HexMouseEventType /* @babel-remove-prev-node */,
+} from "./LowLevelMouse";
 import Mouse from "./Mouse";
 import * as Ogmo from "./Ogmo";
 import * as Physics from "./Physics";
@@ -48,6 +51,7 @@ export {
   Label,
   LowLevelMouse,
   HexMouseEvent,
+  HexMouseEventType /* @babel-remove-prev-node */,
   Mouse,
   Ogmo,
   Physics,

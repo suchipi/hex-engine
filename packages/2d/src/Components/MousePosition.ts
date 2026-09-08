@@ -5,7 +5,7 @@ import {
   useEntity,
   Entity,
 } from "@hex-engine/core";
-import { useEntitiesAtPoint, useUpdate } from "../Hooks";
+import { useEntitiesAtPoint, useEntityTransforms, useUpdate } from "../Hooks";
 import LowLevelMouse, { HexMouseEvent } from "./LowLevelMouse";
 import Geometry from "./Geometry";
 import { Vector } from "../Models";
@@ -21,10 +21,14 @@ export default function MousePosition({
 } = {}) {
   useType(MousePosition);
 
+  const transforms = useEntityTransforms();
+
   function pointIsWithinBounds(localPoint: Vector) {
     if (!geometry) return false;
 
-    const worldPoint = geometry.worldPosition().addMutate(localPoint);
+    const worldPoint = transforms
+      .matrixForWorldPosition()
+      .transformPoint(localPoint);
     return useEntitiesAtPoint(worldPoint)[0] === entity;
   }
 
@@ -34,28 +38,46 @@ export default function MousePosition({
     onLeaveCallbacks: new Set<Callback>(),
   };
 
-  const { onMouseMove } = useNewComponent(LowLevelMouse);
+  const lowLevelMouse = useNewComponent(LowLevelMouse);
 
   let isInsideBounds = false;
   const position = new Vector(Infinity, Infinity);
 
-  function handleEvent(event: HexMouseEvent) {
-    position.mutateInto(event.pos);
-
-    storage.onMoveCallbacks.forEach((callback) => callback(event));
-
+  function updateBounds(event: HexMouseEvent) {
     if (pointIsWithinBounds(event.pos)) {
       if (!isInsideBounds) {
+        isInsideBounds = true;
         storage.onEnterCallbacks.forEach((callback) => callback(event));
       }
-      isInsideBounds = true;
     } else if (isInsideBounds) {
-      storage.onLeaveCallbacks.forEach((callback) => callback(event));
       isInsideBounds = false;
+      storage.onLeaveCallbacks.forEach((callback) => callback(event));
     }
   }
 
-  onMouseMove(handleEvent);
+  // The Entity can move out from under (or in under) a stationary cursor, and
+  // there is no mouse event to hand to onEnter/onLeave when it does.
+  const entityMovedEvent = new HexMouseEvent(
+    new Vector(0, 0),
+    new Vector(0, 0),
+    { left: false, right: false, middle: false, mouse4: false, mouse5: false }
+  );
+
+  function handleEvent(event: HexMouseEvent) {
+    position.mutateInto(event.pos);
+
+    entityMovedEvent.buttons.left = event.buttons.left;
+    entityMovedEvent.buttons.right = event.buttons.right;
+    entityMovedEvent.buttons.middle = event.buttons.middle;
+    entityMovedEvent.buttons.mouse4 = event.buttons.mouse4;
+    entityMovedEvent.buttons.mouse5 = event.buttons.mouse5;
+
+    storage.onMoveCallbacks.forEach((callback) => callback(event));
+
+    updateBounds(event);
+  }
+
+  lowLevelMouse.onMouseMove(handleEvent);
 
   const callbackSetters = {
     onEnter(callback: Callback) {
@@ -70,19 +92,21 @@ export default function MousePosition({
   };
 
   if (geometry) {
-    // Handle the fact that isInsideBounds could change due to the entity moving
-    // underneath the cursor.
-    let lastEntPosition = geometry.position.clone();
+    const lastEntPosition = geometry.position.clone();
     useUpdate(() => {
       const thisEntPosition = geometry.position;
 
       if (!thisEntPosition.equals(lastEntPosition)) {
         const diff = thisEntPosition.subtract(lastEntPosition);
         position.subtractMutate(diff);
-
-        isInsideBounds = pointIsWithinBounds(position);
-
         lastEntPosition.mutateInto(thisEntPosition);
+
+        entityMovedEvent.type = "move";
+        entityMovedEvent.pos.mutateInto(position);
+        entityMovedEvent.delta.mutateInto(diff);
+        entityMovedEvent.delta.oppositeMutate();
+
+        updateBounds(entityMovedEvent);
       }
     });
   }
@@ -103,6 +127,18 @@ export default function MousePosition({
     },
     get onLeave() {
       return callbackSetters.onLeave;
+    },
+
+    /**
+     * Registered on the same LowLevelMouse this Component listens to, so that
+     * handlers run after isInsideBounds has been brought up to date for the
+     * frame.
+     */
+    get onMouseDown() {
+      return lowLevelMouse.onMouseDown;
+    },
+    get onMouseUp() {
+      return lowLevelMouse.onMouseUp;
     },
   };
 }

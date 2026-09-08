@@ -1087,6 +1087,8 @@ A Mouse event in Hex Engine.
 
 You will almost never construct this class manually; instead, an instance of it will be passed to listener functions you set up using the `Mouse` or `LowLevelMouse` components.
 
+> Each `LowLevelMouse` Component reuses a single instance of this class for every event it delivers, mutating it in place, so that moving the mouse does not allocate garbage on every frame. This means the object you were handed will have changed by the time the next event arrives. Do not hold onto it; copy whatever you need off of it instead.
+
 #### Properties
 
 ##### pos
@@ -1097,13 +1099,23 @@ You will almost never construct this class manually; instead, an instance of it 
 
 The position of the cursor, relative to the current Entity's origin.
 
+##### type
+
+> Available since version: 0.11.4
+
+`type: "move" | "down" | "up" | "canvasEnter" | "canvasLeave"`
+
+Which kind of event this instance is currently reporting.
+
 ##### delta
 
 > Available since version: 0.0.1
 
 `delta: Vector`
 
-The amount that the cursor has moved since the last frame.
+The amount that the cursor has moved since the last event of the same `type`.
+
+Each kind of event keeps its own delta, so pressing a button does not change what the next mouse movement measures itself against.
 
 ##### buttons
 
@@ -1801,7 +1813,7 @@ function Gamepad(
 import { Geometry } from "@hex-engine/2d";
 ```
 
-This Component provides information about the shape, position, rotation, and scale
+This Component provides information about the shape, position, rotation, origin, and scale
 of the current Entity. It is used by `useDraw` and `Physics.Body`, among other things.
 
 You should only have one `Geometry` component per `Entity`.
@@ -1840,6 +1852,18 @@ function Geometry(init: {
    * Available since version: 0.0.1
    */
   scale?: Vector | undefined;
+
+  /**
+   * The offset, from the center of `shape`, of the point that should sit at
+   * `position`. The Entity rotates about that point, so it acts as the Entity's
+   * pivot.
+   *
+   * If unspecified, it will default to 0, 0, which puts the center of `shape`
+   * at `position`.
+   *
+   * Available since version: 0.9.0
+   */
+  origin?: Vector | undefined;
 }): {
   /**
    * The shape that the current Entity is.
@@ -1872,8 +1896,19 @@ function Geometry(init: {
   scale: Vector;
 
   /**
+   * The offset, from the center of `shape`, of the point that sits at
+   * `position`. The Entity rotates about that point, so it acts as the Entity's
+   * pivot.
+   *
+   * Available since version: 0.9.0
+   */
+  origin: Vector;
+
+  /**
    * A helper function that calculates the position of the current Entity
    * relative to the position of the root Entity.
+   *
+   * This is where the center of `shape` ends up, so it accounts for `origin`.
    *
    * Available since version: 0.0.1
    */
@@ -2277,7 +2312,9 @@ function Mouse(options?: {
   position: Vector;
 
   /**
-   * Registers a function to be called when the mouse cursor enters the configured Entity's bounds.
+   * Registers a function to be called when the mouse cursor enters the configured
+   * Entity's bounds, whether because the cursor moved or because the Entity moved
+   * under the cursor.
    *
    * The function will be called with a `HexMouseEvent`.
    *
@@ -2296,7 +2333,9 @@ function Mouse(options?: {
   onMove: (callback: (event: HexMouseEvent) => void) => void;
 
   /**
-   * Registers a function to be called whenever the mouse cursor exits the configured Entity's bounds.
+   * Registers a function to be called whenever the mouse cursor exits the configured
+   * Entity's bounds, whether because the cursor moved or because the Entity moved out
+   * from under the cursor.
    *
    * The function will be called with a `HexMouseEvent`.
    *
@@ -2318,10 +2357,12 @@ function Mouse(options?: {
   onDown: (callback: (event: HexMouseEvent) => void) => void;
 
   /**
-   * Registers a function to be called whenever the _LEFT_ mouse button is released
-   * within the configured Entity's bounds.
+   * Registers a function to be called whenever the _LEFT_ mouse button is released,
+   * *even if the cursor is not within the Entity's bounds*. This is deliberate, so that
+   * a drag which started on this Entity can be finished off of it; use `onClick` if you
+   * want a press and a release that both landed within the bounds.
    *
-   * If you need an onDown onUp for a mouse button other than the left button, you will
+   * If you need an onUp for a mouse button other than the left button, you will
    * have to use the `LowLevelMouse` Component instead.
    *
    * The function will be called with a `HexMouseEvent`.
@@ -3817,12 +3858,15 @@ This component will check the root Entity for a Canvas.DrawOrder component, and 
 import { useFirstClick } from "@hex-engine/2d";
 ```
 
-`useFirstClick(handler: () => void): void`
+`useFirstClick(handler: () => void): { firstClickHasHappened: boolean }`
 
 This function will run the provided function the first time a mouse click occurs.
+If the first click has already happened, the function is run immediately.
 Note that it only works if there is at least one `Mouse` or `LowLevelMouse` Component
 loaded in your game when the first click occurs. To be on the safe side, you should
 probably also add a LowLevelMouse or Mouse Component to the Component that calls useFirstClick.
+
+The returned object has a `firstClickHasHappened` boolean on it, which you can read at any time.
 
 ### useFirstKey
 

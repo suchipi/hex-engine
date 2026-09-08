@@ -5,7 +5,7 @@ import {
   useEntity,
   Entity,
 } from "@hex-engine/core";
-import LowLevelMouse, { HexMouseEvent } from "./LowLevelMouse";
+import { HexMouseEvent } from "./LowLevelMouse";
 import MousePosition from "./MousePosition";
 import Geometry from "./Geometry";
 
@@ -49,10 +49,12 @@ export default function Mouse({
     onMiddleClickCallbacks: new Set<Callback>(),
   };
 
-  const { onMouseDown, onMouseUp } = useNewComponent(LowLevelMouse);
+  // Sharing MousePosition's LowLevelMouse rather than making our own is what
+  // lets a press be handled after the move that preceded it in the same frame.
   const mousePosition = useNewComponent(() =>
     MousePosition({ entity, geometry })
   );
+  const { onMouseDown, onMouseUp } = mousePosition;
 
   let pressingLeft = false;
   let pressingRight = false;
@@ -156,7 +158,8 @@ export default function Mouse({
     },
 
     /**
-     * Registers a function to be called when the mouse cursor enters the configured Entity's bounds.
+     * Registers a function to be called when the mouse cursor enters the configured Entity's bounds,
+     * whether because the cursor moved or because the Entity moved under the cursor.
      *
      * The function will be called with a `HexMouseEvent`.
      */
@@ -175,7 +178,8 @@ export default function Mouse({
     },
 
     /**
-     * Registers a function to be called whenever the mouse cursor exits the configured Entity's bounds.
+     * Registers a function to be called whenever the mouse cursor exits the configured Entity's bounds,
+     * whether because the cursor moved or because the Entity moved out from under the cursor.
      *
      * The function will be called with a `HexMouseEvent`.
      */
@@ -197,10 +201,12 @@ export default function Mouse({
     },
 
     /**
-     * Registers a function to be called whenever the _LEFT_ mouse button is released
-     * within the configured Entity's bounds.
+     * Registers a function to be called whenever the _LEFT_ mouse button is released,
+     * *even if the cursor is not within the Entity's bounds*. This is deliberate, so
+     * that a drag that starts on this Entity can be finished off of it; use `onClick`
+     * if you want a press and a release that both landed within the bounds.
      *
-     * If you need an onDown onUp for a mouse button other than the left button, you will
+     * If you need an onUp for a mouse button other than the left button, you will
      * have to use the `LowLevelMouse` Component instead.
      *
      * The function will be called with a `HexMouseEvent`.
