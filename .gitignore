@@ -3,3 +3,5 @@ dist
 .cache
 node_modules
 yarn-error.log
+
+.tmp
