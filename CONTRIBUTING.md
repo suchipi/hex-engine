@@ -71,7 +71,6 @@ This project is separated as multiple packages which you can find in the _packag
 | -------- | --------- |
 | `npm start`         | Builds all packages, watches them for changes, and rebuilds on change. Also, runs the sample game at port 8080, and the website at port 3000. |
 | `npm run watch`         | Same as `npm start`. |
-| `npm run clean`         | Cleans all package build artifacts. |
 | `npm run build`         | Builds all packages in a way that is suitable for production distribution. |
 | `npm run typecheck`     | Runs TypeScript across the repo. |
 | `npm run test-it`       | Runs [Test-It](https://github.com/suchipi/test-it) on the repo. |
