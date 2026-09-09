@@ -7,7 +7,7 @@ ALWAYS use the dedicated tools (Read, Edit, Write) instead of shell equivalents.
 - **Read files**: Use `Read`, NOT `cat`, `head`, `tail`, or `less`. (`head` and `tail` are approved in the allowlist but `Read` is preferred.)
 - **Search contents / files**: Use `grep`, `rg`, or `find` (all approved in the allowlist). Do NOT use `find` with `-exec` or `-delete` - those forms are too broad to trust unattended, and Claude Code forces a permission prompt for them regardless of the allowlist, so they will block until the user returns. Stick to plain, read-only `find` invocations.
 - **Edit files**: Use `Edit`, NOT `sed` or `awk`.
-- **Write files**: Use `Write`, NOT `echo >`, `cat <<EOF >`, or `tee`.
+- **Write files**: Use `Write`, NOT `echo >`, `cat <<EOF >`, `tee`, Python, or Node.
 
 ## Why
 
