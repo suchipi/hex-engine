@@ -719,6 +719,73 @@ test("a disabled LowLevelMouse delivers no canvas enter or leave events", () => 
   expect(calls).toEqual(["enter"]);
 });
 
+/**
+ * Counts what a scene adds to and removes from the canvas over its whole life,
+ * by spying on HTMLCanvasElement's own methods.
+ */
+function countCanvasListeners(scene: () => void) {
+  let added = 0;
+  let removed = 0;
+
+  const realAdd = HTMLCanvasElement.prototype.addEventListener;
+  const realRemove = HTMLCanvasElement.prototype.removeEventListener;
+
+  HTMLCanvasElement.prototype.addEventListener = function (
+    this: HTMLCanvasElement,
+    ...args: Parameters<typeof realAdd>
+  ) {
+    added++;
+    return realAdd.apply(this, args);
+  };
+  HTMLCanvasElement.prototype.removeEventListener = function (
+    this: HTMLCanvasElement,
+    ...args: Parameters<typeof realRemove>
+  ) {
+    removed++;
+    return realRemove.apply(this, args);
+  };
+
+  try {
+    startGame(scene);
+    endGame();
+  } finally {
+    HTMLCanvasElement.prototype.addEventListener = realAdd;
+    HTMLCanvasElement.prototype.removeEventListener = realRemove;
+  }
+
+  return { added, removed };
+}
+
+test("the canvas gets one listener per event type no matter how many Components listen", () => {
+  const subjects = (count: number) => () => {
+    for (let index = 0; index < count; index++) {
+      useChild(function Subject() {
+        useType(Subject);
+
+        useNewComponent(() =>
+          Geometry({
+            shape: Polygon.rectangle(40, 40),
+            position: new Vector(100, 100),
+          })
+        );
+        useNewComponent(LowLevelMouse);
+        useNewComponent(LowLevelMouse);
+      });
+    }
+  };
+
+  const one = countCanvasListeners(subjects(1));
+  const many = countCanvasListeners(subjects(50));
+
+  expect(many.added).toBe(one.added);
+  // The five mouse events and three touch events, plus the contextmenu
+  // listener Canvas adds for itself.
+  expect(many.added).toBe(9);
+  // Everything except Canvas's own contextmenu listener comes back off once the
+  // last LowLevelMouse goes away.
+  expect(many.removed).toBe(8);
+});
+
 test("every LowLevelMouse in the Entity tree receives the same event", () => {
   const calls: Array<string> = [];
 

@@ -2,6 +2,8 @@ import {
   useType,
   useEnableDisable,
   useCallbackAsCurrent,
+  useRootEntity,
+  useNewRootComponent,
 } from "@hex-engine/core";
 import { Vector } from "../Models";
 import { useContext, useUpdate, useEntityTransforms } from "../Hooks";
@@ -107,6 +109,162 @@ export function useFirstClick(handler: () => void) {
   };
 }
 
+/** The position and button state the browser reported for a pointer event. */
+type PointerEventData = {
+  clientX: number;
+  clientY: number;
+  buttons?: number;
+  button?: number;
+};
+
+type PointerEventHandler = (
+  type: HexMouseEventType,
+  data: PointerEventData
+) => void;
+
+/**
+ * Owns the canvas's mouse and touch listeners on behalf of every
+ * `LowLevelMouse` Component, so that the number of DOM listeners stays the same
+ * whether the game has one Component listening for the mouse or a thousand.
+ */
+function StorageForLowLevelMouse() {
+  useType(StorageForLowLevelMouse);
+
+  const canvas: HTMLCanvasElement = useContext().canvas;
+  const handlers = new Set<PointerEventHandler>();
+
+  function runAllHandlers(type: HexMouseEventType, data: PointerEventData) {
+    for (const handler of handlers) {
+      try {
+        handler(type, data);
+      } catch (err) {
+        console.error("Mouse event handler failed with error:", err);
+      }
+    }
+  }
+
+  const handleMouseMove = ({ clientX, clientY, buttons }: MouseEvent) => {
+    runAllHandlers("move", { clientX, clientY, buttons });
+  };
+
+  const handleMouseOver = ({ clientX, clientY, buttons }: MouseEvent) => {
+    runAllHandlers("canvasEnter", { clientX, clientY, buttons });
+  };
+
+  const handleMouseOut = ({ clientX, clientY, buttons }: MouseEvent) => {
+    runAllHandlers("canvasLeave", { clientX, clientY, buttons });
+  };
+
+  const handleMouseDown = ({ clientX, clientY, button }: MouseEvent) => {
+    runFirstClickHandlers();
+    runAllHandlers("down", { clientX, clientY, button });
+  };
+
+  const handleMouseUp = ({ clientX, clientY, button }: MouseEvent) => {
+    runAllHandlers("up", { clientX, clientY, button });
+  };
+
+  let isTouching = false;
+
+  const handleTouchStart = (ev: TouchEvent) => {
+    ev.preventDefault();
+
+    if (isTouching) return;
+
+    runFirstClickHandlers();
+
+    const touches = ev.touches;
+    if (touches.length < 1) return;
+    const { clientX, clientY } = touches[0];
+
+    runAllHandlers("move", { clientX, clientY, button: 0 });
+    runAllHandlers("down", { clientX, clientY, button: 0 });
+
+    isTouching = true;
+  };
+
+  const handleTouchMove = (ev: TouchEvent) => {
+    ev.preventDefault();
+
+    const touches = ev.touches;
+    if (touches.length < 1) return;
+    const { clientX, clientY } = touches[0];
+
+    runAllHandlers("move", { clientX, clientY, button: 0 });
+  };
+
+  const handleTouchEnd = (ev: TouchEvent) => {
+    ev.preventDefault();
+
+    if (!isTouching) return;
+
+    const touches = ev.changedTouches;
+    if (touches.length < 1) return;
+    const { clientX, clientY } = touches[0];
+
+    runAllHandlers("up", { clientX, clientY, button: 0 });
+
+    isTouching = false;
+  };
+
+  let bound = false;
+
+  function bindListeners() {
+    if (bound) return;
+
+    canvas.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("mousedown", handleMouseDown);
+    canvas.addEventListener("mouseup", handleMouseUp);
+    canvas.addEventListener("mouseover", handleMouseOver);
+    canvas.addEventListener("mouseout", handleMouseOut);
+    canvas.addEventListener("touchstart", handleTouchStart);
+    canvas.addEventListener("touchmove", handleTouchMove);
+    canvas.addEventListener("touchend", handleTouchEnd);
+
+    bound = true;
+  }
+
+  function unbindListeners() {
+    if (!bound) return;
+
+    canvas.removeEventListener("mousemove", handleMouseMove);
+    canvas.removeEventListener("mousedown", handleMouseDown);
+    canvas.removeEventListener("mouseup", handleMouseUp);
+    canvas.removeEventListener("mouseover", handleMouseOver);
+    canvas.removeEventListener("mouseout", handleMouseOut);
+    canvas.removeEventListener("touchstart", handleTouchStart);
+    canvas.removeEventListener("touchmove", handleTouchMove);
+    canvas.removeEventListener("touchend", handleTouchEnd);
+
+    bound = false;
+  }
+
+  const enableDisable = useEnableDisable();
+
+  enableDisable.onEnabled(() => {
+    if (handlers.size > 0) {
+      bindListeners();
+    }
+  });
+
+  enableDisable.onDisabled(unbindListeners);
+
+  return {
+    addHandler(handler: PointerEventHandler) {
+      handlers.add(handler);
+      if (enableDisable.isEnabled) {
+        bindListeners();
+      }
+    },
+    removeHandler(handler: PointerEventHandler) {
+      handlers.delete(handler);
+      if (handlers.size === 0) {
+        unbindListeners();
+      }
+    },
+  };
+}
+
 /**
  * A low-level Mouse Component. It supports mousemove, mousedown, and mouseup events.
  * For click events, information about whether the cursor is within an Entity's geometry,
@@ -120,13 +278,20 @@ export default function LowLevelMouse({
 } = {}) {
   useType(LowLevelMouse);
 
-  const storage = {
-    moveCallbacks: new Set<(event: HexMouseEvent) => void>(),
-    downCallbacks: new Set<(event: HexMouseEvent) => void>(),
-    upCallbacks: new Set<(event: HexMouseEvent) => void>(),
-    outCallbacks: new Set<(event: HexMouseEvent) => void>(),
-    overCallbacks: new Set<(event: HexMouseEvent) => void>(),
+  const callbacks: Record<
+    HexMouseEventType,
+    Set<(event: HexMouseEvent) => void>
+  > = {
+    move: new Set(),
+    down: new Set(),
+    up: new Set(),
+    canvasEnter: new Set(),
+    canvasLeave: new Set(),
   };
+
+  const sharedListeners =
+    useRootEntity().getComponent(StorageForLowLevelMouse) ||
+    useNewRootComponent(StorageForLowLevelMouse);
 
   const context = useContext();
   const canvas: HTMLCanvasElement = context.canvas;
@@ -177,6 +342,9 @@ export default function LowLevelMouse({
     canvasEnter: new Vector(0, 0),
     canvasLeave: new Vector(0, 0),
   };
+
+  // We re-use the same event and mutate it before every callback to avoid tons
+  // of GC allocations.
   const event = new HexMouseEvent(new Vector(0, 0), new Vector(0, 0), {
     left: false,
     right: false,
@@ -185,19 +353,10 @@ export default function LowLevelMouse({
     mouse5: false,
   });
 
-  function updateEvent({
-    type,
-    clientX,
-    clientY,
-    buttons = 0,
-    button,
-  }: {
-    type: HexMouseEventType;
-    clientX: number;
-    clientY: number;
-    buttons?: number;
-    button?: number;
-  }) {
+  function updateEvent(
+    type: HexMouseEventType,
+    { clientX, clientY, buttons = 0, button }: PointerEventData
+  ) {
     event.type = type;
     event.pos = translatePos(clientX, clientY);
 
@@ -215,99 +374,14 @@ export default function LowLevelMouse({
 
   let pendingEvents: Array<() => void> = [];
 
-  const handleMouseMove = ({ clientX, clientY, buttons }: MouseEvent) => {
+  // The position is translated when the event is delivered rather than when it
+  // arrives, because it depends on transforms that the frame in between can
+  // change.
+  const handlePointerEvent: PointerEventHandler = (type, data) => {
     pendingEvents.push(() => {
-      updateEvent({ type: "move", clientX, clientY, buttons });
-      storage.moveCallbacks.forEach((callback) => callback(event));
+      updateEvent(type, data);
+      callbacks[type].forEach((callback) => callback(event));
     });
-  };
-
-  const handleMouseOver = ({ clientX, clientY, buttons }: MouseEvent) => {
-    pendingEvents.push(() => {
-      updateEvent({ type: "canvasEnter", clientX, clientY, buttons });
-      storage.overCallbacks.forEach((callback) => callback(event));
-    });
-  };
-
-  const handleMouseOut = ({ clientX, clientY, buttons }: MouseEvent) => {
-    pendingEvents.push(() => {
-      updateEvent({ type: "canvasLeave", clientX, clientY, buttons });
-      storage.outCallbacks.forEach((callback) => callback(event));
-    });
-  };
-
-  const handleMouseDown = ({ clientX, clientY, button }: MouseEvent) => {
-    runFirstClickHandlers();
-
-    pendingEvents.push(() => {
-      updateEvent({ type: "down", clientX, clientY, button });
-      storage.downCallbacks.forEach((callback) => callback(event));
-    });
-  };
-
-  const handleMouseUp = ({ clientX, clientY, button }: MouseEvent) => {
-    pendingEvents.push(() => {
-      updateEvent({ type: "up", clientX, clientY, button });
-      storage.upCallbacks.forEach((callback) => callback(event));
-    });
-  };
-
-  let isTouching = false;
-  const handleTouchStart = (ev: TouchEvent) => {
-    ev.preventDefault();
-
-    if (isTouching) return;
-
-    runFirstClickHandlers();
-
-    const touches = ev.touches;
-    if (touches.length < 1) return;
-    const { clientX, clientY } = touches[0];
-    const button = 0;
-
-    // A touch has no cursor to have moved beforehand, so report where it landed
-    // before reporting the press. Listeners that care about what is under the
-    // cursor have nothing else to go on.
-    pendingEvents.push(() => {
-      updateEvent({ type: "move", clientX, clientY, button });
-      storage.moveCallbacks.forEach((callback) => callback(event));
-    });
-    pendingEvents.push(() => {
-      updateEvent({ type: "down", clientX, clientY, button });
-      storage.downCallbacks.forEach((callback) => callback(event));
-    });
-
-    isTouching = true;
-  };
-  const handleTouchMove = (ev: TouchEvent) => {
-    ev.preventDefault();
-
-    const touches = ev.touches;
-    if (touches.length < 1) return;
-    const { clientX, clientY } = touches[0];
-    const button = 0;
-
-    pendingEvents.push(() => {
-      updateEvent({ type: "move", clientX, clientY, button });
-      storage.moveCallbacks.forEach((callback) => callback(event));
-    });
-  };
-  const handleTouchEnd = (ev: TouchEvent) => {
-    ev.preventDefault();
-
-    if (!isTouching) return;
-
-    const touches = ev.changedTouches;
-    if (touches.length < 1) return;
-    const { clientX, clientY } = touches[0];
-    const button = 0;
-
-    pendingEvents.push(() => {
-      updateEvent({ type: "up", clientX, clientY, button });
-      storage.upCallbacks.forEach((callback) => callback(event));
-    });
-
-    isTouching = false;
   };
 
   useUpdate(() => {
@@ -322,67 +396,37 @@ export default function LowLevelMouse({
     }
   });
 
-  let bound = false;
-
-  function bindListeners(canvas: HTMLCanvasElement) {
-    if (bound) return;
-    canvas.addEventListener("mousemove", handleMouseMove);
-    canvas.addEventListener("mousedown", handleMouseDown);
-    canvas.addEventListener("mouseup", handleMouseUp);
-    canvas.addEventListener("mouseover", handleMouseOver);
-    canvas.addEventListener("mouseout", handleMouseOut);
-
-    canvas.addEventListener("touchstart", handleTouchStart);
-    canvas.addEventListener("touchmove", handleTouchMove);
-    canvas.addEventListener("touchend", handleTouchEnd);
-    bound = true;
-  }
-
-  function unbindListeners(canvas: HTMLCanvasElement) {
-    if (!bound) return;
-    canvas.removeEventListener("mousemove", handleMouseMove);
-    canvas.removeEventListener("mousedown", handleMouseDown);
-    canvas.removeEventListener("mouseup", handleMouseUp);
-    canvas.removeEventListener("mouseover", handleMouseOver);
-    canvas.removeEventListener("mouseout", handleMouseOut);
-
-    canvas.removeEventListener("touchstart", handleTouchStart);
-    canvas.removeEventListener("touchmove", handleTouchMove);
-    canvas.removeEventListener("touchend", handleTouchEnd);
-    bound = false;
-  }
-
   const { onEnabled, onDisabled } = useEnableDisable();
 
   onEnabled(() => {
-    if (canvas) bindListeners(canvas);
+    sharedListeners.addHandler(handlePointerEvent);
   });
 
   onDisabled(() => {
-    if (canvas) unbindListeners(canvas);
+    sharedListeners.removeHandler(handlePointerEvent);
     pendingEvents = [];
   });
 
   return {
     /** Registers the provided function to be called when the mouse cursor moves. */
     onMouseMove: (callback: (event: HexMouseEvent) => void) => {
-      storage.moveCallbacks.add(useCallbackAsCurrent(callback));
+      callbacks.move.add(useCallbackAsCurrent(callback));
     },
     /** Registers the provided function to be called when any button on the mouse is pressed down. */
     onMouseDown: (callback: (event: HexMouseEvent) => void) => {
-      storage.downCallbacks.add(useCallbackAsCurrent(callback));
+      callbacks.down.add(useCallbackAsCurrent(callback));
     },
     /** Registers the provided function to be called when any button on the mouse is released. */
     onMouseUp: (callback: (event: HexMouseEvent) => void) => {
-      storage.upCallbacks.add(useCallbackAsCurrent(callback));
+      callbacks.up.add(useCallbackAsCurrent(callback));
     },
     /** Registers the provided function to be called when the mouse exits the canvas. */
     onCanvasLeave: (callback: (event: HexMouseEvent) => void) => {
-      storage.outCallbacks.add(useCallbackAsCurrent(callback));
+      callbacks.canvasLeave.add(useCallbackAsCurrent(callback));
     },
     /** Registers the provided function to be called when the mouse enters the canvas. */
     onCanvasEnter: (callback: (event: HexMouseEvent) => void) => {
-      storage.overCallbacks.add(useCallbackAsCurrent(callback));
+      callbacks.canvasEnter.add(useCallbackAsCurrent(callback));
     },
   };
 }
