@@ -19,6 +19,8 @@ export default function Gamepad(
      *
      * If you do not provide a list of button names, then names for the buttons on a PlayStation controller
      * will be used, even if the connected controller is not a PlayStation controller.
+     *
+     * Any button your list does not cover is reported as `unknown button ${index}`.
      */
     buttonNames: Array<string>;
 
@@ -42,6 +44,9 @@ export default function Gamepad(
      *
      * Note that the way the Web Gamepad API works, controllers do not show as connected
      * until the user first presses a button.
+     *
+     * When a gamepad goes away, the sticks and pressed buttons are reset, so that
+     * a game is not left believing a button on it is still held.
      */
     present: false,
 
@@ -79,22 +84,32 @@ export default function Gamepad(
   };
 
   function buttonName(index: number): string {
-    return state.buttonNames[index] || "unknown button";
+    return state.buttonNames[index] || `unknown button ${index}`;
+  }
+
+  /** Treats a stick as centered until it has been pushed past the deadzone. */
+  function applyDeadzone(value: number): number {
+    return Math.abs(value) < state.deadzone ? 0 : value;
   }
 
   useUpdate(() => {
     const gamepad = navigator.getGamepads()[options.gamepadIndex ?? 0];
     if (gamepad == null) {
+      // Report the pad as at rest rather than leaving whatever it was doing
+      // when it went away, which would read as buttons held down forever.
       state.present = false;
+      state.pressed.clear();
+      state.leftStick.mutateInto({ x: 0, y: 0 });
+      state.rightStick.mutateInto({ x: 0, y: 0 });
       return;
     }
     state.present = true;
 
-    state.leftStick.x = gamepad.axes[0];
-    state.leftStick.y = gamepad.axes[1];
+    state.leftStick.x = applyDeadzone(gamepad.axes[0]);
+    state.leftStick.y = applyDeadzone(gamepad.axes[1]);
 
-    state.rightStick.x = gamepad.axes[2];
-    state.rightStick.y = gamepad.axes[3];
+    state.rightStick.x = applyDeadzone(gamepad.axes[2]);
+    state.rightStick.y = applyDeadzone(gamepad.axes[3]);
 
     gamepad.buttons.forEach((button, index) => {
       const name = buttonName(index);

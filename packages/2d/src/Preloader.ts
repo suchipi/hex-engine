@@ -14,14 +14,13 @@ class Preloader {
 
   /** Adds a new task to the Preloader. It will start running immediately. */
   addTask(task: Task) {
-    if (this._currentPromise) {
-      this._currentPromise = Promise.all([this._currentPromise, task()]).then(
-        disposeReturnValue
-      );
-      return this._currentPromise;
-    }
+    // Whatever came before has already been reported to whoever was waiting on
+    // it, so a failure there must not keep rejecting every later load as well.
+    const everythingSoFar = this._currentPromise.catch(() => {});
 
-    this._currentPromise = task().then(disposeReturnValue);
+    this._currentPromise = Promise.all([everythingSoFar, task()]).then(
+      disposeReturnValue
+    );
     return this._currentPromise;
   }
 

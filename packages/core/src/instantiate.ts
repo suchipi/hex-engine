@@ -9,6 +9,43 @@ import proxyProperties from "./proxyProperties";
 import { CoreEventPhase, CoreEventType, events } from "./CoreEvents";
 
 /**
+ * Property names that a Component instance needs for itself. proxyProperties
+ * would quietly redefine these to point at the Component function's return
+ * value, leaving the Component unable to be found, disabled, or linked to its
+ * Entity.
+ */
+const RESERVED_PROPERTY_NAMES = [
+  "_kind",
+  "type",
+  "entity",
+  "isEnabled",
+  "enable",
+  "disable",
+];
+
+function assertNoReservedProperties(
+  returnValue: unknown,
+  componentFunction: Function
+) {
+  if (typeof returnValue !== "object" || returnValue == null) return;
+
+  const conflicts = RESERVED_PROPERTY_NAMES.filter(
+    (name) => name in returnValue
+  );
+  if (conflicts.length === 0) return;
+
+  throw new Error(
+    `${
+      componentFunction.name || "A Component function"
+    } returned an object with ${conflicts
+      .map((name) => `'${name}'`)
+      .join(
+        ", "
+      )} on it, but those names are used by the Component itself. Please rename them.`
+  );
+}
+
+/**
  * Internal Component instantiation function. Takes care of
  * creating a Component instance for the provided Component function,
  * and adding it to the provided Entity.
@@ -40,7 +77,11 @@ export default function instantiate<T>(
 
   const ret: unknown = HooksSystem.withInstance(instance, () => {
     try {
-      return componentFunction();
+      const returnValue = componentFunction();
+      // Checked in here so that a bad return value is reported through the same
+      // path as any other mistake a Component function makes.
+      assertNoReservedProperties(returnValue, componentFunction);
+      return returnValue;
     } catch (_error) {
       const error = _error as any;
       Object.defineProperty(error, "message", {

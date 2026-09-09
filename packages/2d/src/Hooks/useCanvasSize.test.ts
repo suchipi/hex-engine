@@ -138,7 +138,7 @@ test("a disabled Component does not hear about resizes", () => {
   expect(calls).toEqual(["resized"]);
 });
 
-test("known quirk: resizing fires the handlers even when nothing actually changed", () => {
+test("resizing to the size it already had does not fire the handlers", () => {
   const { api } = startWatchingCanvasSize();
 
   const same = {
@@ -150,10 +150,13 @@ test("known quirk: resizing fires the handlers even when nothing actually change
 
   api.resizeCanvas(same);
   api.resizeCanvas(same);
+  expect(calls).toEqual([]);
 
-  // resizeCanvas has no equality check of its own, unlike the window-resize
-  // path, which only notifies when a dimension really moved.
-  expect(calls).toEqual(["resized", "resized"]);
+  api.resizeCanvas({ ...same, pixelWidth: 10 });
+  expect(calls).toEqual(["resized"]);
+
+  api.resizeCanvas({ ...same, pixelWidth: 10 });
+  expect(calls).toEqual(["resized"]);
 });
 
 test("known quirk: setting the canvas size directly leaves canvasSize stale", () => {

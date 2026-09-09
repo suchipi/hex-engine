@@ -64,10 +64,14 @@ function StorageForCanvasSize(): {
     context.canvas.style.height =
       typeof realHeight === "number" ? realHeight + "px" : realHeight;
 
+    const changed = size.x !== pixelWidth || size.y !== pixelHeight;
+
     size.x = pixelWidth;
     size.y = pixelHeight;
 
-    listeners.forEach((callback) => callback());
+    if (changed) {
+      listeners.forEach((callback) => callback());
+    }
   }
 
   return {

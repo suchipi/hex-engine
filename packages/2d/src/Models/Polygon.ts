@@ -32,7 +32,9 @@ export default class Polygon {
     return this._width;
   }
   set width(newWidth: number) {
-    if (Number.isNaN(newWidth)) return;
+    // A polygon with no width has nothing to scale, and dividing by it would
+    // turn every point into NaN.
+    if (Number.isNaN(newWidth) || this.width === 0) return;
 
     const newPoints = this.points.map((point) =>
       point.multiplyX(newWidth / this.width)
@@ -49,7 +51,9 @@ export default class Polygon {
     return this._height;
   }
   set height(newHeight: number) {
-    if (Number.isNaN(newHeight)) return;
+    // A polygon with no height has nothing to scale, and dividing by it would
+    // turn every point into NaN.
+    if (Number.isNaN(newHeight) || this.height === 0) return;
 
     const newPoints = this.points.map((point) =>
       point.multiplyY(newHeight / this.height)

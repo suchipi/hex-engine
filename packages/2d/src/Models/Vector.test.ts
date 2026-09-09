@@ -183,17 +183,20 @@ test("mutateInto copies values from any object with x and y", () => {
   expect(xy(vector)).toEqual({ x: 9, y: 8 });
 });
 
-test("known quirk: rotate turns counter-clockwise, the opposite of what it documents", () => {
+test("rotate turns the Vector clockwise and keeps its magnitude", () => {
   const rotated = new Vector(10, 0).rotate(Math.PI / 2);
 
-  // rotate works by adding to `angle`, which is measured in the y-up convention,
-  // so a positive amount moves a screen-space Vector counter-clockwise. Both
-  // `perpendicular` and Geometry's `rotation` go the other way.
   expect(rotated.x).toBeCloseTo(0);
-  expect(rotated.y).toBeCloseTo(-10);
+  expect(rotated.y).toBeCloseTo(10);
   expect(rotated.magnitude).toBeCloseTo(10);
+});
 
-  expect(new Vector(10, 0).perpendicular().y).toBe(10);
+test("rotate turns the same way as perpendicular does", () => {
+  const rotated = new Vector(10, 0).rotate(Math.PI / 2);
+  const perpendicular = new Vector(10, 0).perpendicular();
+
+  expect(rotated.x).toBeCloseTo(perpendicular.x);
+  expect(rotated.y).toBeCloseTo(perpendicular.y);
 });
 
 test("rotateMutate turns this Vector and returns it", () => {
@@ -217,24 +220,25 @@ test("dotProduct is negative when the Vectors point opposite ways", () => {
   expect(new Vector(1, 0).dotProduct(new Vector(1, 0))).toBe(1);
 });
 
-test("known quirk: normalizing a zero-length Vector produces NaN", () => {
+test("normalizing a zero-length Vector leaves it at zero", () => {
   const normalized = new Vector(0, 0).normalize();
 
-  // Normalizing divides by the magnitude, and nothing guards against that
-  // magnitude being zero.
-  expect(Number.isNaN(normalized.x)).toBe(true);
-  expect(Number.isNaN(normalized.y)).toBe(true);
+  // There is no direction to preserve, so the only sensible answer is the
+  // Vector it started with.
+  expect(xy(normalized)).toEqual({ x: 0, y: 0 });
+
+  const mutated = new Vector(0, 0);
+  expect(mutated.normalizeMutate()).toBe(mutated);
+  expect(xy(mutated)).toEqual({ x: 0, y: 0 });
 });
 
-test("known quirk: setting a magnitude on a zero-length Vector produces NaN", () => {
+test("setting a magnitude on a zero-length Vector leaves it at zero", () => {
   const vector = new Vector(0, 0);
 
-  // The magnitude setter normalizes first, so it inherits the same problem, and
-  // the Vector is left permanently unusable.
   vector.magnitude = 10;
 
-  expect(Number.isNaN(vector.x)).toBe(true);
-  expect(Number.isNaN(vector.y)).toBe(true);
+  expect(xy(vector)).toEqual({ x: 0, y: 0 });
+  expect(vector.magnitude).toBe(0);
 });
 
 test("known quirk: Vector.ZERO is a shared, writable Vector", () => {

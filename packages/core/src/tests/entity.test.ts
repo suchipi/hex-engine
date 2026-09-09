@@ -200,7 +200,7 @@ test("getComponent finds a Component by the type it registered", () => {
   expect(entity.hasComponent(Other)).toBe(false);
 });
 
-test("known quirk: with two Components of one type, getComponent returns the last added", () => {
+test("with two Components of one type, getComponent returns the first added", () => {
   let entity!: Entity;
 
   createRoot(function Root() {
@@ -213,9 +213,7 @@ test("known quirk: with two Components of one type, getComponent returns the las
     });
   });
 
-  // getComponent builds a Map keyed by type, so later entries win and the
-  // earlier Component is unreachable through the entity's public API.
-  expect(entity.getComponent(Marker)!.label).toBe("second");
+  expect(entity.getComponent(Marker)!.label).toBe("first");
 });
 
 test("a Component that never calls useType cannot be found", () => {

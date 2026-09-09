@@ -90,17 +90,17 @@ test("load resolves with nothing, whatever the tasks returned", async () => {
   expect(await Preloader.load()).toBe(undefined);
 });
 
-test("known quirk: one failed task poisons the Preloader for good", async () => {
+test("a failed task is reported once, and does not poison later loads", async () => {
   Preloader.addTask(() => Promise.reject(new Error("asset missing")));
 
   let firstError: Error | null = null;
   await Preloader.load().catch((error) => {
     firstError = error;
   });
-  expect(firstError).not.toBe(null);
+  expect((firstError as unknown as Error).message).toBe("asset missing");
 
-  // Nothing resets _currentPromise after a rejection, so every later load
-  // rejects too, even though the task that follows succeeds.
+  // Whoever was waiting has already heard about it, so the next batch of work
+  // gets to succeed on its own terms.
   Preloader.addTask(() => Promise.resolve());
 
   let secondError: Error | null = null;
@@ -108,6 +108,19 @@ test("known quirk: one failed task poisons the Preloader for good", async () => 
     secondError = error;
   });
 
-  expect(secondError).not.toBe(null);
-  expect((secondError as unknown as Error).message).toBe("asset missing");
+  expect(secondError).toBe(null);
+});
+
+test("a task added after a failure still reports its own failure", async () => {
+  Preloader.addTask(() => Promise.reject(new Error("first failure")));
+  await Preloader.load().catch(() => {});
+
+  Preloader.addTask(() => Promise.reject(new Error("second failure")));
+
+  let error: Error | null = null;
+  await Preloader.load().catch((caught) => {
+    error = caught;
+  });
+
+  expect((error as unknown as Error).message).toBe("second failure");
 });

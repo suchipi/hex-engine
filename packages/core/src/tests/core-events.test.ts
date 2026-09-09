@@ -245,22 +245,44 @@ test("a Component created from inside another emits its events nested", () => {
   expect(trace).toEqual([
     // The root Component starts building...
     "COMPONENT_CREATE BEFORE",
-    // ...and the one it creates finishes entirely inside it.
+    // ...and the one it creates finishes entirely inside it...
     "COMPONENT_CREATE BEFORE",
     "COMPONENT_CREATE AFTER",
     "ENTITY_ADD_COMPONENT BEFORE",
     "ENTITY_ADD_COMPONENT AFTER",
     "COMPONENT_CREATE AFTER",
+    // ...and only then is the root Component itself added.
+    "ENTITY_ADD_COMPONENT BEFORE",
+    "ENTITY_ADD_COMPONENT AFTER",
   ]);
 });
 
-test("known quirk: a root Component is added to its Entity without an ENTITY_ADD_COMPONENT event", () => {
+test("a root Component is announced with ENTITY_ADD_COMPONENT like any other", () => {
   watch(CoreEventType.ENTITY_ADD_COMPONENT);
 
   const root = createRoot(Plain);
 
-  // Entity._create adds the root Component by hand rather than going through
-  // addComponent, so listeners never hear about it.
   expect(root.components.has(root.rootComponent)).toBe(true);
-  expect(trace).toEqual([]);
+  expect(trace).toEqual([
+    "ENTITY_ADD_COMPONENT BEFORE",
+    "ENTITY_ADD_COMPONENT AFTER",
+  ]);
+});
+
+test("ENTITY_ADD_COMPONENT for a root Component carries that Component", () => {
+  let seen: unknown = null;
+
+  registrations.push(
+    events.register(
+      CoreEventType.ENTITY_ADD_COMPONENT,
+      CoreEventPhase.AFTER,
+      (event) => {
+        seen = event.component;
+      }
+    )
+  );
+
+  const root = createRoot(Plain);
+
+  expect(seen).toBe(root.rootComponent);
 });

@@ -42,6 +42,9 @@ export default class Component implements ComponentInterface {
     });
 
     this._isEnabling = true;
+    // Set before running the callbacks, so that a callback asking whether the
+    // Component is enabled is told about the state it is being notified of.
+    this._isEnabled = true;
 
     const storage = this.entity.getComponent(StorageForUseEnableDisable);
     if (storage) {
@@ -52,7 +55,6 @@ export default class Component implements ComponentInterface {
     }
 
     this._isEnabling = false;
-    this._isEnabled = true;
 
     events.emit({
       eventType: CoreEventType.COMPONENT_ENABLE,
@@ -73,6 +75,9 @@ export default class Component implements ComponentInterface {
     });
 
     this._isDisabling = true;
+    // Set before running the callbacks, so that a callback asking whether the
+    // Component is enabled is told about the state it is being notified of.
+    this._isEnabled = false;
 
     const storage = this.entity.getComponent(StorageForUseEnableDisable);
     if (storage) {
@@ -83,7 +88,6 @@ export default class Component implements ComponentInterface {
     }
 
     this._isDisabling = false;
-    this._isEnabled = false;
 
     events.emit({
       eventType: CoreEventType.COMPONENT_DISABLE,

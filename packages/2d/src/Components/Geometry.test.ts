@@ -78,22 +78,29 @@ test("a rotation of more than a full turn is wrapped back into range", () => {
   expect(geometry.rotation).toBeCloseTo(2, 10);
 });
 
-test("known quirk: a negative rotation is never wrapped", () => {
+test("a negative rotation is wrapped up into range", () => {
   const geometry = startWithGeometry({ rotation: -TAU * 3 });
 
-  // The wrap is guarded by `> TAU`, so anything below zero is stored as-is and
-  // can grow without bound as a game subtracts from it every frame.
-  expect(geometry.rotation).toBe(-TAU * 3);
+  expect(geometry.rotation).toBeCloseTo(0, 10);
 
-  geometry.rotation = -100;
-  expect(geometry.rotation).toBe(-100);
+  geometry.rotation = -Math.PI / 2;
+  expect(geometry.rotation).toBeCloseTo(TAU - Math.PI / 2, 10);
 });
 
-test("known quirk: a rotation of exactly one full turn is not wrapped to zero", () => {
+test("a rotation of exactly one full turn wraps to zero", () => {
   const geometry = startWithGeometry({ rotation: TAU });
 
-  // The guard is `>` rather than `>=`.
-  expect(geometry.rotation).toBe(TAU);
+  expect(geometry.rotation).toBe(0);
+});
+
+test("every rotation ends up somewhere in a single turn", () => {
+  const geometry = startWithGeometry();
+
+  for (const rotation of [-1000, -TAU, -0.5, 0, 0.5, TAU, 1000]) {
+    geometry.rotation = rotation;
+    expect(geometry.rotation).toBeGreaterThanOrEqual(0);
+    expect(geometry.rotation).toBeLessThan(TAU);
+  }
 });
 
 test("worldPosition is the position for an Entity with no parent", () => {

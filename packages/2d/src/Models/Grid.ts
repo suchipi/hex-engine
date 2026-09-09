@@ -33,7 +33,7 @@ export default class Grid<T> {
     } else {
       rows = (rowsOrRowsAndCols as Vector).x;
       columns = (rowsOrRowsAndCols as Vector).y;
-      defaultValue = maybeDefaultValue as T;
+      defaultValue = columnsOrDefaultValue as T;
     }
 
     this.data = Array(columns)
@@ -77,7 +77,9 @@ export default class Grid<T> {
       column > this.size.y - 1 ||
       column < 0
     ) {
-      return this.defaultValue;
+      throw new Error(
+        `Attempted to read data from grid of size '${this.size.x}, ${this.size.y}' at out-of-bounds index: ${row}, ${column}`
+      );
     } else {
       return this.data[column][row];
     }

@@ -10,6 +10,10 @@ export default class Vector {
   y: number;
 
   set magnitude(newValue: number) {
+    // A zero-length Vector has no direction to scale along, so leave it be
+    // rather than dividing by zero and turning it into NaN.
+    if (this.magnitude === 0) return;
+
     this.normalizeMutate();
     this.x *= newValue;
     this.y *= newValue;
@@ -292,17 +296,33 @@ export default class Vector {
     this.y = other.y;
   }
 
-  /** Create a new Vector by normalizing the magnitude of this one. */
+  /**
+   * Create a new Vector by normalizing the magnitude of this one.
+   *
+   * A zero-length Vector has no direction to keep, so it normalizes to itself.
+   */
   normalize(): Vector {
     const existingMagnitude = this.magnitude;
+    if (existingMagnitude === 0) {
+      return new Vector(0, 0);
+    }
+
     const normalizedX = this.x / existingMagnitude;
     const normalizedY = this.y / existingMagnitude;
     return new Vector(normalizedX, normalizedY);
   }
 
-  /** Mutate this point by normalizing its magnitude. */
+  /**
+   * Mutate this point by normalizing its magnitude.
+   *
+   * A zero-length Vector has no direction to keep, so it is left alone.
+   */
   normalizeMutate(): this {
     const existingMagnitude = this.magnitude;
+    if (existingMagnitude === 0) {
+      return this;
+    }
+
     const normalizedX = this.x / existingMagnitude;
     const normalizedY = this.y / existingMagnitude;
     this.x = normalizedX;
@@ -313,13 +333,15 @@ export default class Vector {
   /** Create a new Vector equivalent to this one but rotated by the specified amount (in radians), clockwise. */
   rotate(radians: number): Vector {
     const nextPoint = this.clone();
-    nextPoint.angle += radians;
+    nextPoint.rotateMutate(radians);
     return nextPoint;
   }
 
   /** Mutate this Vector by rotating it the specified amount (in radians), clockwise. */
   rotateMutate(radians: number): this {
-    this.angle += radians;
+    // `angle` is measured in the y-up convention, so going clockwise on a
+    // y-down canvas means subtracting.
+    this.angle -= radians;
     return this;
   }
 

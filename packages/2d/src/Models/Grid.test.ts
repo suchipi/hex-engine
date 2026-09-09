@@ -35,20 +35,20 @@ test("get and set also accept a Vector", () => {
   expect(grid.get(1, 2)).toBe(42);
 });
 
-test("get returns the default value for anything out of bounds", () => {
+test("get throws for anything out of bounds", () => {
   const grid = new Grid(2, 2, "empty");
 
-  expect(grid.get(-1, 0)).toBe("empty");
-  expect(grid.get(0, -1)).toBe("empty");
-  expect(grid.get(2, 0)).toBe("empty");
-  expect(grid.get(0, 2)).toBe("empty");
-  expect(grid.get(100, 100)).toBe("empty");
+  expect(() => grid.get(-1, 0)).toThrowError(/out-of-bounds index/);
+  expect(() => grid.get(0, -1)).toThrowError(/out-of-bounds index/);
+  expect(() => grid.get(2, 0)).toThrowError(/out-of-bounds index/);
+  expect(() => grid.get(0, 2)).toThrowError(/out-of-bounds index/);
+  expect(() => grid.get(100, 100)).toThrowError(/out-of-bounds index/);
 });
 
-test("known quirk: set throws out of bounds where get quietly returns the default", () => {
+test("get and set agree about what is out of bounds", () => {
   const grid = new Grid(2, 2, "empty");
 
-  expect(grid.get(5, 5)).toBe("empty");
+  expect(() => grid.get(5, 5)).toThrowError(/out-of-bounds index/);
   expect(() => grid.set(5, 5, "x")).toThrowError(/out-of-bounds index/);
 });
 
@@ -95,17 +95,14 @@ test("contents yields every cell with its row and column", () => {
   ]);
 });
 
-test("known quirk: the Vector constructor overload loses the default value", () => {
+test("the Vector constructor overload keeps the default value", () => {
   const grid = new Grid(new Vector(2, 3), "empty");
 
   expect(grid.size.x).toBe(2);
   expect(grid.size.y).toBe(3);
-
-  // The implementation reads the default value out of the third argument, which
-  // the two-argument overload never supplies, so it fills with undefined.
-  expect(grid.defaultValue).toBe(undefined as unknown as string);
-  expect(grid.get(0, 0)).toBe(undefined as unknown as string);
-  expect(grid.get(99, 99)).toBe(undefined as unknown as string);
+  expect(grid.defaultValue).toBe("empty");
+  expect(grid.get(0, 0)).toBe("empty");
+  expect(grid.get(1, 2)).toBe("empty");
 });
 
 test("cells hold whatever type they were given", () => {

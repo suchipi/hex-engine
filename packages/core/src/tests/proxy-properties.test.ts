@@ -1,5 +1,12 @@
 /// <reference types="@test-it/core/globals" />
-import { Component, Entity, createRoot, useNewComponent, useType } from "..";
+import {
+  Component,
+  Entity,
+  ErrorBoundary,
+  createRoot,
+  useNewComponent,
+  useType,
+} from "..";
 
 /** Builds a Component whose function returns `makeReturnValue()`, and hands back both halves. */
 function componentReturning<T>(makeReturnValue: () => T) {
@@ -119,61 +126,93 @@ test("known quirk: properties added after the Component function returns are not
   expect(component.added).toBe(undefined);
 });
 
-test("known quirk: returning a `type` property makes the Component unfindable", () => {
-  let entity!: Entity;
+/** Builds a Component returning `makeReturnValue()` and reports the error it caused. */
+function errorFromReturning(makeReturnValue: () => unknown): string {
+  let message = "";
 
   createRoot(function Root() {
     useType(Root);
 
-    entity = useNewComponent(function Subject() {
+    useNewComponent(function ErrorReporter() {
+      useType(ErrorReporter);
+      return ErrorBoundary((error) => {
+        message = error.message;
+      });
+    });
+
+    useNewComponent(function Subject() {
       useType(Subject);
-      return { type: "not a component function" };
-    }).entity;
-  });
-
-  // useType set component.type, and then proxyProperties redefined the same
-  // property to forward to the returned object, so getComponent cannot see it.
-  expect(entity.hasComponent(function Subject() {})).toBe(false);
-  expect(
-    [...entity.components].some((component) => component.type === null)
-  ).toBe(false);
-  expect([...entity.components].map((component) => component.type)).toContain(
-    "not a component function"
-  );
-});
-
-test("known quirk: returning an `enable` property shadows the Component's own", () => {
-  const calls: Array<string> = [];
-
-  const { component } = componentReturning(() => ({
-    enable: () => calls.push("mine"),
-  }));
-
-  component.enable();
-
-  // Component.prototype.enable is shadowed by an own accessor on the instance.
-  expect(calls).toEqual(["mine"]);
-});
-
-test("known quirk: returning an `entity` property breaks the Component's link to its Entity", () => {
-  let component!: Component;
-  let realEntity!: Entity;
-
-  createRoot(function Root() {
-    useType(Root);
-
-    realEntity = useNewComponent(function Holder() {
-      useType(Holder);
-    }).entity;
-
-    component = useNewComponent(function Subject() {
-      useType(Subject);
-      return { entity: "clobbered" };
+      return makeReturnValue();
     });
   });
 
-  expect(realEntity.components.has(component)).toBe(true);
-  expect(component.entity).toBe("clobbered" as unknown as Entity);
+  return message;
+}
+
+test("returning a property the Component needs for itself is an error", () => {
+  for (const name of [
+    "_kind",
+    "type",
+    "entity",
+    "isEnabled",
+    "enable",
+    "disable",
+  ]) {
+    expect(errorFromReturning(() => ({ [name]: "clobbered" }))).toMatch(
+      new RegExp(`Subject.*'${name}'`)
+    );
+  }
+});
+
+test("the error names every conflicting property at once", () => {
+  expect(errorFromReturning(() => ({ type: 1, entity: 2, keep: 3 }))).toMatch(
+    /'type', 'entity'/
+  );
+});
+
+test("a conflict inherited from a prototype is caught too", () => {
+  class Sneaky {
+    get isEnabled() {
+      return true;
+    }
+  }
+
+  expect(errorFromReturning(() => new Sneaky())).toMatch(/'isEnabled'/);
+});
+
+test("a Component that returns a conflicting object gets nothing proxied onto it", () => {
+  let component!: Component;
+
+  createRoot(function Root() {
+    useType(Root);
+
+    useNewComponent(function Boundary() {
+      useType(Boundary);
+      return ErrorBoundary(() => {});
+    });
+
+    component = useNewComponent(function Subject() {
+      useType(Subject);
+      return { type: "clobbered", keep: "mine" };
+    });
+  });
+
+  expect(component.isEnabled).toBe(true);
+  expect(component.type!.name).toBe("Subject");
+  expect((component as { keep?: string }).keep).toBe(undefined);
+});
+
+test("a returned object that avoids those names is fine", () => {
+  const { component } = componentReturning(() => ({
+    kind: "mine",
+    typeName: "mine",
+    owner: "mine",
+    start: () => "mine",
+  }));
+
+  expect(component.kind).toBe("mine");
+  expect(component.isEnabled).toBe(true);
+  expect(component.type!.name).toBe("Subject");
 });
 
 test("returning a non-object leaves the Component interface alone", () => {

@@ -26,7 +26,7 @@ export default class Circle {
     return this.radius * 2;
   }
   set diameter(newValue: number) {
-    this.radius = newValue * 2;
+    this.radius = newValue / 2;
   }
 
   /**
@@ -36,7 +36,7 @@ export default class Circle {
     return this.radius * 2;
   }
   set width(newValue: number) {
-    this.radius = newValue * 2;
+    this.radius = newValue / 2;
   }
 
   /**
@@ -46,7 +46,7 @@ export default class Circle {
     return this.radius * 2;
   }
   set height(newValue: number) {
-    this.radius = newValue * 2;
+    this.radius = newValue / 2;
   }
 
   constructor(radius: number) {

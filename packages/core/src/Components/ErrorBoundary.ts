@@ -52,7 +52,9 @@ function runHandlers(ent: Entity, error: Error) {
   }
 
   if (!errorHandler) {
-    console.error(error);
+    // currentError rather than error, so that when a handler threw on its way
+    // up, what it threw is what gets reported.
+    console.error(currentError);
   }
 }
 

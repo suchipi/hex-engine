@@ -136,7 +136,24 @@ export default class Entity implements EntityInterface {
 
     const component = instantiate(componentFactory, ent);
     ent.rootComponent = component;
+
+    events.emit({
+      eventType: CoreEventType.ENTITY_ADD_COMPONENT,
+      eventPhase: CoreEventPhase.BEFORE,
+      componentFactory,
+      entity: ent,
+      component,
+    });
+
     ent.components.add(component);
+
+    events.emit({
+      eventType: CoreEventType.ENTITY_ADD_COMPONENT,
+      eventPhase: CoreEventPhase.AFTER,
+      componentFactory,
+      entity: ent,
+      component,
+    });
 
     events.emit({
       eventType: CoreEventType.ENTITY_CREATE,
@@ -150,9 +167,24 @@ export default class Entity implements EntityInterface {
   }
 
   _componentsByType(): Map<Function | null, ComponentInterface> {
-    return new Map(
-      [...this.components].map((component) => [component.type, component])
-    );
+    const byType = new Map<Function | null, ComponentInterface>();
+    for (const component of this.components) {
+      if (!byType.has(component.type)) {
+        byType.set(component.type, component);
+      }
+    }
+    return byType;
+  }
+
+  _firstComponentOfType(
+    componentType: Function
+  ): ComponentInterface | undefined {
+    for (const component of this.components) {
+      if (component.type === componentType) {
+        return component;
+      }
+    }
+    return undefined;
   }
 
   getComponent<Func extends (...args: any[]) => any>(
@@ -162,7 +194,7 @@ export default class Entity implements EntityInterface {
     | (ReturnType<Func> extends {}
         ? ReturnType<Func> & ComponentInterface
         : ComponentInterface) {
-    const maybeComponent = this._componentsByType().get(componentType);
+    const maybeComponent = this._firstComponentOfType(componentType);
     // @ts-ignore
     return maybeComponent ?? null;
   }
@@ -170,8 +202,7 @@ export default class Entity implements EntityInterface {
   hasComponent<Func extends (...args: any[]) => any>(
     componentType: Func
   ): boolean {
-    const maybeComponent = this._componentsByType().get(componentType);
-    return Boolean(maybeComponent);
+    return this._firstComponentOfType(componentType) != null;
   }
 
   addComponent<T>(
@@ -307,7 +338,7 @@ export default class Entity implements EntityInterface {
 
     if (process.env.NODE_ENV !== "production") {
       setTimeout(() => {
-        if (!child._isDestroyed) {
+        if (!child._isDestroyed && child.parent == null) {
           console.warn(
             "A child was removed from its parent, but wasn't destroyed within 1 second. This can cause memory leaks.\nWhen removing a child entity, either destroy it or give it a new parent.\nThis message will not be logged in production.\n",
             child

@@ -14,33 +14,44 @@ test("diameter, width, and height all read as twice the radius", () => {
   expect(circle.height).toBe(20);
 });
 
-test("known quirk: the diameter setter multiplies by two instead of halving", () => {
+test("setting the diameter halves it into the radius", () => {
   const circle = new Circle(10);
 
   circle.diameter = 10;
 
-  // Setting a diameter of 10 should leave a radius of 5, but the setter does
-  // `radius = newValue * 2`, so the value does not round-trip.
-  expect(circle.radius).toBe(20);
-  expect(circle.diameter).toBe(40);
+  expect(circle.radius).toBe(5);
+  expect(circle.diameter).toBe(10);
 });
 
-test("known quirk: the width setter multiplies by two instead of halving", () => {
+test("setting the width halves it into the radius", () => {
   const circle = new Circle(10);
 
   circle.width = 10;
 
-  expect(circle.radius).toBe(20);
-  expect(circle.width).toBe(40);
+  expect(circle.radius).toBe(5);
+  expect(circle.width).toBe(10);
 });
 
-test("known quirk: the height setter multiplies by two instead of halving", () => {
+test("setting the height halves it into the radius", () => {
   const circle = new Circle(10);
 
   circle.height = 10;
 
-  expect(circle.radius).toBe(20);
-  expect(circle.height).toBe(40);
+  expect(circle.radius).toBe(5);
+  expect(circle.height).toBe(10);
+});
+
+test("the size properties round-trip through their setters", () => {
+  const circle = new Circle(1);
+
+  circle.diameter = 30;
+  expect(circle.diameter).toBe(30);
+
+  circle.width = 42;
+  expect(circle.width).toBe(42);
+
+  circle.height = 7;
+  expect(circle.height).toBe(7);
 });
 
 test("containsPoint measures from the origin, not from any position on the circle", () => {

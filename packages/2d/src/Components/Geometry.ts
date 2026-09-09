@@ -31,10 +31,13 @@ function Geometry<S extends Shape>({
 
   const transforms = useEntityTransforms();
 
-  let rotationVal = rotation;
-  if (rotationVal > TAU) {
-    rotationVal = rotationVal % TAU;
+  /** Brings a rotation into the range [0, TAU), whichever way round it went. */
+  function wrapRotation(value: number): number {
+    const wrapped = value % TAU;
+    return wrapped < 0 ? wrapped + TAU : wrapped;
   }
+
+  let rotationVal = wrapRotation(rotation);
 
   const geometry = {
     shape,
@@ -43,10 +46,7 @@ function Geometry<S extends Shape>({
       return rotationVal;
     },
     set rotation(newVal) {
-      if (newVal > TAU) {
-        newVal = newVal % TAU;
-      }
-      rotationVal = newVal;
+      rotationVal = wrapRotation(newVal);
     },
     scale,
     origin: origin || new Vector(0, 0),

@@ -175,6 +175,8 @@ Fill in the grid with the provided data, represented as a 2D array.
 
 Get the value in the cell at the given row and column index.
 
+Throws if the index is outside the grid, the same as `set` does.
+
 ##### set
 
 > Available since version: 0.0.0
@@ -580,6 +582,8 @@ Mutate this Vector by setting its x and y values to the values found on the prov
 `normalize(): Vector`
 
 Create a new Vector by normalizing the magnitude of this one (setting it to 1).
+
+A zero-length Vector has no direction to keep, so it normalizes to itself rather than to `NaN`. For the same reason, setting `magnitude` on a zero-length Vector leaves it alone.
 
 ##### normalizeMutate
 
@@ -1740,6 +1744,8 @@ function Gamepad(
      * If you do not provide a list of button names, then names for the buttons on a PlayStation controller
      * will be used, even if the connected controller is not a PlayStation controller.
      *
+     * Any button your list does not cover is reported as `unknown button ${index}`.
+     *
      * Available since version: 0.0.0
      */
     buttonNames: Array<string>;
@@ -1780,6 +1786,9 @@ function Gamepad(
    *
    * Note that the way the Web Gamepad API works, controllers do not show as connected
    * until the user first presses a button.
+   *
+   * When a gamepad goes away, the sticks and pressed buttons are reset, so that
+   * a game is not left believing a button on it is still held.
    *
    * Available since version: 0.0.0
    */
@@ -1839,6 +1848,10 @@ function Geometry(init: {
    * The current rotation of the current Entity,
    * expressed in clockwise radians from the x-axis.
    *
+   * Whatever you assign is wrapped into the range 0 to 2π, in either
+   * direction, so a rotation that a game keeps adding to or subtracting
+   * from never grows without bound.
+   *
    * If unspecified, it will default to 0.
    *
    * Available since version: 0.0.1
@@ -1882,6 +1895,10 @@ function Geometry(init: {
   /**
    * The current rotation of the current Entity,
    * expressed in clockwise radians from the x-axis.
+   *
+   * Whatever you assign is wrapped into the range 0 to 2π, in either
+   * direction, so a rotation that a game keeps adding to or subtracting
+   * from never grows without bound.
    *
    * Available since version: 0.0.1
    */

@@ -159,7 +159,7 @@ test("when a handler throws, the next ancestor receives what the handler threw",
   expect(caught).toEqual(["outer: handler failed"]);
 });
 
-test("known quirk: if a throwing handler is the last one, the original error is logged instead of the handler's", () => {
+test("if a throwing handler is the last one, what it threw is what gets logged", () => {
   createRoot(function Root() {
     useType(Root);
 
@@ -174,11 +174,8 @@ test("known quirk: if a throwing handler is the last one, the original error is 
     useNewComponent(Exploding);
   });
 
-  // runHandlers tracks the replacement error while walking up, but the final
-  // console.error call reports the error it started with, so whatever the
-  // handler threw is lost.
   expect(logged.length).toBe(1);
-  expect((logged[0] as Error).message).toBe("Failed to instantiate Root: boom");
+  expect((logged[0] as Error).message).toBe("handler failed");
 });
 
 test("a Component whose function throws is still added to the Entity", () => {

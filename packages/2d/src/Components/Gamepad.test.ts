@@ -101,20 +101,19 @@ test("custom button names replace the PlayStation defaults", () => {
   expect([...gamepad.pressed]).toEqual(["shoot"]);
 });
 
-test("known quirk: every unnamed button shares one name, so they cancel each other out", () => {
+test("buttons with no name of their own are told apart by their index", () => {
   const gamepad = startWithGamepad({ buttonNames: ["jump"] });
 
-  // Buttons are walked in index order, adding or deleting their name. Every
-  // button past the named ones is called "unknown button", so a later released
-  // one deletes the entry an earlier pressed one just added.
   connected = [pad([0, 0, 0, 0], [5])];
   step();
-  expect([...gamepad.pressed]).toEqual([]);
+  expect([...gamepad.pressed]).toEqual(["unknown button 5"]);
 
-  // Only the very last button escapes, because nothing comes after it.
-  connected = [pad([0, 0, 0, 0], [16])];
+  connected = [pad([0, 0, 0, 0], [5, 16])];
   step();
-  expect([...gamepad.pressed]).toEqual(["unknown button"]);
+  expect([...gamepad.pressed].sort()).toEqual([
+    "unknown button 16",
+    "unknown button 5",
+  ]);
 });
 
 test("gamepadIndex chooses which connected pad to read", () => {
@@ -139,19 +138,39 @@ test("state does not change until a frame runs", () => {
   expect(gamepad.present).toBe(true);
 });
 
-test("known quirk: the deadzone option is stored but never applied", () => {
+test("a stick resting inside the deadzone reads as centered", () => {
   const gamepad = startWithGamepad({ deadzone: 0.5 });
 
-  connected = [pad([0.1, 0.1, 0.1, 0.1])];
+  connected = [pad([0.1, -0.4, 0.49, 0.2])];
   step();
 
-  // Nothing in the update reads state.deadzone, so a stick resting slightly off
-  // center still reports that offset, however large the deadzone is set.
-  expect(gamepad.deadzone).toBe(0.5);
-  expect(xy(gamepad.leftStick)).toEqual({ x: 0.1, y: 0.1 });
+  expect(xy(gamepad.leftStick)).toEqual({ x: 0, y: 0 });
+  expect(xy(gamepad.rightStick)).toEqual({ x: 0, y: 0 });
 });
 
-test("known quirk: unplugging a pad leaves its buttons stuck down", () => {
+test("a stick pushed past the deadzone reports its real position", () => {
+  const gamepad = startWithGamepad({ deadzone: 0.5 });
+
+  connected = [pad([0.8, -0.6, 0.5, 0])];
+  step();
+
+  expect(gamepad.leftStick.x).toBe(0.8);
+  expect(gamepad.leftStick.y).toBe(-0.6);
+  // The deadzone is a minimum to clear, so exactly at it still counts.
+  expect(gamepad.rightStick.x).toBe(0.5);
+});
+
+test("the deadzone defaults to a small value rather than zero", () => {
+  const gamepad = startWithGamepad();
+
+  expect(gamepad.deadzone).toBe(0.1);
+
+  connected = [pad([0.05, 0, 0, 0])];
+  step();
+  expect(gamepad.leftStick.x).toBe(0);
+});
+
+test("unplugging a pad resets it to rest", () => {
   const gamepad = startWithGamepad();
 
   connected = [pad([0.9, 0.9, 0, 0], [0])];
@@ -161,11 +180,12 @@ test("known quirk: unplugging a pad leaves its buttons stuck down", () => {
   connected = [];
   step();
 
-  // The update returns as soon as it finds no gamepad, without clearing what it
-  // last saw, so the game keeps being told the button is held.
+  // Otherwise the game would keep being told a button is held on a controller
+  // that is no longer there.
   expect(gamepad.present).toBe(false);
-  expect([...gamepad.pressed]).toEqual(["cross"]);
-  expect(xy(gamepad.leftStick)).toEqual({ x: 0.9, y: 0.9 });
+  expect([...gamepad.pressed]).toEqual([]);
+  expect(xy(gamepad.leftStick)).toEqual({ x: 0, y: 0 });
+  expect(xy(gamepad.rightStick)).toEqual({ x: 0, y: 0 });
 });
 
 test("a disabled Gamepad stops updating", () => {

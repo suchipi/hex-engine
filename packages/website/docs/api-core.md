@@ -219,6 +219,8 @@ import { Component } from "@hex-engine/core";
 
 A Component instance. Every Component created via [`useNewComponent`], [`useChild`] or [`createRoot`] has these properties and methods available on it, in addition to any properties or methods on the object returned by its Component function (if any).
 
+> Because the two are merged onto one object, a Component function may not return anything named `_kind`, `type`, `entity`, `isEnabled`, `enable`, or `disable`; those belong to the Component itself. Returning one of them is reported as an error when the Component is created, rather than quietly leaving the Component unable to be found or disabled.
+
 #### Properties
 
 ##### type

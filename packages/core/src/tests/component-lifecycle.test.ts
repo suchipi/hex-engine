@@ -126,7 +126,7 @@ test("the isEnabled setter routes to enable and disable", () => {
   ]);
 });
 
-test("known quirk: isEnabled is not updated until after the callbacks have run", () => {
+test("isEnabled is already up to date inside the callbacks", () => {
   let seenDuringEnable: null | boolean = null;
   let seenDuringDisable: null | boolean = null;
   let subject!: Component;
@@ -147,13 +147,11 @@ test("known quirk: isEnabled is not updated until after the callbacks have run",
     });
   });
 
-  // Component.enable/disable assign _isEnabled after running the callbacks, so
-  // a callback sees the state it is moving away from.
   subject.disable();
-  expect(seenDuringDisable).toBe(true);
+  expect(seenDuringDisable).toBe(false);
 
   subject.enable();
-  expect(seenDuringEnable).toBe(false);
+  expect(seenDuringEnable).toBe(true);
 });
 
 test("enabling from inside an onEnabled callback does not recurse", () => {

@@ -115,7 +115,7 @@ test("the width and height setters ignore NaN", () => {
   expect(polygon.height).toBe(20);
 });
 
-test("known quirk: resizing a zero-width polygon turns its points into NaN", () => {
+test("resizing a zero-width polygon leaves it alone rather than producing NaN", () => {
   const polygon = new Polygon([
     new Vector(0, 0),
     new Vector(0, 10),
@@ -124,12 +124,26 @@ test("known quirk: resizing a zero-width polygon turns its points into NaN", () 
 
   expect(polygon.width).toBe(0);
 
-  // The setter scales by `newWidth / this.width`, and the NaN guard only checks
-  // the value passed in, not the ratio it produces.
+  // There is no ratio that could scale a zero width up to 10.
   polygon.width = 10;
 
-  expect(Number.isNaN(polygon.points[0].x)).toBe(true);
-  expect(Number.isNaN(polygon.width)).toBe(true);
+  expect(polygon.width).toBe(0);
+  expect(polygon.points.every((point) => !Number.isNaN(point.x))).toBe(true);
+});
+
+test("resizing a zero-height polygon leaves it alone too", () => {
+  const polygon = new Polygon([
+    new Vector(0, 0),
+    new Vector(10, 0),
+    new Vector(20, 0),
+  ]);
+
+  expect(polygon.height).toBe(0);
+
+  polygon.height = 10;
+
+  expect(polygon.height).toBe(0);
+  expect(polygon.points.every((point) => !Number.isNaN(point.y))).toBe(true);
 });
 
 test("containsPoint is true inside and false outside", () => {
