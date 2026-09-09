@@ -167,6 +167,27 @@ export function touchEnd(x: number, y: number) {
   dispatchTouchEvent("touchend", x, y, false);
 }
 
+function dispatchKeyboardEvent(type: string, key: string, repeat: boolean) {
+  const event = new KeyboardEvent(type, {
+    key,
+    repeat,
+    bubbles: true,
+    cancelable: true,
+  });
+  document.body.dispatchEvent(event);
+  return event.defaultPrevented;
+}
+
+/** Returns whether the event's default was prevented. */
+export function keyDown(key: string, { repeat = false } = {}): boolean {
+  return dispatchKeyboardEvent("keydown", key, repeat);
+}
+
+/** Returns whether the event's default was prevented. */
+export function keyUp(key: string, { repeat = false } = {}): boolean {
+  return dispatchKeyboardEvent("keyup", key, repeat);
+}
+
 /** Snapshots a Vector as a plain object, so that assertions don't see later mutations. */
 export function xy(vector: { x: number; y: number }): { x: number; y: number } {
   return { x: vector.x, y: vector.y };

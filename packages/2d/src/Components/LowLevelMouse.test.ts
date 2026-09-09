@@ -26,7 +26,7 @@ import {
   touchMove,
   touchStart,
   xy,
-} from "./mouseTestSetup";
+} from "./inputTestSetup";
 
 afterEach(endGame);
 

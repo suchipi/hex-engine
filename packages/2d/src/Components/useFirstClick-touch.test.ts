@@ -7,7 +7,7 @@ import {
   step,
   touchEnd,
   touchStart,
-} from "./mouseTestSetup";
+} from "./inputTestSetup";
 
 afterEach(endGame);
 

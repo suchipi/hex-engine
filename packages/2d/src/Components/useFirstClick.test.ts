@@ -1,7 +1,7 @@
 /// <reference types="@test-it/core/globals" />
 import { useChild, useNewComponent, useType } from "@hex-engine/core";
 import LowLevelMouse, { useFirstClick } from "./LowLevelMouse";
-import { endGame, mouseDown, mouseUp, startGame, step } from "./mouseTestSetup";
+import { endGame, mouseDown, mouseUp, startGame, step } from "./inputTestSetup";
 
 afterEach(endGame);
 

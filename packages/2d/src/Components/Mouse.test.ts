@@ -21,7 +21,7 @@ import {
   touchEnd,
   touchStart,
   xy,
-} from "./mouseTestSetup";
+} from "./inputTestSetup";
 
 type MouseApi = ReturnType<typeof Mouse>;
 
