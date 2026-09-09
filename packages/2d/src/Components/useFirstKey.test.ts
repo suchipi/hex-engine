@@ -34,9 +34,8 @@ test("first-key handlers run once, synchronously, on the first keydown", () => {
   keyDown("b");
   expect(calls).toEqual(["first", "second"]);
 
-  // Known quirk: unlike useFirstClick, useFirstKey still pushes handlers onto a
-  // list that is never flushed again after the first key, so a handler
-  // registered from here on never runs.
+  // Registering once the first key is already behind us runs the handler right
+  // away, rather than waiting for a keypress that will never be "first".
   root.createChild(function Late() {
     useType(Late);
 
@@ -45,8 +44,8 @@ test("first-key handlers run once, synchronously, on the first keydown", () => {
   });
 
   expect(late.firstKeyHasHappened).toBe(true);
-  expect(calls).toEqual(["first", "second"]);
+  expect(calls).toEqual(["first", "second", "late"]);
 
   keyDown("c");
-  expect(calls).toEqual(["first", "second"]);
+  expect(calls).toEqual(["first", "second", "late"]);
 });

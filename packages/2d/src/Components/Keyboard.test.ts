@@ -93,11 +93,15 @@ test("preventDefault: true prevents the default on keydown", () => {
   expect(keyDown("a")).toBe(true);
 });
 
-test("keyup has its default prevented regardless of the preventDefault option", () => {
+test("preventDefault defaults to off for keyup", () => {
   startWithKeyboard();
 
-  // Known quirk: processKeyup calls preventDefault unconditionally, unlike
-  // processKeydown, which honors the option.
+  expect(keyUp("a")).toBe(false);
+});
+
+test("preventDefault: true prevents the default on keyup", () => {
+  startWithKeyboard({ preventDefault: true });
+
   expect(keyUp("a")).toBe(true);
 });
 

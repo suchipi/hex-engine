@@ -9,14 +9,32 @@ import { useContext } from "../Hooks";
 let firstKeyHasHappened = false;
 let pendingFirstKeyHandlers: Array<() => void> = [];
 
+function runFirstKeyHandlers() {
+  if (firstKeyHasHappened) return;
+
+  firstKeyHasHappened = true;
+  pendingFirstKeyHandlers.forEach((handler) => {
+    handler();
+  });
+  pendingFirstKeyHandlers = [];
+}
+
 /**
  * This function will run the provided function the first time a key is pressed.
+ * If the first keypress has already happened, the function is run immediately.
+ *
  * Note that it only works if there is at least one `Keyboard` Component loaded in
  * your game when the first keypress occurs. To be on the safe side, you should
  * probably also add a Keyboard Component to the Component that calls useFirstKey.
  */
 export function useFirstKey(handler: () => void) {
-  pendingFirstKeyHandlers.push(useCallbackAsCurrent(handler));
+  const wrappedHandler = useCallbackAsCurrent(handler);
+
+  if (firstKeyHasHappened) {
+    wrappedHandler();
+  } else {
+    pendingFirstKeyHandlers.push(wrappedHandler);
+  }
 
   return {
     /** Whether the first keypress has happened yet. */
@@ -48,11 +66,7 @@ export default function Keyboard({
       event.preventDefault();
     }
 
-    if (!firstKeyHasHappened) {
-      firstKeyHasHappened = true;
-      pendingFirstKeyHandlers.forEach((cb) => cb());
-      pendingFirstKeyHandlers = [];
-    }
+    runFirstKeyHandlers();
 
     if (event.repeat) {
       return;
@@ -61,7 +75,9 @@ export default function Keyboard({
   };
 
   const processKeyup = (event: KeyboardEvent) => {
-    event.preventDefault();
+    if (preventDefault) {
+      event.preventDefault();
+    }
 
     if (event.repeat) {
       return;

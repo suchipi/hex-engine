@@ -3876,12 +3876,15 @@ The returned object has a `firstClickHasHappened` boolean on it, which you can r
 import { useFirstKey } from "@hex-engine/2d";
 ```
 
-`useFirstKey(handler: () => void): void`
+`useFirstKey(handler: () => void): { firstKeyHasHappened: boolean }`
 
 This function will run the provided function the first time a key is pressed.
+If the first keypress has already happened, the function is run immediately.
 Note that it only works if there is at least one `Keyboard` Component loaded in
 your game when the first keypress occurs. To be on the safe side, you should
 probably also add a Keyboard Component to the Component that calls useFirstKey.
+
+The returned object has a `firstKeyHasHappened` boolean on it, which you can read at any time.
 
 ### useAudioContext
 
