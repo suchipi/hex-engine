@@ -221,3 +221,57 @@ test("vectorFromKeys returns a new Vector each time", () => {
 
   expect(first).not.toBe(second);
 });
+
+/**
+ * Counts what a scene adds to and removes from the document over its whole
+ * life, by shadowing the document's own methods.
+ */
+function countDocumentListeners(scene: () => void) {
+  let added = 0;
+  let removed = 0;
+
+  const realAdd = document.addEventListener;
+  const realRemove = document.removeEventListener;
+
+  document.addEventListener = function (...args: Parameters<typeof realAdd>) {
+    added++;
+    return realAdd.apply(document, args);
+  };
+  document.removeEventListener = function (
+    ...args: Parameters<typeof realRemove>
+  ) {
+    removed++;
+    return realRemove.apply(document, args);
+  };
+
+  try {
+    startGame(scene);
+    endGame();
+  } finally {
+    delete (document as Partial<Document>).addEventListener;
+    delete (document as Partial<Document>).removeEventListener;
+  }
+
+  return { added, removed };
+}
+
+test("the document gets one listener per event type no matter how many Keyboards listen", () => {
+  const keyboards = (count: number) => () => {
+    for (let index = 0; index < count; index++) {
+      useChild(function Subject() {
+        useType(Subject);
+        useNewComponent(Keyboard);
+      });
+    }
+  };
+
+  // Whatever else the Canvas puts on the document is not this test's business,
+  // so measure Keyboard's contribution against a scene that has none.
+  const none = countDocumentListeners(keyboards(0));
+  const one = countDocumentListeners(keyboards(1));
+  const many = countDocumentListeners(keyboards(50));
+
+  expect(one.added - none.added).toBe(2);
+  expect(many.added).toBe(one.added);
+  expect(many.removed - none.removed).toBe(2);
+});

@@ -2,6 +2,8 @@ import {
   useEnableDisable,
   useType,
   useCallbackAsCurrent,
+  useRootEntity,
+  useNewRootComponent,
 } from "@hex-engine/core";
 import { Vector } from "../Models";
 import { useContext } from "../Hooks";
@@ -44,6 +46,76 @@ export function useFirstKey(handler: () => void) {
   };
 }
 
+type KeyboardEventType = "keydown" | "keyup";
+
+type KeyboardEventHandler = (
+  type: KeyboardEventType,
+  event: KeyboardEvent
+) => void;
+
+/**
+ * Owns the document's key listeners on behalf of every `Keyboard` Component, so
+ * that the number of DOM listeners stays the same whether the game has one
+ * Component watching the keyboard or a thousand.
+ */
+function StorageForKeyboard() {
+  useType(StorageForKeyboard);
+
+  const { canvas } = useContext();
+  const doc = canvas.ownerDocument;
+  if (!doc) {
+    throw new Error(
+      "Root canvas is not part of a document; therefore, Keyboard can't setup event listeners"
+    );
+  }
+
+  const handlers = new Set<KeyboardEventHandler>();
+
+  const processKeydown = (event: KeyboardEvent) => {
+    runFirstKeyHandlers();
+    handlers.forEach((handler) => handler("keydown", event));
+  };
+
+  const processKeyup = (event: KeyboardEvent) => {
+    handlers.forEach((handler) => handler("keyup", event));
+  };
+
+  let bound = false;
+
+  function bindListeners() {
+    if (bound) return;
+    doc.addEventListener("keydown", processKeydown);
+    doc.addEventListener("keyup", processKeyup);
+    bound = true;
+  }
+
+  function unbindListeners() {
+    if (!bound) return;
+    doc.removeEventListener("keydown", processKeydown);
+    doc.removeEventListener("keyup", processKeyup);
+    bound = false;
+  }
+
+  const enableDisable = useEnableDisable();
+
+  enableDisable.onEnabled(() => {
+    if (handlers.size > 0) bindListeners();
+  });
+
+  enableDisable.onDisabled(unbindListeners);
+
+  return {
+    addHandler(handler: KeyboardEventHandler) {
+      handlers.add(handler);
+      if (enableDisable.isEnabled) bindListeners();
+    },
+    removeHandler(handler: KeyboardEventHandler) {
+      handlers.delete(handler);
+      if (handlers.size === 0) unbindListeners();
+    },
+  };
+}
+
 /**
  * This Component provides information about which keys on the user's
  * Keyboard are currently pressed.
@@ -61,20 +133,11 @@ export default function Keyboard({
 
   const pressed: Set<string> = new Set();
 
-  const processKeydown = (event: KeyboardEvent) => {
-    if (preventDefault) {
-      event.preventDefault();
-    }
+  const sharedListeners =
+    useRootEntity().getComponent(StorageForKeyboard) ||
+    useNewRootComponent(StorageForKeyboard);
 
-    runFirstKeyHandlers();
-
-    if (event.repeat) {
-      return;
-    }
-    pressed.add(event.key);
-  };
-
-  const processKeyup = (event: KeyboardEvent) => {
+  const handleKeyboardEvent: KeyboardEventHandler = (type, event) => {
     if (preventDefault) {
       event.preventDefault();
     }
@@ -82,27 +145,22 @@ export default function Keyboard({
     if (event.repeat) {
       return;
     }
-    pressed.delete(event.key);
+
+    if (type === "keydown") {
+      pressed.add(event.key);
+    } else {
+      pressed.delete(event.key);
+    }
   };
 
   const { onEnabled, onDisabled } = useEnableDisable();
 
-  const { canvas } = useContext();
-  const doc = canvas.ownerDocument;
-  if (!doc) {
-    throw new Error(
-      "Root canvas is not part of a document; therefore, Keyboard can't setup event listeners"
-    );
-  }
-
   onEnabled(() => {
-    doc.addEventListener("keydown", processKeydown);
-    doc.addEventListener("keyup", processKeyup);
+    sharedListeners.addHandler(handleKeyboardEvent);
   });
 
   onDisabled(() => {
-    doc.removeEventListener("keydown", processKeydown);
-    doc.removeEventListener("keyup", processKeyup);
+    sharedListeners.removeHandler(handleKeyboardEvent);
   });
 
   return {
