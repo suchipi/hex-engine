@@ -163,5 +163,33 @@ class Image {
  */
 export default function ImageComponent(options: { url: string }) {
   useType(ImageComponent);
-  return new Image(options);
+
+  // Wrapped rather than returned directly, because a class instance cannot be
+  // merged onto a Component.
+  const image = new Image(options);
+
+  return {
+    /** The url this Image was loaded from. */
+    get url() {
+      return image.url;
+    },
+
+    /** Whether the image has finished loading yet. */
+    get loaded() {
+      return image.loaded;
+    },
+
+    /** The loaded image element, or null if it has not loaded yet. */
+    get data() {
+      return image.data;
+    },
+
+    load: () => image.load(),
+
+    asPattern: (
+      ...args: Parameters<typeof image.asPattern>
+    ): ReturnType<typeof image.asPattern> => image.asPattern(...args),
+
+    draw: (...args: Parameters<typeof image.draw>): void => image.draw(...args),
+  };
 }

@@ -84,34 +84,53 @@ test("setters on the returned object are called when writing through the Compone
   expect(written).toEqual([42]);
 });
 
-test("methods inherited from a class prototype are forwarded", () => {
-  class Greeter {
-    greeting = "hello";
-    greet() {
+test("methods inherited from a plain prototype are forwarded", () => {
+  const prototype = {
+    greet(this: { greeting: string }) {
       return this.greeting;
-    }
-  }
+    },
+  };
 
-  const { component } = componentReturning(() => new Greeter());
+  const { component } = componentReturning(() =>
+    Object.assign(Object.create(prototype), { greeting: "hello" })
+  );
 
   expect(component.greet()).toBe("hello");
 });
 
 test("known quirk: a forwarded method's `this` is the Component, not the returned object", () => {
-  class SelfReturner {
-    value = 1;
+  const { component, original } = componentReturning(() => ({
+    value: 1,
     getSelf(): unknown {
       return this;
-    }
-  }
-
-  const { component, original } = componentReturning(() => new SelfReturner());
+    },
+  }));
 
   // proxyProperties forwards property *reads*, so the method is fetched from
   // the original but invoked with the Component as its receiver. Field access
   // inside still works, but only because every field is forwarded too.
   expect(component.getSelf()).toBe(component);
   expect(component.getSelf()).not.toBe(original);
+});
+
+test("known quirk: forwarded properties are non-enumerable, so a Component does not survive being spread", () => {
+  const { component } = componentReturning(() => ({
+    label: "mine",
+    greet: () => "hello",
+  }));
+
+  expect(component.label).toBe("mine");
+
+  // proxyProperties defines its accessors without setting enumerable, so
+  // spreading or Object.keys-ing a Component quietly drops everything the
+  // Component function returned, and a Component cannot be handed on by
+  // copying it.
+  expect(Object.keys(component)).not.toContain("label");
+  expect(Object.keys(component)).not.toContain("greet");
+
+  const copied = { ...component } as Partial<typeof component>;
+  expect(copied.label).toBe(undefined);
+  expect(copied.greet).toBe(undefined);
 });
 
 test("known quirk: properties added after the Component function returns are not forwarded", () => {
@@ -148,6 +167,14 @@ function errorFromReturning(makeReturnValue: () => unknown): string {
 
   return message;
 }
+
+test("returning a class instance is an error, because of its constructor", () => {
+  class Greeter {
+    greeting = "hello";
+  }
+
+  expect(errorFromReturning(() => new Greeter())).toMatch(/'constructor'/);
+});
 
 test("returning a property the Component needs for itself is an error", () => {
   for (const name of [

@@ -3,7 +3,10 @@
  * by looking up the tree.
  * @param obj The object you want the property names of
  */
-function gatherPropertyNames(obj: Object, soFar: Set<string> = new Set()) {
+export function gatherPropertyNames(
+  obj: Object,
+  soFar: Set<string> = new Set()
+) {
   const proto = Object.getPrototypeOf(obj);
   if (proto && proto !== Object.prototype) {
     gatherPropertyNames(proto, soFar);

@@ -5,7 +5,7 @@ import {
   Entity as EntityInterface,
 } from "./Interface";
 import ErrorBoundary from "./Components/ErrorBoundary";
-import proxyProperties from "./proxyProperties";
+import proxyProperties, { gatherPropertyNames } from "./proxyProperties";
 import { CoreEventPhase, CoreEventType, events } from "./CoreEvents";
 
 /**
@@ -21,6 +21,11 @@ const RESERVED_PROPERTY_NAMES = [
   "isEnabled",
   "enable",
   "disable",
+  // Every class instance inherits one, and forwarding it would leave the
+  // Component claiming to have been built by something it was not. Returning a
+  // class instance does not survive being merged onto a Component anyway, so it
+  // is better to say so at once.
+  "constructor",
 ];
 
 function assertNoReservedProperties(
@@ -29,9 +34,11 @@ function assertNoReservedProperties(
 ) {
   if (typeof returnValue !== "object" || returnValue == null) return;
 
-  const conflicts = RESERVED_PROPERTY_NAMES.filter(
-    (name) => name in returnValue
-  );
+  // The same names proxyProperties would go on to define, which is why this
+  // uses its traversal rather than `in`: a plain object literal inherits
+  // `constructor` from Object.prototype, but that is never forwarded.
+  const names = gatherPropertyNames(returnValue);
+  const conflicts = RESERVED_PROPERTY_NAMES.filter((name) => names.has(name));
   if (conflicts.length === 0) return;
 
   throw new Error(

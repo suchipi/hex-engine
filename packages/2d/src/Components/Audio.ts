@@ -84,5 +84,29 @@ class Audio {
 export default function AudioComponent({ url }: Props) {
   useType(AudioComponent);
 
-  return new Audio({ url });
+  // Wrapped rather than returned directly, because a class instance cannot be
+  // merged onto a Component.
+  const audio = new Audio({ url });
+
+  return {
+    /** The url this Audio was loaded from. */
+    get url() {
+      return audio.url;
+    },
+
+    /** Whether the audio has finished loading yet. */
+    get loaded() {
+      return audio.loaded;
+    },
+
+    /** The loaded audio element, or null if it has not loaded yet. */
+    get data() {
+      return audio.data;
+    },
+
+    load: () => audio.load(),
+
+    play: (...args: Parameters<typeof audio.play>): Promise<void> =>
+      audio.play(...args),
+  };
 }

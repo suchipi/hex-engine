@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="2" height="2" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="3">
+ <tileset firstgid="1" name="tileset" tilewidth="8" tileheight="8" tilecount="4" columns="4">
+  <image source="tileset.png" width="32" height="8"/>
+ </tileset>
+ <layer id="1" name="ground" width="2" height="2">
+  <data encoding="csv">
+1,2,
+3,4
+</data>
+ </layer>
+ <layer id="2" name="hidden" width="2" height="2" visible="0">
+  <data encoding="csv">
+1,1,
+1,1
+</data>
+ </layer>
+ <objectgroup id="3" name="objects">
+  <object id="1" name="spawn" type="marker" x="16" y="24" width="8" height="8"/>
+  <object id="2" name="area" x="0" y="0" width="16" height="16"/>
+ </objectgroup>
+</map>
