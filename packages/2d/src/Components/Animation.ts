@@ -81,7 +81,10 @@ export default function Animation<T>(
         if (state.loop) {
           currentFrameIndex = 0;
         } else {
-          // Do nothing (stay on the last frame)
+          // Stay on the last frame, with the clock parked on the moment it
+          // finished. Left to run on, it would drag currentFrameCompletion
+          // further past 1 with every frame that went by.
+          timer.setToTimeFromNow(0);
           return;
         }
       } else {
@@ -132,7 +135,13 @@ export default function Animation<T>(
         return 1;
       }
 
-      return 1 - timer.distanceFromSetTime() / getCurrentFrame().duration;
+      // A frame can overshoot its duration by however long the last frame took,
+      // and a finished animation sits past the end of its last one, so this is
+      // capped rather than reporting more than a whole frame's worth.
+      return Math.min(
+        1,
+        1 - timer.distanceFromSetTime() / currentFrame.duration
+      );
     },
 
     pause() {

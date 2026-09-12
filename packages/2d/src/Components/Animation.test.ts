@@ -197,31 +197,36 @@ test("known quirk: a freshly created Animation reports its first frame as comple
   expect(animation.currentFrameCompletion).toBe(1);
 });
 
-test("known quirk: a finished non-looping animation reports a completion above one, forever climbing", () => {
+test("a finished non-looping animation stays at a completion of one", () => {
   const animation = startWithAnimation(frames(2), { loop: false });
 
   animation.play();
   for (let index = 0; index < STEPS_PER_FRAME * 2; index++) step();
   expect(animation.currentFrameIndex).toBe(1);
 
-  // Parking on the last frame returns without resetting the Timer, so it keeps
-  // counting down past zero and completion keeps climbing past 1.
-  const justFinished = animation.currentFrameCompletion;
-  expect(justFinished).toBeGreaterThan(1);
+  expect(animation.currentFrameCompletion).toBe(1);
 
-  for (let index = 0; index < STEPS_PER_FRAME * 5; index++) step();
-  expect(animation.currentFrameCompletion).toBeGreaterThan(justFinished);
+  for (let index = 0; index < STEPS_PER_FRAME * 20; index++) step();
+  expect(animation.currentFrameCompletion).toBe(1);
 });
 
-test("known quirk: turning looping back on after finishing restarts immediately", () => {
+test("completion never goes above one part way through either", () => {
+  const animation = startWithAnimation(frames(3));
+
+  animation.play();
+  for (let index = 0; index < STEPS_PER_FRAME * 5; index++) {
+    step();
+    expect(animation.currentFrameCompletion).toBeLessThanOrEqual(1);
+  }
+});
+
+test("turning looping back on after finishing carries on from the end", () => {
   const animation = startWithAnimation(frames(2), { loop: false });
 
   animation.play();
   for (let index = 0; index < STEPS_PER_FRAME * 4; index++) step();
   expect(animation.currentFrameIndex).toBe(1);
 
-  // The Timer has been expired the whole time it was parked, so the very next
-  // frame after re-enabling looping wraps round, however long ago it finished.
   animation.loop = true;
   step();
 
