@@ -121,18 +121,24 @@ test("CJK measurements are taken as well", () => {
   expect(measured.height).toBeGreaterThan(0);
 });
 
-test("known quirk: measuring the same text twice gives different answers", () => {
+test("measuring the same text twice gives the same answer", () => {
   const { font } = drawableFont();
   const metrics = startWithMetrics(font);
 
   const first = metrics.measureText.withoutMemoization("Hello");
   const second = metrics.measureText.withoutMemoization("Hello");
 
-  // getMeasurements clears the canvas after each of its passes except the last
-  // one, so the CJK sample is still sitting there when the next measurement
-  // starts, and its pixels are counted into that measurement's bounds.
-  expect(second).not.toEqual(first);
-  expect(second.baselineToMeanLine).not.toBe(first.baselineToMeanLine);
+  expect(second).toEqual(first);
+});
+
+test("the vertical measurements do not depend on the text being measured", () => {
+  const { font } = drawableFont();
+  const metrics = startWithMetrics(font);
+
+  const short = metrics.measureText("i");
+  const long = metrics.measureText("something else entirely");
+
+  expect({ ...long, width: 0 }).toEqual({ ...short, width: 0 });
 });
 
 test("width still tracks the text, whatever the vertical measurements do", () => {

@@ -152,6 +152,9 @@ export default function FontMetrics(impl: DrawableFont) {
     filledBounds = useFilledPixelBounds(context);
     const CJKTopLine = filledBounds.minY;
     const CJKBottomLine = filledBounds.maxY;
+    // Cleared like every other pass, so that these glyphs are not still on the
+    // canvas when the next measurement takes its bounds.
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     return {
       baselineToMeanLine: baseline - meanLine,
