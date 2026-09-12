@@ -171,20 +171,16 @@ test("known quirk: setTransform throws away the saved transform stack", () => {
   expect(components(context.getTransform())).toEqual([1, 0, 0, 1, 99, 99]);
 });
 
-test("known quirk: the first unmatched restore resets the transform instead of doing nothing", () => {
+test("a restore with no matching save leaves the transform alone", () => {
   const context = contextNeedingThePolyfill();
 
   context.translate(10, 10);
 
-  // The stack is seeded with one entry at construction, so a restore with no
-  // matching save finds it, pops it, and winds the transform back to identity.
   context.restore();
-  expect(components(context.getTransform())).toEqual([1, 0, 0, 1, 0, 0]);
+  expect(components(context.getTransform())).toEqual([1, 0, 0, 1, 10, 10]);
 
-  // Only from the second one onward is it actually a no-op.
-  context.translate(5, 5);
   context.restore();
-  expect(components(context.getTransform())).toEqual([1, 0, 0, 1, 5, 5]);
+  expect(components(context.getTransform())).toEqual([1, 0, 0, 1, 10, 10]);
 });
 
 test("the polyfilled context still draws", () => {

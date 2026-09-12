@@ -7,8 +7,10 @@ export default function polyfillContext(context: CanvasRenderingContext2D) {
   if (context.resetTransform && context.getTransform) return;
 
   let matrix = createSVGMatrix();
-  // the stack of saved matrices
-  let savedMatrices = [matrix];
+  // The stack of saved matrices. It starts empty, so that a restore with no
+  // matching save has nothing to pop and leaves the transform alone, the way
+  // the real context does.
+  let savedMatrices: Array<DOMMatrix> = [];
 
   const CanvasRenderingContext2DClass =
     context.constructor as typeof CanvasRenderingContext2D;
