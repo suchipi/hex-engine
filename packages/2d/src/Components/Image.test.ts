@@ -105,7 +105,7 @@ test("an Image made after that url has loaded reuses the cached one", async () =
   expect(second.loaded).toBe(true);
 });
 
-test("known quirk: Images made for one url before it finishes loading each load it separately", async () => {
+test("Images made for one url before it finishes loading share that one load", async () => {
   const url = unloadedImageUrl();
   let first!: ReturnType<typeof ImageComponent>;
   let second!: ReturnType<typeof ImageComponent>;
@@ -121,9 +121,23 @@ test("known quirk: Images made for one url before it finishes loading each load 
   await first.load();
   await second.load();
 
-  // The cache is only written once a load finishes, so anything created in the
-  // meantime misses it and fetches the image again.
-  expect(first.data).not.toBe(second.data);
+  expect(first.data).toBe(second.data);
+});
+
+test("a url that failed to load can be tried again", async () => {
+  const url = "data:image/png;base64,bm90YW5pbWFnZQ==";
+
+  const first = startWithImage(url);
+  await first.load().catch(() => {});
+  expect(first.loaded).toBe(false);
+
+  endGame();
+
+  // The failure is not cached, so this is a fresh attempt rather than the
+  // broken one handed back again.
+  const second = startWithImage(url);
+  expect(second.loaded).toBe(false);
+  await second.load().catch(() => {});
 });
 
 test("loading a url that is not an image rejects", async () => {

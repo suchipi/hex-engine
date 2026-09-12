@@ -155,7 +155,7 @@ test("playing without a volume leaves the volume where it was", async () => {
   expect(audio.data!.volume).toBe(0.5);
 });
 
-test("known quirk: two Audios for the same url each load their own element", async () => {
+test("an Audio made after that url has loaded reuses the cached one", async () => {
   const url = silentWavUrl();
 
   const first = startWithAudio(url);
@@ -163,9 +163,42 @@ test("known quirk: two Audios for the same url each load their own element", asy
 
   endGame();
   const second = startWithAudio(url);
+
+  expect(second.data).toBe(first.data);
+  expect(second.loaded).toBe(true);
+});
+
+test("Audios made for one url before it finishes loading share that one load", async () => {
+  const url = silentWavUrl();
+  let first!: ReturnType<typeof AudioComponent>;
+  let second!: ReturnType<typeof AudioComponent>;
+
+  startGame(() => {
+    useChild(function Subject() {
+      useType(Subject);
+      first = useNewComponent(() => AudioComponent({ url }));
+      second = useNewComponent(() => AudioComponent({ url }));
+    });
+  });
+
+  await first.load();
   await second.load();
 
-  // Unlike Image, Audio keeps no cache at all, so every Component that names a
-  // clip fetches and decodes it again.
-  expect(second.data).not.toBe(first.data);
+  expect(first.data).toBe(second.data);
+});
+
+test("a url that failed to load can be tried again", async () => {
+  const url = "data:audio/wav;base64,bm90YXVkaW8=";
+
+  const first = startWithAudio(url);
+  await first.load().catch(() => {});
+  expect(first.loaded).toBe(false);
+
+  endGame();
+
+  // The failure is not cached, so this is a fresh attempt rather than the
+  // broken one handed back again.
+  const second = startWithAudio(url);
+  expect(second.loaded).toBe(false);
+  await second.load().catch(() => {});
 });

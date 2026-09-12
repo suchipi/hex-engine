@@ -5,6 +5,8 @@ type Props = {
   url: string;
 };
 
+const cache: { [url: string]: Audio } = {};
+
 class Audio {
   url: string;
   _loadingPromise: Promise<void> | null = null;
@@ -13,6 +15,15 @@ class Audio {
 
   constructor(config: Props) {
     this.url = config.url;
+
+    if (cache[config.url]) {
+      return cache[config.url];
+    }
+
+    // Cached before loading rather than after, so that anything else asking for
+    // this url while it is still in flight waits on this load instead of
+    // starting its own.
+    cache[config.url] = this;
 
     Preloader.addTask(() => this.load());
   }
@@ -34,6 +45,10 @@ class Audio {
         resolve();
       };
       image.onerror = (event) => {
+        // Uncached again, so that a url which failed can be retried rather
+        // than handing back a broken Audio for the life of the page.
+        delete cache[this.url];
+
         const error = new Error("Failed to load audio");
         // @ts-ignore
         error.event = event;

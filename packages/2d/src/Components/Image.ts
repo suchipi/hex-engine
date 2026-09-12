@@ -20,6 +20,11 @@ class Image {
       return cache[config.url];
     }
 
+    // Cached before loading rather than after, so that anything else asking for
+    // this url while it is still in flight waits on this load instead of
+    // starting its own.
+    cache[config.url] = this;
+
     Preloader.addTask(() => this.load());
   }
 
@@ -37,10 +42,13 @@ class Image {
       image.onload = () => {
         this.loaded = true;
         this.data = image;
-        cache[this.url] = this;
         resolve();
       };
       image.onerror = (event) => {
+        // Uncached again, so that a url which failed can be retried rather
+        // than handing back a broken Image for the life of the page.
+        delete cache[this.url];
+
         const error = new Error("Failed to load image");
         // @ts-ignore
         error.event = event;
