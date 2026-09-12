@@ -252,8 +252,31 @@ test("turning looping back on after finishing carries on from the end", () => {
   expect(animation.currentFrameIndex).toBe(0);
 });
 
-test("known quirk: goToFrame does not check that the frame exists", () => {
+test("goToFrame says which frames there were when given one that is not there", () => {
   const animation = startWithAnimation(frames(2));
 
+  expect(() => animation.goToFrame(99)).toThrowError(
+    /Animation has 2 frames, so there is no frame 99/
+  );
+  expect(() => animation.goToFrame(2)).toThrowError(/no frame 2/);
+  expect(() => animation.goToFrame(-1)).toThrowError(/no frame -1/);
+});
+
+test("goToFrame accepts the first and last frames", () => {
+  const animation = startWithAnimation(frames(3));
+
+  animation.goToFrame(0);
+  expect(animation.currentFrameIndex).toBe(0);
+
+  animation.goToFrame(2);
+  expect(animation.currentFrameIndex).toBe(2);
+});
+
+test("a frame that was rejected leaves the animation where it was", () => {
+  const animation = startWithAnimation(frames(3));
+
+  animation.goToFrame(1);
   expect(() => animation.goToFrame(99)).toThrowError();
+
+  expect(animation.currentFrameIndex).toBe(1);
 });

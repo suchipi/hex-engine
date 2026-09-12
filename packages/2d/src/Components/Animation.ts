@@ -107,6 +107,12 @@ export default function Animation<T>(
   });
 
   function goToFrame(frameNumber: number) {
+    if (frameNumber < 0 || frameNumber >= frames.length) {
+      throw new Error(
+        `Animation has ${frames.length} frames, so there is no frame ${frameNumber} to go to`
+      );
+    }
+
     currentFrameIndex = frameNumber;
     const currentFrame = getCurrentFrame();
     setFrameTimer(currentFrame.duration);
