@@ -6,7 +6,6 @@ import { endGame, startGame } from "./inputTestSetup";
 import tilesetUrl from "../__fixtures__/tileset.png";
 import playerUrl from "../__fixtures__/player.png";
 
-// The fixtures, as the build pipeline hands them over.
 const TILESET_WIDTH = 32;
 const TILESET_HEIGHT = 8;
 
@@ -231,6 +230,5 @@ test("asPattern gives a real pattern once loaded, and reuses it per context", as
 
   expect(pattern).toBeInstanceOf(CanvasPattern);
   expect(image.asPattern(context)).toBe(pattern);
-  // A different repetition is a different pattern.
   expect(image.asPattern(context, "no-repeat")).not.toBe(pattern);
 });

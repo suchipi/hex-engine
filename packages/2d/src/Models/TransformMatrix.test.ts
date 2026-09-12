@@ -100,7 +100,6 @@ test("rotate takes radians and turns a point clockwise on screen", () => {
     .rotate(Math.PI / 2)
     .transformPoint(new Vector(10, 0));
 
-  // Unlike Vector.rotate, this matches the direction Geometry's rotation uses.
   expect(rotated.x).toBeCloseTo(0);
   expect(rotated.y).toBeCloseTo(10);
 });

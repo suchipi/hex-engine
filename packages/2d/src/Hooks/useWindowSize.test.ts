@@ -101,14 +101,12 @@ test("handlers run on the frame after the window actually changes size", () => {
   withWindowWidth(1234, () => {
     window.dispatchEvent(new Event("resize"));
 
-    // Nothing until a frame runs; the notification is deferred.
     expect(calls).toEqual([]);
 
     step();
     expect(calls).toEqual(["resized"]);
     expect(api.windowSize.x).toBe(1234);
 
-    // And not again on the frame after that.
     step();
     expect(calls).toEqual(["resized"]);
   });

@@ -36,7 +36,6 @@ test("an AudioContext appears on the first click, and is reachable from anywhere
   expect(root.hasComponent(LowLevelMouse)).toBe(true);
   expect(root.hasComponent(Keyboard)).toBe(true);
 
-  // Nothing until the user has interacted with the page.
   expect(component.audioContext).toBe(null);
   step();
   expect(fromDeepInTheTree).toBe(null);
@@ -47,7 +46,6 @@ test("an AudioContext appears on the first click, and is reachable from anywhere
   step();
   expect(fromDeepInTheTree).toBe(component.audioContext);
 
-  // A later keypress does not replace the one that is already there.
   const created = component.audioContext;
   keyDown("a");
   expect(component.audioContext).toBe(created);

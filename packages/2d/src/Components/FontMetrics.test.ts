@@ -93,17 +93,13 @@ test("the vertical measurements stack up the way the names say", () => {
 
   const measured = metrics.measureText("Hello");
 
-  // Capitals reach higher than lowercase x-height.
   expect(measured.baselineToCapLine).toBeGreaterThan(
     measured.baselineToMeanLine
   );
-  // Ascenders are at least as tall as capitals.
   expect(measured.baselineToAscentLine).toBeGreaterThanOrEqual(
     measured.baselineToCapLine
   );
-  // Descenders hang below the baseline.
   expect(measured.baselineToDescentLine).toBeGreaterThan(0);
-  // And the full span is the two of them together.
   expect(measured.descentLineToAscentLine).toBe(
     measured.baselineToDescentLine + measured.baselineToAscentLine
   );

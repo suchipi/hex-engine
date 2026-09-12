@@ -74,7 +74,6 @@ export function startGame(
   return rootEntity;
 }
 
-/** Tears down whatever `startGame` created. Call this from `afterEach`. */
 export function endGame() {
   if (rootEntity != null) {
     rootEntity.destroy();

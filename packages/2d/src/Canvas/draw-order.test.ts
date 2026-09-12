@@ -165,7 +165,6 @@ test("useRawDraw leaves the context where it found it", () => {
 
   step();
 
-  // The Entity's position is ignored, so the rect lands at the canvas origin.
   expect(isRed(context, 5, 5)).toBe(true);
   expect(isRed(context, 100, 100)).toBe(false);
 });

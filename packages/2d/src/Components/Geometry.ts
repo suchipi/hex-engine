@@ -31,7 +31,6 @@ function Geometry<S extends Shape>({
 
   const transforms = useEntityTransforms();
 
-  /** Brings a rotation into the range [0, TAU), whichever way round it went. */
   function wrapRotation(value: number): number {
     const wrapped = value % TAU;
     return wrapped < 0 ? wrapped + TAU : wrapped;
