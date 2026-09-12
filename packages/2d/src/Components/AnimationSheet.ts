@@ -20,6 +20,13 @@ export default function AnimationSheet({
 }) {
   useType(AnimationSheet);
 
+  if (!animations.default) {
+    throw new Error(
+      "AnimationSheet needs an animation named 'default' to start on. Received: " +
+        (Object.keys(animations).join(", ") || "no animations at all")
+    );
+  }
+
   const spriteSheet = useNewComponent(() =>
     SpriteSheet({
       url,

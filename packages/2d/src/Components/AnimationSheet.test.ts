@@ -224,11 +224,24 @@ test("an AnimationSheet builds a SpriteSheet of its own", () => {
   expect(entity.hasComponent(SpriteSheet)).toBe(true);
 });
 
-test("known quirk: an AnimationSheet with no animation called default draws nothing and cannot be drawn from", () => {
-  const { sheet } = startWithSheet({ walk: [0, 1] });
+test("an AnimationSheet with no animation called default is rejected when it is made", () => {
+  const logged: Array<unknown> = [];
+  const realConsoleError = console.error;
+  console.error = (...args: Array<unknown>) => {
+    logged.push(args[0]);
+  };
 
-  // currentAnim is seeded from animations.default without checking, so a sheet
-  // whose animations are all named something else starts out unusable.
-  expect(sheet.currentAnim).toBe(undefined as never);
-  expect(() => sheet.draw(blankContext(TILE_SIZE, TILE_SIZE))).toThrowError();
+  try {
+    startWithSheet({ walk: [0, 1] });
+  } finally {
+    console.error = realConsoleError;
+  }
+
+  // Reported when the sheet is built rather than later, when something tries
+  // to draw from a currentAnim that was never there.
+  expect(logged.length).toBe(1);
+  expect(String((logged[0] as Error).message)).toContain(
+    "needs an animation named 'default'"
+  );
+  expect(String((logged[0] as Error).message)).toContain("walk");
 });
