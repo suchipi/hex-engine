@@ -183,17 +183,21 @@ test("withoutMemoization measures afresh every time", () => {
   expect(drawn.length).toBeGreaterThan(afterFirst);
 });
 
-test("known quirk: clearMemoizationCache always throws", () => {
-  const { font } = drawableFont();
+test("clearMemoizationCache makes the next measurement measure again", () => {
+  const drawn: Array<string> = [];
+  const { font } = drawableFont({ onDrawText: (text) => drawn.push(text) });
   const metrics = startWithMetrics(font);
 
   metrics.measureText("Hello");
+  const afterFirst = drawn.length;
 
-  // It hands mem.clear the un-memoized function rather than the memoized
-  // wrapper, so there is no way to clear the cache at all.
-  expect(() => metrics.measureText.clearMemoizationCache()).toThrowError(
-    /was not memoized/
-  );
+  metrics.measureText("Hello");
+  expect(drawn.length).toBe(afterFirst);
+
+  metrics.measureText.clearMemoizationCache();
+  metrics.measureText("Hello");
+
+  expect(drawn.length).toBeGreaterThan(afterFirst);
 });
 
 test("the cache notices when the font becomes ready", () => {

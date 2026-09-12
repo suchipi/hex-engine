@@ -192,19 +192,20 @@ export default function FontMetrics(impl: DrawableFont) {
     };
   };
 
+  const measureTextMemoized = mem(measureTextNonMemoized, {
+    cacheKey: (args) => {
+      return `${impl.readyToDraw()}${impl.getFontSize()}${args[0]}`;
+    },
+  });
+
   return {
-    measureText: Object.assign(
-      mem(measureTextNonMemoized, {
-        cacheKey: (args) => {
-          return `${impl.readyToDraw()}${impl.getFontSize()}${args[0]}`;
-        },
-      }),
-      {
-        withoutMemoization: measureTextNonMemoized,
-        clearMemoizationCache() {
-          mem.clear(measureTextNonMemoized);
-        },
-      }
-    ),
+    measureText: Object.assign(measureTextMemoized, {
+      withoutMemoization: measureTextNonMemoized,
+      clearMemoizationCache() {
+        // The memoized function, not the one it wraps; mem only knows about
+        // the wrapper it handed back.
+        mem.clear(measureTextMemoized);
+      },
+    }),
   };
 }
