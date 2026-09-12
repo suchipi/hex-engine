@@ -1,4 +1,4 @@
-import { useType } from "@hex-engine/core";
+import { useType, useCallbackAsCurrent } from "@hex-engine/core";
 import { useUpdate } from "../Hooks";
 import { useAudioContext } from "./AudioContext";
 import { makeModalSynthesis } from "modal-synthesis";
@@ -61,7 +61,10 @@ export default function ProceduralSfx(
      * your sounds, it is recommended that you vary the waves slightly each
      * time the sound is played, to give the sound some variety.
      */
-    play(options?: {
+    // Bound to this Component, because it reads the AudioContext through a
+    // hook, and a game will usually call it from an event handler rather than
+    // from somewhere that already has a Component of its own.
+    play: useCallbackAsCurrent(function play(options?: {
       amplitudeMultiplier?:
         | number
         | ((modeIndex: number) => number)
@@ -97,6 +100,6 @@ export default function ProceduralSfx(
       });
       model.outputNode.connect(audioContext.destination);
       model.excite(options?.whiteNoiseDuration ?? 10);
-    },
+    }),
   };
 }

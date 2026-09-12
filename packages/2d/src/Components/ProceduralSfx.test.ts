@@ -2,7 +2,6 @@
 import { useChild, useNewComponent, useType } from "@hex-engine/core";
 import AudioContextComponent from "./AudioContext";
 import ProceduralSfx from "./ProceduralSfx";
-import { useUpdate } from "../Hooks";
 import { endGame, mouseDown, startGame, step } from "./inputTestSetup";
 
 const MODES = [
@@ -26,18 +25,10 @@ afterEach(() => {
   endGame();
 });
 
-type PlayOptions = Parameters<ReturnType<typeof ProceduralSfx>["play"]>[0];
-
-/**
- * ProceduralSfx.play reads the AudioContext through a hook, so it can only be
- * called from somewhere that has a Component bound. This runs it from an update
- * callback, which is where a game would call it from.
- */
 function startWithSfx({
   withAudioContext = true,
 }: { withAudioContext?: boolean } = {}) {
   let sfx!: ReturnType<typeof ProceduralSfx>;
-  let toPlay: null | PlayOptions | undefined = undefined;
 
   startGame(() => {
     if (withAudioContext) {
@@ -47,77 +38,85 @@ function startWithSfx({
     useChild(function Subject() {
       useType(Subject);
       sfx = useNewComponent(() => ProceduralSfx(MODES));
-
-      useUpdate(() => {
-        if (toPlay !== undefined) {
-          const options = toPlay;
-          toPlay = undefined;
-          sfx.play(options ?? undefined);
-        }
-      });
     });
   });
 
   // The first click is latched for the life of the page, so every test here
   // starts from "the user has already interacted". It has to happen after
-  // startGame, because the click needs a canvas to land on.
+  // startGame, because the click needs a canvas to land on. The
+  // not-yet-interacted-with case lives in
+  // ProceduralSfx-beforeInteraction.test.ts.
   mouseDown(1, 1);
 
-  return {
-    get sfx() {
-      return sfx;
-    },
-    /** Queues a play() for the next frame, and runs that frame. */
-    play(options: PlayOptions = undefined) {
-      toPlay = options ?? null;
-      step();
-    },
-  };
+  return sfx;
 }
 
-// The not-yet-interacted-with case lives in
-// ProceduralSfx-beforeInteraction.test.ts, since the first click cannot be
-// taken back once any test here has made it.
 test("synthesis is built on the frame after the AudioContext exists", () => {
-  const subject = startWithSfx();
+  const sfx = startWithSfx();
 
-  expect(subject.sfx.synthesis).toBe(null);
+  expect(sfx.synthesis).toBe(null);
 
   step();
 
-  expect(subject.sfx.synthesis).not.toBe(null);
+  expect(sfx.synthesis).not.toBe(null);
 });
 
-test("playing once the synthesis exists does not warn", () => {
-  const subject = startWithSfx();
+test("play can be called from outside any Component", () => {
+  const sfx = startWithSfx();
   step();
 
-  subject.play();
-
+  expect(() => sfx.play()).not.toThrowError();
   expect(warnings).toEqual([]);
 });
 
 test("play accepts multipliers for the waves", () => {
-  const subject = startWithSfx();
+  const sfx = startWithSfx();
   step();
 
-  subject.play({
-    amplitudeMultiplier: 0.5,
-    frequencyMultiplier: (index: number) => 1 + index * 0.1,
-    decayMultiplier: 2,
-    whiteNoiseDuration: 5,
-  });
+  expect(() =>
+    sfx.play({
+      amplitudeMultiplier: 0.5,
+      frequencyMultiplier: (index: number) => 1 + index * 0.1,
+      decayMultiplier: 2,
+      whiteNoiseDuration: 5,
+    })
+  ).not.toThrowError();
 
   expect(warnings).toEqual([]);
 });
 
+test("play works from a DOM event handler", () => {
+  const sfx = startWithSfx();
+  step();
+
+  let error: unknown = null;
+  const button = document.createElement("button");
+  button.addEventListener("click", () => {
+    try {
+      sfx.play();
+    } catch (caught) {
+      error = caught;
+    }
+  });
+
+  document.body.appendChild(button);
+  try {
+    button.click();
+  } finally {
+    button.remove();
+  }
+
+  expect(error).toBe(null);
+  expect(warnings).toEqual([]);
+});
+
 test("known quirk: with no AudioContext Component, playing warns about the user not having clicked", () => {
-  const subject = startWithSfx({ withAudioContext: false });
+  const sfx = startWithSfx({ withAudioContext: false });
 
   step();
-  expect(subject.sfx.synthesis).toBe(null);
+  expect(sfx.synthesis).toBe(null);
 
-  subject.play();
+  sfx.play();
 
   // The page has definitely been clicked by now; the only thing missing is the
   // AudioContext Component. The message leads with the other explanation and
@@ -127,12 +126,12 @@ test("known quirk: with no AudioContext Component, playing warns about the user 
 });
 
 test("the warning is only printed once, however often play is called", () => {
-  const subject = startWithSfx({ withAudioContext: false });
+  const sfx = startWithSfx({ withAudioContext: false });
   step();
 
-  subject.play();
-  subject.play();
-  subject.play();
+  sfx.play();
+  sfx.play();
+  sfx.play();
 
   expect(warnings.length).toBe(1);
 });
