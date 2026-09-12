@@ -189,12 +189,31 @@ test("a zero-duration frame reports itself as fully complete", () => {
   expect(animation.currentFrameCompletion).toBe(1);
 });
 
-test("known quirk: a freshly created Animation reports its first frame as complete", () => {
+test("a freshly created Animation has not got through any of its first frame", () => {
   const animation = startWithAnimation(frames(2));
 
-  // The Timer starts at 0 and play() has not set a duration yet, so the
-  // completion works out to 1 before the animation has shown anything.
-  expect(animation.currentFrameCompletion).toBe(1);
+  expect(animation.currentFrameCompletion).toBe(0);
+
+  for (let index = 0; index < STEPS_PER_FRAME * 3; index++) step();
+  expect(animation.currentFrameCompletion).toBe(0);
+});
+
+test("completion starts moving once the animation is played", () => {
+  const animation = startWithAnimation(frames(2));
+
+  animation.play();
+  expect(animation.currentFrameCompletion).toBe(0);
+
+  step();
+  expect(animation.currentFrameCompletion).toBeGreaterThan(0);
+});
+
+test("goToFrame on an unplayed Animation starts that frame from the beginning", () => {
+  const animation = startWithAnimation(frames(3));
+
+  animation.goToFrame(1);
+
+  expect(animation.currentFrameCompletion).toBe(0);
 });
 
 test("a finished non-looping animation stays at a completion of one", () => {

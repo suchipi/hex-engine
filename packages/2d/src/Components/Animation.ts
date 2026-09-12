@@ -66,9 +66,15 @@ export default function Animation<T>(
   const timer = useNewComponent(Timer);
   timer.disable();
   let currentFrameIndex = 0;
+  let frameTimerHasBeenSet = false;
 
   function getCurrentFrame() {
     return frames[currentFrameIndex];
+  }
+
+  function setFrameTimer(duration: number) {
+    frameTimerHasBeenSet = true;
+    timer.setToTimeFromNow(duration);
   }
 
   const state = {
@@ -92,7 +98,7 @@ export default function Animation<T>(
       }
 
       const currentFrame = getCurrentFrame();
-      timer.setToTimeFromNow(currentFrame.duration);
+      setFrameTimer(currentFrame.duration);
 
       if (currentFrame.onFrame) {
         currentFrame.onFrame();
@@ -103,7 +109,7 @@ export default function Animation<T>(
   function goToFrame(frameNumber: number) {
     currentFrameIndex = frameNumber;
     const currentFrame = getCurrentFrame();
-    timer.setToTimeFromNow(currentFrame.duration);
+    setFrameTimer(currentFrame.duration);
 
     if (currentFrame.onFrame) {
       currentFrame.onFrame();
@@ -130,6 +136,10 @@ export default function Animation<T>(
     },
 
     get currentFrameCompletion() {
+      if (!frameTimerHasBeenSet) {
+        return 0;
+      }
+
       const currentFrame = getCurrentFrame();
       if (currentFrame.duration === 0) {
         return 1;
@@ -155,7 +165,7 @@ export default function Animation<T>(
     play() {
       timer.enable();
       const currentFrame = getCurrentFrame();
-      timer.setToTimeFromNow(currentFrame.duration);
+      setFrameTimer(currentFrame.duration);
 
       if (currentFrame.onFrame) {
         currentFrame.onFrame();
