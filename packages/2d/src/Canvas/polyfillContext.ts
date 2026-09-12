@@ -88,8 +88,6 @@ export default function polyfillContext(context: CanvasRenderingContext2D) {
       } else {
         super.setTransform(...args);
       }
-
-      savedMatrices = [matrix];
     }
 
     transform(

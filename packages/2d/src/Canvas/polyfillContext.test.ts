@@ -157,18 +157,19 @@ test("saves nest", () => {
   expect(context.getTransform().e).toBe(0);
 });
 
-test("known quirk: setTransform throws away the saved transform stack", () => {
+test("setTransform leaves the saved transform stack where it was", () => {
   const context = contextNeedingThePolyfill();
 
+  context.translate(5, 5);
   context.save();
   context.translate(10, 10);
 
-  // setTransform resets savedMatrices to just the new matrix, so the save that
-  // was outstanding is gone and restoring goes back to the wrong place.
   context.setTransform(1, 0, 0, 1, 99, 99);
-  context.restore();
-
   expect(components(context.getTransform())).toEqual([1, 0, 0, 1, 99, 99]);
+
+  // The save that was outstanding still restores to where it was taken.
+  context.restore();
+  expect(components(context.getTransform())).toEqual([1, 0, 0, 1, 5, 5]);
 });
 
 test("a restore with no matching save leaves the transform alone", () => {
