@@ -82,6 +82,10 @@ export default function Animation<T>(
   };
 
   useUpdate(() => {
+    if (!frameTimerHasBeenSet) {
+      return;
+    }
+
     if (timer.hasReachedSetTime()) {
       if (currentFrameIndex === frames.length - 1) {
         if (state.loop) {

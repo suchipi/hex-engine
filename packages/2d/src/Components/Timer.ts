@@ -23,7 +23,7 @@ function Timer() {
       return target;
     },
     hasReachedSetTime() {
-      return target < 0;
+      return target <= 0;
     },
   };
 }

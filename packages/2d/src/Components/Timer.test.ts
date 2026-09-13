@@ -27,12 +27,10 @@ test("a fresh Timer sits at zero", () => {
   expect(timer.distanceFromSetTime()).toBe(0);
 });
 
-test("known quirk: a Timer that was never set reports its time as not yet reached", () => {
+test("a Timer that was never set has already reached its time", () => {
   const timer = startWithTimer();
 
-  // hasReachedSetTime is `target < 0`, and target starts at exactly 0, so a
-  // brand new Timer claims to be waiting for a moment nobody asked for.
-  expect(timer.hasReachedSetTime()).toBe(false);
+  expect(timer.hasReachedSetTime()).toBe(true);
 
   step();
   expect(timer.hasReachedSetTime()).toBe(true);
@@ -51,18 +49,17 @@ test("setToTimeFromNow counts down by the frame delta", () => {
   expect(timer.target).toBeCloseTo(100 - FRAME_MS * 2, 3);
 });
 
-test("hasReachedSetTime flips once the countdown passes zero", () => {
+test("hasReachedSetTime flips once the countdown gets to zero", () => {
   const timer = startWithTimer();
 
+  // Two steps land the countdown on exactly zero, which counts as reached.
   timer.setToTimeFromNow(FRAME_MS * 2);
 
   step();
   expect(timer.hasReachedSetTime()).toBe(false);
 
   step();
-  expect(timer.hasReachedSetTime()).toBe(false);
-
-  step();
+  expect(timer.target).toBe(0);
   expect(timer.hasReachedSetTime()).toBe(true);
 });
 
@@ -75,6 +72,14 @@ test("the countdown keeps going negative after the time is reached", () => {
   step();
 
   expect(timer.target).toBeCloseTo(-FRAME_MS * 2, 3);
+});
+
+test("a time of zero has been reached as soon as it is set", () => {
+  const timer = startWithTimer();
+
+  timer.setToTimeFromNow(0);
+
+  expect(timer.hasReachedSetTime()).toBe(true);
 });
 
 test("setToTimeFromNow accepts a time in the past", () => {
