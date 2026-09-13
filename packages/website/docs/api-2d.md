@@ -1925,7 +1925,8 @@ function Geometry(init: {
    * A helper function that calculates the position of the current Entity
    * relative to the position of the root Entity.
    *
-   * This is where the center of `shape` ends up, so it accounts for `origin`.
+   * This is where the center of `shape` ends up, so it accounts for `origin`,
+   * including the `origin` of every ancestor Entity.
    *
    * Available since version: 0.0.1
    */

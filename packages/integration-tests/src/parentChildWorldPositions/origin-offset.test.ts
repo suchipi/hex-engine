@@ -116,7 +116,7 @@ export default function Root() {
   );
 }
 
-test("child positions relative to parent origin (ignores offset caused by non-center origin)", async () => {
+test("children are offset by their parent's non-center origin", async () => {
   const rootEnt = createRoot(Root);
   const inspector = rootEnt.getComponent(Inspector)!;
   inspector.hide();

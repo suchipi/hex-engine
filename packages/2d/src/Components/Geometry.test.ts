@@ -152,7 +152,7 @@ test("worldPosition accounts for the Entity's own origin", () => {
   expect(xy(geometry.worldPosition())).toEqual({ x: 95, y: 93 });
 });
 
-test("known quirk: worldPosition ignores an ancestor's origin", () => {
+test("worldPosition accounts for an ancestor's origin too", () => {
   let kid!: ReturnType<typeof Geometry>;
 
   startGame(() => {
@@ -182,10 +182,9 @@ test("known quirk: worldPosition ignores an ancestor's origin", () => {
     });
   });
 
-  // Ancestor transforms are gathered without their origins, which is what the
-  // parentChildWorldPositions integration test calls out as intentional, but it
-  // does mean a parent's origin moves its drawing and not its children.
-  expect(xy(kid.worldPosition())).toEqual({ x: 110, y: 110 });
+  // The parent's origin of (50, 50) moves it, and everything under it, by
+  // that much in the opposite direction.
+  expect(xy(kid.worldPosition())).toEqual({ x: 60, y: 60 });
 });
 
 test("worldPosition follows the Entity as it moves", () => {
