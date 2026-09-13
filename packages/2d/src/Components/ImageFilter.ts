@@ -17,6 +17,8 @@ export default function ImageFilter(filter: (data: ImageData) => void) {
      * Reads the pixels in `input` into an ImageData object, passes that `ImageData`
      * object into the filter this ImageFilter Component was constructed with,
      * and then writes the pixels in the ImageData object into `output`.
+     *
+     * `input` is only read from; its own pixels are left as they were.
      */
     apply(input: CanvasRenderingContext2D, output: CanvasRenderingContext2D) {
       const imageData = input.getImageData(
@@ -26,8 +28,7 @@ export default function ImageFilter(filter: (data: ImageData) => void) {
         input.canvas.height
       );
       filter(imageData);
-      input.putImageData(imageData, 0, 0);
-      output.drawImage(input.canvas, 0, 0);
+      output.putImageData(imageData, 0, 0);
     },
   };
 }

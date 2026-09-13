@@ -52,7 +52,7 @@ test("the filter's changes come out on the output context", () => {
   expect(firstPixel(output)).toEqual({ r: 0, g: 0, b: 255, a: 255 });
 });
 
-test("known quirk: apply also writes the filtered pixels back into the input", () => {
+test("the input is left as it was", () => {
   const filter = startWithFilter(swapRedAndBlue);
 
   const input = contextFilledWith("red");
@@ -60,12 +60,10 @@ test("known quirk: apply also writes the filtered pixels back into the input", (
 
   filter.apply(input, output);
 
-  // apply putImageDatas into the input before drawing it onto the output, so
-  // the context it read from is modified as a side effect.
-  expect(firstPixel(input)).toEqual({ r: 0, g: 0, b: 255, a: 255 });
+  expect(firstPixel(input)).toEqual({ r: 255, g: 0, b: 0, a: 255 });
 });
 
-test("applying the same filter twice stacks the changes up", () => {
+test("applying the same filter twice gives the same result as applying it once", () => {
   const filter = startWithFilter(swapRedAndBlue);
 
   const input = contextFilledWith("red");
@@ -74,8 +72,7 @@ test("applying the same filter twice stacks the changes up", () => {
   filter.apply(input, output);
   filter.apply(input, output);
 
-  // Swapped back again, because the first apply left the input swapped.
-  expect(firstPixel(output)).toEqual({ r: 255, g: 0, b: 0, a: 255 });
+  expect(firstPixel(output)).toEqual({ r: 0, g: 0, b: 255, a: 255 });
 });
 
 test("a filter that changes nothing leaves the pixels alone", () => {

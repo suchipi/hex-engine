@@ -2034,6 +2034,8 @@ function ImageFilter(
    * object into the filter this ImageFilter Component was constructed with,
    * and then writes the pixels in the ImageData object into `output`.
    *
+   * `input` is only read from; its own pixels are left as they were.
+   *
    * Available since version: 0.0.0
    */
   apply(
